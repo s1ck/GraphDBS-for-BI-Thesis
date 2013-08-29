@@ -1,0 +1,114 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.s1ckboy.thesis</groupId>
+	<artifactId>benchmark</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Graph Benchmark Suite</name>
+
+	<repositories>
+		<!-- Bitsy -->
+		<!-- <repository> -->
+		<!-- <id>sonatype</id> -->
+		<!-- <url>https://oss.sonatype.org/content/groups/public/</url> -->
+		<!-- </repository> -->
+
+		<!-- HypergraphDB -->
+		<repository>
+			<id>hypergraphdb</id>
+			<url>http://hypergraphdb.org/maven</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<!-- Bitsy In-Memory durable graph database -->
+		<dependency>
+			<groupId>com.lambdazen.bitsy</groupId>
+			<artifactId>bitsy</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<!-- HypergraphDB -->
+		<dependency>
+			<groupId>org.hypergraphdb</groupId>
+			<artifactId>hgdb</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hypergraphdb</groupId>
+			<artifactId>hgbdbje</artifactId>
+			<version>1.2</version>
+		</dependency>
+
+		<!-- Neo4j -->
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j</artifactId>
+			<version>2.0.0-M03</version>
+		</dependency>
+
+		<!-- OrientDB -->
+		<dependency>
+			<groupId>com.orientechnologies</groupId>
+			<artifactId>orient-commons</artifactId>
+			<version>1.4.1</version>
+			<type>bundle</type>
+		</dependency>
+		<dependency>
+			<groupId>com.orientechnologies</groupId>
+			<artifactId>orientdb-core</artifactId>
+			<version>1.4.1</version>
+			<type>bundle</type>
+		</dependency>
+
+		<!-- Titan -->
+		<dependency>
+			<groupId>com.thinkaurelius.titan</groupId>
+			<artifactId>titan-core</artifactId>
+			<version>0.3.1</version>
+		</dependency>
+
+		<!-- log4j -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+
+		<!-- Apache Commons -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+
+		<!-- json simple (google) -->
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<inherited>true</inherited>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<!-- needed for OrientDB -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.6</version>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
