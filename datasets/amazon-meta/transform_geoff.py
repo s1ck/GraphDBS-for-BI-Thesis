@@ -1,5 +1,19 @@
 #!/usr/bin/env python
 
+'''
+This script parses the amazon-meta dataset, extracts nodes and relationships
+and stores them in the GEOFF format.
+
+Nodes are:
+    - Products (542.684)
+    - Groups (10)
+    - Users (optional, they are taken from Pokec) (1.555.124)
+Relationships are:
+    - Product-[:SIMILAR_TO]->Product (1.788.725)
+    - Product-[:BELONGS_TO]->Group (542.684)
+    - Product-[:REVIEWED_BY]->User (7.593.109)
+'''
+
 import json
 import os
 import re
@@ -8,8 +22,10 @@ import sys
 # needs trailing slash!
 OUT_DIR = 'out/'
 
+# input file
 AMAZON_FILE = 'amazon-meta.txt'
 
+# output files
 NODES_FILE = 'nodes.geoff'
 EDGES_FILE = 'edges.geoff'
 
@@ -21,6 +37,7 @@ USERS = set()
 
 REVIEW_ID = 0 # initial id (will be incremented)
 
+# needed to store the type as a property at a node
 TYPE_KEY = '__type__'
 TYPE_PRODUCT = 'p'
 TYPE_GROUP = 'g'
@@ -73,12 +90,20 @@ def parse_reviews(f_nodes, f_edges, reviews, product_asin):
         parse_user(f_nodes, items[2])
 
 def parse_user(f_nodes, user_id):
+    '''
+    Makes sure that there are no duplicate user ids and stores them.
+    '''
     if user_id not in USERS:
         USERS.add(user_id)
         #save_geoff_node(f_nodes, user_id, {TYPE_KEY: TYPE_USER})
         STATS['n_user_cnt'] += 1
 
 def parse_product_meta(product_meta, f_nodes, f_edges):
+    '''
+    product_meta contains all lines regarding to a single amazon product. This
+    function parses each line and calls the appropriate functions to parse the
+    content.
+    '''
     product = {TYPE_KEY: 'p'}
     line_field = []
     for idx, line in enumerate(product_meta):
