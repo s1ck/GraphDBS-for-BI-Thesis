@@ -1,0 +1,111 @@
+\chapter{Evaluation von Graphdatenbanksystemen}
+\label{cha:evaluation}
+
+\section{Anforderungen im Rahmen aktueller Forschungsvorhaben}
+\label{sec:anforderungen}
+
+
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[ht]
+	\begin{footnotesize}
+
+   	\begin{tabular}{|l||c|c|c|c|c|c|}
+	\hline
+	\multicolumn{7}{|c|}{\textbf{Nutzung}} \\
+	\hline
+   	GDBMS & Quelloffen & Dokumentation & Produktivsystem & Sprache & Aktiv & Linux-Support* \\   
+   	\hline
+   	Affinity		& \checkmark	& \checkmark	& \checkmark	& C++	& \checkmark 	& \checkmark \\
+   	ArangoDB		& \checkmark	& \checkmark	& \checkmark	& C/C++	& \checkmark	& \checkmark \\	
+   	Bitsy			& \checkmark	& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	DEX				& - 			& \checkmark	& \checkmark	& C++	& \checkmark	& \checkmark \\
+   	Filament		& \checkmark	& \checkmark	& -				& Java	& \checkmark	& \checkmark \\
+   	FlockDB			& \checkmark	& (\checkmark)	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	GraphBase		& -				& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	GraphPack		& \checkmark	& -				& -				& Java	& -				& \checkmark \\
+   	G-Store			& -				& \checkmark	& -				& C/C++	& -				& - \\
+   	Horton			& -				& -				& k.A.			& k.A.	& k.A.			& - \\
+   	HypergraphDB	& \checkmark	& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	InfiniteGraph	& -				& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	Infogrid		& \checkmark	& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	Fallen-8		& \checkmark	& -				& -				& C\#	& \checkmark	& \checkmark \\
+   	Neo4j			& \checkmark	& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	OQGRAPH			& \checkmark	& \checkmark	& \checkmark	& C		& \checkmark	& \checkmark \\
+   	OrientDB		& \checkmark	& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	RedisGraph		& \checkmark	& - 			& -				& Javascript & \checkmark	& \checkmark \\
+   	SGDB3			& \checkmark	& -				& -				& Java	& -				& \checkmark \\
+   	Titan			& \checkmark	& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	Trinity			& -				& -				& k.A.			& k.A.	& k.A.			& - \\
+   	VertexDB		& \checkmark	& \checkmark	& -				& C		& -				& \checkmark \\
+   	\hline
+   \end{tabular} 
+	\end{footnotesize}
+\end{table}
+\renewcommand{\arraystretch}{1}
+
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[ht]
+	\begin{footnotesize}
+
+   	\begin{tabular}{|l||c|c|c|c|c|c|}
+	\hline
+	\multicolumn{7}{|c|}{\textbf{Datenmodell}} \\
+	\hline
+   	GDBMS & Quelloffen & Dokumentation & Produktivsystem & Sprache & Aktiv & Linux-Support* \\   
+   	\hline
+   	Affinity		& \checkmark	& \checkmark	& \checkmark	& C++	& \checkmark 	& \checkmark \\
+   	ArangoDB		& \checkmark	& \checkmark	& \checkmark	& C/C++	& \checkmark	& \checkmark \\	
+   	Bitsy			& \checkmark	& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	DEX				& - 			& \checkmark	& \checkmark	& C++	& \checkmark	& \checkmark \\
+   	Filament		& \checkmark	& \checkmark	& -				& Java	& \checkmark	& \checkmark \\
+   	FlockDB			& \checkmark	& (\checkmark)	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	GraphBase		& -				& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	GraphPack		& \checkmark	& -				& -				& Java	& -				& \checkmark \\
+   	G-Store			& -				& \checkmark	& -				& C/C++	& -				& - \\
+   	Horton			& -				& -				& k.A.			& k.A.	& k.A.			& - \\
+   	HypergraphDB	& \checkmark	& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	InfiniteGraph	& -				& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	Infogrid		& \checkmark	& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	Fallen-8		& \checkmark	& -				& -				& C\#	& \checkmark	& \checkmark \\
+   	Neo4j			& \checkmark	& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	OQGRAPH			& \checkmark	& \checkmark	& \checkmark	& C		& \checkmark	& \checkmark \\
+   	OrientDB		& \checkmark	& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	RedisGraph		& \checkmark	& - 			& -				& Javascript & \checkmark	& \checkmark \\
+   	SGDB3			& \checkmark	& -				& -				& Java	& -				& \checkmark \\
+   	Titan			& \checkmark	& \checkmark	& \checkmark	& Java	& \checkmark	& \checkmark \\
+   	Trinity			& -				& -				& k.A.			& k.A.	& k.A.			& - \\
+   	VertexDB		& \checkmark	& \checkmark	& -				& C		& -				& \checkmark \\
+   	\hline
+   \end{tabular} 
+	\end{footnotesize}
+\end{table}
+\renewcommand{\arraystretch}{1}
+
+
+
+\section{Vorauswahl von Graphdatenbanksystemen}
+
+Datenmodell - grundsätzlich ist die Modellierung auch mit anderen Datenmodellen möglich (z.B. Zwischenknoten), wird jedoch hier nicht berücksichtigt um die Menge der zu vergleichenden Systeme einzuschränkenx
+
+\section{Neo4j}
+
+\subsection{Datenmodell}
+
+Property-Graph + Labels (2.0)	
+
+\subsection{Persistenz}
+
+\subsection{Zugriffsmöglichkeiten}
+
+\subsection{Konsistenzsicherung}
+
+\subsection{Verteilung}
+
+\section{Datenbank 2}
+
+\section{Datenbank ...}
+
+\section{Datenbank n ($n \leq 5$)}
+
+\section{Gegenüberstellung}
+

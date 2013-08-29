@@ -1,0 +1,30 @@
+\chapter{Architektur GraphDB}
+\label{cha:implementierung}
+Hinführung zu sones
+
+\section{GraphDB Architektur}
+\label{sec:graphdb}
+
+
+\section{Anforderungen}
+\label{sec:architekt_anforderungen}
+
+Drei Bereiche
+\begin{itemize}
+	\item Initiale Partitionierung (Verwendung von domänenspezifischem Wissen oder round robin)
+	\item Laufzeit Logging (Aufbau von Statistiken anhand der Nutzung (Queryanalyse), Definieren von Schwellwerten für Re-Partitioning)
+	\item Re-Partitionierung zur Laufzeit
+\end{itemize}
+
+\section{Entwurf}
+\label{sec:graphdb}
+
+\par
+Probleme
+\begin{itemize}
+	\item wie erfolgt die Kommunikation zwischen Partitionen (ProxyVertex / ProxyEdge)
+\end{itemize}
+	
+
+
+

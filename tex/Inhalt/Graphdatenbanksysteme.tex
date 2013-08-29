@@ -1,0 +1,88 @@
+\chapter{Graphdatenbanksysteme}
+
+def siehe: \cite{DBLP:journals/corr/abs-1006-2361}
+
+\section{Grundlegende Eigenschaften}
+
+\begin{itemize}
+	\item deklarativ vs. prozedural
+	\item verteilt vs. zentral
+	\item (haupt)speicher- vs. diskorientiert
+	\item Isolationsstufen
+	\item nativ vs. aufgesetzt
+	\item lese- vs. schreiboptimiert
+	\item batch-processing vs. realtime
+	\item Indexunterstützung ja/nein
+	\item Schema ja /nein
+	\item Integritätsbedingungen ja/nein
+	\item eingebetted vs. hosted
+	\item graphenorientiertes Speicherformat ja/nein
+	\item Einschränkungen bzgl. CAP Theorem
+	\item Bulk-Import ja/nein
+	\item Einzel- vs. Mehrnutzer
+	\item Erweiterbarkeit ja/nein
+	\item Integritätsbedingungen
+\end{itemize}
+
+\cite{Angles:2008}
+\begin{itemize}
+	\item Schema-Instanz-Konsistenz (Typ-Constraints an Knoten und Kanten. Wertebereiche für Attribute)
+	\item Identität (Labels mit eindeutigen Namen)
+	\item Referentielle Integrität
+	\item Funktionale Abhängigkeiten
+\end{itemize}
+
+\section{Datenmodelle}
+
+Ein Graphdatenbankmodell ist ein Modell, in welchem die Datenstrukturen für Schema und/oder Instanzen als direkter, eventuell benannter Graph modelliert sind. Datenmanipulation erfolgt durch graphenorientierte Operationen und Typkonstruktoren, Integritätsbedingungen können auf der Graphstruktur definiert werden. \cite{Angles:2008}
+
+Ein durchgängiges Beispiel, was sowohl im relationalen, als auch in den jeweiligen Graphdatenmodellen beschrieben wird
+
+\subsection{Property-Graph-Datenmodell}
+\label{subsec:propgraph}
+
+formale Definition: \cite{Ciglan:2012}
+
+Schemaevolution
+
+\subsection{Hypergraph-Datenmodell}
+
+% auch Kombination mit Property-Graph möglich
+
+\subsection{Resource Description Framework}
+\label{subsec:rdf}
+
+\begin{itemize}
+	\item spezieller Typ einer Graphdatenbank
+	\item gerichteter, gelabelter Multigraph
+	\item Fokus auf Inferenztechniken (und weniger auf Pfadsuchen)
+	\item Properties und Beziehungen werden "gemischt"
+	\item \url{http://www.quora.com/What-are-the-differences-between-a-Graph-database-and-a-Triple-store}
+\end{itemize}
+
+\section{Graphenspezifische Operationen}
+\label{sec:operations}
+
+\subsection{Grundlegende Operationen}
+
+siehe \cite{Dominguez-Sal2011}, S. 31
+
+\begin{itemize}
+	\item CRUD von Knoten und Kanten (typbasiert (Schema), propertybasiert (Index))
+	\item Nachbarschaftsanfrage (k-Nachbarn)
+	\item Traversierung (BFS + DFS + Constraints)
+	\item Aggregationen auf Basis von Properties (group by + min/max/avg/sum/count)
+	\item Sortierung auf Basis von Properties
+\end{itemize}
+
+\subsection{Komplexe analytische Operationen}
+
+\begin{itemize}
+	\item Erreichbarkeit (kürzeste Pfade, irgendein Pfad, mit und ohne Einschränkungen (z.B. Routing, Tourplanung))
+	\item Zentralität von Knoten (Betweenness centrality)
+	\item Musterbasierte Suche (exact vs. approximate)
+	\item Flussalgorithmen
+	\item Graph Summarization (siehe \cite{Zhao:2011:GCW:1989323.1989413})
+	\item Drill-Down, Drill-Through, Slice \& Dice
+	\item Statistische Anfragen (Knoten-/Kantenzahl, Zusammenhang, Knotengrade (Verteilung), Durchmesser...)
+\end{itemize}

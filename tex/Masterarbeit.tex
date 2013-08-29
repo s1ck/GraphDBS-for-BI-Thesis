@@ -1,0 +1,141 @@
+% Meta-Informationen -------------------------------------------------------
+%		Informationen über das Dokument, wie z.B. Titel, Autor, Matrikelnr. etc
+%		werden in der Datei _Meta.tex definiert und können danach global
+%		verwendet werden.
+% --------------------------------------------------------------------------
+\input{_Meta}
+
+
+% Dokumentenkopf -----------------------------------------------------------
+% 	Diese Vorlage basiert auf "scrreprt" aus dem koma-script.
+%		Die Option draft sollte beim fertigen Dokument ausgeschaltet werden.
+% --------------------------------------------------------------------------
+\documentclass[
+	12pt,						% Schriftgröße
+	DIV10,
+	ngerman,					% für Umlaute, Silbentrennung etc.
+	a4paper,					% Papierformat
+	oneside,					% einseitiges Dokument
+	titlepage,				% es wird eine Titelseite verwendet
+	halfparskip,			% Abstand zwischen Absätzen (halbe Zeile)
+	normalheadings,		% Größe der Überschriften verkleinern
+	liststotoc,				% Verzeichnisse im Inhaltsverzeichnis aufführen
+	bibtotoc,				% Literaturverzeichnis im Inhaltsverzeichnis aufführen
+	idxtotoc,				% Index im Inhaltsverzeichnis aufführen
+	tablecaptionabove,	% Beschriftung von Tabellen oberhalb ausgeben	
+	final						% Status des Dokuments (final/draft)
+]{scrreprt}
+
+\renewcommand*\chapterheadstartvskip{\vspace*{-1.5cm}}
+
+% Bentigte Packages -------------------------------------------------------
+%		Weitere Packages, die benötigt werden, sind in die Datei Packages.tex
+%		"ausgelagert", um die Vorlage möglichst übersichtlich zu halten.
+% --------------------------------------------------------------------------
+\input{Packages}
+
+% Erstellung eines Index und Abkürzungsverzeichnisses aktivieren -----------
+\makeindex
+% makeindex Masterarbeit.nlo -s nomencl.ist -o Masterarbeit.nls
+\makenomenclature
+
+
+% Kopf- und Fußzeilen, Seitenränder etc. -----------------------------------
+\input{Seitenstil}
+
+% Eigene Definitionen für Silbentrennung
+\include{Silbentrennung}
+% Das eigentliche Dokument -------------------------------------------------
+%		Der eigentliche Inhalt des Dokuments beginnt hier. Die einzelnen Seiten
+%		und Kapitel werden in eigene Dateien ausgelagert und hier nur inkludiert.
+% --------------------------------------------------------------------------
+\begin{document}
+% auch subsubsection nummerieren
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+% keine Kopf-/Fußzeilen bei Deckblatt und Abstract
+\ofoot{}
+% Deckblatt
+\include{Deckblatt}
+
+\include{Inhalt/Abstract}
+% \include{Inhalt/Danksagung}
+\ofoot{\pagemark}
+
+% Seitennummerierung -------------------------------------------------------
+%		Vor dem Hauptteil werden die Seiten in großen römischen Ziffern 
+%		nummeriert...
+% --------------------------------------------------------------------------
+\pagenumbering{Roman}
+\tableofcontents			% Inhaltsverzeichnis
+
+% Abkürzungsverzeichnis ----------------------------------------------------
+\input{Inhalt/Glossar}
+\printnomenclature
+\label{sec:Glossar}
+
+\listoffigures					% Abbildungsverzeichnis
+%\listoftables					% Tabellenverzeichnis
+
+%\renewcommand{\lstlistlistingname}{Verzeichnis der Listings}
+%\lstlistoflistings	
+
+% ...danach in normalen arabischen Ziffern ---------------------------------
+\clearpage
+\pagenumbering{arabic}
+
+
+% Inhalt -------------------------------------------------------------------
+%		Hier können jetzt die einzelnen Kapitel inkludiert werden. Sie müssen
+%		in den entsprechenden .TEX-Dateien vorliegen. Die Dateinamen können
+% 		natürlich angepasst werden.
+% --------------------------------------------------------------------------
+\include{Inhalt/Einleitung}
+
+\include{Inhalt/Related}
+
+\include{Inhalt/Grundlagen}
+
+%\include{Inhalt/Graphdatenbanksysteme}
+
+\include{Inhalt/Evaluation}
+
+\include{Inhalt/Benchmark}
+
+\include{Inhalt/Auswertung}
+
+\include{Inhalt/Fazit}
+
+% Literaturverzeichnis -----------------------------------------------------
+%		Das Literaturverzeichnis wird aus der Datenbank Bibliographie.bib 
+% 		erstellt. Die genaue Verwendung von bibtex wird hier jedoch nicht erklärt.
+%		Link: http://de.wikipedia.org/wiki/BibTeX
+% --------------------------------------------------------------------------
+\bibliography{quellen}
+\bibliographystyle{plain}
+% \bibliographystyle{natdin}		% DIN-Stil des Literaturverzeichnisses
+% \bibliographystyle{geralpha}
+
+
+\include{Inhalt/Erklaerung}	% Selbständigkeitserklärung 
+
+% Anhang -------------------------------------------------------------------
+%		Die Inhalte des Anhangs werden analog zu den Kapiteln inkludiert.
+%		Dies geschieht in der Datei Anhang.tex
+% --------------------------------------------------------------------------
+\begin{appendix}
+	\clearpage
+	\pagenumbering{roman}
+	\include{Inhalt/Anhang}
+\end{appendix}
+
+
+% Index --------------------------------------------------------------------
+%		Zum Erstellen eines Index, die folgende Zeile auskommentieren.
+% --------------------------------------------------------------------------
+%\printindex		% Index hier einfügen
+%\ofoot{}
+%\include{Inhalt/Thesen}	% Thesen 
+
+\end{document}

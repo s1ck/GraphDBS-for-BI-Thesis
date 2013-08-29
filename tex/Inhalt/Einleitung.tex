@@ -1,0 +1,38 @@
+\chapter{Einleitung}
+\label{cha:Einleitung}
+
+\section{Motivation}
+\label{sec:motivation}
+
+\begin{itemize}
+	\item Einfache Graphendefinition (vielleicht auch ein kurzer Abriss zur Geschichte der Graphentheorie? Eulers Brückenproblem)
+	\item Bezug auf Anwendungen in denen die Beziehungen zwischen Objekten mindestens genauso wichtig sind wie die Objekte selbst
+	\item kein GDBMS ist optimal für alle Anwendungen \cite{Shao:2012:MML:2213836.2213907}, da die Algorithmen von verschiedenen Datenstrukturen profitieren
+	\item Anwendungsbeispiele für Graphen / Graphdatenbanken
+	\begin{itemize}
+		\item Wissens- und Informationsnetzwerke (Zitiernetzwerke, Semantic Web, \textbf{Unternehmensdaten}, ...)
+		\item Soziale Netzwerke (Facebook, LinkedIn, ...)
+		\item Technologische Netzwerke (Kommunikation, Verkehr, ...)
+		\item Biologische Netzwerke (Biologie, Chemie, ...)
+		\item Beispiele in \cite{Shao:2012:MML:2213836.2213907}
+	\end{itemize}
+	\item Fokus auf Unternehmensdaten. 
+	\begin{itemize}
+		\item Bisher: Datawarehouse + relationale DBMS
+		\item Jetzt: Nutzen von Graphdatenbanksystemen zur erweiterten Analyse vernetzter Unternehmensdaten (Bezug auf BIIIG Paper / aktuelle Promotion)
+		
+	\end{itemize}
+\end{itemize}
+
+\begin{quote}
+Compared with other database options, the  unique property of graph databases is the information encoded in the graph topology\cite{Ciglan:2012}.
+\end{quote}
+
+\section{Ziel der Arbeit}
+\label{sec:ziel}
+
+Übergeordnetes Ziel dieser Masterarbeit ist es verschiedene Graphdatenbanksysteme anhand definierter Anforderungen zu vergleichen, einige der Systeme auszuwählen und in einer Evaluation ihre Eignung für aktuelle Forschungsvorhaben in der Abteilung Datenbanken der Universität Leipzig zu untersuchen.
+
+In diesem Zusammenhang sollen zunächst graphenbasierte Softwaresysteme kategorisiert werden, der Fokus liegt hierbei auf Graphdatenbanksystemen und deren verschiedenen Ausprägungen. Die theoretische Betrachtung existierender Datenmodelle, wie zum Beispiel des Property-Graph-Modells oder des Hypergraphs, wird durch die Definition einfacher und komplexer graphenspezifischer Operationen ergänzt. In einer Vorauswahl sollen aktuelle Graphdatenbanksysteme zunächst auf der Grundlage definierter Merkmale gegenübergestellt werden. Einige dieser Merkmale, wie zum Beispiel Quelloffenheit, dauerhafte Speicherung und aktive Weiterentwicklung, werden als zwingend erforderlich angesehen. Hierdurch kann die Menge der zu untersuchenden Systeme reduziert und eine Auswahl getroffen werden. In der sich anschließenden Evaluation werden die ausgewählten Graphdatenbanksysteme detailliert betrachtet, der Fokus liegt auf Datenmodell und Zugriffsmöglichkeiten, sowie den verwendeten Datenstrukturen in Haupt- und Hintergrundspeicher. Neben der theoretischen Untersuchung funktionaler Eigenschaften sollen die Systeme in einem Benchmark gegenübergestellt werden. Die Leistungsfähigkeit bei der Ausführung grundlegender Operationen, wie der Manipulation des Graphen, ist dabei genauso immanent wie das Systemverhalten bei der Ausführung komplexer Operationen. Zu diesen zählen unter anderem das Finden von Mustern innerhalb des Graphen oder das Berechnen von Pfaden mit definierten Einschränkungen. Abschließend sollen die Stärken, vor allem aber die Schwächen der einzelnen Systeme aufgezeigt werden. Daraus lässt sich eine eine Empfehlung für den weiteren Einsatz ableiten.
+
+\section{Aufbau der Arbeit}

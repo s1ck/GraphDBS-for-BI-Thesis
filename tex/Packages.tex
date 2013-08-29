@@ -1,0 +1,174 @@
+% Anpassung des Seitenlayouts ----------------------------------------------
+% 	siehe Seitenstil.tex
+% --------------------------------------------------------------------------
+\usepackage[
+	automark,			% Kapitelangaben in Kopfzeile automatisch erstellen
+	headsepline,	% Trennlinie unter Kopfzeile
+	ilines				% Trennlinie linksbündig ausrichten
+]{scrpage2}
+
+\usepackage{pseudocode}
+\usepackage{nicefrac}
+
+% Für eine schöne Anordnung von Bildern
+\usepackage{subfigure}
+
+\usepackage{dsfont}
+%\usepackage{color}
+%
+%% Define user colors using the RGB model
+%\definecolor{yellow}{rgb}{0.0,1.0,0.0}
+%\definecolor{rot}{rgb}{1.0,0.0,0.0}
+
+% Anpassung an Landessprache -----------------------------------------------
+% 	Verwendet globale Option german siehe \documentclass
+% --------------------------------------------------------------------------
+\usepackage[ngerman]{babel}
+
+% Umlaute ------------------------------------------------------------------
+% 		Umlaute/Sonderzeichen wie äüöß direkt im Quelltext verwenden (CodePage).
+%		Erlaubt automatische Trennung von Worten mit Umlauten.
+% --------------------------------------------------------------------------
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+%\usepackage{ae} % "schöneres" ß
+\usepackage{textcomp} % Euro-Zeichen etc.
+\usepackage{lmodern} % schööön
+
+% Grafiken -----------------------------------------------------------------
+% 		Einbinden von Grafiken [draft oder final]
+% 		Option [draft] bindet Bilder nicht ein - auch globale Option
+% --------------------------------------------------------------------------
+\usepackage[dvips,final]{graphicx}
+\usepackage{wrapfig}
+\graphicspath{{Bilder/}} % Dort liegen die Bilder des Dokuments
+
+% Befehle aus AMSTeX für mathematische Symbole z.B. \boldsymbol \mathbb ----
+\usepackage{amsmath,amsfonts,amsthm}
+
+% Für Index-Ausgabe; \printindex -------------------------------------------
+\usepackage{makeidx}
+
+% Einfache Definition der Zeilenabstände und Seitenränder etc. -------------
+\usepackage{setspace}
+\usepackage{geometry}
+
+% für gedrehte Tabellen
+\usepackage{rotating} 
+
+% Symbolverzeichnis --------------------------------------------------------
+% 	Symbolverzeichnisse bequem erstellen, beruht auf MakeIndex.
+% 		makeindex.exe %Name%.nlo -s nomencl.ist -o %Name%.nls
+% 	erzeugt dann das Verzeichnis. Dieser Befehl kann z.B. im TeXnicCenter
+%		als Postprozessor eingetragen werden, damit er nicht ständig manuell
+%		ausgeführt werden muss.
+%		Die Definitionen sind ausgegliedert in die Datei Abkuerzungen.tex.
+% --------------------------------------------------------------------------
+\usepackage[intoc]{nomencl}
+  \let\abbrev\nomenclature
+  \renewcommand{\nomname}{Abkürzungsverzeichnis}
+  \setlength{\nomlabelwidth}{.25\hsize}
+  \renewcommand{\nomlabel}[1]{#1 \dotfill}
+  \setlength{\nomitemsep}{-\parsep}
+
+% Zum Umfließen von Bildern -------------------------------------------------
+\usepackage{floatflt}
+
+% Zum Einbinden von Programmcode --------------------------------------------
+\usepackage{listings}
+\usepackage{xcolor} 
+\definecolor{hellgelb}{rgb}{1,1,0.9}
+\definecolor{colKeys}{rgb}{0,0,1}
+\definecolor{colIdentifier}{rgb}{0,0,0}
+\definecolor{colComments}{rgb}{1,0,0}
+\definecolor{colString}{rgb}{0,0.5,0}
+\lstset{%
+    float=hbp,%
+    basicstyle=\texttt\small, %
+    identifierstyle=\color{colIdentifier}, %
+    keywordstyle=\color{colKeys}, %
+    stringstyle=\color{colString}, %
+    commentstyle=\color{colComments}, %
+    columns=flexible, %
+    tabsize=2, %
+    frame=single, %
+    extendedchars=true, %
+    showspaces=false, %
+    showstringspaces=false, %
+    numbers=left, %
+    numberstyle=\tiny, %
+    breaklines=true, %
+    backgroundcolor=\color{hellgelb}, %
+    breakautoindent=true, %
+%    captionpos=b%
+}
+
+% Lange URLs umbrechen etc. -------------------------------------------------
+\usepackage{url}
+
+
+%% Wichtig für korrekte Zitierweise ------------------------------------------
+
+%\usepackage[square]{natbib}
+%% Quellenangaben in eckige Klammern fassen ----------------------------------
+%\bibpunct{[}{]}{;}{a}{}{,~}
+
+%% BA-Quellenstyle -----------------------------------------------------------
+
+%\usepackage{babelbib}
+%\bibliographystyle{geralpha}
+
+% ermöglicht Zeilenumbrüche in Captions
+\usepackage{caption}
+
+
+% PDF-Optionen --------------------------------------------------------------
+\usepackage[
+bookmarks,
+bookmarksopen=true,
+pdftitle={\titel},
+pdfauthor={\autor},
+pdfcreator={\autor},
+pdfsubject={\titel},
+pdfkeywords={\titel},
+colorlinks=true,
+%linkcolor=red, % einfache interne Verknüpfungen
+%anchorcolor=black,% Ankertext
+%citecolor=blue, % Verweise auf Literaturverzeichniseinträge im Text
+%filecolor=magenta, % Verknüpfungen, die lokale Dateien öffnen
+%menucolor=red, % Acrobat-Menüpunkte
+%urlcolor=cyan, 
+% für die Druckversion können die Farben ausgeschaltet werden:
+linkcolor=black, % einfache interne Verknüpfungen
+anchorcolor=black,% Ankertext
+citecolor=black, % Verweise auf Literaturverzeichniseinträge im Text5
+filecolor=black, % Verknüpfungen, die lokale Dateien öffnen
+menucolor=black, % Acrobat-Menüpunkte
+urlcolor=black, 
+%backref,
+%pagebackref,
+plainpages=false,% zur korrekten Erstellung der Bookmarks
+pdfpagelabels,% zur korrekten Erstellung der Bookmarks
+hypertexnames=false,% zur korrekten Erstellung der Bookmarks
+linktocpage % Seitenzahlen anstatt Text im Inhaltsverzeichnis verlinken
+]{hyperref}
+
+% Zum fortlaufenden Durchnummerieren der Fußnoten ---------------------------
+\usepackage{chngcntr}
+
+
+% für lange Tabellen
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage{lscape}
+
+\usepackage{supertabular}
+
+% Spaltendefinition rechtsbündig mit definierter Breite ---------------------
+\newcolumntype{w}[1]{>{\raggedleft\hspace{0pt}}p{#1}}
+
+% Formatierung von Listen ändern
+\usepackage{paralist}
+% Standardeinstellungen:
+% \setdefaultleftmargin{2.5em}{2.2em}{1.87em}{1.7em}{1em}{1em}
