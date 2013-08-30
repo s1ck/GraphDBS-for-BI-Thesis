@@ -26,8 +26,8 @@ OUT_DIR = 'out/'
 AMAZON_FILE = 'amazon-meta.txt'
 
 # output files
-NODES_FILE = 'nodes.geoff'
-EDGES_FILE = 'edges.geoff'
+NODES_FILE = 'nodes-amazon.geoff'
+EDGES_FILE = 'edges-amazon.geoff'
 
 GROUPS = {}
 GROUP_ID = 0 # initial id (will be incremented)
@@ -67,9 +67,9 @@ def parse_group(line):
     global GROUP_ID
     if group_name not in GROUPS:
         GROUPS[group_name] = GROUP_ID
-        GROUP_ID += 1
         save_geoff_node(f_nodes, GROUP_ID, {"name": group_name, TYPE_KEY:
             TYPE_GROUP})
+        GROUP_ID += 1
         STATS['n_group_cnt'] += 1
     return GROUPS[group_name]
 
