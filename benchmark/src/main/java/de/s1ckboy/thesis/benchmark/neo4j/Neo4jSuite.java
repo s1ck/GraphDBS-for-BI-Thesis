@@ -27,7 +27,7 @@ public class Neo4jSuite extends BenchmarkSuite {
 	 */
 
 	if (cfg.getPropertyAsBoolean("import")) {
-	    Benchmark neo4jImportBench = new Import_Neo4j(
+	    Benchmark neo4jImportBench = new Neo4jImport(
 		    cfg.getPropertyAsString("database"));
 	    neo4jImportBench.setRuns(1);
 	    benchmarks.add(neo4jImportBench);

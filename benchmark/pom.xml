@@ -44,7 +44,7 @@
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j</artifactId>
-			<version>2.0.0-M03</version>
+			<version>2.0.0-M04</version>
 		</dependency>
 
 		<!-- OrientDB -->
@@ -82,11 +82,12 @@
 			<version>2.4</version>
 		</dependency>
 
-		<!-- json simple (google) -->
+		<!-- Gson: Java to Json conversion -->
 		<dependency>
-			<groupId>com.googlecode.json-simple</groupId>
-			<artifactId>json-simple</artifactId>
-			<version>1.1</version>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.4</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 
