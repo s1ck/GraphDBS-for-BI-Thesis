@@ -45,6 +45,10 @@ public class Neo4jImport extends Neo4jBenchmark {
 
     private BatchInserterIndexProvider indexProvider;
 
+    /**
+     * Indexes created and populated using BatchInserterIndexs from this
+     * provider are compatible with the normal Indexes.
+     */
     private BatchInserterIndex nodeIdx;
 
     /**

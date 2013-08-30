@@ -16,7 +16,8 @@ public abstract class Neo4jBenchmark extends Benchmark {
     protected GraphDatabaseService graphDb;
     protected ExecutionEngine engine;
 
-    protected static Configuration cfg = Configuration.getInstance("neo4j");
+    protected static Configuration cfg = Configuration
+	    .getInstance(Neo4jConstants.INSTANCE_NAME);
 
     @Override
     public void setUp() {
@@ -25,7 +26,7 @@ public abstract class Neo4jBenchmark extends Benchmark {
 	// cypher execution engine
 	engine = new ExecutionEngine(graphDb);
 	// get index
-	index = graphDb.index().forNodes("nodes");
+	index = graphDb.index().forNodes(Neo4jConstants.NODE_IDX_NAME);
     }
 
     @Override
