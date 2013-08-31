@@ -12,6 +12,10 @@ import json
 import sys
 import cPickle as pickle
 
+ID_KEY = '__id__'
+TYPE_KEY = '__type__'
+TYPE_USER = 'u'
+
 
 def load_nodes(node_list_in, node_map):
     ''' Loads the nodes and some properties from the file, maps the amazon user
@@ -54,14 +58,14 @@ def store_graph(nodes, edges, node_list_out, edge_list_out):
         n = 1555124
         for i, info in nodes.iteritems():
             # store node info
-            data = {}
+            data = {TYPE_KEY: TYPE_USER, ID_KEY: info[0]}
             if info[1] != 'null':
                 data['gender'] = info[1]
-            if info[2] != 'null':
+            if info[2] != 'null' and len(info[2]) > 0:
                 data['region'] = info[2]
             if info[3].isdigit() and int(info[3]) > 0:
                 data['age'] = int(info[3])
-            if info[4] != 'null':
+            if info[4] != 'null' and len(info[4]) > 0:
                 data['eye_color'] = info[4]
             # store node identified by amazon user id
             save_geoff_node(f_n_out, info[0], data if len(data) > 0 else None)

@@ -38,6 +38,7 @@ USERS = set()
 REVIEW_ID = 0 # initial id (will be incremented)
 
 # needed to store the type as a property at a node
+ID_KEY = '__id__'
 TYPE_KEY = '__type__'
 TYPE_PRODUCT = 'p'
 TYPE_GROUP = 'g'
@@ -68,7 +69,7 @@ def parse_group(line):
     if group_name not in GROUPS:
         GROUPS[group_name] = GROUP_ID
         save_geoff_node(f_nodes, GROUP_ID, {"name": group_name, TYPE_KEY:
-            TYPE_GROUP})
+            TYPE_GROUP, ID_KEY: GROUP_ID})
         GROUP_ID += 1
         STATS['n_group_cnt'] += 1
     return GROUPS[group_name]
@@ -108,27 +109,31 @@ def parse_product_meta(product_meta, f_nodes, f_edges):
     line_field = []
     for idx, line in enumerate(product_meta):
         # product id
-        if line.startswith('Id:'):
-            product['id'] = int(parse_line(line, 1))
+        #if line.startswith('Id:'):
+        #    product['id'] = int(parse_line(line, 1))
         # amazon standard identification number (ASIN)
-        elif line.startswith('ASIN'):
-            product['ASIN'] = parse_line(line, 1)
+        if line.startswith('ASIN'):
+            product[ID_KEY] = parse_line(line, 1)
         elif line.startswith('discontinued'):
             return None
         # title
         elif line.startswith('title'):
-            product['title'] = parse_line(line, 1)
+            title = parse_line(line, 1)
+            if len(title) > 0:
+                product['title'] = title
+            else:
+                product['title'] = 'untitled'
         # group (resulting in an edge)
         elif line.startswith('group'):
             group_id = int(parse_group(line))
             # instantly store the edge
-            save_geoff_edge(f_edges, product['ASIN'], group_id, 'BELONGS_TO')
+            save_geoff_edge(f_edges, product[ID_KEY], group_id, 'BELONGS_TO')
             STATS['e_belongs_cnt'] += 1
         # salesrank
         elif line.startswith('salesrank'):
             product['salesrank'] = int(parse_line(line, 1))
         elif line.startswith('similar'):
-            parse_similar_edges(f_edges, line, product['ASIN'])
+            parse_similar_edges(f_edges, line, product[ID_KEY])
         # categories (stored unedited as array)
         elif line.startswith('categories'):
             # strip the number of categories to strip the whole block
@@ -138,7 +143,7 @@ def parse_product_meta(product_meta, f_nodes, f_edges):
             # strip the number of reviews to extract the whole block
             review_cnt = int(line.split(': ')[2].split(' ')[0].strip())
             reviews = parse_reviews(f_nodes, f_edges, \
-                    product_meta[idx+1:idx+review_cnt+1], product['ASIN'])
+                    product_meta[idx+1:idx+review_cnt+1], product[ID_KEY])
 
     return product
 
@@ -188,7 +193,7 @@ if __name__ == '__main__':
                         f_nodes,
                         f_edges)
                 if p is not None:
-                    save_geoff_node(f_nodes, p['ASIN'], p)
+                    save_geoff_node(f_nodes, p[ID_KEY], p)
                     STATS['n_product_cnt'] += 1
 
             product_meta += [line]
