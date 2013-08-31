@@ -4,3 +4,4 @@
 target/*
 datasets/*
 out/*
+*.geoff

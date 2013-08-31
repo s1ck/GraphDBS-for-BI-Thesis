@@ -11,7 +11,7 @@ import de.s1ckboy.thesis.generic.Edge;
 import de.s1ckboy.thesis.generic.GraphElement;
 import de.s1ckboy.thesis.generic.Node;
 
-public class GeoffParser implements FormatParser {
+public class GeoffReader implements FormatParser {
 
     private static final Pattern NODE_PATTERN = Pattern
 	    .compile("^\\(([^)]+)\\)(\\s(\\{.*?\\}))?");

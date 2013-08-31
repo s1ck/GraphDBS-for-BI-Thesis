@@ -22,7 +22,7 @@ import de.s1ckboy.thesis.generic.Constants;
 import de.s1ckboy.thesis.generic.Edge;
 import de.s1ckboy.thesis.generic.GraphElement;
 import de.s1ckboy.thesis.generic.Node;
-import de.s1ckboy.thesis.io.GeoffParser;
+import de.s1ckboy.thesis.io.GeoffReader;
 import de.s1ckboy.thesis.io.GraphElementIterator;
 
 /**
@@ -111,7 +111,7 @@ public class Neo4jImport extends Neo4jBenchmark {
 	try {
 	    GraphElementIterator it = new GraphElementIterator(
 		    new BufferedReader(new FileReader(datasetPath)),
-		    new GeoffParser());
+		    new GeoffReader());
 
 	    GraphElement element;
 	    while (it.hasNext()) {
@@ -148,7 +148,7 @@ public class Neo4jImport extends Neo4jBenchmark {
 	long nodeId = inserter.createNode(node.getProperties());
 	nodeCache.put(node.getId(), nodeId);
 	nodeIdx.add(nodeId,
-		MapUtil.map(Neo4jConstants.NODE_IDX_ID_KEY, node.getId()));
+		MapUtil.map(Neo4jConstants.NODE_ID_KEY, node.getId()));
 	nodeCnt++;
     }
 

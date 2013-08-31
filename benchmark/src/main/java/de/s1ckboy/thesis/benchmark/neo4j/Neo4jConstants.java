@@ -8,7 +8,7 @@ public class Neo4jConstants {
     /**
      * Schema constants
      */
-    public static final String NODE_IDX_ID_KEY = "__id__";
+    public static final String NODE_ID_KEY = "__id__";
     /**
      * Import specific settings
      */
