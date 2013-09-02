@@ -1,10 +1,27 @@
 \chapter{Evaluation von Graphdatenbanksystemen}
 \label{cha:evaluation}
 
-\section{Anforderungen im Rahmen aktueller Forschungsvorhaben}
+Dieses Kapitel widmet sich der Auseinandersetzung und der Gegenüberstellung konkreter GDBMS-Implementierungen. Um aus der Vielzahl existierender Systeme eine geeignete Auswahl treffen zu können, werden zunächst funktionale Anforderungen definiert. Diese leiten sich aus aktuellen Forschungsvorhaben am Lehrstuhl Datenbanken der Universität Leipzig ab. Die ausgewählten Systeme werden anschließend im Detail betrachtet, Schwerpunkte sind: Datenmodellierung, Zugriffsmechanismen und angebotene graphenspezifische Operationen, Konsistenzerhaltung, physische Repräsentation des Graphen und Möglichkeiten der Verteilung. Das Kapitel schließt mit einer zusammenfassenden Gegenüberstellung der Systeme.
+
+\section{Aktuelle Forschungsvorhaben}
 \label{sec:anforderungen}
 
+Wie bereits im vorhergehenden Kapitel erläutert, sind Informationsnetzwerke eine Art von Netzwerken in denen Informationen in Form von Begriffen oder konkreten Daten miteinander verknüpft sind. Die Struktur des Netzwerkes ist dabei die Grundlage für Analysen, deren Ziel es ist, aus bestehenden Informationen neue Informationen abzuleiten um daraus wiederum neues Wissen zu generieren. Im Bereich der Unternehmensdaten werden diese analytischen Verfahren und damit verbundene Anwendungen unter dem Begriff Business Intelligence (BI) zusammengefasst\cite{Watson:2007:CSB:1300761.1301970}. Unternehmen setzen BI ein, um möglichst gewinnbringende Informationen aus vorhandenen Daten zu extrahieren. Ausgehend von diesen Informationen können der Zustand des Unternehmens eingeschätzt und Entscheidungen getroffen werden.
+
+Verschiedene Bereiche eines Unternehmens nutzen unterschiedliche Systeme zur Erfüllung ihrer Aufgaben. So unterscheidet man beispielsweise ERP-, PM- und CRM-Systeme, welche sich aus technologischer, struktureller und semantischer Sicht unterscheiden können. BI setzt voraus, dass Daten aus heterogenen Systemen zunächst in einem System integriert werden, hierfür werden Data Warehouses (DWH) eingesetzt\cite{Chaudhuri:2011:OBI:1978542.1978562, Watson:2007:CSB:1300761.1301970}. Ein DWH ist eine zentrale Datenbank, welche für Analysezwecke optimiert ist und in der Daten aus mehreren, i.a. heterogenen Quellen zusammengeführt, ggf. bereinigt und transformiert werden\cite{}. Im Rahmen der Transformation werden die Daten in ein einheitliches Schema überführt. Fakten werden in einer zentralen Faktentabelle hinterlegt und mit Dimensionstabellen verknüpft. Ein Fakt ist zum Beispiel der Kauf eines Produktes und der daraus resultierende Umsatz. Mögliche Dimensionen sind das Produkt, der Kaufzeitpunkt, der Kunde und die Filiale. Auf dieser Datenbasis sind vielfältige Analysen möglich, so können zum Beispiel der Umsatz in bestimmten Regionen, die Beliebtheit von Produkten oder die Rentabilität einzelner Filialen bestimmt werden.
+
+Wie am Beispiel des DWH deutlich wird, erfordert die Transformation die Definition eines einheitlichen Schemas. Daraus folgt, dass die für die Analyse relevanten Beziehungen zwischen Dimensionen und Fakten vorab festgelegt werden müssen und somit jeder relevante Zusammenhang zwischen Fakt und Dimension bekannt sein und im Schema abgebildet werden muss. Dieser Sachverhalt führt jedoch zu einer Einschränkung der analytischen Möglichkeiten, da nur Zusammenhänge analysiert werden können, welche im Schema definiert wurden. Unbekannte, eventuell nicht intuitiv erkennbare Zusammenhänge können in der Analyse nicht berücksichtigt werden.
+
+Eines der Projekte am Lehrstuhl Datenbanken befasst sich mit der Entwicklung und Untersuchung von Methoden zur graphenbasierten Business Intelligence. Eine graphenbasierte Repräsentation von Unternehmensdaten weist die beschriebene Einschränkung eines vordefinierten Schemas nicht auf. Vielmehr erlaubt sie die flexible Evaluation der Beziehungen zwischen einzelnen Objekten innerhalb des Unternehmens. Diese Objekte lassen sich in zwei Kategorien einteilen: Transaktionale Daten und Stammdaten.
+Zu den transaktionalen Daten lassen sich zum Beispiel Rechnungen im ERP-System, Meeting-Protokolle im PM-System oder Kundenkontakte im CRM-System zuordnen. Beispiele für Stammdaten sind Informationen über Kunden, Produkte, Mitarbeiter oder Filialen. Transaktionale Daten entstehen innerhalb von Geschäftsprozessen und sind sowohl untereinander, als auch mit Stammdaten verknüpft. Aus diesem Zusammenhang lässt sich ein Graph ableiten: Transaktionale und Stammdaten bilden die Knoten, der kausale Zusammenhang zwischen ihnen wird durch Kanten beschrieben. Stammdaten weisen die Eigenschaft auf, dass sie in mehreren Systemen hinterlegt sein können (z.B. Kunden oder Mitarbeiter), transaktionale Daten beschränken sich auf das System in dem sie erzeugt wurden. Beziehungen zwischen Objekten können generell systemübergreifend sein.\\
+Eine mögliche Analyse ist das Finden häufiger Muster. So lassen sich zum Beispiel Teilgraphen zu bestimmten Geschäftsprozessen extrahieren und hinsichtlich des Zusammenhangs zwischen erzeugtem Mehrwert und beteiligter Mitarbeiter untersuchen.
+
+Das Projekt verfolgt drei Ziele: Zunächst ist die Integration von Unternehmensdaten aus heterogenen Systemen in einen Graph erforderlich. Auf der Grundlage des integrierten Graphen werden in einer zweiten Phase Algorithmen für die graphenorientierte Analyse entwickelt. In der letzten Phase sollen Möglichkeiten gefunden werden, die Datenbasis möglichst effizient für Analysten nutzbar zu machen. Hierbei spielen insbesondere Anfragesprachen und Möglichkeiten zur Visualisierung eine Rolle. Für das Erreichen der Ziele sollen GDBMS die technologische Grundlage bilden, da sie eine flexible, graphenorientierte Datenmodellierung erlauben und Operationen zur Verfügung stellen auf deren Grundlage BI-orientierte Algorithmen implementiert werden können. Einige der verfügbaren Systeme beinhalten darüber hinaus bereits Anfragesprachen, welche als Basis für eigene Entwicklungen dienen können.
+
 \section{Vorauswahl von Graphdatenbanksystemen}
+\label{sec:vorauswahl}
+
+Nachfolgend werden die Anforderungen an ein GDBMS für den Einsatz innerhalb des beschriebenen Projektes kategorisiert und vorhandene Implementierungen diesbezüglich bewertet. Die Auswahl der Systeme erfolgte auf der Grundlage der Recherche in Literatur und im Web.
 
 \paragraph*{Nutzbarkeit und Zugang}
 
@@ -46,7 +63,7 @@ blubber blubber blub
    	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption{Anforderungen an die Verwendbarkeit und Dokumentation von GDBMS. (*optional/informativ)}
+	\caption[Anforderungen: Nutzbarkeit und Zugang]{Anforderungen an die Verwendbarkeit und Dokumentation von GDBMS. (*optional/informativ)}
 	\label{tab:nutzung}
 \end{table}
 \renewcommand{\arraystretch}{1}
@@ -57,7 +74,7 @@ blubber blubber blub
 \begin{table}[ht]
 	\centering
 	\begin{footnotesize}
-   	\begin{tabular}{|m{2.25cm}|>{\centering}m{3.5cm}|>{\centering}m{2.25cm}|>{\centering}m{1.5cm}|>{\centering}m{1.5cm}|>{\centering\arraybackslash}m{2.5cm}|}
+   	\begin{tabular}{|m{2.25cm}|>{\centering}m{3.5cm}|>{\centering}m{2.25cm}|>{\centering}m{1.5cm}|>{\centering}m{1.25cm}|>{\centering\arraybackslash}m{2.25cm}|}
 	\hline
 	\multicolumn{6}{|c|}{\textbf{Datenverwaltung und Datenmodellierung}} \\
 	\hline
@@ -77,20 +94,20 @@ blubber blubber blub
    	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption{Anforderungen hinsichtlich der Datenverwaltung und -modellierung innerhalb von GDBMS. (*optional/informativ)}
+	\caption[Anforderungen: Datenverwaltung und Datenmodellierung]{Anforderungen hinsichtlich der Datenverwaltung und -modellierung innerhalb von GDBMS. (*optional/informativ)}
 	\label{tab:verwaltung}
 \end{table}
 \renewcommand{\arraystretch}{1}
 
-\paragraph*{Zugriff}
+\paragraph*{Zugriffsmechanismen}
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[ht]
 	\centering
 	\begin{footnotesize}
-   	\begin{tabular}{|m{2.25cm}|>{\centering}m{1.65cm}|>{\centering}m{1.25cm}|>{\centering}m{1.25cm}|>{\centering}m{1.25cm}|>{\centering\arraybackslash}m{2cm}|>{\centering}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|}
+   	\begin{tabular}{|m{2.25cm}|>{\centering}m{1.65cm}|>{\centering}m{1.25cm}|>{\centering}m{1.25cm}|>{\centering}m{1.25cm}|>{\centering\arraybackslash}m{2cm}|>{\centering}m{1.5cm}|>{\centering\arraybackslash}m{1.25cm}|}
 	\hline
-	\multicolumn{8}{|c|}{\textbf{Zugriff}} \\
+	\multicolumn{8}{|c|}{\textbf{Zugriffsmechanismen}} \\
 	\hline
    	GDBMS & Embedded\newline API & Remote \newline API* & Plugin \newline API* & CRUD & Traversierung & Anfrage-\newline sprache* & Bulk\newline Load \\   
    	\hline   
@@ -104,7 +121,7 @@ blubber blubber blub
    	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption{Anforderungen an die Zugriffsmöglichkeiten von GDBMS. (*optional/informativ)}
+	\caption[Anforderungen: Zugriffsmechanismen]{Anforderungen an die Zugriffsmechanismen von GDBMS. (*optional/informativ)}
 	\label{tab:zugriff}
 \end{table}
 \renewcommand{\arraystretch}{1}
@@ -119,7 +136,7 @@ blubber blubber blub
 	\hline
 	\multicolumn{5}{|c|}{\textbf{Speicherung}} \\
 	\hline
-   	GDBMS & Persistenz & Native Speicherung*  & In-Memory* & Index-\newline unterstützung \\
+   	GDBMS & Persistenz & Native Speicherung*  & Hauptspeicher-\newline~zentriert* & Index-\newline unterstützung \\
    	\hline   
    	Bitsy			& \checkmark	& -				& \checkmark	& \checkmark 	\\
    	HypergraphDB	& \checkmark	& \checkmark	& - 			& \checkmark 	\\
@@ -130,7 +147,7 @@ blubber blubber blub
 	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption{Anforderungen an die Datenspeicherung in GDBMS. (*optional/informativ)}
+	\caption[Anforderungen: Speicherung]{Anforderungen an die Datenspeicherung in GDBMS. (*optional/informativ)}
 	\label{tab:speicherung}
 \end{table}
 \renewcommand{\arraystretch}{1}
@@ -156,7 +173,7 @@ blubber blubber blub
 	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption{Anforderungen an die Skalierbarkeit und Verfügbarkeit von GDBMS. (*optional/informativ)}
+	\caption[Anforderungen: Skalierbarkeit und Verfügbarkeit]{Anforderungen an die Skalierbarkeit und Verfügbarkeit von GDBMS. (*optional/informativ)}
 	\label{tab:speicherung}
 \end{table}
 \renewcommand{\arraystretch}{1}
@@ -172,7 +189,7 @@ Blubb
 
 Property-Graph + Labels (2.0)	
 
-\subsection{Zugriffsmöglichkeiten}
+\subsection{Zugriffsmechanismen}
 
 Blubb
 
@@ -192,7 +209,7 @@ Blubb
 
 Blubb
 
-\subsection{Zugriffsmöglichkeiten}
+\subsection{Zugriffsmechanismen}
 
 Blubb
 
@@ -212,7 +229,7 @@ Blubb
 
 Blubb
 
-\subsection{Zugriffsmöglichkeiten}
+\subsection{Zugriffsmechanismen}
 
 Blubb
 
@@ -232,7 +249,7 @@ Blubb
 
 Blubb
 
-\subsection{Zugriffsmöglichkeiten}
+\subsection{Zugriffsmechanismen}
 
 Blubb
 
@@ -252,7 +269,7 @@ Blubb
 
 Blubb
 
-\subsection{Zugriffsmöglichkeiten}
+\subsection{Zugriffsmechanismen}
 
 Blubb
 
