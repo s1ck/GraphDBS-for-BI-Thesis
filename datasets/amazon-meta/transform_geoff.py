@@ -144,7 +144,6 @@ def parse_product_meta(product_meta, f_nodes, f_edges):
             review_cnt = int(line.split(': ')[2].split(' ')[0].strip())
             reviews = parse_reviews(f_nodes, f_edges, \
                     product_meta[idx+1:idx+review_cnt+1], product[ID_KEY])
-
     return product
 
 def parse_similar_edges(f_edges, line, product_asin):

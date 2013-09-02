@@ -1,39 +1,41 @@
 \chapter{Evaluation von Graphdatenbanksystemen}
 \label{cha:evaluation}
 
-Dieses Kapitel widmet sich der Auseinandersetzung und der Gegenüberstellung konkreter GDBMS-Implementierungen. Um aus der Vielzahl existierender Systeme eine geeignete Auswahl treffen zu können, werden zunächst funktionale Anforderungen definiert. Diese leiten sich aus aktuellen Forschungsvorhaben am Lehrstuhl Datenbanken der Universität Leipzig ab. Die ausgewählten Systeme werden anschließend im Detail betrachtet, Schwerpunkte sind: Datenmodellierung, Zugriffsmechanismen und angebotene graphenspezifische Operationen, Konsistenzerhaltung, physische Repräsentation des Graphen und Möglichkeiten der Verteilung. Das Kapitel schließt mit einer zusammenfassenden Gegenüberstellung der Systeme.
+Dieses Kapitel setzt sich mit konkreten GDBMS-Implementierungen auseinander. Mit der Zielstellung, aus der Vielzahl existierender Systeme geeignete auszuwählen, werden zunächst funktionale Anforderungen definiert. Diese ergeben sich aus aktuellen Forschungsvorhaben am Lehrstuhl Datenbanken der Universität Leipzig. Die ausgewählten Systeme werden anschließend im Detail betrachtet, die Schwerpunkte dabei sind: Datenmodellierung und Integritätsbedingungen, Zugriffsmechanismen und angebotene graphenspezifische Operationen, Konsistenzerhaltung, physische Repräsentation des Graphen und Möglichkeiten der Indexierung und Verteilung. Das Kapitel schließt mit einer Gegenüberstellung der Systeme.
 
 \section{Aktuelle Forschungsvorhaben}
 \label{sec:anforderungen}
 
-Wie bereits im vorhergehenden Kapitel erläutert, sind Informationsnetzwerke eine Art von Netzwerken in denen Informationen in Form von Begriffen oder konkreten Daten miteinander verknüpft sind. Die Struktur des Netzwerkes ist dabei die Grundlage für Analysen, deren Ziel es ist, aus bestehenden Informationen neue Informationen abzuleiten um daraus wiederum neues Wissen zu generieren. Im Bereich der Unternehmensdaten werden diese analytischen Verfahren und damit verbundene Anwendungen unter dem Begriff Business Intelligence (BI) zusammengefasst\cite{Watson:2007:CSB:1300761.1301970}. Unternehmen setzen BI ein, um möglichst gewinnbringende Informationen aus vorhandenen Daten zu extrahieren. Ausgehend von diesen Informationen können der Zustand des Unternehmens eingeschätzt und Entscheidungen getroffen werden.
+Wie bereits im vorhergehenden Kapitel erläutert, ist ein Informationsnetzwerk der Netzwerktypus, in welchem Informationen in Form von Begriffen oder konkreten Daten miteinander verknüpft sind. Die Struktur des Netzwerkes ist dabei die Grundlage für Analysen, deren Ziel es ist, aus bestehenden Informationen neue Informationen abzuleiten, aus denen wiederum neues Wissen generiert werden soll. Im Bereich der Unternehmensdaten werden diese analytischen Verfahren und damit verbundene Anwendungen unter dem Begriff Business Intelligence (BI) zusammengefasst\cite{Watson:2007:CSB:1300761.1301970}. Unternehmen setzen BI ein, um möglichst gewinnbringende Informationen aus vorhandenen Daten zu extrahieren. Auf Basis dieser Informationen können der Zustand des Unternehmens eingeschätzt und Entscheidungen getroffen werden.
 
-Verschiedene Bereiche eines Unternehmens nutzen unterschiedliche Systeme zur Erfüllung ihrer Aufgaben. So unterscheidet man beispielsweise ERP-, PM- und CRM-Systeme, welche sich aus technologischer, struktureller und semantischer Sicht unterscheiden können. BI setzt voraus, dass Daten aus heterogenen Systemen zunächst in einem System integriert werden, hierfür werden Data Warehouses (DWH) eingesetzt\cite{Chaudhuri:2011:OBI:1978542.1978562, Watson:2007:CSB:1300761.1301970}. Ein DWH ist eine zentrale Datenbank, welche für Analysezwecke optimiert ist und in der Daten aus mehreren, i.a. heterogenen Quellen zusammengeführt, ggf. bereinigt und transformiert werden\cite{}. Im Rahmen der Transformation werden die Daten in ein einheitliches Schema überführt. Fakten werden in einer zentralen Faktentabelle hinterlegt und mit Dimensionstabellen verknüpft. Ein Fakt ist zum Beispiel der Kauf eines Produktes und der daraus resultierende Umsatz. Mögliche Dimensionen sind das Produkt, der Kaufzeitpunkt, der Kunde und die Filiale. Auf dieser Datenbasis sind vielfältige Analysen möglich, so können zum Beispiel der Umsatz in bestimmten Regionen, die Beliebtheit von Produkten oder die Rentabilität einzelner Filialen bestimmt werden.
+Verschiedene Bereiche eines Unternehmens nutzen unterschiedliche Systeme zur Bewältigung ihrer Aufgaben. So unterscheidet man beispielsweise ERP-, PM- und CRM-Systeme, welche sich in technologischer, struktureller und semantischer Hinsicht unterscheiden können. BI setzt voraus, dass Daten aus heterogenen Systemen zunächst in ein System integriert werden, zu diesem Zweck werden Data Warehouses (DWH) eingesetzt\cite{Chaudhuri:2011:OBI:1978542.1978562, Watson:2007:CSB:1300761.1301970}. Ein DWH ist eine zentrale Datenbank, welche für Analysezwecke optimiert ist und in welcher Daten aus mehreren, i.A. heterogenen Quellen zusammengeführt, ggf. bereinigt und transformiert werden\cite{}. Im Rahmen der Transformation werden die Daten in ein einheitliches Schema überführt. Fakten werden in einer zentralen Tabelle hinterlegt und mit Dimensionstabellen verknüpft. Ein Fakt kann zum Beispiel der Kauf eines Produktes und der daraus resultierende Umsatz sein, mögliche Dimensionen sind das Produkt, der Kaufzeitpunkt, der Kunde und die Filiale. Auf dieser Datenbasis sind vielfältige Analysen möglich, so können zum Beispiel der Umsatz in bestimmten Regionen, die Beliebtheit von Produkten oder die Rentabilität einzelner Filialen bestimmt werden.
 
-Wie am Beispiel des DWH deutlich wird, erfordert die Transformation die Definition eines einheitlichen Schemas. Daraus folgt, dass die für die Analyse relevanten Beziehungen zwischen Dimensionen und Fakten vorab festgelegt werden müssen und somit jeder relevante Zusammenhang zwischen Fakt und Dimension bekannt sein und im Schema abgebildet werden muss. Dieser Sachverhalt führt jedoch zu einer Einschränkung der analytischen Möglichkeiten, da nur Zusammenhänge analysiert werden können, welche im Schema definiert wurden. Unbekannte, eventuell nicht intuitiv erkennbare Zusammenhänge können in der Analyse nicht berücksichtigt werden.
+Wie aus dem Beispiel des DWH hervorgeht, erfordert die Transformation das Definieren eines einheitlichen Schemas. Das bedeutet, dass die für die Analyse relevanten Beziehungen zwischen Dimensionen und Fakten vorab festgelegt werden müssen und somit jeder relevante Zusammenhang zwischen Fakt und Dimension bekannt sein und im Schema abgebildet werden muss. Dieser Sachverhalt schränkt jedoch die analytischen Möglichkeiten ein, da nur Zusammenhänge analysiert werden können, die im Schema definiert wurden. Unbekannte, eventuell nicht intuitiv erkennbare Zusammenhänge können in der Analyse nicht berücksichtigt werden.
 
-Eines der Projekte am Lehrstuhl Datenbanken befasst sich mit der Entwicklung und Untersuchung von Methoden zur graphenbasierten Business Intelligence. Eine graphenbasierte Repräsentation von Unternehmensdaten weist die beschriebene Einschränkung eines vordefinierten Schemas nicht auf. Vielmehr erlaubt sie die flexible Evaluation der Beziehungen zwischen einzelnen Objekten innerhalb des Unternehmens. Diese Objekte lassen sich in zwei Kategorien einteilen: Transaktionale Daten und Stammdaten.
-Zu den transaktionalen Daten lassen sich zum Beispiel Rechnungen im ERP-System, Meeting-Protokolle im PM-System oder Kundenkontakte im CRM-System zuordnen. Beispiele für Stammdaten sind Informationen über Kunden, Produkte, Mitarbeiter oder Filialen. Transaktionale Daten entstehen innerhalb von Geschäftsprozessen und sind sowohl untereinander, als auch mit Stammdaten verknüpft. Aus diesem Zusammenhang lässt sich ein Graph ableiten: Transaktionale und Stammdaten bilden die Knoten, der kausale Zusammenhang zwischen ihnen wird durch Kanten beschrieben. Stammdaten weisen die Eigenschaft auf, dass sie in mehreren Systemen hinterlegt sein können (z.B. Kunden oder Mitarbeiter), transaktionale Daten beschränken sich auf das System in dem sie erzeugt wurden. Beziehungen zwischen Objekten können generell systemübergreifend sein.\\
-Eine mögliche Analyse ist das Finden häufiger Muster. So lassen sich zum Beispiel Teilgraphen zu bestimmten Geschäftsprozessen extrahieren und hinsichtlich des Zusammenhangs zwischen erzeugtem Mehrwert und beteiligter Mitarbeiter untersuchen.
+Eines der Projekte am Lehrstuhl Datenbanken befasst sich mit der Entwicklung und Untersuchung von Methoden zur graphenbasierten Business Intelligence. Eine graphenbasierte Repräsentation von Unternehmensdaten weist die beschriebene Einschränkung eines vordefinierten Schemas nicht auf, vielmehr erlaubt sie die flexible Evaluation der Beziehungen zwischen einzelnen Objekten innerhalb der Unternehmensdaten. Diese lassen sich in zwei Kategorien einteilen: Transaktionale Daten und Stammdaten.
+Zu den transaktionalen Daten gehören zum Beispiel Rechnungen im ERP-System, Meeting-Protokolle im PM-System oder Kundenkontakte im CRM-System, sie entstehen innerhalb von Geschäftsprozessen und sowohl untereinander als auch mit Stammdaten verknüpft. Beispiele für Stammdaten sind Informationen über Kunden, Produkte, Mitarbeiter oder Filialen. Aus diesem Zusammenhang lässt sich ein Graph ableiten: Transaktionale Daten und Stammdaten bilden die Knoten, der kausale Zusammenhang zwischen ihnen wird durch Kanten beschrieben. Stammdaten weisen die Eigenschaft auf, dass sie in mehreren Systemen hinterlegt sein können, transaktionale Daten beschränken sich auf das System, in dem sie erzeugt wurden. Beziehungen zwischen Objekten können generell systemübergreifend sein. Eine mögliche Analyse ist das Finden häufiger Muster. So lassen sich zum Beispiel Teilgraphen zu bestimmten Geschäftsprozessen extrahieren und hinsichtlich des Zusammenhangs zwischen erzeugtem Mehrwert und beteiligten Mitarbeitern untersuchen.
 
-Das Projekt verfolgt drei Ziele: Zunächst ist die Integration von Unternehmensdaten aus heterogenen Systemen in einen Graph erforderlich. Auf der Grundlage des integrierten Graphen werden in einer zweiten Phase Algorithmen für die graphenorientierte Analyse entwickelt. In der letzten Phase sollen Möglichkeiten gefunden werden, die Datenbasis möglichst effizient für Analysten nutzbar zu machen. Hierbei spielen insbesondere Anfragesprachen und Möglichkeiten zur Visualisierung eine Rolle. Für das Erreichen der Ziele sollen GDBMS die technologische Grundlage bilden, da sie eine flexible, graphenorientierte Datenmodellierung erlauben und Operationen zur Verfügung stellen auf deren Grundlage BI-orientierte Algorithmen implementiert werden können. Einige der verfügbaren Systeme beinhalten darüber hinaus bereits Anfragesprachen, welche als Basis für eigene Entwicklungen dienen können.
+Das Projekt verfolgt drei Ziele: Zunächst ist die Integration von Unternehmensdaten aus heterogenen Systemen in einen Graph erforderlich. Auf der Grundlage des integrierten Graphen werden in einer zweiten Phase Algorithmen für die graphenorientierte Analyse entwickelt. In der letzten Phase sollen Ansätze untersucht werden, die Datenbasis möglichst effizient für Analysten nutzbar zu machen, hierbei spielen insbesondere Anfragesprachen und Möglichkeiten zur Visualisierung eine Rolle. Für das Erreichen der Ziele sollen GDBMS die technologische Grundlage bilden, da sie eine flexible, graphenorientierte Datenmodellierung erlauben und Operationen zur Verfügung stellen unter deren Verwendung sich BI-orientierte Algorithmen implementieren lassen. Einige der verfügbaren Systeme beinhalten darüber hinaus bereits Anfragesprachen, welche als Basis für eigene Entwicklungen dienen können.
 
 \section{Vorauswahl von Graphdatenbanksystemen}
 \label{sec:vorauswahl}
 
-Nachfolgend werden die Anforderungen an ein GDBMS für den Einsatz innerhalb des beschriebenen Projektes kategorisiert und vorhandene Implementierungen diesbezüglich bewertet. Die Auswahl der Systeme erfolgte auf der Grundlage der Recherche in Literatur und im Web.
+Nachfolgend werden die Anforderungen an ein GDBMS für den Einsatz innerhalb des beschriebenen Projektes kategorisiert vorgestellt und vorhandene Implementierungen bezüglich der Erfüllung der Anforderungen bewertet. Die Auswahl der Systeme erfolgte auf der Grundlage der Recherche in Literatur und Web. Die Informationen zu den einzelnen Systemen stammen von den Webseiten der Hersteller oder den primären Veröffentlichungen zu den jeweiligen Systemen. Eine Liste der Webseiten befindet sich in Anhang \ref{anh:vendor_list}. Innerhalb jeder Kategorie werden verpflichtende und optionale bzw. rein informative Anforderungen definiert. Ein GDBMS, welches eine verpflichtende Anforderung erfüllt, wird in der nachfolgenden Kategorie betrachtet. Sollte nach der Betrachtung aller Kategorien die Kandidatenmenge zu groß sein, um im Rahmen dieser Arbeit evaluiert werden zu können, werden die optionalen Anforderungen in den Entscheidungsprozess einbezogen. Ziel ist die Auswahl von vier bis fünf GDBMS, welche die obligatorischen Anforderungen erfüllen. Eine möglichst breite Verteilung über die vorgestellten GDBMS-Kategorien ist wünschenswert.
 
-\paragraph*{Nutzbarkeit und Zugang}
+\paragraph*{Nutzbarkeit und Produktreife}
 
-blubber blubber blub
+Die erste Kategorie umfasst alle Anforderungen, welche an die Nutzbarkeit und die Produktreife der GDBMS-Implementierungen gestellt werden.
+Eines der wichtigsten Kriterien ist die Quelloffenheit des GDBMS. Quellcode ist eine Art der Dokumentation von Software, da er das Studium der exakten Funktionsweise ermöglicht. Darüber hinaus soll das ausgewählte GDBMS als technologische Grundlage für die Implementierung analytischer Algorithmen, graphenspezifischer Operationen, Visualisierungen und für Anfragesprachen sein. Dies setzt ebenfalls Quelloffenheit und ein für die Weiterentwicklung geeignetes Lizenzmodell voraus. Eine angemessene Dokumentation des Systems ist ebenfalls erforderlich. Diese sollte mindestens einen Überblick über die Architektur des GDBMS, die Zugriffsmechanismen und Installationsanweisungen enthalten.
+
+Die erste Kategorie umfasst alle Anforderungen, welche die Nutzbarkeit und den Zugang zu Systemen definieren. Tabelle \ref{tab:nutzung} zeigt 
 
 \renewcommand{\arraystretch}{1.25}
-\begin{table}[ht]
+\begin{table}[h]
 	\centering
 	\begin{footnotesize}
    	\begin{tabular}{|m{2.25cm}|>{\centering}m{1.5cm}|>{\centering}m{2.5cm}|>{\centering}m{2.0cm}|c|c|>{\centering\arraybackslash}m{2cm}|}
 	\hline
-	\multicolumn{7}{|c|}{\textbf{Nutzbarkeit und Zugang}} \\
+	\multicolumn{7}{|c|}{\textbf{Nutzbarkeit und Produktreife}} \\
 	\hline
    	GDBMS & Quell-\newline~offen & Dokumentation & Produktiv-\newline~system & Sprache* & Aktiv & Linux* \\   
    	\hline
@@ -70,8 +72,10 @@ blubber blubber blub
 
 \paragraph*{Datenverwaltung und Datenmodellierung}
 
+Datenmodell - grundsätzlich ist die Modellierung auch mit anderen Datenmodellen möglich (z.B. Zwischenknoten), wird jedoch hier nicht berücksichtigt um die Menge der zu vergleichenden Systeme einzuschränken
+
 \renewcommand{\arraystretch}{1.25}
-\begin{table}[ht]
+\begin{table}[h]
 	\centering
 	\begin{footnotesize}
    	\begin{tabular}{|m{2.25cm}|>{\centering}m{3.5cm}|>{\centering}m{2.25cm}|>{\centering}m{1.5cm}|>{\centering}m{1.25cm}|>{\centering\arraybackslash}m{2.25cm}|}
@@ -101,8 +105,10 @@ blubber blubber blub
 
 \paragraph*{Zugriffsmechanismen}
 
+blubber
+
 \renewcommand{\arraystretch}{1.25}
-\begin{table}[ht]
+\begin{table}[h]
 	\centering
 	\begin{footnotesize}
    	\begin{tabular}{|m{2.25cm}|>{\centering}m{1.65cm}|>{\centering}m{1.25cm}|>{\centering}m{1.25cm}|>{\centering}m{1.25cm}|>{\centering\arraybackslash}m{2cm}|>{\centering}m{1.5cm}|>{\centering\arraybackslash}m{1.25cm}|}
@@ -128,8 +134,10 @@ blubber blubber blub
 
 \paragraph*{Speicherung}
 
+blubber
+
 \renewcommand{\arraystretch}{1.25}
-\begin{table}[ht]
+\begin{table}[h]
 	\centering
 	\begin{footnotesize}
    	\begin{tabular}{|m{2.25cm}|>{\centering}m{2.5cm}|>{\centering}m{2.5cm}|>{\centering}m{2.5cm}|>{\centering\arraybackslash}m{2.5cm}|}
@@ -154,8 +162,10 @@ blubber blubber blub
 
 \paragraph*{Skalierbarkeit und Verfügbarkeit}
 
+blubber
+
 \renewcommand{\arraystretch}{1.25}
-\begin{table}[ht]
+\begin{table}[h]
 	\centering
 	\begin{footnotesize}
    	\begin{tabular}{|m{2.25cm}|>{\centering}m{2.5cm}|>{\centering}m{2.5cm}|>{\centering\arraybackslash}m{2.5cm}|}
@@ -174,24 +184,39 @@ blubber blubber blub
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
 	\caption[Anforderungen: Skalierbarkeit und Verfügbarkeit]{Anforderungen an die Skalierbarkeit und Verfügbarkeit von GDBMS. (*optional/informativ)}
-	\label{tab:speicherung}
+	\label{tab:skalierbarkeit}
 \end{table}
 \renewcommand{\arraystretch}{1}
 
-
-Datenmodell - grundsätzlich ist die Modellierung auch mit anderen Datenmodellen möglich (z.B. Zwischenknoten), wird jedoch hier nicht berücksichtigt um die Menge der zu vergleichenden Systeme einzuschränken
+\newpage
 
 \section{Neo4j}
 
-Blubb
+Neo4j ist ein quelloffenes GDBMS, welches von der Firma Neo Technology\footnote{\url{http://www.neotechnology.com/}} entwickelt wird. Version 1.0 wurde 2010 veröffentlicht, zum aktuellen Zeitpunkt befindet sich Version 2.0 in Entwicklung. Die Implementierung des Systems erfolgt ausschließlich in der Programmiersprache Java. Neo4j ist ein natives GDBMS, es unterstützt eine graphenorientierte Verarbeitung entsprechend der beschriebenen indexfreien Adjazenz und implementiert eine graphenorientierte physische Repräsentation der Datenbasis. Die Verwendung des Systems erfolgt entweder in Form einer eingebetteten Bibliothek innerhalb von Java-Anwendungen oder in einer Client-Server-Konfiguration. Letzteres erfordert den client-seitigen Zugriff über REST-Schnittstellen. Clients stehen in vielen populären Programmiersprachen zur Verfügung. Neo4j kann sowohl als zentrales GDBMS als auch in einer verteilten Konfiguration eingesetzt werden. Eine vollständige Replikation ermöglicht dabei die Skalierbarkeit lesender Anfragen und erhöht gleichzeitig die Ausfallsicherheit des Gesamtsystems. Die Speicherung der Datenbasis erfolgt disk-zentriert, ein hauptspeicher-zentrierter Betrieb ist nicht möglich.
+
+Neo Technology bietet das Datenbanksystem in drei verschiedenen Ausführungen an: Community, Advanced und Enterprise. Die Community-Version bietet den grundlegendsten Funktionsumfang, während die Advanced-Version Monitoring-Funktionalität hinzufügt und die Enterprise-Version diese um Online-Backups und Hochverfügbarkeits-Mecha-nismen erweitert. Advanced- und Enterprise-Version eignen sich für den kommerziellen Einsatz, da sie zusätzliche Service-Leistungen durch Neo Technology beinhalten und ihre Lizenz die Verwendung in unfreier Software erlaubt. Die Community-Version darf nur in freier, quelloffener Software eingesetzt werden, Service-Anfragen werden durch die Neo4j-Community im Web beantwortet.
+
+Die nachfolgenden Ausführungen beziehen sich auf Version 2.0.0-M04 des GDBMS, diese Version beinhaltet Erweiterungen hinsichtlich des Datenmodells und der Anfragesprache. Die Informationen stammen aus der offiziellen Neo4j-Dokumentation\cite{Neo4j_manual:2013} sowie aus den Ausführungen in \cite{robinson2013graph}.
 
 \subsection{Datenmodell}
 
-Property-Graph + Labels (2.0)	
+Neo4j implementiert das Property-Graph-Modell, dieses wird in der aktuellen Version um Knotenbezeichner erweitert. Mit deren Hilfe lassen sich Knoten zu Gruppen zusammenfassen. Ein Knoten kann keiner oder beliebig vielen Gruppen zugeordnet werden. Knoten- und Kantenbezeichner werden in Neo4j als Labels bezeichnet. Die Erweiterung um Knoten-Labels bietet verschiedene Vorteile: Anfragen lassen sich durch Einbeziehen von Labels auf einen Teilgraphen einschränken, was zum Einen die Formulierung der Anfrage stark vereinfacht und zum Anderen deren effizientere Ausführung ermöglichen kann. Labels sind jedoch nicht gleichbedeutend mit einer Relation in der relationalen Algebra, ein Label wird lediglich durch seinen Namen definiert, es wird kein Schema der zugeordneten Elemente vorgegeben. Sie sind jedoch ein nützliches Werkzeug in der strukturierten Anwendungsmodellierung und können zur Laufzeit an Knoten hinzugefügt und entfernt werden. 
 
-\subsection{Zugriffsmechanismen}
+Beziehungen zwischen Knoten werden durch Kanten beschrieben. In Neo4j sind diese grundsätzlich gerichtet, besitzen also immer Start- und Endknoten, Schleifen\footnote{Eine Kante ist eine Schleife, wenn Start- und Endknoten identisch sind\cite{DBLP:books/daglib/0030488}.} sind ebenfalls zulässig. Kanten lassen sich in beiden Richtungen traversieren, d.h. eine bidirektionale Beziehung erfordert nicht zwingend die Definition von zwei Kanten unterschiedlicher Richtung. Eine Kante besitzt immer ein Label, welches zusammen mit der Richtung der Kante deren Semantik festlegt. Genau wie Knoten besitzen auch Kanten eine eindeutige Identität, diese wird vom GDBMS verwaltet und kann nicht durch die Anwendung geändert werden. Die Identität einer Kante ermöglicht die Definition paralleler Kanten mit gleichen Labels.
 
-Blubb
+Knoten und Kanten lassen sich in Neo4j mit optionalen Attributen in Form von Schlüssel-Wert-Paaren versehen, sie werden in Neo4j als Properties bezeichnet. Schlüssel sind vom Typ \texttt{String}, zulässige  Werte müssen Instanzen eines primitiven Java-Datentypen (z.B. \texttt{int}, \texttt{float}) sein. Arrays von primitiven Datentypen sind ebenfalls zulässige Werte. Weist eine Instanz einen Wert nicht auf, so wird dies durch das Weglassen des entsprechenden Schlüssel-Wert-Paares definiert und nicht durch die Verwendung von \texttt{null} als Wert.
+
+Innerhalb des Datenmodells werden verschiedene Mechanismen implementiert, um Datenintegrität sicherzustellen. Eine Kante kann nur zwischen existierenden Knoten erzeugt werden, das Löschen eines Knotens erfordert das vorherige Löschen aller inzidenten Kanten des Knotens. Diese Zusicherung kann als Analogie zur referentiellen Integrität\cite{vossen2008datenmodelle} in relationalen Datenbanksystemen verstanden werden. Neo4j unterstützt darüber hinaus auch attributbezogene Integritätsbedingungen. Die Festlegung einer eindeutigen Identität durch das GDBMS entspricht einer Primärschlüssel-Definition, die Definition eines Datentyps für Attributwerte stellt eine Wertebereichs-Einschränkung dar und darüber hinaus unterstützt Neo4j die Definition einer \texttt{UNIQUE}-Bedingung für Knotenattribute. Letztere legt fest, dass ein Wert in der Menge aller Werte eines Schlüssels einzigartig sein muss. Diese Bedingung lässt sich nur in Verbindung mit Knoten-Labels definieren.
+
+Neo4j verwaltet exakt eine Graphdatenbank, alle Knoten und Kanten sind dieser Datenbank zugeordnet. Eine logische Partitionierung der Knotenmenge ist durch Labels oder dedizierte Attribute möglich, soll auch die Kantenmenge partitioniert werden, so ist dies ausschließlich über Attribute möglich. 
+
+Aus den Ausführungen wird deutlich, dass Neo4j in Version 2.0 eine schema-optionale Datenbank darstellt. Es besteht die Möglichkeit, die Datenbank ohne jegliche Berücksichtigung eines Schemas zu verwenden, durch die optionalen Knoten-Labels ist es jedoch möglich, ein solches zu definieren und von den Vorteilen, wie strukturierter Anwendungsmodellierung, vereinfachten Anfragen und effizienter Anfrageausführung zu profitieren. Das Datenmodell eignet sich somit in Anwendungen, bei denen die Anforderungen nicht zu Beginn vollständig erfasst werden können und eine hohe Flexibilität hinsichtlich Schemaänderungen erforderlich ist.
+
+\subsection{Zugriffsmechanismen und Konsistenzerhaltung}
+
+- Transkationen
+
+- Indexstrukturen
 
 \subsection{Persistenz}
 
