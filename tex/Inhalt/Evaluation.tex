@@ -1,7 +1,7 @@
 \chapter{Evaluation von Graphdatenbanksystemen}
 \label{cha:evaluation}
 
-Dieses Kapitel setzt sich mit konkreten GDBMS-Implementierungen auseinander. Mit der Zielstellung, aus der Vielzahl existierender Systeme geeignete auszuwählen, werden zunächst funktionale Anforderungen definiert. Diese ergeben sich aus aktuellen Forschungsvorhaben am Lehrstuhl Datenbanken der Universität Leipzig. Die ausgewählten Systeme werden anschließend im Detail betrachtet, die Schwerpunkte dabei sind: Datenmodellierung und Integritätsbedingungen, Zugriffsmechanismen und angebotene graphenspezifische Operationen, Konsistenzerhaltung, physische Repräsentation des Graphen und Möglichkeiten der Indexierung und Verteilung. Das Kapitel schließt mit einer Gegenüberstellung der Systeme.
+Dieses Kapitel setzt sich mit konkreten GDBMS-Implementierungen auseinander. Mit der Zielstellung, aus der Vielzahl existierender Systeme geeignete auszuwählen, werden zunächst funktionale Anforderungen definiert. Diese ergeben sich aus aktuellen Forschungsvorhaben am Lehrstuhl Datenbanken der Universität Leipzig. Die ausgewählten Systeme werden anschließend im Detail betrachtet, die Schwerpunkte dabei sind: Datenmodellierung und Konsistenzerhaltung, Zugriffsmechanismen und angebotene graphenspezifische Operationen, physische Repräsentation des Graphen und Möglichkeiten der Indexierung und Verteilung. Das Kapitel schließt mit einer Gegenüberstellung der Systeme.
 
 \section{Aktuelle Forschungsvorhaben}
 \label{sec:anforderungen}
@@ -13,21 +13,26 @@ Verschiedene Bereiche eines Unternehmens nutzen unterschiedliche Systeme zur Bew
 Wie aus dem Beispiel des DWH hervorgeht, erfordert die Transformation das Definieren eines einheitlichen Schemas. Das bedeutet, dass die für die Analyse relevanten Beziehungen zwischen Dimensionen und Fakten vorab festgelegt werden müssen und somit jeder relevante Zusammenhang zwischen Fakt und Dimension bekannt sein und im Schema abgebildet werden muss. Dieser Sachverhalt schränkt jedoch die analytischen Möglichkeiten ein, da nur Zusammenhänge analysiert werden können, die im Schema definiert wurden. Unbekannte, eventuell nicht intuitiv erkennbare Zusammenhänge können in der Analyse nicht berücksichtigt werden.
 
 Eines der Projekte am Lehrstuhl Datenbanken befasst sich mit der Entwicklung und Untersuchung von Methoden zur graphenbasierten Business Intelligence. Eine graphenbasierte Repräsentation von Unternehmensdaten weist die beschriebene Einschränkung eines vordefinierten Schemas nicht auf, vielmehr erlaubt sie die flexible Evaluation der Beziehungen zwischen einzelnen Objekten innerhalb der Unternehmensdaten. Diese lassen sich in zwei Kategorien einteilen: Transaktionale Daten und Stammdaten.
-Zu den transaktionalen Daten gehören zum Beispiel Rechnungen im ERP-System, Meeting-Protokolle im PM-System oder Kundenkontakte im CRM-System, sie entstehen innerhalb von Geschäftsprozessen und sowohl untereinander als auch mit Stammdaten verknüpft. Beispiele für Stammdaten sind Informationen über Kunden, Produkte, Mitarbeiter oder Filialen. Aus diesem Zusammenhang lässt sich ein Graph ableiten: Transaktionale Daten und Stammdaten bilden die Knoten, der kausale Zusammenhang zwischen ihnen wird durch Kanten beschrieben. Stammdaten weisen die Eigenschaft auf, dass sie in mehreren Systemen hinterlegt sein können, transaktionale Daten beschränken sich auf das System, in dem sie erzeugt wurden. Beziehungen zwischen Objekten können generell systemübergreifend sein. Eine mögliche Analyse ist das Finden häufiger Muster. So lassen sich zum Beispiel Teilgraphen zu bestimmten Geschäftsprozessen extrahieren und hinsichtlich des Zusammenhangs zwischen erzeugtem Mehrwert und beteiligten Mitarbeitern untersuchen.
+Zu den transaktionalen Daten gehören zum Beispiel Rechnungen im ERP-System, Meeting-Protokolle im PM-System oder Kundenkontakte im CRM-System, sie entstehen innerhalb von Geschäftsprozessen und sowohl untereinander als auch mit Stammdaten verknüpft. Beispiele für Stammdaten sind Informationen über Kunden, Produkte, Mitarbeiter oder Filialen. Aus diesem Zusammenhang lässt sich ein Graph ableiten: Transaktionale Daten und Stammdaten bilden die Knoten, der kausale Zusammenhang zwischen ihnen wird durch Kanten beschrieben. Stammdaten weisen die Eigenschaft auf, dass sie in mehreren Systemen hinterlegt sein können, transaktionale Daten beschränken sich auf das System, in dem sie erzeugt wurden. Beziehungen zwischen Objekten können generell systemübergreifend sein. Eine mögliche Analyse ist das Finden häufiger Muster. So lassen sich zum Beispiel Teilgraphen zu bestimmten Geschäftsprozessen extrahieren und hinsichtlich des Zusammenhangs zwischen erzeugtem Mehrwert und beteiligten Mitarbeitern untersuchen. Abbildung \ref{fig:bi-graph} zeigt ein Beispiel für einen aus Geschäftsdaten erzeugten Graphen.
 
 Das Projekt verfolgt drei Ziele: Zunächst ist die Integration von Unternehmensdaten aus heterogenen Systemen in einen Graph erforderlich. Auf der Grundlage des integrierten Graphen werden in einer zweiten Phase Algorithmen für die graphenorientierte Analyse entwickelt. In der letzten Phase sollen Ansätze untersucht werden, die Datenbasis möglichst effizient für Analysten nutzbar zu machen, hierbei spielen insbesondere Anfragesprachen und Möglichkeiten zur Visualisierung eine Rolle. Für das Erreichen der Ziele sollen GDBMS die technologische Grundlage bilden, da sie eine flexible, graphenorientierte Datenmodellierung erlauben und Operationen zur Verfügung stellen unter deren Verwendung sich BI-orientierte Algorithmen implementieren lassen. Einige der verfügbaren Systeme beinhalten darüber hinaus bereits Anfragesprachen, welche als Basis für eigene Entwicklungen dienen können.
+
+\begin{figure}[h] 
+	\centering
+		\includegraphics[scale=0.45]{exa_docgraph.pdf}
+	\caption[Beispiel: BI-Graph]{Informationsnetzwerk, welches die Beziehungen zwischen den Objekten eines ERP- und eines CRM-Systems darstellt. Transaktionale Daten sind weiß,  Stammdaten grau dargestellt. Bezeichner und Richtung einer Kante beschreiben den kausalen Zusammenhang zwischen transaktionalen Daten (z.B. \texttt{basedOn}, \texttt{serves}) sowie zwischen transaktionalen Daten und Stammdaten (z.B. \texttt{sentBy}, \texttt{doneFor}). Der gezeigte Teilgraph bildet einen vollständigen Geschäftsprozess ab, dessen erzeugter Mehrwert sich aus den Einnahmen (engl. \textit{Revenue}) und Ausgaben (engl. \textit{Expense}) der transaktionalen Daten bestimmen lässt. Am Beispiel des Knotens \texttt{Employee (E01)} wird deutlich, dass Stammdaten in mehreren Systemen vorhanden sein können.}
+	\label{fig:bi-graph}
+\end{figure}
 
 \section{Vorauswahl von Graphdatenbanksystemen}
 \label{sec:vorauswahl}
 
-Nachfolgend werden die Anforderungen an ein GDBMS für den Einsatz innerhalb des beschriebenen Projektes kategorisiert vorgestellt und vorhandene Implementierungen bezüglich der Erfüllung der Anforderungen bewertet. Die Auswahl der Systeme erfolgte auf der Grundlage der Recherche in Literatur und Web. Die Informationen zu den einzelnen Systemen stammen von den Webseiten der Hersteller oder den primären Veröffentlichungen zu den jeweiligen Systemen. Eine Liste der Webseiten befindet sich in Anhang \ref{anh:vendor_list}. Innerhalb jeder Kategorie werden verpflichtende und optionale bzw. rein informative Anforderungen definiert. Ein GDBMS, welches eine verpflichtende Anforderung erfüllt, wird in der nachfolgenden Kategorie betrachtet. Sollte nach der Betrachtung aller Kategorien die Kandidatenmenge zu groß sein, um im Rahmen dieser Arbeit evaluiert werden zu können, werden die optionalen Anforderungen in den Entscheidungsprozess einbezogen. Ziel ist die Auswahl von vier bis fünf GDBMS, welche die obligatorischen Anforderungen erfüllen. Eine möglichst breite Verteilung über die vorgestellten GDBMS-Kategorien ist wünschenswert.
+Nachfolgend werden die Anforderungen an ein GDBMS für den Einsatz innerhalb des beschriebenen Projektes kategorisiert vorgestellt und vorhandene Implementierungen bezüglich der Erfüllung der Anforderungen bewertet. Die Auswahl der Systeme erfolgte auf der Grundlage der Recherche in Literatur und Web. Die Informationen zu den einzelnen Systemen stammen von den Webseiten der Hersteller oder den primären Veröffentlichungen zu den jeweiligen Systemen. Eine Liste der Webseiten befindet sich in Anhang \ref{anh:vendor_list}. Innerhalb jeder Kategorie werden verpflichtende und optionale bzw. rein informative Anforderungen definiert. Ein GDBMS, welches eine verpflichtende Anforderung erfüllt, wird in der nachfolgenden Kategorie weiter betrachtet. Sollte nach der Betrachtung aller Kategorien die Kandidatenmenge zu groß sein, um im Rahmen dieser Arbeit evaluiert werden zu können, werden die optionalen Anforderungen in den Entscheidungsprozess einbezogen. Ziel ist die Auswahl von vier bis fünf GDBMS, welche die obligatorischen Anforderungen erfüllen. Eine möglichst breite Verteilung über die vorgestellten GDBMS-Kategorien ist wünschenswert.
 
 \paragraph*{Nutzbarkeit und Produktreife}
 
 Die erste Kategorie umfasst alle Anforderungen, welche an die Nutzbarkeit und die Produktreife der GDBMS-Implementierungen gestellt werden.
 Eines der wichtigsten Kriterien ist die Quelloffenheit des GDBMS. Quellcode ist eine Art der Dokumentation von Software, da er das Studium der exakten Funktionsweise ermöglicht. Darüber hinaus soll das ausgewählte GDBMS als technologische Grundlage für die Implementierung analytischer Algorithmen, graphenspezifischer Operationen, Visualisierungen und für Anfragesprachen sein. Dies setzt ebenfalls Quelloffenheit und ein für die Weiterentwicklung geeignetes Lizenzmodell voraus. Eine angemessene Dokumentation des Systems ist ebenfalls erforderlich. Diese sollte mindestens einen Überblick über die Architektur des GDBMS, die Zugriffsmechanismen und Installationsanweisungen enthalten.
-
-Die erste Kategorie umfasst alle Anforderungen, welche die Nutzbarkeit und den Zugang zu Systemen definieren. Tabelle \ref{tab:nutzung} zeigt 
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -73,6 +78,15 @@ Die erste Kategorie umfasst alle Anforderungen, welche die Nutzbarkeit und den Z
 \paragraph*{Datenverwaltung und Datenmodellierung}
 
 Datenmodell - grundsätzlich ist die Modellierung auch mit anderen Datenmodellen möglich (z.B. Zwischenknoten), wird jedoch hier nicht berücksichtigt um die Menge der zu vergleichenden Systeme einzuschränken
+Lorem ipsum dolor sit amet, ex mei tale aliquip. Dolore labitur legimus est et, mea commune nominati ei. Tantas molestiae conclusionemque ad vix, nec cu meliore admodum intellegam. Qui facer facete imperdiet ut. Ea sit feugait referrentur.
+
+Id scripta fastidii vix. Id pri case dicunt definitiones. Quo lorem mediocrem moderatius et, ut his sapientem dignissim, alterum albucius delicata eos id. Nec id doctus fastidii pertinacia, nam no veniam petentium definitionem, iusto mnesarchum has ne. Per eu ubique aliquid voluptatum. Id cum deserunt convenire, quando abhorreant duo ut, ius ad molestiae dignissim hendrerit.
+
+Pro eu justo tantas dolores. Albucius salutatus cum ea. Et delicata omittantur per, in cum wisi definitionem, vis in nulla nihil graecis. Vix habeo praesent torquatos ei, te vel indoctum deterruisset. Ei qui erat ipsum neglegentur.
+
+Est cu modus partem persius. Usu no doctus utroque, eu eam clita ubique, ut possit epicurei explicari vix. In vim error scribentur. Sea iracundia intellegam te, summo dolor delectus ne has, per in atomorum democritum. Ex ullum utinam habemus qui, eam nulla inciderint no. Cu ferri maiorum quo.
+
+Cu unum perfecto usu, sed an natum prompta aliquid, no pri meis illum integre. Cu audire feugiat fastidii sit, te mea salutandi consulatu consetetur. Duo dicat verterem no. Vel an atqui forensibus, vix et eros maluisset scripserit.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -105,7 +119,15 @@ Datenmodell - grundsätzlich ist die Modellierung auch mit anderen Datenmodellen 
 
 \paragraph*{Zugriffsmechanismen}
 
-blubber
+Lorem ipsum dolor sit amet, ex mei tale aliquip. Dolore labitur legimus est et, mea commune nominati ei. Tantas molestiae conclusionemque ad vix, nec cu meliore admodum intellegam. Qui facer facete imperdiet ut. Ea sit feugait referrentur.
+
+Id scripta fastidii vix. Id pri case dicunt definitiones. Quo lorem mediocrem moderatius et, ut his sapientem dignissim, alterum albucius delicata eos id. Nec id doctus fastidii pertinacia, nam no veniam petentium definitionem, iusto mnesarchum has ne. Per eu ubique aliquid voluptatum. Id cum deserunt convenire, quando abhorreant duo ut, ius ad molestiae dignissim hendrerit.
+
+Pro eu justo tantas dolores. Albucius salutatus cum ea. Et delicata omittantur per, in cum wisi definitionem, vis in nulla nihil graecis. Vix habeo praesent torquatos ei, te vel indoctum deterruisset. Ei qui erat ipsum neglegentur.
+
+Est cu modus partem persius. Usu no doctus utroque, eu eam clita ubique, ut possit epicurei explicari vix. In vim error scribentur. Sea iracundia intellegam te, summo dolor delectus ne has, per in atomorum democritum. Ex ullum utinam habemus qui, eam nulla inciderint no. Cu ferri maiorum quo.
+
+Cu unum perfecto usu, sed an natum prompta aliquid, no pri meis illum integre. Cu audire feugiat fastidii sit, te mea salutandi consulatu consetetur. Duo dicat verterem no. Vel an atqui forensibus, vix et eros maluisset scripserit.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -134,7 +156,15 @@ blubber
 
 \paragraph*{Speicherung}
 
-blubber
+Lorem ipsum dolor sit amet, ex mei tale aliquip. Dolore labitur legimus est et, mea commune nominati ei. Tantas molestiae conclusionemque ad vix, nec cu meliore admodum intellegam. Qui facer facete imperdiet ut. Ea sit feugait referrentur.
+
+Id scripta fastidii vix. Id pri case dicunt definitiones. Quo lorem mediocrem moderatius et, ut his sapientem dignissim, alterum albucius delicata eos id. Nec id doctus fastidii pertinacia, nam no veniam petentium definitionem, iusto mnesarchum has ne. Per eu ubique aliquid voluptatum. Id cum deserunt convenire, quando abhorreant duo ut, ius ad molestiae dignissim hendrerit.
+
+Pro eu justo tantas dolores. Albucius salutatus cum ea. Et delicata omittantur per, in cum wisi definitionem, vis in nulla nihil graecis. Vix habeo praesent torquatos ei, te vel indoctum deterruisset. Ei qui erat ipsum neglegentur.
+
+Est cu modus partem persius. Usu no doctus utroque, eu eam clita ubique, ut possit epicurei explicari vix. In vim error scribentur. Sea iracundia intellegam te, summo dolor delectus ne has, per in atomorum democritum. Ex ullum utinam habemus qui, eam nulla inciderint no. Cu ferri maiorum quo.
+
+Cu unum perfecto usu, sed an natum prompta aliquid, no pri meis illum integre. Cu audire feugiat fastidii sit, te mea salutandi consulatu consetetur. Duo dicat verterem no. Vel an atqui forensibus, vix et eros maluisset scripserit.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -162,7 +192,7 @@ blubber
 
 \paragraph*{Skalierbarkeit und Verfügbarkeit}
 
-blubber
+Lorem ipsum dolor sit amet, ex mei tale aliquip. Dolore labitur legimus est et, mea commune nominati ei. Tantas molestiae conclusionemque ad vix, nec cu meliore admodum intellegam. Qui facer facete imperdiet ut. Ea sit feugait referrentur.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -188,41 +218,71 @@ blubber
 \end{table}
 \renewcommand{\arraystretch}{1}
 
-\newpage
+Id scripta fastidii vix. Id pri case dicunt definitiones. Quo lorem mediocrem moderatius et, ut his sapientem dignissim, alterum albucius delicata eos id. Nec id doctus fastidii pertinacia, nam no veniam petentium definitionem, iusto mnesarchum has ne. Per eu ubique aliquid voluptatum. Id cum deserunt convenire, quando abhorreant duo ut, ius ad molestiae dignissim hendrerit.
+
+Pro eu justo tantas dolores. Albucius salutatus cum ea. Et delicata omittantur per, in cum wisi definitionem, vis in nulla nihil graecis. Vix habeo praesent torquatos ei, te vel indoctum deterruisset. Ei qui erat ipsum neglegentur.
+
+Est cu modus partem persius. Usu no doctus utroque, eu eam clita ubique, ut possit epicurei explicari vix. In vim error scribentur. Sea iracundia intellegam te, summo dolor delectus ne has, per in atomorum democritum. Ex ullum utinam habemus qui, eam nulla inciderint no. Cu ferri maiorum quo.
+
+Cu unum perfecto usu, sed an natum prompta aliquid, no pri meis illum integre. Cu audire feugiat fastidii sit, te mea salutandi consulatu consetetur. Duo dicat verterem no. Vel an atqui forensibus, vix et eros maluisset scripserit.
 
 \section{Neo4j}
 
-Neo4j ist ein quelloffenes GDBMS, welches von der Firma Neo Technology\footnote{\url{http://www.neotechnology.com/}} entwickelt wird. Version 1.0 wurde 2010 veröffentlicht, zum aktuellen Zeitpunkt befindet sich Version 2.0 in Entwicklung. Die Implementierung des Systems erfolgt ausschließlich in der Programmiersprache Java. Neo4j ist ein natives GDBMS, es unterstützt eine graphenorientierte Verarbeitung entsprechend der beschriebenen indexfreien Adjazenz und implementiert eine graphenorientierte physische Repräsentation der Datenbasis. Die Verwendung des Systems erfolgt entweder in Form einer eingebetteten Bibliothek innerhalb von Java-Anwendungen oder in einer Client-Server-Konfiguration. Letzteres erfordert den client-seitigen Zugriff über REST-Schnittstellen. Clients stehen in vielen populären Programmiersprachen zur Verfügung. Neo4j kann sowohl als zentrales GDBMS als auch in einer verteilten Konfiguration eingesetzt werden. Eine vollständige Replikation ermöglicht dabei die Skalierbarkeit lesender Anfragen und erhöht gleichzeitig die Ausfallsicherheit des Gesamtsystems. Die Speicherung der Datenbasis erfolgt disk-zentriert, ein hauptspeicher-zentrierter Betrieb ist nicht möglich.
+Neo4j ist ein quelloffenes GDBMS, welches von der Firma Neo Technology\footnote{\url{http://www.neotechnology.com/}} entwickelt wird. Version 1.0 wurde 2010 veröffentlicht, zum aktuellen Zeitpunkt befindet sich Version 2.0 in Entwicklung. Die Implementierung des Systems erfolgt ausschließlich in der Programmiersprache Java. Neo4j ist ein natives GDBMS, es unterstützt eine graphenorientierte Verarbeitung entsprechend der beschriebenen indexfreien Adjazenz und implementiert eine graphenorientierte physische Repräsentation der Datenbasis. Die Verwendung des Systems erfolgt entweder in Form einer eingebetteten Bibliothek innerhalb von Java-Anwendungen oder in einer Client-Server-Konfiguration. Letzteres erfordert den client-seitigen Zugriff über REST-Schnittstellen, entsprechende Clients stehen in vielen Programmiersprachen zur Verfügung\footnote{\url{http://www.neo4j.org/develop/drivers}}. Neo4j kann sowohl als zentrales GDBMS als auch in einer verteilten Konfiguration eingesetzt werden. Eine vollständige Replikation ermöglicht dabei die Skalierbarkeit lesender Anfragen und erhöht gleichzeitig die Ausfallsicherheit des Gesamtsystems. Die Speicherung der Datenbasis erfolgt disk-zentriert, ein hauptspeicher-zentrierter Betrieb ist nicht möglich.
 
 Neo Technology bietet das Datenbanksystem in drei verschiedenen Ausführungen an: Community, Advanced und Enterprise. Die Community-Version bietet den grundlegendsten Funktionsumfang, während die Advanced-Version Monitoring-Funktionalität hinzufügt und die Enterprise-Version diese um Online-Backups und Hochverfügbarkeits-Mecha-nismen erweitert. Advanced- und Enterprise-Version eignen sich für den kommerziellen Einsatz, da sie zusätzliche Service-Leistungen durch Neo Technology beinhalten und ihre Lizenz die Verwendung in unfreier Software erlaubt. Die Community-Version darf nur in freier, quelloffener Software eingesetzt werden, Service-Anfragen werden durch die Neo4j-Community im Web beantwortet.
 
 Die nachfolgenden Ausführungen beziehen sich auf Version 2.0.0-M04 des GDBMS, diese Version beinhaltet Erweiterungen hinsichtlich des Datenmodells und der Anfragesprache. Die Informationen stammen aus der offiziellen Neo4j-Dokumentation\cite{Neo4j_manual:2013} sowie aus den Ausführungen in \cite{robinson2013graph}.
 
-\subsection{Datenmodell}
+\subsection{Datenmodell und Konsistenzerhaltung}
 
-Neo4j implementiert das Property-Graph-Modell, dieses wird in der aktuellen Version um Knotenbezeichner erweitert. Mit deren Hilfe lassen sich Knoten zu Gruppen zusammenfassen. Ein Knoten kann keiner oder beliebig vielen Gruppen zugeordnet werden. Knoten- und Kantenbezeichner werden in Neo4j als Labels bezeichnet. Die Erweiterung um Knoten-Labels bietet verschiedene Vorteile: Anfragen lassen sich durch Einbeziehen von Labels auf einen Teilgraphen einschränken, was zum Einen die Formulierung der Anfrage stark vereinfacht und zum Anderen deren effizientere Ausführung ermöglichen kann. Labels sind jedoch nicht gleichbedeutend mit einer Relation in der relationalen Algebra, ein Label wird lediglich durch seinen Namen definiert, es wird kein Schema der zugeordneten Elemente vorgegeben. Sie sind jedoch ein nützliches Werkzeug in der strukturierten Anwendungsmodellierung und können zur Laufzeit an Knoten hinzugefügt und entfernt werden. 
+Neo4j implementiert das Property-Graph-Modell, dieses wird in der aktuellen Version um Knotenbezeichner erweitert. Mit deren Hilfe lassen sich Knoten zu Gruppen zusammenfassen. Ein Knoten kann keiner oder beliebig vielen Gruppen zugeordnet werden. Knoten- und Kantenbezeichner werden in Neo4j als Labels bezeichnet. Die Erweiterung um Knoten-Labels bietet verschiedene Vorteile: Anfragen lassen sich durch Einbeziehen von Labels auf einen Teilgraphen einschränken, was zum Einen die Formulierung von Anfragen stark vereinfacht und zum Anderen deren effizientere Ausführung ermöglichen kann. Labels sind jedoch nicht gleichbedeutend mit einer Relation in der relationalen Algebra, ein Label wird lediglich durch seinen Namen definiert, es wird kein Schema der zugeordneten Elemente vorgegeben. Sie sind jedoch ein nützliches Werkzeug in der strukturierten Anwendungsmodellierung und können zur Laufzeit an Knoten hinzugefügt und entfernt werden. 
 
 Beziehungen zwischen Knoten werden durch Kanten beschrieben. In Neo4j sind diese grundsätzlich gerichtet, besitzen also immer Start- und Endknoten, Schleifen\footnote{Eine Kante ist eine Schleife, wenn Start- und Endknoten identisch sind\cite{DBLP:books/daglib/0030488}.} sind ebenfalls zulässig. Kanten lassen sich in beiden Richtungen traversieren, d.h. eine bidirektionale Beziehung erfordert nicht zwingend die Definition von zwei Kanten unterschiedlicher Richtung. Eine Kante besitzt immer ein Label, welches zusammen mit der Richtung der Kante deren Semantik festlegt. Genau wie Knoten besitzen auch Kanten eine eindeutige Identität, diese wird vom GDBMS verwaltet und kann nicht durch die Anwendung geändert werden. Die Identität einer Kante ermöglicht die Definition paralleler Kanten mit gleichen Labels.
 
 Knoten und Kanten lassen sich in Neo4j mit optionalen Attributen in Form von Schlüssel-Wert-Paaren versehen, sie werden in Neo4j als Properties bezeichnet. Schlüssel sind vom Typ \texttt{String}, zulässige  Werte müssen Instanzen eines primitiven Java-Datentypen (z.B. \texttt{int}, \texttt{float}) sein. Arrays von primitiven Datentypen sind ebenfalls zulässige Werte. Weist eine Instanz einen Wert nicht auf, so wird dies durch das Weglassen des entsprechenden Schlüssel-Wert-Paares definiert und nicht durch die Verwendung von \texttt{null} als Wert.
 
-Innerhalb des Datenmodells werden verschiedene Mechanismen implementiert, um Datenintegrität sicherzustellen. Eine Kante kann nur zwischen existierenden Knoten erzeugt werden, das Löschen eines Knotens erfordert das vorherige Löschen aller inzidenten Kanten des Knotens. Diese Zusicherung kann als Analogie zur referentiellen Integrität\cite{vossen2008datenmodelle} in relationalen Datenbanksystemen verstanden werden. Neo4j unterstützt darüber hinaus auch attributbezogene Integritätsbedingungen. Die Festlegung einer eindeutigen Identität durch das GDBMS entspricht einer Primärschlüssel-Definition, die Definition eines Datentyps für Attributwerte stellt eine Wertebereichs-Einschränkung dar und darüber hinaus unterstützt Neo4j die Definition einer \texttt{UNIQUE}-Bedingung für Knotenattribute. Letztere legt fest, dass ein Wert in der Menge aller Werte eines Schlüssels einzigartig sein muss. Diese Bedingung lässt sich nur in Verbindung mit Knoten-Labels definieren.
+Mit dem Ziel, Datenintegrität zu gewährleisten, sieht das Modell verschiedene Mechanismen vor. Eine Kante kann nur zwischen existierenden Knoten erzeugt werden, das Löschen eines Knotens erfordert das vorherige Löschen aller inzidenten Kanten des Knotens. Diese Zusicherung kann als Analogie zur referentiellen Integrität\cite{vossen2008datenmodelle} in relationalen Datenbanksystemen verstanden werden. Neo4j unterstützt darüber hinaus auch attributbezogene Integritätsbedingungen. Die Festlegung einer eindeutigen Identität durch das GDBMS entspricht einer Primärschlüssel-Definition, die Definition eines Datentyps für Attributwerte stellt eine Wertebereichs-Einschränkung dar und darüber hinaus unterstützt Neo4j die Definition einer \texttt{UNIQUE}-Bedingung für Knotenattribute. Letztere legt fest, dass ein Wert in der Menge aller Werte eines Schlüssels einzigartig sein muss. Diese Bedingung lässt sich nur in Verbindung mit Knoten-Labels definieren.
 
 Neo4j verwaltet exakt eine Graphdatenbank, alle Knoten und Kanten sind dieser Datenbank zugeordnet. Eine logische Partitionierung der Knotenmenge ist durch Labels oder dedizierte Attribute möglich, soll auch die Kantenmenge partitioniert werden, so ist dies ausschließlich über Attribute möglich. 
 
 Aus den Ausführungen wird deutlich, dass Neo4j in Version 2.0 eine schema-optionale Datenbank darstellt. Es besteht die Möglichkeit, die Datenbank ohne jegliche Berücksichtigung eines Schemas zu verwenden, durch die optionalen Knoten-Labels ist es jedoch möglich, ein solches zu definieren und von den Vorteilen, wie strukturierter Anwendungsmodellierung, vereinfachten Anfragen und effizienter Anfrageausführung zu profitieren. Das Datenmodell eignet sich somit in Anwendungen, bei denen die Anforderungen nicht zu Beginn vollständig erfasst werden können und eine hohe Flexibilität hinsichtlich Schemaänderungen erforderlich ist.
 
-\subsection{Zugriffsmechanismen und Konsistenzerhaltung}
+\subsection{Zugriffsmechanismen und graphenspezifische Operationen}
 
-- Transkationen
+Neo4j bietet vier Möglichkeiten unterschiedlicher Mächtigkeit für den Zugriff auf die Datenbasis an: Native API, Traversal Framework sowie die Anfragesprachen Cypher und Gremlin. Alle Zugriffsmechanismen lassen sich sowohl im eingebetteten Betrieb als auch in der Client-Server-Konfiguration via REST verwenden. Cypher ist die primäre Anfragesprache von Neo4j und wird von Neo Technology entwickelt. Gremlin entstand hingegen im Rahmen des Blueprints-Projektes\footnote{https://github.com/tinkerpop/blueprints/wiki}. Es handelt sich dabei um eine Sammlung von Schnittstellen und Implementierungen, welche die Verarbeitung von Graphen unterstützen und sich dabei am PGM orientieren. Gremlin ist Teil dieser Sammlung und wird unter anderem von Titan und Bitsy als primäre Anfragesprache eingesetzt. Die  Erläuterung von Gremlin erfolgt im Zusammenhang mit den zwei genannten Systemen.
 
-- Indexstrukturen
+\paragraph*{Native API}
 
-\subsection{Persistenz}
+Die native API stellt die grundlegendsten CRUD-Operationen für den lesenden und schreibenden Zugriff auf die Datenbasis zur Verfügung. Knoten können erzeugt und optional mit Labels und Properties versehen werden. Kanten werden unter Angabe existierender Knoten erstellt, dabei impliziert die Knotenreihenfolge die Richtung der Kante, ein Label ist obligatorisch. Letzteres kann innerhalb der Anwendung statisch hinterlegt oder dynamisch zur Laufzeit erzeugt werden. Eine Kanteninstanz erlaubt das Auslesen des Start- und Endknotens, des Labels und - sofern vorhanden - der Properties. Das Aktualisieren von Knoten und Kanten ist ebenfalls mit der nativen API möglich, Knotenlabels können jederzeit angefügt oder entfernt werden, Knoten- und Kantenproperties lassen sich unter Berücksichtigung der zulässigen Datentypen beliebig manipulieren. Das Löschen von Knoten und Kanten ist unter Beachtung der referentiellen Integrität ebenfalls möglich.
+
+Es sollte deutlich werden, dass sich ausgehend von der nativen API beliebige Graphalgorithmen anwendungsseitig implementieren lassen. Ein Beispiel für die Verwendung der nativen API befindet sich in Anhang \ref{anh:neo4j_native_api}.
+
+\paragraph*{Traversal Framework}
+
+Das Traversal Framework ist eine Erweiterung der nativen API. Es ermöglicht die Definition eines abstrakten Weges und liefert als Ergebnis eine Menge von Instanzen dieses Weges. Die Ausführung der Traversierung erfolgt Iterator-basiert, was bedeutet, dass die eigentliche Berechnung eines Weges erst bei Anfrage der nächsten Instanz ausgeführt wird.\footnote{Diese Strategie wird auch als \textit{Lazy Evaluation} bezeichnet.} Das Framework umfasst mehrere Schnittstellen, mit deren Hilfe der Nutzer den abstrakten Weg beschreiben und das Verhalten der Traversierung beeinflussen kann. Es ist ausschließlich der lesende Zugriff auf die Datenbasis möglich.
+
+Ausgangspunkt einer Traversierung ist die \texttt{TraversalDescription}, eine Schnittstelle zur Beschreibung und Initialisierung einer Traversierung. Zunächst lässt sich mit Hilfe eines \texttt{PathExpander} festlegen, welche Kantenlabels bei der Traversierung zu berücksichtigen sind. Das Weglassen dieser Information, führt zur Traversierung aller Kanten. Die Angabe eines Labels ermöglicht zudem das optionale Festlegen einer Richtung der zugehörigen Kanteninstanzen. Stehen mehrere Kantenlabels zur Auswahl, so kann durch die Reihenfolge ihrer Aufzählung die Priorität bei der Traversierung bestimmt werden. Durch das Whitelist-Prinzp ist das Ausschließen definierter Kantenlabels nicht möglich.\\
+Eine weitere wichtige Schnittstelle ist \texttt{Path}, diese erfüllt zwei Aufgaben: Zum Einen sind die Ergebnisse der Traversierung Instanzen dieser Schnittstelle und zum Anderen wird sie für die Evaluation der aktuellen Position innerhalb des Graphen während der Traversierung verwendet. Im Rahmen der Evaluation wird entschieden, ob der aktuelle Knoten in das Ergebnis aufgenommen und ob die Traversierung ausgehend von der aktuellen Position fortgesetzt werden soll. Es handelt sich somit um ein Filter- und Abbruchkriterium für die Traversierung. Die Entscheidungslogik wird unter Verwendung der Schnittstelle \texttt{Evaluator} implementiert.
+
+Neben den genannten Schnittstellen zur Definition des abstrakten Weges, lässt sich das Verhalten der Traversierung durch weitere Schnittstellen beeinflussen. Der Graph kann mittels Breiten- oder Tiefensuche durchlaufen werden, alternativ kann ein beliebiges Vorgehen, wie zum Beispiel das randomisierte, durch die Implementierung einer\linebreak~\texttt{BranchOrderingPolicy} beschrieben werden. Durch die Implementierung der Schnittstelle \texttt{BranchSelector} wird dabei festgelegt, welche Kante als nächstes traversiert wird. An dieser Stelle können zum Beispiel Heuristiken in die Entscheidung einbezogen werden.\\
+Mittels \texttt{Uniqueness} lässt sich festlegen, wie oft ein Objekt während der Traversierung besucht werden darf. Objekte sind Knoten oder Kanten, diese können entweder global oder innerhalb des bisher traversierten Pfades eindeutig sein. Die Festlegung ist insbesondere in zyklischen Graphen notwendig, standardmäßig wird die globale Eindeutigkeit von Knoten gefordert.
+
+Eine den Anforderungen entsprechend definierte \texttt{TraversalDescription} wird unter Angabe eines Startknotens instanziiert. Das Ergebnis dieses Aufrufs ist ein \texttt{Traverser}-Objekt, welches den Iterator zur Verfügung stellt. In Anhang \ref{anh:neo4j_traversal_framework} findet sich ein Beispiel für die Traversierung.
+
+Das Traversal Framework erweitert die native API um ein Hilfskonstrukt mit welchem die Datenbasis beliebig traversiert werden kann. Durch die Möglichkeit, Abbruch- und Filterkriterien in Java zu implementieren, steht hinsichtlich der Programmierbarkeit ein universelles Werkzeug für die Verarbeitung von Graphen zur Verfügung. Dies stellt jedoch gleichzeitig ein entscheidendes Defizit hinsichtlich des Zugriffs auf die Datenbasis für Nicht-Programmierer dar. Neo4j bietet mit der Anfragesprache Cypher eine entsprechende Alternative.
+
+\paragraph*{Cypher}
+
+\paragraph*{Graphenspezifische Operationen}
+
+\paragraph*{Transaktionen}
+
+\subsection{Persistenz und Indexierung}
 
 Blubb
 
-\subsection{Verteilung}
+\subsection{Möglichkeiten der Verteilung}
 
 Blubb
 
@@ -230,15 +290,15 @@ Blubb
 
 Blubb
 
-\subsection{Datenmodell}
+\subsection{Datenmodell und Konsistenzerhaltung}
 
 Blubb
 
-\subsection{Zugriffsmechanismen}
+\subsection{Zugriffsmechanismen und graphenspezifische Operationen}
 
 Blubb
 
-\subsection{Persistenz}
+\subsection{Persistenz und Indexierung}
 
 Blubb
 

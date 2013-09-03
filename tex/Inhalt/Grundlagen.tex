@@ -66,7 +66,7 @@ In gewichteten Graphen werden bei der Berechnung des Grades die einzelnen Kanten
 	deg(v) := \sum_{e \in N(v)}\omega_e(e) 
 \end{equation}
 
-\paragraph*{Weg, Kantenfolge, Pfad, Kreis} Ein Weg ist eine Sequenz $v_1,e_1,v_2,e_2,...,v_{k-1},e_{k-1},v_k$ von Knoten und Kanten eines Graphen $G$. Die \textit{Länge} des Weges ist die Anzahl der Kanten innerhalb der Sequenz. Ein Weg ist eine Kantenfolge in $G$, wenn jede Kante höchstens einmal in dieser Folge auftritt. Gilt $v_1 = v_k$, so bezeichnet man diese Folge als \textit{geschlossen}, andernfalls handelt es sich um eine \textit{offene} Kantenfolge. Eine Kantenfolge ist ein Pfad, wenn alle Knoten innerhalb der Folge voneinander verschieden sind. Kommt mit Ausnahme von $v_k$ kein Knoten doppelt in der geschlossenen Kantenfolge vor, bezeichnet man diese als einfachen Kreis.
+\paragraph*{Weg, Kantenfolge, Pfad, Kreis} Ein Weg ist eine Sequenz $v_1,e_1,v_2,e_2,...,v_{k-1},e_{k-1},v_k$ von Knoten und Kanten eines Graphen $G$. Die \textit{Länge} des Weges ist die Anzahl der Kanten innerhalb der Sequenz. Ein Weg ist eine Kantenfolge in $G$, wenn jede Kante höchstens einmal in dieser Folge auftritt. Gilt $v_1 = v_k$, so bezeichnet man diese Folge als \textit{geschlossen}, andernfalls handelt es sich um eine \textit{offene} Kantenfolge. Eine Kantenfolge ist ein Pfad, wenn alle Knoten innerhalb der Folge voneinander verschieden sind. Kommt mit Ausnahme von $v_k$ kein Knoten doppelt in der geschlossenen Kantenfolge vor, bezeichnet man diese als einfachen Kreis. Ein Graph, der einen Kreis enthält, ist ein zyklischer Graph.
 
 \paragraph*{Abstand} Der Abstand $dist(u,v)$ von zwei Knoten $u,v \in V$ ist die Länge des kürzesten Pfades von $u$ nach $v$. Existiert kein solcher Weg, so gilt $dist(u,v) = \infty$.
 
