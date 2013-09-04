@@ -27,12 +27,19 @@ Das Projekt verfolgt drei Ziele: Zunächst ist die Integration von Unternehmensda
 \section{Vorauswahl von Graphdatenbanksystemen}
 \label{sec:vorauswahl}
 
-Nachfolgend werden die Anforderungen an ein GDBMS für den Einsatz innerhalb des beschriebenen Projektes kategorisiert vorgestellt und vorhandene Implementierungen bezüglich der Erfüllung der Anforderungen bewertet. Die Auswahl der Systeme erfolgte auf der Grundlage der Recherche in Literatur und Web. Die Informationen zu den einzelnen Systemen stammen von den Webseiten der Hersteller oder den primären Veröffentlichungen zu den jeweiligen Systemen. Eine Liste der Webseiten befindet sich in Anhang \ref{anh:vendor_list}. Innerhalb jeder Kategorie werden verpflichtende und optionale bzw. rein informative Anforderungen definiert. Ein GDBMS, welches eine verpflichtende Anforderung erfüllt, wird in der nachfolgenden Kategorie weiter betrachtet. Sollte nach der Betrachtung aller Kategorien die Kandidatenmenge zu groß sein, um im Rahmen dieser Arbeit evaluiert werden zu können, werden die optionalen Anforderungen in den Entscheidungsprozess einbezogen. Ziel ist die Auswahl von vier bis fünf GDBMS, welche die obligatorischen Anforderungen erfüllen. Eine möglichst breite Verteilung über die vorgestellten GDBMS-Kategorien ist wünschenswert.
+Nachfolgend werden die Anforderungen an ein GDBMS für den Einsatz innerhalb des beschriebenen Projektes kategorisiert vorgestellt und vorhandene Implementierungen hinsichtlich der Erfüllung jener Anforderungen bewertet. Die Auswahl der Systeme erfolgte auf Grundlage von Literatur- und Webrecherche. Die Informationen zu den einzelnen GDBMS stammen von den Webseiten der Hersteller oder den primären Publikationen zu den jeweiligen Systemen. Eine Liste der Webseiten befindet sich in Anhang \ref{anh:vendor_list}.
+
+Innerhalb jeder Kategorie werden obligatorische und optionale bzw. rein informative Anforderungen definiert. Ein GDBMS, welches eine verpflichtende Anforderung erfüllt, wird in der nachfolgenden Kategorie weiter betrachtet. Sollte nach der Betrachtung aller Kategorien die Kandidatenmenge zu groß sein, um im Rahmen dieser Arbeit evaluiert werden zu können, werden die optionalen Anforderungen in den Entscheidungsprozess einbezogen. Ziel ist die Auswahl von fünf GDBMS, welche die obligatorischen Anforderungen erfüllen, eine möglichst breite Verteilung über die vorgestellten GDBMS-Kategorien ist wünschenswert.
 
 \paragraph*{Nutzbarkeit und Produktreife}
 
-Die erste Kategorie umfasst alle Anforderungen, welche an die Nutzbarkeit und die Produktreife der GDBMS-Implementierungen gestellt werden.
-Eines der wichtigsten Kriterien ist die Quelloffenheit des GDBMS. Quellcode ist eine Art der Dokumentation von Software, da er das Studium der exakten Funktionsweise ermöglicht. Darüber hinaus soll das ausgewählte GDBMS als technologische Grundlage für die Implementierung analytischer Algorithmen, graphenspezifischer Operationen, Visualisierungen und für Anfragesprachen sein. Dies setzt ebenfalls Quelloffenheit und ein für die Weiterentwicklung geeignetes Lizenzmodell voraus. Eine angemessene Dokumentation des Systems ist ebenfalls erforderlich. Diese sollte mindestens einen Überblick über die Architektur des GDBMS, die Zugriffsmechanismen und Installationsanweisungen enthalten.
+Eine der wichtigsten Anforderungen in dieser ersten Kategorie (Tabelle \ref{tab:nutzung}) ist die Quelloffenheit des GDBMS. Quellcode ist eine Dokumentationsart von Software, welche das Studium der exakten Funktionsweise ermöglicht. Widersprüche und Ungenauigkeiten innerhalb textueller Dokumentation können durch das Studium des Quellcodes ausgeglichen werden. Darüber hinaus soll das ausgewählte GDBMS als technologische Grundlage für Weiterentwicklungen innerhalb des Projektes dienen. Dies setzt ebenfalls Quelloffenheit und ein für die Nutzung geeignetes Lizenzmodell voraus. Eine ausreichende textuelle Dokumentation des Datenbanksystems ist ebenfalls erforderlich. Diese sollte wenigstens einen Überblick über die Architektur des GDBMS, die Zugriffsmechanismen und Installationsanweisungen enthalten.
+
+Mit dem Ziel, eine möglichst stabile Software als Ausgangssituation nutzen zu können, wurde bei der Diskussion der Anforderungen festgelegt, dass es sich um ein Produktivsystem handeln muss, welches eine nachvollziehbar aktive Entwicklung aufweist. Ein Produktivsystem definiert sich dadurch, dass es mindestens einen stabilen Release aufweisen muss, die Aktivität kann anhand der Quelloffenheit der Systeme leicht nachvollzogen werden. Um als aktiv zu gelten, wurde ein Zeitraum von sechs Monaten festgelegt, in dem die Software Aktualisierungen erfahren haben muss.
+
+Ein rein informatives Kriterium ist die Programmiersprache, in der das System entwickelt wird. Auffällig ist dabei, dass ein Großteil der GDBMS in Java implementiert ist. Generell ist Java aufgrund der persönlichen Erfahrung der Projektteilnehmer die bevorzugte Sprache, dies bedeutet jedoch nicht, dass objektiv bessere Systeme aufgrund ihrer Programmiersprache ausgeschlossen werden. Eine optionale Anforderung innerhalb dieser Kategorie ist die Unterstützung von Linux-basierten Betriebssystemen. Sollte das Projekt erfolgreich sein, ist eine Ausgründung vorgesehen. Aus diesem Grund soll vermieden werden, potentielle Kunden an eine proprietäre Plattform, wie zum Beispiel Microsoft Windows, zu binden.
+
+Es kann nicht festgestellt werden, dass einzelne Anforderungen besonders häufig nicht erfüllt werden. Insgesamt werden die gestellten obligatorischen Anforderungen von neun GDBMS erfüllt, deren Evaluation in der nächsten Kategorie fortgesetzt wird.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -42,7 +49,7 @@ Eines der wichtigsten Kriterien ist die Quelloffenheit des GDBMS. Quellcode ist 
 	\hline
 	\multicolumn{7}{|c|}{\textbf{Nutzbarkeit und Produktreife}} \\
 	\hline
-   	GDBMS & Quell-\newline~offen & Dokumentation & Produktiv-\newline~system & Sprache* & Aktiv & Linux* \\   
+   	GDBMS & Quell-\newline~offen & Dokumentation & Produktiv-\newline~system & Sprache* & Aktiv & GNU/Linux* \\   
    	\hline
    	Affinity		& \checkmark	& \checkmark	& \checkmark	& C++	& \checkmark 	& \checkmark \\
    	ArangoDB		& \checkmark	& \checkmark	& \checkmark	& C/C++	& \checkmark	& \checkmark \\	
@@ -70,7 +77,7 @@ Eines der wichtigsten Kriterien ist die Quelloffenheit des GDBMS. Quellcode ist 
    	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption[Anforderungen: Nutzbarkeit und Zugang]{Anforderungen an die Verwendbarkeit und Dokumentation von GDBMS. (*optional/informativ)}
+	\caption[Anforderungen: Nutzbarkeit und Produktreife]{Anforderungen an die Nutzbarkeit und Produktreife verschiedener GDBMS-Implementierungen. Mit * gekennzeichnete Anforderungen sind optional bzw. besitzen rein informativen Charakter.}
 	\label{tab:nutzung}
 \end{table}
 \renewcommand{\arraystretch}{1}
@@ -274,9 +281,53 @@ Das Traversal Framework erweitert die native API um ein Hilfskonstrukt mit welch
 
 \paragraph*{Cypher}
 
+Cypher ist eine deklarative, graphenorientierte Anfragesprache für den lesenden und schreibenden Zugriff auf die Datenbasis. Es handelt sich um eine nicht standardisierte Sprache, welche aktuell in Neo4j und in abgeänderter Form im GDBMS-Prototypen GraphPack zur Verfügung steht. Syntaktisch ist Cypher an SQL und SPARQL angelehnt, viele der dort vorhandenen Sprachkonstrukte und Ansätze werden konsequent wiederverwendet. Kernelement der Sprache ist das Beschreiben von Mustergraphen zur Informationsextraktion. Das Prüfen der Erreichbarkeit und insbesondere das Berechnen kürzester Pfade ist darüber hinaus ebenfalls möglich. Nachfolgend wird der grundlegende Umfang der Sprache beschrieben, eine detaillierte Beschreibung kann der offiziellen Dokumentation entnommen werden\cite{Neo4j_manual:2013}. 
+
+Eine rein lesende Anfrage setzt sich aus den folgenden Komponenten zusammen:
+
+\texttt{[START] [MATCH] [WHERE]\newline
+[WITH [ORDER BY] [SKIP] [LIMIT]]\newline
+RETURN [ORDER BY] [SKIP] [LIMIT]}.
+
+In der optionalen \texttt{START}-Klausel werden Bezeichner festgelegt und an Knoten- oder Kanteninstanzen gebunden. Die Auswahl einer Instanz erfolgt dabei entweder unter Angabe ihrer Identität oder mittels indexbasierter Suche. Zum Beispiel führt die Anweisung 
+
+\texttt{START a=node:Employees(name=\string"Alice\string")} 
+
+zum Durchsuchen des Knotenindex \texttt{Employees} nach dem Schlüssel-Wert-Paar\linebreak \texttt{name=\string"Alice\string"}. Existiert eine entsprechende Instanz, erfolgt die Bindung an den Bezeichner \texttt{a}. Trifft die Bedingung auf mehrere Instanzen zu, so verweist \texttt{a} auf die entsprechende Menge. Alle gebundenen Bezeichner können in den nachfolgenden Teilen der Anfrage verwendet werden. Zulässige Datentypen für Bezeichner und Variablen sind generell Knoten, Kanten, Pfade und Literale bzw. Mengen der genannten.
+
+Wird keine \texttt{START}-Klausel definiert, ist die nachfolgende \texttt{MATCH}-Klausel obligatorisch. Sie ermöglicht die Definition eines Mustergraphen zur Informationsextraktion aus der Datenbasis. Mit dem Ziel, einen Mustergraphen in Textform zu repräsentieren, wird dieser in Fragmente zerlegt. Jedes dieser Fragmente entspricht der Definition eines abstrakten Weges. Der in Abbildung \ref{fig:neo4j_pattern_graph} gezeigte Mustergraph lässt sich durch zwei Fragmente beschreiben:
+
+\texttt{MATCH\newline
+c:Employee-[:WORKS\_WITH]-a-[:WORKS\_WITH]->b:Employee-[:WORKS\_WITH]->c,\newline
+b---d:Project}
+
+Innerhalb des Musters sind die in der \texttt{START}-Klausel definierten Bezeichner die Konstanten und stellen somit die Verbindungen zwischen Muster und Datenbasis her. Neo4j bezeichnet diese als \textit{bound pattern elements}, im Beispiel ist dies der Knoten \texttt{a}. Die Variablen \texttt{b}, \texttt{c} und \texttt{d} werden beim Finden einer Übereinstimmung an Knoten- bzw. Kanteninstanzen gebunden, alle Variablen stehen in weiteren Operationen zur Verfügung. Am Beispiel wird die Verwendung der Knotenlabel deutlich: Die Variablen \texttt{b} und \texttt{c} legen das Label gebundener Knoteninstanzen auf \texttt{Employee} fest, während die Variable \texttt{d} die Menge möglicher Instanzen auf alle Projekte einschränkt. Die Angabe eines Kantenlabels ist optional, so verlangt das zweite Fragment bspw. eine Kante mit beliebiger Richtung und beliebigem Label zwischen den Knoten \texttt{b} und \texttt{d}, wohingegen zwischen den Knoten \texttt{a} und \texttt{b} eine gerichtete Kante mit dem Label \texttt{WORKS\_WITH} existieren muss. Steht die \texttt{MATCH}-Klausel am Beginn der Anfrage, dann ist in diesem Abschnitt kein Bezeichner gebunden. Folglich wird entweder die vollständige Datenbasis nach dem Muster durchsucht, oder anhand von eventuell definierten Labels die Menge der Objekte eingeschränkt. Alternativ können Prädikate in der nachfolgenden \texttt{WHERE}-Klausel zur Einschränkung des Suchraums genutzt werden.
+	 
+Die \texttt{WHERE}-Klausel entspricht der Selektion in der relationalen Algebra. Sie ist optional und ermöglicht die Filterung von Ergebnistupeln mittels Prädikaten. Cypher bietet eine Vielzahl mathematischer, vergleichender und boolescher Operatoren für die Definition und Verknüpfung von Prädikaten an. Soll zum Beispiel im Mustergraphen das Attribut \texttt{age} der an die Variable \texttt{b} gebundenen Instanzen eingeschränkt werden, so ist dies mit folgender Anweisung möglich:
+
+\texttt{WHERE b.age? > 23 AND b.age? < 42}
+
+Da Properties keinem Schema unterliegen, kann mittels \texttt{?}-Operator geprüft werden, ob die entsprechende Instanz diesen Attributschlüssel besitzt. Ist dies nicht der Fall, wird \texttt{True} zurückgegeben.
+
+Die ebenfalls optionale \texttt{WITH}-Klausel besitzt kein Pendant in der relationalen Algebra, sondern entspricht der Funktionsweise des Pipe-Operators der Linux-Shell. Mit dessen Hilfe lassen sich Operationen verketten: Die Ausgabe einer Operation kann als Eingabe der Folgeoperation verwendet werden. Dies ist in Cypher genau dann sinnvoll, wenn zum Beispiel Aggregate innerhalb einer \texttt{WHERE}-Bedingung verwendet werden müssen oder zum Verketten lesender und schreibender Anfragen, wobei letztere auf die Ergebnisse der erstgenannten zugreifen.
+
+Am Ende einer rein lesenden Cypher-Anfrage befindet sich die obligatorische \texttt{RETURN}-Klausel, diese entspricht der Projektion in der relationalen Algebra. Sie legt fest, welche Variablen zurückgegeben werden und ermöglicht die Umformung der Ergebnismenge. Analog zu SQL kann das Ergebnis mit \texttt{ORDER BY} sortiert sowie durch \texttt{SKIP} und \texttt{LIMIT} eingeschränkt werden.
+
+Cypher ermöglicht die Berechnung von Aggregaten sowohl in der \texttt{RETURN}- als auch in der \texttt{WITH}-Klausel. Dabei stehen verschiedene Aggregatfunktionen, wie zum Beispiel \texttt{min}, \texttt{max} und \texttt{avg}, zur Verfügung. Darüber hinaus ermöglicht Cypher die Verwendung von skalaren (z.B. \texttt{LENGTH} und \texttt{TYPE}), mathematischen (z.B. \texttt{ABS} und \texttt{ROUND}), string-basierten (z.B. \texttt{SUBSTRING} und \texttt{LOWER}) und mengenorientierten (z.B. \texttt{FILTER} und \texttt{REDUCE}) Funktionen.
+
+\texttt{MATCH}-, \texttt{WITH}- und \texttt{WHERE}-Klauseln lassen sich beliebig oft in beliebiger Reihenfolge kombinieren, so können zum Beispiel Ergebnismengen oder Aggregate in einer nachfolgenden Musterdefinition verwendet werden. Analog zum Traversal Framework werden rein lesende Anfragen erst ausgeführt, wenn der Nutzer auf die Ergebnisse zugreift, dies ist insbesondere dann sinnvoll, wenn Muster ohne Bindung zur Datenbasis definiert werden und diese komplett durchsucht werden muss. 
+
+Neben den rein lesenden Anfragen sind auch schreibende Anfragen möglich. Unter Verwendung der \texttt{CREATE}-Klausel werden Knoten- und Kanteninstanzen mit Labels und Properties erzeugt, 
+mit der \text{SET}-Klausel werden Properties und Knotenlabel aktualisiert und mit der \texttt{DELETE} Klausel werden Instanzen gelöscht.
+
+Klarer Vorteil gegenüber den bisher vorgestellten Zugriffsmöglichkeiten ist der deklarative Charakter der Sprache. Im Gegensatz zum Traversal Framework wird in Cypher festgelegt \textit{was} gesucht wird und nicht \texttt{wie} es gesucht wird. Dies ermöglicht zum Einen die einfachere Anfrageformulierung und zum Anderen natürlich auch zusätzliches Optimierungspotential. Die Sprache steht unter permanenter Weiterentwicklung, was bedeutet, dass mit Änderungen und Erweiterungen der Syntax zu rechnen ist. Schwerpunkt der Version 2.0 ist unter anderem die automatische Anfrageoptimierung. Eine manuelle Anfrageoptimierung ist möglich, der Ausführungsplan lässt sich über die Java API zusammen mit dem Anfrageergebnis abrufen.
+
 \paragraph*{Graphenspezifische Operationen}
 
 \paragraph*{Transaktionen}
+
+- (schreibende?) native Anfrage / Traversal muss explizit in Transaktion gekapselt werden
+- Transaktionen für schreibenden Cypher-Anfragen werden implizit erzeugt
 
 \subsection{Persistenz und Indexierung}
 
