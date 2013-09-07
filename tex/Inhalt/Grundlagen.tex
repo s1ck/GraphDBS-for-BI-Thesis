@@ -6,15 +6,17 @@ Das folgende Kapitel behandelt die theoretischen Grundlagen der Arbeit. Es werde
 \section{Graphentheoretische Begriffe}
 \label{sec:graph_theory}
 
-Ein Graph besteht in seiner grundlegenden Form aus einer Menge von Knoten, welche durch Kanten verbunden sein können. In der Graphentheorie und den darauf aufbauenden Anwendungen werden je nach Anforderung verschiedene Arten von Graphen eingesetzt. Nachfolgend werden diejenigen von ihnen definiert, die für die Arbeit relevant sind.
+Ein Graph besteht in seiner grundlegenden Form aus einer Menge von Knoten, welche durch Kanten verbunden sein können. In der Graphentheorie und den darauf aufbauenden Anwendungen werden je nach Anforderung verschiedene Arten von Graphen eingesetzt. Nachfolgend werden diejenigen von ihnen definiert, die für die Arbeit relevant sind. Wenn nicht anders gekennzeichnet, beziehen sich alle Definitionen auf \cite{DBLP:books/daglib/0030488}.
 
 % ungerichteter Graph
 \paragraph*{Ungerichteter Graph} Ein ungerichteter Graph (engl. \textit{undirected} oder \textit{simple graph}, Abbildung \ref{fig:undirected_graph}) ist ein Tupel $G=(V,E)$ und besteht aus einer Menge $V=\{v_1,v_2,\ldots,v_n\}$ von \textit{Knoten} (engl. \textit{vertices})  und einer Menge $E=\{\{u,v\} \vert u,v \in V \wedge u \neq v\}$ von \textit{Kanten} (engl. \textit{edges}). Die Anzahl der Knoten ist $n=\left|V\right|$, die Anzahl der Kanten ist $m=\left|E\right|$.
 
 % gerichteter Graph
-\paragraph*{Gerichteter Graph} Ein gerichteter Graph (engl. \textit{directed graph}, Abbildung \ref{fig:directed_graph}) ist ein Tupel $G=(V,E)$ und besteht aus einer Menge $V=\{v_1,v_2,\ldots,v_n\}$ von Knoten und einer Menge $E=\{(u,v) \vert u,v \in V \wedge u \neq v\}$ von \textit{gerichteten} Kanten. Für jede Kante $e \in E$ mit $e = (u,v)$ gilt: $u$ ist der \textit{Startknoten}, $v$ der \textit{Zielknoten} von $e$. Eine alternative Notation für eine Kante $(u,v)$ lautet $e_{u,v}$.
+\paragraph*{Gerichteter Graph} Ein gerichteter Graph (engl. \textit{directed graph}, Abbildung \ref{fig:directed_graph}) ist ein Tupel $G=(V,E)$ und besteht aus einer Menge $V=\{v_1,v_2,\ldots,v_n\}$ von Knoten und einer Menge $E=\{(u,v) \vert u,v \in V \wedge u \neq v\}$ von \textit{gerichteten} Kanten. Für jede Kante $e \in E$ mit $e = (u,v)$ gilt: $u$ ist der \textit{Startknoten}, $v$ der \textit{Zielknoten} von $e$. 
+% Eine alternative Notation für eine Kante $(u,v)$ lautet $e_{u,v}$.
+Die Menge der Kanten, deren Start- oder Zielknoten $v$ ist, sind die zu $v$ \textit{inzidenten} Kanten. Zwei Kanten sind \textit{adjazent}, wenn sie einen gemeinsamen Start- bzw. Zielknoten besitzen.
 
-\begin{figure}[htb]
+\begin{figure}[h]
 	\centering	
 	\subfigure[Ungerichteter Graph]{\label{fig:undirected_graph}\includegraphics{undirected_graph.pdf}}\qquad	
 	\subfigure[Gerichteter Graph]{\label{fig:directed_graph}\includegraphics{directed_graph.pdf}}	
