@@ -29,17 +29,17 @@ Das Projekt verfolgt drei Ziele: Zunächst ist die Integration von Unternehmensda
 
 Nachfolgend werden die Anforderungen an ein GDBMS für den Einsatz innerhalb des beschriebenen Projektes kategorisiert vorgestellt und vorhandene Implementierungen hinsichtlich der Erfüllung jener Anforderungen bewertet. Die Auswahl der Systeme erfolgte auf Grundlage von Literatur- und Webrecherche. Die Informationen zu den einzelnen GDBMS stammen von den Webseiten der Hersteller oder den primären Publikationen zu den jeweiligen Systemen. Eine Liste der Webseiten befindet sich in Anhang \ref{anh:vendor_list}.
 
-Innerhalb jeder Kategorie werden obligatorische und optionale bzw. rein informative Anforderungen definiert. Ein GDBMS, welches eine verpflichtende Anforderung erfüllt, wird in der nachfolgenden Kategorie weiter betrachtet. Sollte nach der Betrachtung aller Kategorien die Kandidatenmenge zu groß sein, um im Rahmen dieser Arbeit evaluiert werden zu können, werden die optionalen Anforderungen in den Entscheidungsprozess einbezogen. Ziel ist die Auswahl von fünf GDBMS, welche die obligatorischen Anforderungen erfüllen, eine möglichst breite Verteilung über die vorgestellten GDBMS-Kategorien ist wünschenswert.
+Innerhalb jeder Kategorie werden obligatorische und optionale bzw. rein informative Anforderungen definiert. Ein GDBMS, welches eine obligatorische Anforderung erfüllt, wird in der nachfolgenden Kategorie weiter betrachtet. Sollte nach der Betrachtung aller Kategorien die Kandidatenmenge zu groß sein, um im Rahmen dieser Arbeit evaluiert werden zu können, werden die optionalen Anforderungen in den Entscheidungsprozess einbezogen. Ziel ist die Auswahl von vier GDBMS, welche die obligatorischen Anforderungen erfüllen, eine möglichst breite Verteilung innerhalb der vorgestellten GDBMS-Kategorien ist wünschenswert.
 
 \paragraph*{Nutzbarkeit und Produktreife}
 
-Eine der wichtigsten Anforderungen in dieser ersten Kategorie (Tabelle \ref{tab:nutzung}) ist die Quelloffenheit des GDBMS. Quellcode ist eine Dokumentationsart von Software, welche das Studium der exakten Funktionsweise ermöglicht. Widersprüche und Ungenauigkeiten innerhalb textueller Dokumentation können durch das Studium des Quellcodes ausgeglichen werden. Darüber hinaus soll das ausgewählte GDBMS als technologische Grundlage für Weiterentwicklungen innerhalb des Projektes dienen. Dies setzt ebenfalls Quelloffenheit und ein für die Nutzung geeignetes Lizenzmodell voraus. Eine ausreichende textuelle Dokumentation des Datenbanksystems ist ebenfalls erforderlich. Diese sollte wenigstens einen Überblick über die Architektur des GDBMS, die Zugriffsmechanismen und Installationsanweisungen enthalten.
+Eine der wichtigsten Anforderungen in dieser ersten Kategorie (Tabelle \ref{tab:nutzung}) ist die Quelloffenheit des GDBMS. Quellcode ist eine Dokumentationsart von Software, welche das Studium der exakten Funktionsweise ermöglicht. Widersprüchen und Ungenauigkeiten innerhalb textueller Dokumentation kann durch die Untersuchung des Quellcodes begegnet werden. Darüber hinaus soll das ausgewählte GDBMS als technologische Grundlage für Weiterentwicklungen innerhalb des beschriebenen Projektes dienen. Dies setzt ebenfalls Quelloffenheit und ein für die Nutzung geeignetes Lizenzmodell voraus. Ungeachtet dessen ist eine grundlegende textuelle Dokumentation des Datenbanksystems ebenfalls eine Pflichtanforderung. Sie sollte wenigstens einen Überblick über die Architektur des GDBMS, eine Beschreibung der Zugriffsmechanismen und Installationsanweisungen beinhalten.
 
-Mit dem Ziel, eine möglichst stabile Software als Ausgangssituation nutzen zu können, wurde bei der Diskussion der Anforderungen festgelegt, dass es sich um ein Produktivsystem handeln muss, welches eine nachvollziehbar aktive Entwicklung aufweist. Ein Produktivsystem definiert sich dadurch, dass es mindestens einen stabilen Release aufweisen muss, die Aktivität kann anhand der Quelloffenheit der Systeme leicht nachvollzogen werden. Um als aktiv zu gelten, wurde ein Zeitraum von sechs Monaten festgelegt, in dem die Software Aktualisierungen erfahren haben muss.
+Mit dem Ziel, eine möglichst stabile Software als Ausgangssituation nutzen zu können, wurde bei der Diskussion der Anforderungen festgelegt, dass es sich um ein Produktivsystem handeln muss, welches eine nachvollziehbar aktive Entwicklung erkennen lässt. Ein Produktivsystem definiert sich dadurch, dass es mindestens einen stabilen Release aufweist, die Aktivität kann anhand der Quelloffenheit der Systeme leicht nachvollzogen werden: Um als aktiv zu gelten, wurde ein Zeitraum von sechs Monaten festgelegt, in dem die Software Aktualisierungen erfahren haben muss.
 
 Ein rein informatives Kriterium ist die Programmiersprache, in der das System entwickelt wird. Auffällig ist dabei, dass ein Großteil der GDBMS in Java implementiert ist. Generell ist Java aufgrund der persönlichen Erfahrung der Projektteilnehmer die bevorzugte Sprache, dies bedeutet jedoch nicht, dass objektiv bessere Systeme aufgrund ihrer Programmiersprache ausgeschlossen werden. Eine optionale Anforderung innerhalb dieser Kategorie ist die Unterstützung von Linux-basierten Betriebssystemen. Sollte das Projekt erfolgreich sein, ist eine Ausgründung vorgesehen. Aus diesem Grund soll vermieden werden, potentielle Kunden an eine proprietäre Plattform, wie zum Beispiel Microsoft Windows, zu binden.
 
-Es kann nicht festgestellt werden, dass einzelne Anforderungen besonders häufig nicht erfüllt werden. Insgesamt werden die gestellten obligatorischen Anforderungen von neun GDBMS erfüllt, deren Evaluation in der nächsten Kategorie fortgesetzt wird.
+Es kann nicht festgestellt werden, dass einzelne Anforderungen besonders häufig nicht erfüllt werden. Insgesamt werden die gestellten obligatorischen Anforderungen von zehn GDBMS erfüllt, deren Evaluation in der nächsten Kategorie fortgesetzt wird.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -77,23 +77,19 @@ Es kann nicht festgestellt werden, dass einzelne Anforderungen besonders häufig 
    	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption[Anforderungen: Nutzbarkeit und Produktreife]{Anforderungen an die Nutzbarkeit und Produktreife verschiedener GDBMS-Implementierungen. Mit * gekennzeichnete Anforderungen sind optional bzw. besitzen rein informativen Charakter.}
+	\caption[Anforderungen: Nutzbarkeit und Produktreife]{Anforderungen an die Nutzbarkeit und Produktreife verschiedener GDBMS-Implementierungen. Die mit * gekennzeichnete Anforderungen sind optional bzw. besitzen nur informativen Charakter.}
 	\label{tab:nutzung}
 \end{table}
 \renewcommand{\arraystretch}{1}
 
 \paragraph*{Datenverwaltung und Datenmodellierung}
 
-Datenmodell - grundsätzlich ist die Modellierung auch mit anderen Datenmodellen möglich (z.B. Zwischenknoten), wird jedoch hier nicht berücksichtigt um die Menge der zu vergleichenden Systeme einzuschränken
-Lorem ipsum dolor sit amet, ex mei tale aliquip. Dolore labitur legimus est et, mea commune nominati ei. Tantas molestiae conclusionemque ad vix, nec cu meliore admodum intellegam. Qui facer facete imperdiet ut. Ea sit feugait referrentur.
+Die einzige obligatorische Anforderung in dieser Kategorie (Tabelle \ref{tab:verwaltung}) bezieht sich auf das Datenmodell: Die Eigenschaften des Property-Graph-Modell werden als Mindestvoraussetzung festgelegt, das Property-Hyper-\linebreak~graph-Modell ist ebenfalls zulässig, da es das PGM um n-äre Beziehungen erweitert. Annähernd die Hälfte der aufgeführten GDBMS verzichtet auf Kantenattribute, Kantenbezeichner oder parallele Kanten, dies sind jedoch relevante Werkzeuge für die Modellierung innerhalb des Projektes.
 
-Id scripta fastidii vix. Id pri case dicunt definitiones. Quo lorem mediocrem moderatius et, ut his sapientem dignissim, alterum albucius delicata eos id. Nec id doctus fastidii pertinacia, nam no veniam petentium definitionem, iusto mnesarchum has ne. Per eu ubique aliquid voluptatum. Id cum deserunt convenire, quando abhorreant duo ut, ius ad molestiae dignissim hendrerit.
-
-Pro eu justo tantas dolores. Albucius salutatus cum ea. Et delicata omittantur per, in cum wisi definitionem, vis in nulla nihil graecis. Vix habeo praesent torquatos ei, te vel indoctum deterruisset. Ei qui erat ipsum neglegentur.
-
-Est cu modus partem persius. Usu no doctus utroque, eu eam clita ubique, ut possit epicurei explicari vix. In vim error scribentur. Sea iracundia intellegam te, summo dolor delectus ne has, per in atomorum democritum. Ex ullum utinam habemus qui, eam nulla inciderint no. Cu ferri maiorum quo.
-
-Cu unum perfecto usu, sed an natum prompta aliquid, no pri meis illum integre. Cu audire feugiat fastidii sit, te mea salutandi consulatu consetetur. Duo dicat verterem no. Vel an atqui forensibus, vix et eros maluisset scripserit.
+Einige der durchzuführenden Analysen basieren auf der Extraktion von Geschäftsprozessen in Form von Subgraphen. In diesem Zusammenhang ist es von Vorteil, wenn sich diese Subgraphen systemseitig logisch getrennt in mehreren Datenbanken verwalten lassen. Diese optionale Anforderung wird jedoch nur von zwei Systemen erfüllt.\\
+Die Möglichkeit zur Definition eines Schemas ist ein rein informatives Kriterium. Es wird deutlich, dass viele der Systeme auf die anwendungsseitige Umsetzung eines Schemas ausgerichtet sind und keine bzw. nur wenige Werkzeuge für die Schemaverwaltung anbieten.\\
+Die Erfüllung der ACID-Eigenschaften im Zusammenhang mit der Transaktionsausführung in operativen Systemen spielt in Unternehmensdaten eine wichtige Rolle. Da das auszuwählende GDBMS jedoch vorrangig für die Analyse und weniger für den operativen Betrieb genutzt werden soll, wird diese Anforderung als optional deklariert.\\
+Im Zusammenhang mit ACID hat die Möglichkeit zur Definition von Integritätsbedingungen große Bedeutung: Modellinhärente Bedingungen, wie zum Beispiel die referentielle Integrität, bei der eine Kante mindestens einen Start- und einen Zielknoten besitzen muss, werden von allen Systemen implementiert. Die Möglichkeit zur Definition von Integritätsbedingungen wird als optionale Anforderung gewertet.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -111,7 +107,7 @@ Cu unum perfecto usu, sed an natum prompta aliquid, no pri meis illum integre. C
    	FlockDB			& Gerichteter, knotenattributierter, kantenbezeichneter Graph & \checkmark	& -	& -	& \checkmark \\
    	HypergraphDB	& PHGM	& -	& \checkmark & \checkmark & \checkmark \\
    	Infogrid		& Gerichteter, knotenattributierter, kantenbezeichneter Multigraph	& -	& \checkmark & \checkmark & \checkmark \\
-   	Neo4j			& PGM	& -	& -	& \checkmark	& \checkmark \\
+   	Neo4j			& PGM	& -	& (\checkmark)	& \checkmark	& \checkmark \\
    	OQGRAPH			& Gerichteter, gewichteter Multigraph	& -	& -	& -	& \checkmark \\
    	OrientDB		& PGM	& -	& \checkmark	& \checkmark	& \checkmark \\
    	Titan			& PGM	& -	& \checkmark	& \checkmark	& \checkmark \\
@@ -119,22 +115,14 @@ Cu unum perfecto usu, sed an natum prompta aliquid, no pri meis illum integre. C
    	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption[Anforderungen: Datenverwaltung und Datenmodellierung]{Anforderungen hinsichtlich der Datenverwaltung und -modellierung innerhalb von GDBMS. (*optional/informativ)}
+	\caption[Anforderungen: Datenverwaltung und Datenmodellierung]{Anforderungen hinsichtlich der Datenverwaltung und -modellierung innerhalb von GDBMS. Die mit * gekennzeichnete Anforderungen sind optional bzw. besitzen nur informativen Charakter.}
 	\label{tab:verwaltung}
 \end{table}
 \renewcommand{\arraystretch}{1}
 
 \paragraph*{Zugriffsmechanismen}
 
-Lorem ipsum dolor sit amet, ex mei tale aliquip. Dolore labitur legimus est et, mea commune nominati ei. Tantas molestiae conclusionemque ad vix, nec cu meliore admodum intellegam. Qui facer facete imperdiet ut. Ea sit feugait referrentur.
-
-Id scripta fastidii vix. Id pri case dicunt definitiones. Quo lorem mediocrem moderatius et, ut his sapientem dignissim, alterum albucius delicata eos id. Nec id doctus fastidii pertinacia, nam no veniam petentium definitionem, iusto mnesarchum has ne. Per eu ubique aliquid voluptatum. Id cum deserunt convenire, quando abhorreant duo ut, ius ad molestiae dignissim hendrerit.
-
-Pro eu justo tantas dolores. Albucius salutatus cum ea. Et delicata omittantur per, in cum wisi definitionem, vis in nulla nihil graecis. Vix habeo praesent torquatos ei, te vel indoctum deterruisset. Ei qui erat ipsum neglegentur.
-
-Est cu modus partem persius. Usu no doctus utroque, eu eam clita ubique, ut possit epicurei explicari vix. In vim error scribentur. Sea iracundia intellegam te, summo dolor delectus ne has, per in atomorum democritum. Ex ullum utinam habemus qui, eam nulla inciderint no. Cu ferri maiorum quo.
-
-Cu unum perfecto usu, sed an natum prompta aliquid, no pri meis illum integre. Cu audire feugiat fastidii sit, te mea salutandi consulatu consetetur. Duo dicat verterem no. Vel an atqui forensibus, vix et eros maluisset scripserit.
+Tabelle \ref{tab:zugriff} vergleicht die verbliebenen acht Systeme hinsichtlich ihrer Zugriffsmechanismen.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
