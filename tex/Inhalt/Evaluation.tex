@@ -393,72 +393,28 @@ Die Architektur ist grundsätzlich für die horizontale Skalierbarkeit von Lesezug
 
 \section{HyperGraphDB}
 
-HyperGraphDB ist ein quelloffenes, disk-zentriertes GDBMS, welches von Kobrix Software\footnote{\url{http://kobrix.com/index.jsp}} entwickelt wird. Die Quellcode-Lizenz ist LGPL, die erste stabile Version 1.0 wurde 2010 veröffentlicht. Die Implementierung des Systems erfolgt ausschließlich in Java und sieht den Einsatz als eingebettetes Graphdatenbanksystem vor. Die Verarbeitung des Graphen erfolgt nativ, für die Datenspeicherung wird hingegen standardmäßig die quelloffene Key-Value-Datenbank BerkeleyDB Java Edition\cite{Oracle_BerkeleyDB:2013} eingesetzt. HyperGraphDB kann als zentrales System oder in einer verteilten Konfiguration eingesetzt werden. Eine rein hauptspeicher-zentrierte Verwendung ist nicht vorgesehen.
+HyperGraphDB ist ein quelloffenes GDBMS, das von Kobrix Software\footnote{\url{http://kobrix.com/index.jsp}} entwickelt wird. Die Quellcode-Lizenz ist GNU LGPL, die erste stabile Version 1.0 wurde 2010 veröffentlicht. Die Implementierung des Systems erfolgt ausschließlich in Java und sieht den Einsatz als eingebettetes Graphdatenbanksystem vor. Modellierung und Verwendung der Daten erfolgen graphenorientiert, Verarbeitung und Speicherung des Graphen sind jedoch nicht-nativ: Der Graph wird auf eine Menge assoziativer Arrays abgebildet für deren Speicherung eine beliebige, entsprechend optimierte Speicherlösung eingesetzt werden kann. Standardmäßig nutzt HyperGraphDB hierfür die quelloffene, disk-orientierte Key-Value-Datenbank BerkeleyDB Java Edition\cite{Oracle_BerkeleyDB:2013}. Das GDBMS kann als zentrales System oder in einer verteilten Konfiguration eingesetzt werden. Die Verwendung des Hauptspeichers als primäres Speichermedium ist bei Implementierung einer entsprechenden Speicherschicht möglich.
 
-Grundlegend betrachtet handelt es sich bei HyperGraphDB um ein objekt-orientiertes Persistenz-Framework zur Speicherung von Java-Objekten und kann auch als solches eingesetzt werden. Die Repräsentation im Hauptspeicher, Indexierung und Caching sind jedoch für die Unterstützung von Traversierung und Mustersuche konzipiert. Wesentliches Merkmal und gleichzeitig Alleinstellungsmerkmal von HyperGraphDB ist die Möglichkeit zur Modellierung von n-ären Beziehungen, als Datenmodell wird das Property-Hypergraph-Modell in Verbindung mit einem erweiterbaren Typsystem implementiert. Konzipiert wurde das GDBMS für die Verwaltung hochkomplexer Daten wie sie zum Beispiel in der Wissensverwaltung, künstlichen Intelligenz und im Semantic Web vorkommen\cite{Iordanov:2010:HGG:1927585.1927589}. Laut Hersteller eignet sich das System darüber hinaus auch für den Einsatz in sozialen Netzwerken sowie in regulären objekt-orientierten Geschäftsanwendungen\cite{HGDB_business_applications:2012}. Ein weiteres Merkmal ist die flexible Architektur des Systems, welche die Implementierung und Integration eigener Indizierungs-, Persistenz- und Verteilungsmechanismen ermöglicht.
+Grundlegend betrachtet handelt es sich bei HyperGraphDB um ein objektorientiertes Persistenz-Framework zur Speicherung von Java-Objekten. Die Repräsentation der Daten im Hauptspeicher, Indexierung und Caching sind jedoch für die Unterstützung von Traversierung und Mustersuche konzipiert. Wesentliches Merkmal und gleichzeitig Alleinstellungsmerkmal von HyperGraphDB innerhalb der Evaluation ist die Möglichkeit zur Modellierung von n-ären Beziehungen: Als Datenmodell wird das Property-Hypergraph-Modell in Verbindung mit einem flexiblen Typsystem implementiert.\\
+Konzipiert wurde das GDBMS für die Verwaltung hochkomplexer Daten wie sie zum Beispiel in der Wissensverwaltung vorkommen\cite{Iordanov:2010:HGG:1927585.1927589}. Laut Hersteller eignet sich das System darüber hinaus für die Verwaltung sozialer Netzwerke und für den Einsatz in klassischen objekt-orientierten Geschäftsanwendungen\cite{HGDB_business_applications:2012}. Ein weiteres wichtiges Merkmal ist die offene Architektur des Systems, welche die Implementierung und Integration eigener Indizierungs-, Persistenz- und Verteilungsmechanismen ermöglicht.
 
 Die nachfolgenden Ausführungen beziehen sich auf Version 1.2 des GDBMS, diese wurde im November 2012 veröffentlicht. Der Großteil der Informationen stammt aus der offiziellen Dokumentation\cite{hypergraph_db_docu:2013} und der primären Publikation zu HyperGraphDB\cite{Iordanov:2010:HGG:1927585.1927589}. Weitere Quellen werden an entsprechender Stelle genannt.
 
-\subsection{Datenmodell und Konsistenzerhaltung}
+\subsection{Datenmodell und Typsystem}
 
 % Modelltheorie
-Die Basiseinheit innerhalb des Modells wird in HyperGraphDB als Atom bezeichnet. Sowohl Knoten als auch Kanten werden durch Atome repräsentiert: Jedes Atom besitzt eine sog. Zielmenge, welche sich durch ein Tupel bestehend aus Atomen definiert. Die Kardinalität dieses Tupels wird als Arität bezeichnet, ein Atom mit Arität Null ist ein Knoten andernfalls eine Kante.\footnote{Die Begriffe Kante und Hyperkante werden bei der Beschreibung von HyperGraphDB synonym verwendet.}\\
-Eine Kante kann folglich auf eine beliebige Anzahl von Atomen verweisen. Dies stellt eine Erweiterung des in Abschnitt \ref{subsec:hgm} definierten Modells eines Hypergraphen dar, da eine Kante in HyperGraphDB sowohl auf Knoten, als auch auf andere Kanten verweisen kann. Als Inzidenzmenge eines Atoms $a$ wird die Menge der Atome bezeichnet die $a$ in ihrer Zielmenge enthalten, d.h. alle Kanten, deren Zielknoten $a$ ist.
+Die Basiseinheit zur Darstellung von Informationen innerhalb des Datenmodells ist das Atom. Jedem Atom ist ein Tupel bestehend aus Atomen zugeordnet, welches als Zielmenge bezeichnet wird. Die Kardinalität der Zielmenge ist die Arität: Ein Atom mit Arität Null ist ein Knoten, wohingegen ein Atom mit einer Arität größer Null eine Kante repräsentiert.\footnote{Die Begriffe Kante und Hyperkante werden bei der Beschreibung von HyperGraphDB synonym verwendet.} Eine Kante kann folglich auf eine beliebige Anzahl von Atomen verweisen. Dies stellt eine Erweiterung des in Abschnitt \ref{subsec:hgm} definierten Modells eines Hypergraphen dar, da eine Kante in HyperGraphDB sowohl auf Knoten, als auch auf andere Kanten verweisen kann. Im Datenmodell werden Beziehungen zwischen Beziehungen als Relationen höherer Ordnung bezeichnet. Die Inzidenzmenge eines Atoms $a$ ist die Menge aller Atome, die $a$ in ihrer Zielmenge enthalten, d.h. die Menge aller gerichteter Kanten, die auf $a$ zeigen.
 
-Neben der Zielmenge besitzt jedes Atom einen streng typisierten Wert. Der Typ kann dabei beliebig sein und wird innerhalb des Modells ebenfalls als Atom repräsentiert. Die Semantik wird folglich zusammen mit den Daten modelliert, gleichzeitig erfolgt eine Trennung von Topologie und Nutzdaten innerhalb des Graphen: Solange sie einem definierten Typ entsprechen, können Nutzdaten an Atomen ohne Änderung der Topologie beliebig ausgetauscht werden. Eine dynamische Schemaänderung ist somit möglich.
+Neben der Zielmenge ist jedem Atom genau ein streng typisierter Wert zugeordnet. Der Typ ist beliebig und wird genau wie reguläre Daten innerhalb der Datenbasis als Atom gespeichert. Folglich können Beziehungen zwischen Typen untereinander bzw. zwischen Typen und Instanzen abgebildet und in graphenspezifischen Operationen verwendet werden. Daraus geht hervor, dass Atome sowohl die Struktur als auch die Semantik des Graphen abbilden. Die Werte entsprechen den Nutzdaten und können beliebig strukturiert oder unstrukturiert sein und zur Laufzeit durch Werte eines anderen Typs ausgetauscht werden. Damit lassen sich Semantik und Struktur unabhängig voneinander ändern, dies entspricht der Schemaevolution innerhalb einer Anwendung und bietet somit eine vergleichbare Flexibilität wie zum Beispiel Neo4j.
 
-Das Typsystem in HyperGraphDB erlaubt
+Die wesentliche Aufgabe eines Typen ist die Serialisierung von Laufzeitobjekten in das Format der darunterliegenden Speicherschicht sowie die Deserialisierung aus der Speicherschicht in Laufzeitobjekte. Im Sinne der Objektorientierung ist ein Typ somit eine abstrakte Fabrik und stellt Methoden zum Erzeugen, Speichern und Löschen von Laufzeitrepräsentationen seiner Instanzen zur Verfügung.\footnote{Das Aktualisieren eines Wertes ist nicht möglich, da Werte in HyperGraphDB generell unveränderlich (engl. \textit{immutable}) sind. Dies hat den Vorteil, dass ein Wert mehreren Atomen zugeordnet sein kann, führt jedoch dazu, dass bei der Aktualisierung eines Wertes ein neuer Wert erzeugt werden muss.} Da es sich bei Typen um Atome handelt, besitzen auch Typen einen übergeordneten Datentyp. Bei Typen, die bereits im Typsystem existieren, ist dies ein spezieller Typ mit der Bezeichnung \texttt{top}. Wird hingegen ein Objekt, dessen Typ nicht bereits in der Datenbasis hinterlegt ist, zur Laufzeit eingefügt, so ist dessen Typ ein Typkonstruktur. Ein Typkonstruktur erzeugt neue Typen aus bestehenden Typen, es handelt sich folglich um einen Datentyp, dessen Instanzen Typen sind.\\
+Neben den genannten Operationen stellt ein Typ eine weitere Operation zur Verfügung: Das Subsumieren. Eine Instanz A subsumiert eine Instanz B genau dann, wenn A allgemeiner ist als B bzw. wenn B immer dann verwendet werden kann, wenn A verwendet werden kann\cite{HGDB_subsume:2013}. Damit kann zum Beispiel geprüft werden, ob sich zwei Instanzen gegenseitig enthalten und folglich gleichwertig sind oder ob eine Instanz durch die andere ersetzt werden kann. Handelt es sich bei den Instanzen um Typen, so ermöglicht die Subsumierung die Abbildung von Vererbungshierarchien und somit die Konstruktion beliebiger Typsysteme: Wenn eine Instanz A eine zweite Instanz B subsumiert und A und B Typen sind, so erbt A von B.
 
-% Typisierung
+Es sollte deutlich werden, dass ein Typ in HyperGraphDB ein Atom mit einer speziellen Rolle ist. Aus Anwendungssicht ermöglicht es die Definition von Knoten- und Kantenbezeichnern, aus Systemsicht die Verwaltung von Assoziationen sowohl zwischen einem Typ und seinen Instanzen als auch zwischen mehreren Typen. Das GDBMS beinhaltet vordefinierte Typen für primitive Java-Datentypen, JavaBeans\footnote{\url{http://www.oracle.com/technetwork/java/javase/documentation/spec-136004.html}}, 
+Arrays, Java-Collections, Java-Maps und generell Klassen, welche die Java-Schnittstelle \texttt{Serializable} implementieren. Vererbungshierarchien werden ebenfalls persistiert und durch einen dedizierten Kantentyp repräsentiert. Sollen komplexere Datentypen verwendet werden oder ist die Einhaltung der JavaBeans-Spezifikation nicht möglich, lassen sich eigene Datentypen implementieren. Diese werden im Typsystem des GDBMS registriert, anschließend können entsprechende Instanzen verwaltet werden.\\
+Ein Typsystem erlaubt die Definition von Integritätsbedingungen und das GDBMS sorgt für deren Einhaltung zur Wahrung der Konsistenz. So können zum Beispiel entsprechend typisierte Kanten nur zwischen Instanzen definierter Knotentypen zugelassen werden oder Wertebereiche eingeschränkt und Kardinalitäten definiert werden.
 
-- ermöglicht die Interpretation der Daten
-	- Integrität und Konsistenz
-	- anpassbares Speichermodell
-	- erlaubt dynamische Schemaänderung
-- Typen sind ebenfalls Atome -> Schema ist Teil der Daten
-- Typkonstruktoren erlauben das definieren beliebiger Typsysteme
-- Definition von Meta-Data und Reasoning (z.B. der Typ Kauf ist das Gegenteil vom Sale)
-- HyperGraphDB erlaubt das standardmäßig das direkte Speichern folgender Typen
-	- primitive Java-Datentypen sowie deren Arrays (byte buffers)
-	- Java-Bean-Klassen
-	- Arrays und Collections von Objekten
-	- Maps als Sequenz von Objektpaaren
-	- speichert Vererbungsinformationen
-- weitere Typen:	
-	- vordefinierte Typen (z.B. Kanten ohne Properties)
-- eigene Typen:
-	- ermöglicht Einbettung von Objekten
-
-% Modellimplementierung
-
-- Knoten-Atome sind beliebige Java-Objekte
-- Kanten-Atome implementieren spezielle Schnittstelle \texttt{HGLink}
-- Verwaltung eines Atoms via Handle (Instanz eines Handle ist die Identität eines Atoms)
-	- keine Primärschlüssel, Identität ist das Objekt
-	- Handle ist einer Markierungsschnittstelle
-	- Handle ist vergleichbar mit Objektreferenz in Java bzw. Zeiger in C/C++
-	(- Handle-basierte Verarbeitung wird empfohlen, abrufen des entsprechenden Java-Objektes nur bei Bedarf)
-
-- jedes Atom besitzt zwei Bezeichner
-	- erster Bezeichner definiert den Typ des Atoms
-	- zweiter Bezeichner speichert den Wert (entsprechend dem Typ)
-- Typen sind ebenfalls Atome -> ermöglicht Abbildung von Vererbungshierarchien
-
-- Gehrels\cite{Gehrels:2013}
-	- Kanten und Knoten sind Atome
-	- Kanten können auf andere Kanten zeigen
-	- Kanten können von anderen Kanten ausgehen
-	- Kanten können von mehreren Knoten und Kanten ausgehen
-	- Kanten können auf mehrere Knoten und Kanten zeigen
-	
-- Implementierung ermöglicht das Verwalten mehrerer Datenbanken
-	- sind jedoch unabhängig voneinander
-
-- Orientierung näher an objekt-orientierten Datenbanken wegen Generalität / Allgemeingültigkeit
-	- Einbettung von Objekten
-	- n-äre Beziehungen
-	- Typisierung von Relationen ermöglicht Reifizierung (z.B. in RDF ein Tripel bei dem das Subjekt ein Tripel ist = Aussage über Aussagen)
-	- sehr flexibles, folglich mächtiges, vielseitiges Datenmodell
+In HyperGraphDB existieren keine Primärschlüssel, die Identität eines Atoms wird durch die Instanz eines sog. Handle repräsentiert. Wird ein Objekt hinzugefügt, wird automatisch ein Handle erzeugt, das Ergebnis einer Anfrage ist eine Menge von Handles. Anhand eines Handle lassen sich die ursprünglichen Objekte wiederherstellen. Dies sollte jedoch nur bei Bedarf erfolgen, da ein Handle im Gegensatz zum Objekt nicht aus dem Java-Heap verdrängt wird und weil Beziehungen zwischen Objektinstanzen nicht durch Java-Referenzen, sondern durch Kanten-Handles repräsentiert werden.
 
 \subsection{Zugriffsmechanismen, Transaktionen und Indexierung}
 
@@ -471,7 +427,7 @@ Das Typsystem in HyperGraphDB erlaubt
 
 \paragraph*{Indexierung}
 
-\subsection{Persistenz und Indexierung}
+\subsection{Persistenz und Caching}
 
 - wie bei Neo4j repräsentiert ein benutzerdefinierter Verzeichnisname die Identität der Datenbank
 - HGConfiguration ermöglicht die Definition verschiedener Einstellungen, z.B.
@@ -484,6 +440,10 @@ Das Typsystem in HyperGraphDB erlaubt
 	- low-level Graph bestehend aus Identitäten und Rohdaten
 - Modell-Schicht:
 	- Repräsentation typisierter Atome
+	
+Caching
+
+The way caching of objects works in HyperGraphDB. The system will cache all currently loaded atoms and maintain a map b/w HGHandles and Java object references. When a Java object is garbage collected, the cache clears its maps from it after a while. But the handle remains valid and the object will be automatically re-loaded upon the next HyperGraph.get(handle) request.
 
 \subsection{Verteilung}
 
