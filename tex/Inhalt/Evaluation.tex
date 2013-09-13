@@ -416,16 +416,63 @@ Ein Typsystem erlaubt die Definition von Integritätsbedingungen und das GDBMS so
 
 In HyperGraphDB existieren keine Primärschlüssel, die Identität eines Atoms wird durch die Instanz eines sog. Handle repräsentiert. Wird ein Objekt hinzugefügt, wird automatisch ein Handle erzeugt, das Ergebnis einer Anfrage ist eine Menge von Handles. Anhand eines Handle lassen sich die ursprünglichen Objekte wiederherstellen. Dies sollte jedoch nur bei Bedarf erfolgen, da ein Handle im Gegensatz zum Objekt nicht aus dem Java-Heap verdrängt wird und weil Beziehungen zwischen Objektinstanzen nicht durch Java-Referenzen, sondern durch Kanten-Handles repräsentiert werden.
 
-\subsection{Zugriffsmechanismen, Transaktionen und Indexierung}
+\subsection{Zugriffsmechanismen}
+
+HyperGraphDB bietet keine eigene Anfragesprache an, sondern erlaubt den Zugriff auf die Datenbasis ausschließlich via Java API im eingebetteten Betrieb. Dabei stehen Operationen zum Erzeugen und Löschen von Atomen, mengenorientierte Operationen und die Möglichkeit zur Traversierung des Graphen zur Verfügung.
+
+\paragraph*{CRUD-Operationen}
+
+Das GDBMS bietet grundlegende Funktionen zum Erzeugen, Auslesen und Löschen von Atomen an. Da Werte innerhalb der Datenbasis unveränderlich sind, erfolgt das Aktualisieren ausschließlich über den Austausch von Werten.
+
+%Knoten
+Ein Knoten definiert sich durch eine Objektinstanz innerhalb der Laufzeitumgebung. Diese lässt sich dem Graphen hinzufügen: Ist ihr Datentyp bereits im Typsystem registriert, wird er automatisch mit dem Knoten verbunden, andernfalls zunächst durch einen Typkonstruktor erzeugt. Das Resultat des Anlegens ist ein Handle, welches den Knoten innerhalb der Datenbasis identifiziert. Anhand des Handles kann die Objektinstanz und deren Typ aus der Datenbasis gelesen werden, umgekehrt lässt sich unter Angabe der Objektinstanz das zugehörige Handle laden. Das Löschen eines Atoms ist ausschließlich unter Angabe des zugehörigen Handles möglich. In Verbindung mit dem flexiblen Typsystem und der vordefinierten Typen lassen sich somit beliebige Nutzdaten an einem Knoten speichern. Wird zum Beispiel eine JavaBean dem Graphen hinzugefügt, so wird diese intern durch eine Record-Struktur repräsentiert, die den schlüsselbasierten Zugriff auf die Attribute des Objektes ermöglicht. Da diese Attribute wiederum typisierte Werte sind, lassen sich beliebig verschachtelte Objekte hinterlegen.
+
+%Kanten
+Kanten werden in HyperGraphDB nicht durch Objektreferenzen zwischen Objektinstanzen, sondern durch spezielle Kantenobjekte repräsentiert. Letztere sind Implementierungen der Schnittstelle \texttt{HGLink}. Das GDBMS stellt drei verschiedene Implementierungen zur Verfügung: Kanten können ohne jegliche Zusatzinformationen, zum Beispiel einer semantischen Bedeutung oder Nutzdaten, angelegt werden. Eine zweite Implementierung erlaubt das Speichern von Nutzdaten an der Kante, dies kann eine beliebig komplexe Objektinstanz oder eine einfache Zeichenkette zur Festlegung eines Kantenbezeichners sein. Ein dritter Typ ermöglicht zudem das Festlegen zulässiger Typen innerhalb der Zielmenge und gestattet damit die Definition von Integritätsbedingungen.\\
+Kanten werden unter Angabe ihrer Zielmenge erzeugt und durch ein Handle identifiziert. Das Auslesen und Löschen erfolgt analog zu Knoten. Kanten stellen darüber hinaus Funktionen zum Auslesen der Zielmenge und der Arität zur Verfügung. Da die Zielmenge ein Tupel und somit geordnet ist, können Handles unter Angabe ihrer Position innerhalb der Zielmenge ausgelesen werden. Dies ermöglicht zum Beispiel die Definition von Kantentypen die einzelnen Positionen innerhalb der Zielmenge eine Semantik zuordnen.
+
+\paragraph*{Mengenorientierte Anfragen}
+
+- API ermöglicht Formulierung und Verknüpfung von Anfragebedingungen (\texttt{HQQueryCondition})
+ 	- werden an HGDB gesendet
+ 	- Menge von Atomen als Ergebnis
+- zwei Arten von Ausdrücken für Atome:
+	- Bezug auf den Wert am Atom (\texttt{AtomTypeCondition}, \texttt{AtomValueCondition})
+	- Bezug auf Topologie des Graphen (\texttt{AtomPartCondition})
+
+- konjunktive und disjunktive Verknüpfung von Prädikaten
+	- Prädikate beziehen sich entweder auf den Wert des Atoms oder auf die Topologie des Graphen
+	- beliebige Schachtelung
+	- Ergebnis ist eine Menge von Handles
+	- grundlegende Prädikate:
+		- eq(x), eq("name", x), lte, gt, gte für den Wert eines Atoms
+		- type(typeID) - Prüfen des Wertes
+	- Beispiel:
+		
+Wert:	
+
+\texttt{hg.and(hg.type(Product.class), hg.gte(\string"salesrank\string", 2))}
+
+Topologie:
+
+\texttt{hg.and(hg.incident(handleInstance), hg.arity(10)}
+
+Topologie und Wert:
+
+\texttt{hg.or(hg.subsumes(Person.class), hg.eq(\string"age\string", 25))}
 
 
-\paragraph*{Transaktionen}
+\paragraph*{Traversierung}
 
-- MVCC -> Lesetransaktionen führen nie zu Konflikten
-- ACI(D)
-- 
+	- Breiten- und Tiefensuche
+	- Adjazenlistengenerator
+		
 
-\paragraph*{Indexierung}
+
+	
+
+
+
 
 \subsection{Persistenz und Caching}
 
@@ -444,6 +491,19 @@ In HyperGraphDB existieren keine Primärschlüssel, die Identität eines Atoms wird
 Caching
 
 The way caching of objects works in HyperGraphDB. The system will cache all currently loaded atoms and maintain a map b/w HGHandles and Java object references. When a Java object is garbage collected, the cache clears its maps from it after a while. But the handle remains valid and the object will be automatically re-loaded upon the next HyperGraph.get(handle) request.
+
+
+\subsection{Transaktionen und Indexierung}
+
+\paragraph*{Transaktionen}
+
+- MVCC -> Lesetransaktionen führen nie zu Konflikten
+- ACI(D)
+- 
+
+\paragraph*{Indexierung}
+
+
 
 \subsection{Verteilung}
 
