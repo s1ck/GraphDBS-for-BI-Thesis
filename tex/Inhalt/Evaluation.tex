@@ -248,7 +248,7 @@ Neo4j verwaltet exakt eine Graphdatenbank, alle Knoten und Kanten sind dieser Da
 
 Die Definition von Kanten-Labels ist obligatorisch, die Definition von Knoten-Labels ist optional. Die Berücksichtigung von Labels beim Zugriff auf die Datenbank ist hingegen generell optional: Es besteht die Möglichkeit, die Datenbank zu verwenden, ohne dass das Schema beachtet wird. Durch Einbeziehen des Schemas ist es jedoch möglich, von den Vorteilen, wie strukturierter Anwendungsmodellierung, vereinfachten Anfragen und effizienter Anfrageausführung zu profitieren. Das Datenmodell eignet sich somit in Anwendungen, bei denen die Anforderungen zu Beginn nicht vollständig erfasst werden können und in denen daher eine hohe Flexibilität hinsichtlich Schemaänderungen erforderlich ist.
 
-\subsection{Zugriffsmechanismen, Transaktionen und Indexierung}
+\subsection{Zugriffsmechanismen, Transaktionen und Indexverwaltung}
 
 Neo4j bietet vier Varianten unterschiedlicher Mächtigkeit für den Zugriff auf die Datenbasis an: Core API, Traversal Framework sowie die Anfragesprachen Cypher und Gremlin. Alle Zugriffsmechanismen lassen sich sowohl im eingebetteten Betrieb als auch in der Client-Server-Konfiguration via REST verwenden. Cypher ist die primäre Anfragesprache in Neo4j, sie wird von Neo Technology entwickelt. Gremlin hingegen entstand im Rahmen des Blueprints-Projektes\footnote{https://github.com/tinkerpop/blueprints/wiki}. Es handelt sich dabei um eine Sammlung von Schnittstellen und Implementierungen, welche die Verarbeitung von Graphen unterstützen und sich dabei am PGM orientieren. Gremlin ist Teil dieser Sammlung und wird unter anderem von Titan und OrientDB als primäre oder sekundäre Anfragesprache eingesetzt. Auf Gremlin wird im Zusammenhang mit den zwei genannten Systemen eingegangen.
 
@@ -334,7 +334,7 @@ Neben der Atomarität ist auch die Dauerhaftigkeit von Änderungen ein wesentliche
 
 Die Bewahrung der Konsistenz innerhalb der Datenbasis ist ebenfalls ein entscheidendes Kriterium bei der Ausführung von Transaktionen. Die bereits erwähnten modellinhärenten Integritätsbedingungen sind hierfür maßgeblich verantwortlich.
 
-\paragraph*{Indexierung} Für den performanten Zugriff auf Graphelemente anhand ihrer Properties unterstützt Neo4j die Definition von Indizes. Dies ist in Version 1.9 ausschließlich via Core API im eingebetteten und Client-Server-Betrieb möglich. Ein Index wird entweder für Knoten oder für Kanten definiert und besitzt einen eindeutigen Bezeichner. Nach dem Erzeugen lassen sich Knoten- bzw. Kanteninstanzen unter Angabe eines beliebigen Schlüssel-Wert-Paares in den Index einfügen, dieser ist folglich nicht an ein konkretes Paar gebunden. Die Suche innerhalb eines Index erfolgt ebenfalls unter Angabe eines Schlüssel-Wert-Paares, alle zugehörigen Instanzen werden zurückgegeben. Durch die fehlende Bindung an ein konkretes Property findet die Index-Aktualisierung bei Änderung der Datenbasis nicht automatisch statt: Nach dem Erzeugen bzw. Löschen einer Knoten- oder Kanteninstanz muss diese dem Index manuell hinzugefügt bzw. entfernt werden. Für das Löschen einzelner und mehrerer Einträge sowie des gesamten Index stehen Funktionen zur Verfügung. Eine automatische Indexierung wird ebenfalls angeboten: Hierfür verwaltet das GDBMS je einen Index für Knoten und Kanten, welche unter Angabe einer Liste von Property-Schlüsseln systemseitig verwaltet werden.
+\paragraph*{Indexverwaltung} Für den performanten Zugriff auf Graphelemente anhand ihrer Properties unterstützt Neo4j die Definition von Indizes. Dies ist in Version 1.9 ausschließlich via Core API im eingebetteten und Client-Server-Betrieb möglich. Ein Index wird entweder für Knoten oder für Kanten definiert und besitzt einen eindeutigen Bezeichner. Nach dem Erzeugen lassen sich Knoten- bzw. Kanteninstanzen unter Angabe eines beliebigen Schlüssel-Wert-Paares in den Index einfügen, dieser ist folglich nicht an ein konkretes Paar gebunden. Die Suche innerhalb eines Index erfolgt ebenfalls unter Angabe eines Schlüssel-Wert-Paares, alle zugehörigen Instanzen werden zurückgegeben. Durch die fehlende Bindung an ein konkretes Property findet die Index-Aktualisierung bei Änderung der Datenbasis nicht automatisch statt: Nach dem Erzeugen bzw. Löschen einer Knoten- oder Kanteninstanz muss diese dem Index manuell hinzugefügt bzw. entfernt werden. Für das Löschen einzelner und mehrerer Einträge sowie des gesamten Index stehen Funktionen zur Verfügung. Eine automatische Indexierung wird ebenfalls angeboten: Hierfür verwaltet das GDBMS je einen Index für Knoten und Kanten, welche unter Angabe einer Liste von Property-Schlüsseln systemseitig verwaltet werden.
 
 Seit Version 2.0 unterstützt Neo4j zusätzlich das Erzeugen von Schema-Indizes in Verbindung mit Knotenlabels. Dies ist sowohl in der Core API, als auch via Cypher möglich. Der Cypher-Befehl
 
@@ -421,7 +421,7 @@ Ein Typsystem erlaubt die Definition von Integritätsbedingungen und das GDBMS so
 
 In HyperGraphDB existieren keine Primärschlüssel, die Identität eines Atoms wird durch die Instanz eines sog. Handle repräsentiert. Deren Funktion wird im Zusammenhang mit den Zugriffsmechanismen näher erläutert.
 
-\subsection{Zugriffsmechanismen}
+\subsection{Zugriffsmechanismen und Transaktionen}
 
 HyperGraphDB bietet keine dedizierte Anfragesprache an, sondern erlaubt den Zugriff auf die Datenbasis ausschließlich via Java API im eingebetteten Betrieb. In diesem Zusammenhang stehen CRUD- und mengenorientierte Operationen sowie die Möglichkeit zur Traversierung des Graphen zur Verfügung.
 
@@ -498,34 +498,38 @@ BerkeleyDB implementiert einen Timeout-Mechanismus\cite{DBLP:books/sp/HarderR01}
 HyperGraphDB garantiert standardmäßig keine Dauerhaftigkeit von Transaktionen. Um dies zu erläutern,  muss kurz auf die Interna von BerkeleyDB eingegangen werden: BerkeleyDB bildet eine Datenbank innerhalb eines B-Baumes ab. Es handelt sich um eine spezielle Form, in der Nutzdaten ausschließlich in den Blättern hinterlegt sind. Änderungsoperationen beeinflussen sowohl die Struktur des Baumes als auch die Einträge in den Blättern. Zur Gewährleistung von Dauerhaftigkeit nutzt BerkeleyDB ein Transaktions-Log, in dem alle logischen Änderungsoperationen registriert werden. Dies bedeutet, dass sich durch sequentielles Ausführen der Log-Einträge der B-Baum rekonstruieren lässt. Folglich ist das Transaktions-Log die Datenbasis. Um den Wiederherstellungsaufwand im Fehlerfall zu minimieren, werden periodisch Sicherungspunkte geschrieben in denen der B-Baum vollständig gespeichert ist\cite{oracle_bdb:2013}.\\
 Das Transaktions-Log wird permanent im Hauptspeicher gehalten. Kommt es während der Ausführung einer Transaktion zum Ausfall des GDBMS, sind die bis dahin erfolgten Änderungen ausschließlich im Hauptspeicher und somit verloren. Die Atomarität einer Transaktion ist damit sichergestellt und eine UNDO-Recovery nicht erforderlich. Für die Wiederholbarkeit erfolgreicher Transaktionen wird beim Commit  ein entsprechender Eintrag in das Log geschrieben. In der Standardeinstellung von BerkeleyDB führt dieser Eintrag zum Ausschreiben des Logs auf den Hintergrundspeicher, eine REDO-Recovery ist folglich möglich. HyperGraphDB initialisiert BerkeleyDB standardmäßig mit einer Konfiguration, die es der Datenbank erlaubt, das Transaktions-Log asynchron auf den Hintergrundspeicher zu schreiben, was bedeutet, dass Änderungen zum Commit-Zeitpunkt nicht unmittelbar persistiert werden.\footnote{Die Initialisierung kann im Quelltext unter \url{https://code.google.com/p/hypergraphdb/source/browse/trunk/storage/bdb-je/src/java/org/hypergraphdb/storage/bje/BJEConfig.java} in Zeile 64 nachvollzogen werden} Kommt es zwischen Commit und Persistieren des Logs zum Systemausfall, sind die Änderungen der Transaktion verloren.
 
-\subsection{Persistenz und Caching}
+\subsection{Persistenz-, Cache- und Indexverwaltung}
 
-- wie bei Neo4j repräsentiert ein benutzerdefinierter Verzeichnisname die Identität der Datenbank
-- HGConfiguration ermöglicht die Definition verschiedener Einstellungen, z.B.
-	- maximale Größe von Inzidenzmengen im Hauptspeicher
-	- transaktional ja/nein
-	- Festlegung der Persistenz-Implementierung (standardmäßig BerkeleyDB)
+Wie anfangs erwähnt, ist HyperGraphDB ein nicht-natives GDBMS, welches den Graphen auf assoziative Arrays abbildet und diese für die Anfrageausführung sowie die physische Repräsentation der Datenbasis verwendet. Die Organisation erfolgt dabei innerhalb des GDBMS in zwei Schichten: Der primitiven Speicherschicht, welche direkt auf das eingesetzte Speichersystem zugreift, und der Modellschicht, welche von der primitiven Schicht abstrahiert und deren Informationen als Elemente des Datenmodells repräsentiert. Das eingesetzte Speichersystem wird nachfolgend als physische Speicherschicht bezeichnet, da es letztendlich die Persistenz der Daten sicherstellt, standardmäßig ist dies BerkeleyDB.
 
-- Zwei Schichten: Primitive und Modell-Schicht
-- Primitive Schicht:
-	- low-level Graph bestehend aus Identitäten und Rohdaten
-- Modell-Schicht:
-	- Repräsentation typisierter Atome
+Die primitive Speicherschicht bildet die Topologie des Graphen und die Rohdaten der Atomwerte ab, Typen werden auf dieser Ebene noch nicht berücksichtigt. Für die Speicherung werden zwei assoziative Arrays verwendet:
+
+\texttt{LinkStore: ID $\rightarrow$ List<ID>}\newline
+\texttt{DataStore: ID $\rightarrow$ List<byte>}
+
+Der \texttt{LinkStore} bildet die Struktur des Graphen ab, indem er Identitäten (IDs) eine Liste weiterer Identitäten zuordnet. Im \texttt{DataStore} werden jeder Identität Rohdaten in Form eines Byte-Arrays zugeordnet. Jeder Datensatz in der primitiven Speicherschicht ist folglich ein Schlüssel-Wert-Paar. Der Schlüssel wird in HyperGraphDB durch ein spezielles Handle repräsentiert, das sog. \texttt{HGPersistentHandle}. Dieses ordnet jedem Atom eine UUID fester Länge zu. Innerhalb der primitiven Speicherschicht ist somit der \texttt{LinkStore} eine Liste von Instanzen des genannten Handles.\\
+In der physischen Speicherschicht werden die Werte beider Arrays als Byte-Arrays abgelegt. Die Interpretation der Werte im \texttt{LinkStore} erfolgt in der primitiven Speicherschicht, ermöglicht wird dies durch die feste Länge der UUIDs. Die Werte im \texttt{DataStore} können auf dieser Ebene noch nicht interpretiert werden, da keine Informationen zum Datentyp vorhanden sind. Es sollte deutlich werden, dass die Schlüsselmengen im \texttt{LinkStore} und \texttt{DataStore} identisch sind und somit zwei getrennte Key-Value-Datenbanken notwendig sind um die Informationen zu speichern.
+
+Die Modellschicht wandelt die Informationen der primitiven Speicherschicht in die abstrakten Elemente des Datenmodells um. Nachfolgend sind alle ID-Bezeichner als Instanzen von \texttt{HGPersistentHandle} zu verstehen. Ein Schlüssel-Wert-Paar im \texttt{LinkStore} wird in der Modellschicht als Atom interpretiert, jeder Position innerhalb des Wertes ist eine feste Semantik zugeordnet:
+
+\texttt{AtomID $\rightarrow$ [TypeID, ValueID, TargetID, ..., TargetID]}
+
+Die \texttt{TypeID} verweist auf den Typ des Atoms während die \texttt{ValueID} den zugehörigen Wert referenziert. Anschließend wird die Zielmenge des Atoms aus einer Menge von \texttt{TargetIDs} definiert. Da ein Knoten im Datenmodell ein Atom mit Arität Null ist, enthält seine physische Repräsentation im Gegensatz zu einer Kante nur den Verweis auf seinen Typ und den Wert. Da sowohl der Typ eines Atoms als auch die Einträge in der Zielmenge Atome sind, verweisen \texttt{TypeID} und \texttt{TargetID} rekursiv auf eine \texttt{AtomID}.
+
+Der Wert eines Atoms ist im \texttt{DataStore} der primitiven Datenschicht hinterlegt. In der Modellschicht wird die \texttt{ValueID} eines Atoms wie folgt abgebildet:
+
+\texttt{ValueID $\rightarrow$ List<ID> | List<byte>}
+
+Für primitive Datentypen wird direkt das Byte-Array angegeben, während sich komplexe Datentypen aus mehreren Einträgen im \texttt{DataStore} zusammensetzen. An dieser Stelle wird auch anhand der Speicherung deutlich, warum Werte an Atomen grundsätzlich unveränderlich sind und eine Wertänderung nur durch den Austausch des Wertes erfolgen kann.\\
+Die Interpretation der Werte erfolgt nicht in der Modellschicht, sondern wird von der jeweiligen Typimplementierung bzw. vom jeweiligen Typkonstruktur durchgeführt. Im Zusammenhang mit dem Typsystem wurde bereits erwähnt, dass Typen abstrakte Fabriken sind und unter anderem eine Methode zum Erzeugen der entsprechenden Instanzen zur Verfügung stellen. Diese Methode nimmt die Rohdaten entgegen und führt die Deserialisierung durch.
+
 	
 Caching
 
 The way caching of objects works in HyperGraphDB. The system will cache all currently loaded atoms and maintain a map b/w HGHandles and Java object references. When a Java object is garbage collected, the cache clears its maps from it after a while. But the handle remains valid and the object will be automatically re-loaded upon the next HyperGraph.get(handle) request.
 
 
-\subsection{Transaktionen und Indexierung}
-
-
-
-\paragraph*{Indexierung}
-
-
-
-\subsection{Verteilung}
+\subsection{Verteilung und Skalierbarkeit}
 
 - Replikation
 - XMPP-based distribution framework
