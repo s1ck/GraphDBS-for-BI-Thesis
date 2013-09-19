@@ -86,7 +86,7 @@ Es kann nicht festgestellt werden, dass einzelne Anforderungen besonders häufig 
 
 Die einzige obligatorische Anforderung in dieser Kategorie (Tabelle \ref{tab:verwaltung}) bezieht sich auf das Datenmodell: Die Eigenschaften des Property-Graph-Modell werden als Mindestvoraussetzung festgelegt, das Property-Hyper-\linebreak~graph-Modell ist ebenfalls zulässig, da es das PGM um n-äre Beziehungen erweitert. Annähernd die Hälfte der aufgeführten GDBMS verzichtet auf Kantenattribute, Kantenbezeichner oder parallele Kanten, dies sind jedoch relevante Werkzeuge für die Modellierung innerhalb des Projektes.
 
-Einige der durchzuführenden Analysen basieren auf der Extraktion von Geschäftsprozessen in Form von Subgraphen. In diesem Zusammenhang ist es von Vorteil, wenn sich diese Subgraphen systemseitig logisch getrennt in mehreren Datenbanken verwalten lassen. Diese optionale Anforderung wird jedoch nur von zwei Systemen erfüllt.\\
+Einige der durchzuführenden Analysen basieren auf der Extraktion von Geschäftsprozessen in Form von Subgraphen. In diesem Zusammenhang ist es von Vorteil, wenn sich diese Subgraphen systemseitig logisch getrennt in mehreren Datenbanken verwalten lassen. Diese optionale Anforderung wird jedoch nur von drei Systemen erfüllt.\\
 Die Möglichkeit zur Definition eines Schemas ist ein rein informatives Kriterium. Es wird deutlich, dass viele der Systeme auf die anwendungsseitige Umsetzung eines Schemas ausgerichtet sind und keine bzw. nur wenige Werkzeuge für die systemseitige Schemaverwaltung anbieten.\\
 Die Erfüllung der ACID-Eigenschaften im Zusammenhang mit der Transaktionsausführung in operativen Systemen spielt in Unternehmensdaten eine wichtige Rolle. Da das auszuwählende GDBMS jedoch vorrangig für die Analyse und weniger für den operativen Betrieb genutzt werden soll, wird diese Anforderung als optional deklariert.\\
 Im Zusammenhang mit ACID hat die Möglichkeit zur Definition von Integritätsbedingungen große Bedeutung: Modellinhärente Bedingungen, wie zum Beispiel die referentielle Integrität, bei der eine Kante mindestens einen Start- und einen Zielknoten besitzen muss, werden von allen Systemen implementiert. Die Möglichkeit zur Definition von Integritätsbedingungen wird als optionale Anforderung gewertet.
@@ -109,7 +109,7 @@ Im Zusammenhang mit ACID hat die Möglichkeit zur Definition von Integritätsbedin
    	Infogrid		& Gerichteter, knotenattributierter, kantenbezeichneter Multigraph	& -	& \checkmark & \checkmark & \checkmark \\
    	Neo4j			& PGM	& -	& (\checkmark)	& \checkmark	& \checkmark \\
    	OQGRAPH			& Gerichteter, gewichteter Multigraph	& -	& -	& -	& \checkmark \\
-   	OrientDB		& PGM	& -	& \checkmark	& \checkmark	& \checkmark \\
+   	OrientDB		& PGM	& \checkmark	& \checkmark	& \checkmark	& \checkmark \\
    	Titan			& PGM	& -	& \checkmark	& \checkmark	& \checkmark \\
    	\hline
    	\end{tabular} 
@@ -234,7 +234,7 @@ Neo Technology bietet das Datenbanksystem in drei verschiedenen Ausführungen an:
 
 Die nachfolgenden Erläuterungen beziehen sich auf Version 2.0.0-M04 des GDBMS, diese Version beinhaltet Erweiterungen hinsichtlich des Datenmodells und der Anfragesprache. Die Informationen stammen aus der offiziellen Neo4j-Dokumentation\cite{Neo4j_manual:2013} sowie aus den Ausführungen in \cite{robinson2013graph}.
 
-\subsection{Datenmodell und Konsistenzerhaltung}
+\subsection{Datenmodell}
 
 Neo4j implementiert das Property-Graph-Modell, dieses wird in der aktuellen Version um Knotenbezeichner erweitert, mit deren Hilfe sich Knoten zu Gruppen zusammenfassen lassen. Ein Knoten kann keiner oder einer Gruppe, aber auch beliebig vielen Gruppen zugeordnet werden. Knoten- und Kantenbezeichner werden in Neo4j als Labels bezeichnet. Die Modell-Erweiterung um Knoten-Labels bietet verschiedene Vorteile: Anfragen lassen sich durch Einbeziehen von Labels auf einen Teilgraphen einschränken, was die Formulierung von Anfragen stark vereinfacht und deren effizientere Ausführung ermöglichen kann. Labels sind nicht gleichbedeutend mit einer Relation in der relationalen Algebra, ein Label wird lediglich durch seinen Namen definiert, es wird kein Schema der zugeordneten Elemente vorgegeben. Label können zur Laufzeit an Knoten hinzugefügt und entfernt werden. Insgesamt betrachtet sind sie ein nützliches Werkzeug in der strukturierten Anwendungsmodellierung.
 
@@ -246,7 +246,7 @@ Zur Gewährleistung der Datenintegrität hält das Modell verschiedene Mechanismen 
 
 Neo4j verwaltet exakt eine Graphdatenbank, alle Knoten und Kanten sind dieser Datenbank zugeordnet. Eine logische Partitionierung der Knotenmenge ist durch Labels oder dedizierte Attribute möglich, für den Fall, dass auch die Kantenmenge partitioniert werden soll, ist dies ausschließlich über Attribute möglich. 
 
-Die Definition von Kanten-Labels ist obligatorisch, die Definition von Knoten-Labels ist optional. Die Berücksichtigung von Labels beim Zugriff auf die Datenbank ist hingegen generell optional: Es besteht die Möglichkeit, die Datenbank zu verwenden, ohne dass das Schema beachtet wird. Durch Einbeziehen des Schemas ist es jedoch möglich, von den Vorteilen, wie strukturierter Anwendungsmodellierung, vereinfachten Anfragen und effizienter Anfrageausführung zu profitieren. Das Datenmodell eignet sich somit in Anwendungen, bei denen die Anforderungen zu Beginn nicht vollständig erfasst werden können und in denen daher eine hohe Flexibilität hinsichtlich Schemaänderungen erforderlich ist.
+Die Definition von Kanten-Labels ist obligatorisch, die Definition von Knoten-Labels ist optional. Die Vergabe von Kanten-Labels entspricht somit der Definition eines minimalen Schemas. Die Berücksichtigung von Labels beim Zugriff auf die Datenbank ist hingegen generell optional: Es besteht die Möglichkeit, die Datenbank zu verwenden, ohne dass das Schema beachtet wird. Durch Einbeziehen des Schemas ist es jedoch möglich, von den Vorteilen, wie strukturierter Anwendungsmodellierung, vereinfachten Anfragen und effizienter Anfrageausführung zu profitieren. Das Datenmodell eignet sich somit in Anwendungen, bei denen die Anforderungen zu Beginn nicht vollständig erfasst werden können und in denen daher eine hohe Flexibilität hinsichtlich Schemaänderungen erforderlich ist.
 
 \subsection{Zugriffsmechanismen, Transaktionen und Indexverwaltung}
 
@@ -419,6 +419,7 @@ Es sollte deutlich werden, dass ein Typ in HyperGraphDB ein Atom mit einer spezi
 Arrays, Collections, Maps und generell Klassen, welche die Schnittstelle \texttt{Serializable} implementieren.\footnote{Eine vollständige Übersicht befindet sich im Quelltext des GDBMS unter \url{https://code.google.com/p/hypergraphdb/source/browse/tags/release1.2/core/src/config/org/hypergraphdb/types}} Vererbungshierarchien werden ebenfalls persistiert und durch einen dedizierten Kantentyp repräsentiert. Sollen komplexere Datentypen verwendet werden oder ist die Einhaltung der JavaBeans-Spezifikation nicht möglich, lassen sich eigene Datentypen implementieren. Diese werden im Typsystem des GDBMS registriert, anschließend lassen sich deren Instanzen in der Datenbasis verwalten.\\
 Ein Typsystem erlaubt die Definition von Integritätsbedingungen und das GDBMS sorgt durch deren Einhaltung für die Wahrung der Konsistenz. So lässt sich zum Beispiel die Zielmenge entsprechend typisierter Kanten auf definierte Typen einschränken, darüber hinaus ist das Definieren von Wertebereichen und Kardinalitäten möglich.
 
+% eine oder mehrere Datenbanken
 In HyperGraphDB existieren keine Primärschlüssel, die Identität eines Atoms wird durch die Instanz eines sog. Handle repräsentiert. Deren Funktion wird im Zusammenhang mit den Zugriffsmechanismen näher erläutert.
 
 \subsection{Zugriffsmechanismen und Transaktionen}
@@ -572,125 +573,40 @@ Durch eine anwendungsseitige Aufteilung des Schemas und die mehrfache Definition
 
 % Firma + Lizenz
 OrientDB ist ein quelloffenes GDBMS, das von der Firma Orient Technologies\footnote{\url{http://www.orientechnologies.com
-}} entwickelt wird. Der Quellcode steht unter Apache 2.0 Lizenz, was bedeutet, dass er in freien, aber auch auch in kommerziellen Anwendungen verwendet werden darf. Das GDBMS wurde 2010 veröffentlicht, die erste stabile Version 1.0 erschien 2012. Für die Implementierung wird ausschließlich Java verwendet, die Ausführung ist somit analog zu Neo4j und HyperGraphDB an die JVM gebunden und auf kompatiblen Plattformen möglich. OrientDB ist ein natives GDBMS, sowohl Modellierung und Zugriff als auch Verarbeitung und Speicherung orientieren sich an der Topologie der Daten. Das DBMS wird entweder in Form einer eingebetteten Bibliothek innerhalb von Java-Anwendungen oder in einer Client-Server-Konfiguration verwendet. Der Server bietet den Zugang über REST-Schnittstellen an, Clients stehen in vielen Programmiersprachen zur Verfügung.\footnote{\url{https://github.com/orientechnologies/orientdb/wiki/Programming-Language-Bindings}} OrientDB kann sowohl als zentrales GDBMS als auch in einer verteilten Konfiguration eingesetzt werden. Hierfür wird eine Master-Master-Replikation realisiert, welche die horizontale Skalierbarkeit von Lese- und Schreibanfragen sowie eine erhöhte Ausfallsicherheit gestattet. Die Speicherung der Datenbasis erfolgt disk-zentriert, das System bietet zwar die ausschließliche Nutzung des Hauptspeichers an, dies entspricht jedoch nicht der definierten hauptspeicher-zentrierten Speicherung, sondern ist für die Verwendung im Rahmen von Unit-Tests konzipiert.
+}} entwickelt wird. Der Quellcode steht unter Apache 2.0 Lizenz, was bedeutet, dass er in freien, aber auch auch in kommerziellen Anwendungen verwendet werden darf. Das GDBMS wurde 2010 veröffentlicht, die erste stabile Version 1.0 erschien 2012. Für die Implementierung wird ausschließlich Java verwendet, die Ausführung ist somit analog zu Neo4j und HyperGraphDB an die JVM gebunden und auf kompatiblen Plattformen möglich. OrientDB ist ein natives Graphdatenbanksystem, da sowohl Modellierung und Zugriff als auch Verarbeitung und Speicherung der Daten graphenorientiert erfolgen. Es wird entweder in Form einer eingebetteten Bibliothek innerhalb von Java-Anwendungen oder in einer Client-Server-Konfiguration verwendet. Der Server bietet den Zugriff auf die Datenbasis mittels einer REST-Schnittstelle an, entsprechende Clients stehen in vielen Programmiersprachen zur Verfügung.\footnote{\url{https://github.com/orientechnologies/orientdb/wiki/Programming-Language-Bindings}} OrientDB kann sowohl als zentrales GDBMS als auch in einer verteilten Konfiguration eingesetzt werden. Hierfür wird eine Master-Master-Replikation realisiert, die eine horizontale Skalierbarkeit von Lese- und Schreibanfragen sowie eine erhöhte Ausfallsicherheit verspricht. Die Speicherung der Datenbasis erfolgt disk-zentriert, das System bietet zwar die ausschließliche Nutzung des Hauptspeichers an, dies entspricht jedoch nicht der definierten hauptspeicher-zentrierten Speicherung, sondern ist für die Verwendung im Rahmen von Unit-Tests konzipiert.
 
 % Besonderheiten (Dokumente, Typsystem) + Anwendungsfall
-Eine Besonderheit von OrientDB gegenüber den vorgestellten Systemen ist die Möglichkeit zur Verwendung verschiedener Datenmodelle: Die Speicherung der Information erfolgt grundlegend in Form von Dokumenten, welche aus Schlüssel-Wert-Paaren bestehen und beliebig ineinander verschachtelt sein können. Ein darauf aufbauendes graphenorientiertes Datenmodell ermöglicht die Definition von Beziehungen zwischen Dokumenten. Darüber hinaus bietet OrientDB den Einsatz als objektorientierte Datenbank an, wobei Objekte ebenfalls auf Dokumente abgebildet werden. Das DBMS erlaubt im Dokumenten-, Graph- und auch im objektorientierten Datenmodell die Definition eines Schemas zur Modellierung einer Anwendungsdomäne und zur Festlegung von Integritätsbedingungen. Der Verzicht auf ein Schema und die Kombination aus strukturierten und semi-strukturierten Daten ist hingegen ebenfalls möglich.\\
-Ein Alleinstellungsmerkmal von OrientDB in der vorliegenden Evaluation ist die Verwendung des SQL-Standards für die Formulierung von Anfragen an die Datenbasis. OrientDB stellt eine Teilmenge des Standards zur Verfügung und erweitert diese mit graphenspezfischen Operationen. Ein weiteres Alleinstellungsmerkmal ist die bereits im DBMS integrierte Nutzer- und Rollenverwaltung.
+Eine besonderes Merkmal von OrientDB ist die Möglichkeit, die Datenbank mit verschiedenen Datenmodellen nutzen zu können: So erfolgt die Speicherung der Informationen grundlegend in Form von Dokumenten, welche aus Schlüssel-Wert-Paaren bestehen und beliebig verschachtelt sein können. Ein darauf aufbauendes graphenorientiertes Datenmodell ermöglicht die Definition von Beziehungen zwischen Dokumenten. Darüber hinaus lässt sich OrientDB als objektorientiertes Datenbanksystem einsetzen, wobei Objektinstanzen ebenfalls auf Dokumente abgebildet werden. In allen drei Datenmodellen gestattet das DBMS die Definition eines Schemas zur Modellierung einer Anwendungsdomäne und zur Festlegung von Integritätsbedingungen. Der vollständige Verzicht auf ein Schema und die Kombination eines Schemas mit semi-strukturierten Daten ist hingegen ebenfalls möglich.\\
+Ein Alleinstellungsmerkmal von OrientDB in der vorliegenden Evaluation ist die Verwendung des SQL-Standards für die Formulierung von Anfragen an die Datenbasis. OrientDB stellt eine Teilmenge des Standards zur Verfügung und erweitert diese mit graphenspezifischen Operationen. Ein weiteres Alleinstellungsmerkmal ist die bereits integrierte Nutzer- und Rollenverwaltung.
 
 % Ausführungen beziehen sich auf ... + Quellen
-Die nachfolgende Evaluation basiert auf der im September 2013 freigegebenen Version 1.5.1. Der Großteil der Informationen stammt aus den Ausführungen zu OrientDB in \cite{EdlichFriedlandHampeBrauer201010} und der offiziellen Dokumentation\cite{Orient_doku:2013}. Es wird ausschließlich das Dokumenten- und das darauf aufbauende Graphdatenmodell berücksichtigt, da vor allem letzteres für die Evaluation relevant ist.
+Die nachfolgende Evaluation basiert auf der im September 2013 freigegebenen Version 1.5.1. Der Großteil der Informationen stammt aus den Ausführungen zu OrientDB in \cite{EdlichFriedlandHampeBrauer201010} und der offiziellen Dokumentation\cite{Orient_doku:2013}. Es werden ausschließlich das Dokumenten- und das darauf aufbauende Graphdatenmodell berücksichtigt, da insbesondere letzteres für die Evaluation relevant ist.
 
 \subsection{Datenmodell, Typsystem und Rechteverwaltung}
 
-% Datenmodell allgemein
-
-% Dokumentenmodell
-- Dokumentenmodell ist die Grundlage aller weiteren Datenmodelle
-
-- grundlegende Einheit ist das Dokument
-	- Menge von Schlüssel-Wert-Paaren
-	- eindeutige Schlüssel
-	- native Unterstützung vordefinierter Typen
-		- primitive Java-Datentypen
-		- Listen, Mengen, assoziative Arrays
-	- Schachtelung von Objekten ist Möglich (Objekteinbettung)
-	- systemseitige Versionierung
-	- Nutzung erfolgt wahlweise mit oder ohne Schema bzw. gemischt
-	- Schema = Typ
-	- schwache Typisierung: Schema kann existieren, jedoch mit zusätzlichen Attributen erweitert werden
-
+Wie bereits erwähnt, ist das Dokumentenmodell das grundlegende Datenmodell in OrientDB. Die Basiseinheit zur Darstellung von Informationen ist das Dokument, welches sich aus einer Menge von Schlüssel-Wert-Paaren zusammensetzt. Schlüssel sind innerhalb eines Dokumentes eindeutige Bezeichner vom Typ \texttt{String}, zugehörige Werte entsprechen einem definierten Datentyp und dienen zur Speicherung der Nutzdaten. Das System unterstützt eine Vielzahl vordefinierter Typen, wie zum Beispiel \texttt{int} oder \texttt{float}, und erlaubt darüber hinaus die Definition eigener Typen.\footnote{Eine Liste aller vordefinierter Datentypen kann unter \url{https://github.com/orientechnologies/orientdb/wiki/Types} eingesehen werden.} Ein Wert kann auch ein Dokument bzw. eine Menge von Dokumenten sein, wodurch sich beliebige Einbettungen realisieren lassen.
 
 % Graphenmodell
+Für die Modellierung von Graphen bietet OrientDB das Property-Graph-Modell an. Dieses kann entsprechend der Definition schemalos verwendet werden, analog zu Neo4j wird jedoch die Definition eines Schemas empfohlen um das Formulieren von Anfragen zu vereinfachen und gleichzeitig deren effizientere Ausführung zu ermöglichen. Die Knoten innerhalb des Graphen und ihre Attribute werden auf Dokumente abgebildet. Ist die Vergabe von Knotenbezeichnern erforderlich, kann dies entweder durch ein dediziertes Schlüssel-Wert-Paar oder durch die Zuordnung des Knotens zu einer Klasse erfolgen.
 
-- Property-Graph-Modell
-	- setzt auf Dokumentenmodell auf
-	- PGM ist grundsätzlich schemalos
-	- Unterschied: Daten können komplett oder nur teilweise einem Schema unterliegen bzw. komplett auf ein solches verzichten
-	- Schema erlaubt Attributeinschränkungen, Definition von Indizes und obligatorischen Attributen
+Für die Repräsentation von Beziehungen unterscheidet OrientDB zwei Arten: Referenzierte und eingebettete Beziehungen. Beziehungsinformationen werden generell als Schlüssel-Wert-Paare am Knoten abgelegt. Eine referenzierte Beziehung entspricht dem Konzept einer gerichteten Kante. Der Schlüssel ist der Kantenbezeichner, welcher sich aus dem Typ der entsprechenden Kante ergibt. Werden keine Kantenattribute verwendet, so ist der zugehörige Wert die Menge der Identitäten aller Zielknoten, die über eine entsprechend bezeichnete Kante mit dem Startknoten verbunden sind. Besitzt die Kante hingegen Attribute, so wird sie durch ein eigenes Dokument in der Datenbasis repräsentiert. Der Wert am Startknoten ist in diesem Fall eine Menge der Kanten-Identitäten. In beiden Fällen kann diese Menge unsortiert oder geordnet sein. Die Zielknoten enthalten ebenfalls dedizierte Schlüssel-Wert-Paare, welche Informationen über die eingehenden Kanten speichern. Auch hier wird entweder direkt auf Startknoten oder auf Kanten-Dokumente verwiesen.\footnote{Die Ausführungen basieren auf der Implementierung des in Anhang \ref{anh:domain_example} gezeigten Beispiels und der anschließenden Untersuchung der physischen Repräsentation der Datenbasis.} Daraus geht hervor, dass auch in OrientDB eine einzelne Kante zur Darstellung einer bidirektionalen Beziehung ausreicht.
 
-
-% Knoten: Label?, Identität, Schema
-- repräsentiert durch Dokument
-% Kanten: Label?, Richtung, Identität, Schema
-- repräsentiert durch Dokument
-- zwei Arten von Beziehungen:
-	- referenziert
-		- werden explizit gespeichert (Dokument) -> eigene Identität
-		- Richtung wird gespeichert
-		- Typen
-			- 1-1 / N-1 -> \texttt{LINK}
-			- 1-N / N-M -> \texttt{LINKLIST} (ordered), \texttt{LINKSET} (unordered, no duplicates) \texttt{LINKMAP} (sortierte Abbildung von Kanten mit String Bezeichnern, no duplicates)
-	- eingebettet
-		- werden in das Dokument eingebettet (Komposition) -> keine eigene Identität
-		- Kantenbezeichner ist ein Attribut am Startknoten, Wert ist der Zielknoten
-		- Typen
-			- 1-1 / N-1 -> \texttt{EMBEDDED}
-			- 1-N / N-M -> \texttt{EMBEDDEDLIST}, \texttt{EMBEDDEDSET}, \texttt{EMBEDDEDSET},
-	- Kanten lassen sich NICHT in beiden Richtungen traversieren
-	- wird eine Kante in umgekehrter Richtung angelegt, muss sich der Entwickler um die Einhaltung der Konsistenz kümmern -> modellinhärente Integrität
-- Bezeichner wird durch die Klasse der Kante festgelegt
-	
-% Datenbank
-- mehrere Instanzen möglich
-- eindeutiger Bezeichner
-- verschiedene Datenbanktypen je nach erforderlichem Datenmodell
-- verschiedene Datenbankengines je nach Verwendung
-	- lokal
-	- entfernt
-	- in-memory (z.B. für Unit-Test)
-
-	
-% Properties: JSON-Dokument?, zulässige Werte, Null-Werte?
-% Datenintegrität: modellinhärent, attributbezogene Integritätsbedingungen, Wertebereiche, Primärschlüssel, Unique
+Eine zweite Art, Abhängigkeiten zwischen Informationen zu modellieren, ist die Verwendung eingebetteter Beziehungen. Diese werden üblicherweise in dokumentenorientierten Datenbanken eingesetzt in denen das Konzept der Fremdschlüssel nicht vorhanden ist. Die Beziehung zwischen zwei Objekten A und B wird durch das Einbetten von B in A oder umgekehrt modelliert und ist vergleichbar mit der Komposition in der UML. Das eingebettete Objekt besitzt keine eigene Identität innerhalb der Datenbasis. Der Schlüssel bezeichnet die Art der Beziehung, der Wert die referenzierte Information. Abbildung \ref{fig:orient_example} verdeutlicht die verschiedenen Beziehungsarten. Sollen mehrere Werte mit dem gleichen Schlüssel eingebettet werden, so ist dies analog zu referenzierten Beziehungen in geordneten Listen oder unsortierten Mengen möglich. Generell bietet sich diese Art der Modellierung an, wenn die eingebetteten Informationen nur für den jeweiligen Knoten relevant sind und nicht mehreren Knoteninstanzen zugeordnet sein können. Letzteres würde zu Redundanz führen und folglich die Konsistenzerhaltung erschweren.
 
 % Identität
+Die Identität eines Dokumentes wird systemseitig vergeben und ist unveränderbar. Dokumente können mittels ihrer Identität adressiert werden, sie entspricht somit dem Konzept des Primärschlüssels. Aus den vorhergehenden Ausführungen geht hervor, dass sowohl Knoten als auch Kanten in Form von referenzierten Beziehungen eine Identität besitzen. Bei nicht-attributierten Kanten setzt sich diese aus den Identitäten der Start- und Zielknoten zusammen. Anzumerken ist, dass eine Identität nach dem Löschen der zugehörigen Instanz neu vergeben werden kann. Der detaillierte Aufbau wird im Zusammenhang mit der physischen Repräsentation des Graphen erläutert.
 
-- Dokumente werden systemseitig durch Record repräsentiert
-- Records werden in physischen Clustern zusammengefasst
-- besitzt eindeutigen Bezeichner: RecordID (Primärschlüssel)
-	- setzt sich aus ClusterID und Position im Cluster zusammen
-	- systemseitig, unveränderbar
-	- kann nach Löschen wiederverwendet werden -> nicht in Anwendung verwenden
-	- Zugriff via RecordID möglich
-- Records besitzen Versionsnummer
-	- inkrementiert bei Änderung, wird bei Transaktionsausführung verwendet
+% Datenbank
+Im Gegensatz zu den bisher vorgestellten GDBMS erlaubt OrientDB das Verwalten mehrere Datenbanken in einer GDBMS-Instanz. Dabei benötigt jede Datenbank einen eindeutigen Bezeichner, ein Datenbank-übergreifender Zugriff innerhalb von Anfragen ist jedoch nicht möglich. Beim Initialisieren einer Datenbank kann festgelegt werden, ob sich diese lokal im Dateisystem oder entfernt im Netzwerk befindet, alternativ kann sie für Testzwecke komplett im Hauptspeicher gehalten werden.
 
-\paragraph*{Typsystem}
+\paragraph*{Typsystem} 
 
-- Definition von Klassen
-	- besitzen Attribute
-		- vordefinierte Typen für Attribute \url{https://github.com/orientechnologies/orientdb/wiki/Types}
-		- Attribute können Klassen sein -> Dokument-Konzept (Einbettung)
-		- Einschränkungen
-			- explizite Wertebereichseinschränkungen (min, max)
-			- UNIQUE Index -> Primärschlüssel
-			- Mandatory
-			- keine Updates (nur initiales Schreiben)
-			- not null
-			- reguläre Ausdrücke
-			
-	- legt den Typ von Records fest
-	- Klassen können schemalos, schema-full oder gemischt sein
-	- können abstrakt sein
-	- 
+Anzahl und Struktur der Schlüssel-Wert-Paare können für jedes Dokument individuell verschieden sein oder aber durch ein Schema festgelegt werden. Darüber hinaus ist es in OrientDB möglich, nur einen Teil der Informationen durch ein Schema zu beschreiben und dieses beliebig zu erweitern. Folglich ist auch hier eine hohe Flexibilität hinsichtlich der Schemaevolution innerhalb einer Anwendung gegeben.\\
+Ein Schema definiert sich in OrientDB durch eine Menge von Klassen, wobei eine Klasse an das entsprechende Konzept in der Objektorientierung angelehnt ist. Eine Klasse legt den Typ eines Dokumentes fest und definiert, welche Attribute dieses besitzt und welche Integritätsbedingungen sie aufweisen. Beispielweise kann der Wertebereich durch den entsprechenden Typ implizit eingeschränkt werden. Darüber hinaus lassen sich Wertebereiche numerischer Datentypen durch das Angeben von Intervallen oder im Fall von alphanumerischen Typen durch das Formulieren regulärer Ausdrücke explizit einschränken. Zusätzlich lässt sich festgelegen, ob ein Attribut obligatorisch ist und ob es den Wert \texttt{null} annehmen darf. Wird ein Attribut als \texttt{UNIQUE} deklariert, erzeugt das System einen Index und das Attribut kann neben der eigentlichen Identität des Dokuments als Primärschlüssel verwendet werden. Durch das Konzept der eingebetteten Beziehungen können auch Typen verschachtelt werden um die Struktur entsprechender Dokumente beschreiben zu können.
 
-- Vererbung wird erlaubt
-	- Attribute werden vererbt	
-	- alles public
-	- Anfragen sind polymorph (betreffen auch Subtypen)
-	- keine Mehrfachvererbung	
-	- oberste Klasse: \texttt{OGraphVertex}
-	- außer oberste Klasse muss die Vererbung explizit angegeben werden
-- jeder Klasse ist automatisch ein Cluster zugeordnet (mehrere sind möglich)
-	- Beispiel: Klasse Invoice und Cluster invoice2012, invoice2013 -> Anfragen auf konkretes Cluster
-	- Record einer Klasse ist nur in einem Cluster (Basisklasse)
-- polymorphe Anfragen (wie HypergraphDB)
-
-% Identität änderbar?
+Das Modellieren von Vererbungshierarchien ist ebenfalls möglich: Attribute von Oberklassen werden an alle Unterklassen weitergegeben, eine Einschränkung der Sichtbarkeit ist nicht möglich. OrientDB erlaubt das Anlegen abstrakter Klassen, welche analog zur Objektorientierung nicht instanziiert werden, sondern ausschließlich Attribute für ihre Spezialisierungen vorgeben. Mehrfachvererbung ist nicht möglich. Wird keine explizite Oberklasse angegeben, so wird für Knoten die Klasse \texttt{OGraphVertex}, für Kanten die Klasse \texttt{OGraphEdge} verwendet.
 
 \paragraph*{Rechteverwaltung}
-
 
 - vergleichbar mit relationalen Datenbanksystemen (z.B. MySQL)
 - Definition von Nutzern und Rollen
@@ -713,6 +629,8 @@ Die nachfolgende Evaluation basiert auf der im September 2013 freigegebenen Vers
 \paragraph*{Blueprints Java API}
 
 \paragraph*{SQL}
+
+- polymorphe Anfragen (wie HypergraphDB)
 
 \paragraph*{Traversierung in SQL}
 
@@ -756,6 +674,17 @@ Die nachfolgende Evaluation basiert auf der im September 2013 freigegebenen Vers
 
 \subsection{Persistenz}
 % Record
+- Dokumente werden systemseitig durch Record repräsentiert
+- Records werden in physischen Clustern zusammengefasst
+- besitzt eindeutigen Bezeichner: RecordID (Primärschlüssel)
+	- setzt sich aus ClusterID und Position im Cluster zusammen
+	- systemseitig, unveränderbar
+	- kann nach Löschen wiederverwendet werden -> nicht in Anwendung verwenden
+	- Zugriff via RecordID möglich
+- Records besitzen Versionsnummer
+	- inkrementiert bei Änderung, wird bei Transaktionsausführung verwendet
+- Knoten und referenzierte Beziehungen besitzen Identität
+	- bei referenzierten Beziehungen ohne Attribute setzt sich die Identität aus der Identität des Start- und Zielknotens zusammen
 
 % Storage
 - physische Datenbank
@@ -768,6 +697,9 @@ Die nachfolgende Evaluation basiert auf der im September 2013 freigegebenen Vers
 		- enthält Zeiger zu den Records im Datensegment (+ Metadaten)
 	- 1 Cluster-Holes-File (och)
 		- speichert Position in Cluster-Files an denen gelöscht wurde
+- jeder Klasse ist automatisch ein Cluster zugeordnet (mehrere sind möglich)
+	- Beispiel: Klasse Invoice und Cluster invoice2012, invoice2013 -> Anfragen auf konkretes Cluster
+	- Record einer Klasse ist nur in einem Cluster (Basisklasse)
 
 % Datensegment
 - speichert die Nutzdaten (= Records)
@@ -817,12 +749,14 @@ Blubb
 Blubb
 
 
-\section{Zwischenfazit}
+\section{Zusammenfassung und Zwischenfazit}
 
 \paragraph*{Neo4j}
 
 Kritik:
 
+- keine Objekteinbettung
+- keine Schemadefinition (attribute)
 - Weg der Länge $k$ führt zu $\mathcal{O}(\left|N(v_1)\right| \times \left|N(v_2)\right| \times \cdots \times \left|N(v_k)\right|)$
 - Fragmentierung der Stores
 - Verteilung: was passiert bei Partitionierung des Netzwerkes
