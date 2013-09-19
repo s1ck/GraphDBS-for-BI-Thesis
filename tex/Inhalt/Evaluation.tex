@@ -228,7 +228,7 @@ Cu unum perfecto usu, sed an natum prompta aliquid, no pri meis illum integre. C
 
 \section{Neo4j}
 
-Neo4j ist ein quelloffenes GDBMS, das von der Firma Neo Technology\footnote{\url{http://www.neotechnology.com/}} entwickelt wird. Version 1.0 wurde 2010 veröffentlicht, zum aktuellen Zeitpunkt befindet sich Version 2.0 in Entwicklung. Die Implementierung des Systems erfolgt in den Programmiersprachen Java und Scala, die Ausführung erfolgt dementsprechend auf der Java Virtual Machine (JVM). Neo4j ist ein natives GDBMS, es unterstützt eine graphenorientierte Verarbeitung gemäß der beschriebenen indexfreien Adjazenz und implementiert eine graphenorientierte physische Repräsentation der Datenbasis. Die Verwendung des Systems erfolgt entweder in Form einer eingebetteten Bibliothek innerhalb von Java-Anwendungen oder in einer Client-Server-Konfiguration, letzteres erfordert den client-seitigen Zugriff über REST-Schnittstellen. Entsprechende Clients stehen in vielen Programmiersprachen zur Verfügung\footnote{\url{http://www.neo4j.org/develop/drivers}}. Neo4j kann sowohl als zentrales GDBMS als auch in einer verteilten Konfiguration eingesetzt werden. Eine vollständige Replikation der Datenbasis ermöglicht dabei die Skalierbarkeit lesender Anfragen und erhöht gleichzeitig die Ausfallsicherheit des Gesamtsystems. Die Speicherung der Datenbasis erfolgt disk-zentriert, ein hauptspeicher-zentrierter Betrieb ist nicht möglich.
+Neo4j ist ein quelloffenes GDBMS, das von der Firma Neo Technology\footnote{\url{http://www.neotechnology.com/}} entwickelt wird. Version 1.0 wurde 2010 veröffentlicht, zum aktuellen Zeitpunkt befindet sich Version 2.0 in Entwicklung. Die Implementierung des Systems erfolgt in den Programmiersprachen Java und Scala, die Ausführung erfolgt dementsprechend auf der Java Virtual Machine (JVM). Neo4j ist ein natives GDBMS, es unterstützt eine graphenorientierte Verarbeitung gemäß der beschriebenen indexfreien Adjazenz und implementiert eine graphenorientierte physische Repräsentation der Datenbasis. Die Verwendung des Systems erfolgt entweder in Form einer eingebetteten Bibliothek innerhalb von Java-Anwendungen oder in einer Client-Server-Konfiguration, letzteres erfordert den client-seitigen Zugriff über REST-Schnittstellen. Entsprechende Clients stehen in vielen Programmiersprachen zur Verfügung\footnote{\url{http://www.neo4j.org/develop/drivers}}. Neo4j kann sowohl als zentrales GDBMS als auch in einer verteilten Konfiguration eingesetzt werden. Eine vollständige Replikation der Datenbasis ermöglicht dabei die Skalierbarkeit lesender Anfragen und erhöht gleichzeitig die Ausfallsicherheit des Gesamtsystems. Die Speicherung der Datenbasis erfolgt disk-zentriert, ein hauptspeicher-zentrierter Betrieb\footnote{evtl. Hinweis auf Unit-Tests?} ist nicht möglich.
 
 Neo Technology bietet das Datenbanksystem in drei verschiedenen Ausführungen an: Community, Advanced und Enterprise. Die Community-Edition bietet grundlegenden Funktionsumfang, die Advanced-Edition fügt Monitoring-Funktionalität hinzu und die Enterprise-Edition erweitert diese diese nochmals um Online-Backups und Hochverfüg-barkeits-Mechanismen. Advanced- und Enterprise-Edition eignen sich für den kommerziellen Einsatz, da sie zusätzliche Service-Leistungen durch Neo Technology beinhalten und ihre Lizenz die Verwendung in unfreier Software erlaubt. Die Community-Edition darf nur in freier, quelloffener Software eingesetzt werden, Service-Anfragen werden durch die Neo4j-Community im Web beantwortet.
 
@@ -275,7 +275,7 @@ Das Traversal Framework erweitert die Core API um ein grundsätzlich deklaratives
 \paragraph*{Cypher}
 
 Cypher ist eine deklarative, graphenorientierte Anfragesprache für den lesenden und schreibenden Zugriff auf die Datenbasis. Es handelt sich um eine nicht standardisierte Sprache, welche aktuell in Neo4j und in abgeänderter Form im GDBMS-Prototypen GraphPack zur Verfügung steht. Syntaktisch ist Cypher an SQL und SPARQL angelehnt, viele der dort vorhandenen Sprachkonstrukte und Ansätze werden wiederverwendet. Kernfunktion der Sprache ist das Beschreiben von Mustergraphen zur Informationsextraktion. Das Prüfen der Erreichbarkeit im Allgemeinen und das Berechnen kürzester Pfade im Speziellen ist darüber hinaus ebenfalls möglich. Nachfolgend werden die grundlegenden Komponenten der Sprache dargestellt, eine detaillierte Beschreibung kann der offiziellen Dokumentation entnommen werden\cite{Neo4j_manual:2013}.
-\newpage
+
 Eine rein lesende Anfrage setzt sich aus den folgenden Komponenten zusammen:
 
 \texttt{[START] [MATCH] [WHERE]\newline
@@ -398,7 +398,7 @@ Jeder Teilnehmer im Cluster besitzt Funktionen zur Koordination bzw. Kommunikati
 
 \section{HyperGraphDB}
 
-HyperGraphDB ist ein quelloffenes GDBMS, das von Kobrix Software\footnote{\url{http://kobrix.com/index.jsp}} entwickelt wird. Die Quellcode-Lizenz ist GNU LGPL, die erste stabile Version 1.0 wurde 2010 veröffentlicht. Die Implementierung des Systems erfolgt ausschließlich in Java und sieht den Einsatz als eingebettetes Graphdatenbanksystem vor. Modellierung und Verwendung der Daten erfolgen graphenorientiert, Verarbeitung und Speicherung sind jedoch nicht-nativ: Der Graph wird auf eine Menge assoziativer Arrays abgebildet für deren Speicherung eine beliebige, entsprechend optimierte Speicherlösung eingesetzt werden kann. Standardmäßig nutzt HyperGraphDB hierfür die quelloffene, disk-orientierte Key-Value-Datenbank BerkeleyDB Java Edition\cite{Oracle_BerkeleyDB:2013}. Die Nutzung des Hauptspeichers als primäres Speichermedium ist bei Verwendung einer entsprechenden Speicherschicht möglich, HyperGraphDB bietet hierfür jedoch keine Implementierung an. Das GDBMS kann als zentrales System oder in einer verteilten Konfiguration eingesetzt werden.
+HyperGraphDB ist ein quelloffenes GDBMS, das von Kobrix Software\footnote{\url{http://kobrix.com/index.jsp}} entwickelt wird. Die Quellcode-Lizenz ist GNU LGPL\footnote{Die Lizenz erlaubt die Verwendung in freier und kommerzieller Software. Die Verwendung in kommerzieller Software erfordert nicht, dass diese ebenfalls quelloffen sein muss: \url{http://www.gnu.org/licenses/lgpl-3.0.de.html}.}, die erste stabile Version 1.0 wurde 2010 veröffentlicht. Die Implementierung des Systems erfolgt ausschließlich in Java und sieht den Einsatz als eingebettetes Graphdatenbanksystem vor. Modellierung und Verwendung der Daten erfolgen graphenorientiert, Verarbeitung und Speicherung sind jedoch nicht-nativ: Der Graph wird auf eine Menge assoziativer Arrays abgebildet für deren Speicherung eine beliebige, entsprechend optimierte Speicherlösung eingesetzt werden kann. Standardmäßig nutzt HyperGraphDB hierfür die quelloffene, disk-orientierte Key-Value-Datenbank BerkeleyDB Java Edition\cite{Oracle_BerkeleyDB:2013}. Die Nutzung des Hauptspeichers als primäres Speichermedium ist bei Verwendung einer entsprechenden Speicherschicht möglich, HyperGraphDB bietet hierfür jedoch keine Implementierung an. Das GDBMS kann als zentrales System oder in einer verteilten Konfiguration eingesetzt werden.
 
 Grundlegend betrachtet handelt es sich um ein objektorientiertes Persistenz-Framework zur dauerhaften Speicherung von Java-Objektinstanzen. Die Repräsentation der Daten im Hauptspeicher, Indexierung und Caching sind jedoch für die Unterstützung von Traversierung und Mustersuche ausgelegt. Wesentliche Eigenschaft des GDBMS und gleichzeitig Alleinstellungsmerkmal innerhalb der Evaluation ist die Möglichkeit zur Modellierung n-ärer Beziehungen: Als Datenmodell wird ein erweitertes Property-Hypergraph-Modell in Verbindung mit einem flexiblen Typsystem eingesetzt.\\
 Konzipiert wurde das GDBMS für die Verwaltung hochkomplexer Daten, wie sie zum Beispiel in der Wissensverwaltung vorkommen\cite{Iordanov:2010:HGG:1927585.1927589}. Laut Hersteller eignet sich das System darüber hinaus für die Verwaltung sozialer Netzwerke und für den Einsatz in klassischen objektorientierten Geschäftsanwendungen\cite{HGDB_business_applications:2012}. Ein weiteres wichtiges Merkmal ist die offene Architektur, welche die Implementierung und Integration eigener Anfrage-,  Indizierungs-, Persistenz- und Verteilungsmechanismen ermöglicht.
@@ -408,11 +408,11 @@ Die nachfolgenden Ausführungen beziehen sich auf Version 1.2 des GDBMS, diese wu
 \subsection{Datenmodell und Typsystem}
 
 % Modelltheorie
-Die Basiseinheit zur Darstellung von Informationen innerhalb des Datenmodells ist das Atom. Jedem Atom ist ein Tupel bestehend aus Atomen zugeordnet, dieses wird als Zielmenge bezeichnet. Die Kardinalität der Zielmenge ist die Arität: Ein Atom mit Arität Null ist ein Knoten, wohingegen ein Atom mit einer Arität größer Null eine Kante repräsentiert.\footnote{Die Begriffe Kante und Hyperkante werden bei der Beschreibung von HyperGraphDB synonym verwendet.} Eine Kante kann folglich auf eine beliebige Anzahl von Atomen verweisen. Dies stellt eine Erweiterung des in Abschnitt \ref{subsec:hgm} definierten Hypergraph-Modells dar, da eine Kante in HyperGraphDB sowohl auf Knoten, als auch auf andere Kanten verweisen kann. Im Datenmodell werden Beziehungen zwischen Beziehungen als Relationen höherer Ordnung bezeichnet. Die Inzidenzmenge eines Atoms $a$ ist die Menge aller Atome, die $a$ in ihrer Zielmenge enthalten, d.h. die Menge aller gerichteter Kanten, die auf $a$ zeigen.
+Die Basiseinheit zur Darstellung von Informationen innerhalb des Datenmodells ist das Atom. Jedem Atom ist ein Tupel bestehend aus Atomen zugeordnet, dieses wird als Zielmenge bezeichnet. Die Kardinalität der Zielmenge ist die Arität: Ein Atom mit Arität Null ist ein Knoten, wohingegen ein Atom mit einer Arität größer Null eine Kante repräsentiert.\footnote{Die Begriffe Kante und Hyperkante werden bei der Beschreibung von HyperGraphDB synonym verwendet.} Eine Kante kann folglich auf eine beliebige Anzahl von Atomen verweisen. Dies stellt eine Erweiterung des in Abschnitt \ref{subsec:hgm} definierten Hypergraph-Modells dar, da eine Kante in HyperGraphDB sowohl auf Knoten, als auch auf andere Kanten verweisen kann. Im Datenmodell werden Beziehungen zwischen Beziehungen als Relationen höherer Ordnung bezeichnet. Die Inzidenzmenge eines Atoms $a$ ist die Menge aller Atome, die $a$ in ihrer Zielmenge enthalten, d.h. die Menge aller gerichteter Kanten, die auf $a$ zeigen. An dieser Stelle wird deutlich, dass es sich um eine nicht-native Verarbeitung handelt, da ausgehend von einem Knoten nicht direkt auf dessen Nachbarschaft zugegriffen werden kann. Es muss zunächst festgestellt werden, in welchen Zielmengen der entsprechende Knoten vorkommt. Wie nachfolgend gezeigt wird, setzt HyperGraphDB hierfür entsprechende Indexstrukturen ein.
 
 Neben der Zielmenge ist jedem Atom genau ein typisierter Wert zugeordnet. Der Typ ist beliebig und wird genau wie reguläre Daten innerhalb der Datenbasis als Atom gespeichert. Folglich können Beziehungen zwischen Typen untereinander bzw. zwischen Typen und ihren Instanzen abgebildet und in Operationen verwendet werden. Daraus geht hervor, dass Atome sowohl die Struktur als auch die Semantik des Graphen abbilden. Die Werte entsprechen den Nutzdaten und können beliebig strukturiert oder unstrukturiert sein und zur Laufzeit durch Werte eines anderen Typs ausgetauscht werden. Damit lassen sich Semantik und Struktur unabhängig voneinander ändern, dies entspricht der Schemaevolution innerhalb einer Anwendung und bietet somit eine vergleichbare Flexibilität wie zum Beispiel Neo4j.
 
-\paragraph*{Typsystem} Die wesentliche Aufgabe eines Typen ist die Serialisierung von Laufzeitobjekten in das Format der darunterliegenden Speicherschicht sowie die umgekehrte Deserialisierung. Im Sinne der Objektorientierung ist ein Typ somit eine abstrakte Fabrik und stellt Methoden zum Erzeugen, Speichern und Löschen von Laufzeitrepräsentationen seiner Instanzen zur Verfügung.\footnote{Das Aktualisieren eines Wertes ist nicht möglich, da Werte in HyperGraphDB generell unveränderlich (engl. \textit{immutable}) sind. Dies hat den Vorteil, dass ein Wert mehreren Atomen zugeordnet sein kann, führt jedoch dazu, dass bei der Aktualisierung eines Wertes ein neuer Wert erzeugt werden muss.} Da es sich bei Typen um Atome handelt, besitzen auch diese einen übergeordneten Datentyp. Für jene, die bereits im Typsystem existieren, ist dies ein systemseitiger Datentyp mit der Bezeichnung \texttt{Top}. Wird hingegen ein Objekt, dessen Typ nicht bereits in der Datenbasis hinterlegt ist, zur Laufzeit eingefügt, so ist dessen Typ ein Typkonstruktur. Dieser erzeugt neue aus bestehenden Typen, es handelt sich folglich um einen Datentyp, dessen Instanzen ebenfalls Datentypen sind.\\
+\paragraph*{Typsystem} Aus Anwendungssicht ist es die wesentliche Aufgabe eines Typen die Semantik der Daten zu beschreiben. Aus Systemsicht ist es hingegen die Serialisierung von Laufzeitobjekten in das Format der darunterliegenden Speicherschicht sowie die umgekehrte Deserialisierung. Im Sinne der Objektorientierung ist ein Typ somit eine abstrakte Fabrik und stellt Methoden zum Erzeugen, Speichern und Löschen von Laufzeitrepräsentationen seiner Instanzen zur Verfügung.\footnote{Das Aktualisieren eines Wertes ist nicht möglich, da Werte in HyperGraphDB generell unveränderlich (engl. \textit{immutable}) sind. Dies hat den Vorteil, dass ein Wert mehreren Atomen zugeordnet sein kann, führt jedoch dazu, dass bei der Aktualisierung eines Wertes ein neuer Wert erzeugt werden muss.} Da es sich bei Typen um Atome handelt, besitzen auch diese einen übergeordneten Datentyp. Für jene, die bereits im Typsystem existieren, ist dies ein systemseitiger Datentyp mit der Bezeichnung \texttt{Top}. Wird hingegen ein Objekt, dessen Typ nicht bereits in der Datenbasis hinterlegt ist, zur Laufzeit eingefügt, so ist dessen Typ ein Typkonstruktur. Dieser erzeugt neue aus bestehenden Typen, es handelt sich folglich um einen Datentyp, dessen Instanzen ebenfalls Datentypen sind.\\
 Neben den genannten Operationen stellt ein Typ eine weitere Operation zur Verfügung: Das Subsumieren. Eine Instanz A subsumiert eine Instanz B genau dann, wenn A allgemeiner ist als B bzw. wenn B immer dann verwendet werden kann, wenn A verwendet werden kann\cite{HGDB_subsume:2013}. Damit wird zum Beispiel geprüft, ob sich zwei Instanzen gegenseitig enthalten und folglich gleichwertig sind oder ob eine Instanz durch die andere ersetzt werden kann. Handelt es sich bei den Instanzen um Typen, so ermöglicht die Subsumierung die Abbildung von Vererbungshierarchien und somit die Konstruktion beliebiger Typsysteme: Wenn eine Instanz A eine zweite Instanz B subsumiert und A und B Typen sind, so erbt A von B.
 
 Es sollte deutlich werden, dass ein Typ in HyperGraphDB ein Atom mit einer speziellen Rolle ist. Aus Anwendungssicht ermöglicht es die Definition von Knoten- und Kantenbezeichnern sowie das Speichern von Nutzdaten, aus Systemsicht die Verwaltung von Assoziationen sowohl zwischen einem Typ und seinen Instanzen als auch zwischen mehreren Typen. Das GDBMS beinhaltet vordefinierte Typimplementierungen für primitive Datentypen, JavaBeans\footnote{\url{http://www.oracle.com/technetwork/java/javase/documentation/spec-136004.html}}, 
@@ -570,23 +570,231 @@ Durch eine anwendungsseitige Aufteilung des Schemas und die mehrfache Definition
 
 \section{OrientDB}
 
-Blubb
+% Firma + Lizenz
+OrientDB ist ein quelloffenes GDBMS, das von der Firma Orient Technologies\footnote{\url{http://www.orientechnologies.com
+}} entwickelt wird. Der Quellcode steht unter Apache 2.0 Lizenz, was bedeutet, dass er in freien, aber auch auch in kommerziellen Anwendungen verwendet werden darf. Das GDBMS wurde 2010 veröffentlicht, die erste stabile Version 1.0 erschien 2012. Für die Implementierung wird ausschließlich Java verwendet, die Ausführung ist somit analog zu Neo4j und HyperGraphDB an die JVM gebunden und auf kompatiblen Plattformen möglich. OrientDB ist ein natives GDBMS, sowohl Modellierung und Zugriff als auch Verarbeitung und Speicherung orientieren sich an der Topologie der Daten. Das DBMS wird entweder in Form einer eingebetteten Bibliothek innerhalb von Java-Anwendungen oder in einer Client-Server-Konfiguration verwendet. Der Server bietet den Zugang über REST-Schnittstellen an, Clients stehen in vielen Programmiersprachen zur Verfügung.\footnote{\url{https://github.com/orientechnologies/orientdb/wiki/Programming-Language-Bindings}} OrientDB kann sowohl als zentrales GDBMS als auch in einer verteilten Konfiguration eingesetzt werden. Hierfür wird eine Master-Master-Replikation realisiert, welche die horizontale Skalierbarkeit von Lese- und Schreibanfragen sowie eine erhöhte Ausfallsicherheit gestattet. Die Speicherung der Datenbasis erfolgt disk-zentriert, das System bietet zwar die ausschließliche Nutzung des Hauptspeichers an, dies entspricht jedoch nicht der definierten hauptspeicher-zentrierten Speicherung, sondern ist für die Verwendung im Rahmen von Unit-Tests konzipiert.
 
-\subsection{Datenmodell}
+% Besonderheiten (Dokumente, Typsystem) + Anwendungsfall
+Eine Besonderheit von OrientDB gegenüber den vorgestellten Systemen ist die Möglichkeit zur Verwendung verschiedener Datenmodelle: Die Speicherung der Information erfolgt grundlegend in Form von Dokumenten, welche aus Schlüssel-Wert-Paaren bestehen und beliebig ineinander verschachtelt sein können. Ein darauf aufbauendes graphenorientiertes Datenmodell ermöglicht die Definition von Beziehungen zwischen Dokumenten. Darüber hinaus bietet OrientDB den Einsatz als objektorientierte Datenbank an, wobei Objekte ebenfalls auf Dokumente abgebildet werden. Das DBMS erlaubt im Dokumenten-, Graph- und auch im objektorientierten Datenmodell die Definition eines Schemas zur Modellierung einer Anwendungsdomäne und zur Festlegung von Integritätsbedingungen. Der Verzicht auf ein Schema und die Kombination aus strukturierten und semi-strukturierten Daten ist hingegen ebenfalls möglich.\\
+Ein Alleinstellungsmerkmal von OrientDB in der vorliegenden Evaluation ist die Verwendung des SQL-Standards für die Formulierung von Anfragen an die Datenbasis. OrientDB stellt eine Teilmenge des Standards zur Verfügung und erweitert diese mit graphenspezfischen Operationen. Ein weiteres Alleinstellungsmerkmal ist die bereits im DBMS integrierte Nutzer- und Rollenverwaltung.
 
-Blubb
+% Ausführungen beziehen sich auf ... + Quellen
+Die nachfolgende Evaluation basiert auf der im September 2013 freigegebenen Version 1.5.1. Der Großteil der Informationen stammt aus den Ausführungen zu OrientDB in \cite{EdlichFriedlandHampeBrauer201010} und der offiziellen Dokumentation\cite{Orient_doku:2013}. Es wird ausschließlich das Dokumenten- und das darauf aufbauende Graphdatenmodell berücksichtigt, da vor allem letzteres für die Evaluation relevant ist.
+
+\subsection{Datenmodell, Typsystem und Rechteverwaltung}
+
+% Datenmodell allgemein
+
+% Dokumentenmodell
+- Dokumentenmodell ist die Grundlage aller weiteren Datenmodelle
+
+- grundlegende Einheit ist das Dokument
+	- Menge von Schlüssel-Wert-Paaren
+	- eindeutige Schlüssel
+	- native Unterstützung vordefinierter Typen
+		- primitive Java-Datentypen
+		- Listen, Mengen, assoziative Arrays
+	- Schachtelung von Objekten ist Möglich (Objekteinbettung)
+	- systemseitige Versionierung
+	- Nutzung erfolgt wahlweise mit oder ohne Schema bzw. gemischt
+	- Schema = Typ
+	- schwache Typisierung: Schema kann existieren, jedoch mit zusätzlichen Attributen erweitert werden
+
+
+% Graphenmodell
+
+- Property-Graph-Modell
+	- setzt auf Dokumentenmodell auf
+	- PGM ist grundsätzlich schemalos
+	- Unterschied: Daten können komplett oder nur teilweise einem Schema unterliegen bzw. komplett auf ein solches verzichten
+	- Schema erlaubt Attributeinschränkungen, Definition von Indizes und obligatorischen Attributen
+
+
+% Knoten: Label?, Identität, Schema
+- repräsentiert durch Dokument
+% Kanten: Label?, Richtung, Identität, Schema
+- repräsentiert durch Dokument
+- zwei Arten von Beziehungen:
+	- referenziert
+		- werden explizit gespeichert (Dokument) -> eigene Identität
+		- Richtung wird gespeichert
+		- Typen
+			- 1-1 / N-1 -> \texttt{LINK}
+			- 1-N / N-M -> \texttt{LINKLIST} (ordered), \texttt{LINKSET} (unordered, no duplicates) \texttt{LINKMAP} (sortierte Abbildung von Kanten mit String Bezeichnern, no duplicates)
+	- eingebettet
+		- werden in das Dokument eingebettet (Komposition) -> keine eigene Identität
+		- Kantenbezeichner ist ein Attribut am Startknoten, Wert ist der Zielknoten
+		- Typen
+			- 1-1 / N-1 -> \texttt{EMBEDDED}
+			- 1-N / N-M -> \texttt{EMBEDDEDLIST}, \texttt{EMBEDDEDSET}, \texttt{EMBEDDEDSET},
+	- Kanten lassen sich NICHT in beiden Richtungen traversieren
+	- wird eine Kante in umgekehrter Richtung angelegt, muss sich der Entwickler um die Einhaltung der Konsistenz kümmern -> modellinhärente Integrität
+- Bezeichner wird durch die Klasse der Kante festgelegt
+	
+% Datenbank
+- mehrere Instanzen möglich
+- eindeutiger Bezeichner
+- verschiedene Datenbanktypen je nach erforderlichem Datenmodell
+- verschiedene Datenbankengines je nach Verwendung
+	- lokal
+	- entfernt
+	- in-memory (z.B. für Unit-Test)
+
+	
+% Properties: JSON-Dokument?, zulässige Werte, Null-Werte?
+% Datenintegrität: modellinhärent, attributbezogene Integritätsbedingungen, Wertebereiche, Primärschlüssel, Unique
+
+% Identität
+
+- Dokumente werden systemseitig durch Record repräsentiert
+- Records werden in physischen Clustern zusammengefasst
+- besitzt eindeutigen Bezeichner: RecordID (Primärschlüssel)
+	- setzt sich aus ClusterID und Position im Cluster zusammen
+	- systemseitig, unveränderbar
+	- kann nach Löschen wiederverwendet werden -> nicht in Anwendung verwenden
+	- Zugriff via RecordID möglich
+- Records besitzen Versionsnummer
+	- inkrementiert bei Änderung, wird bei Transaktionsausführung verwendet
+
+\paragraph*{Typsystem}
+
+- Definition von Klassen
+	- besitzen Attribute
+		- vordefinierte Typen für Attribute \url{https://github.com/orientechnologies/orientdb/wiki/Types}
+		- Attribute können Klassen sein -> Dokument-Konzept (Einbettung)
+		- Einschränkungen
+			- explizite Wertebereichseinschränkungen (min, max)
+			- UNIQUE Index -> Primärschlüssel
+			- Mandatory
+			- keine Updates (nur initiales Schreiben)
+			- not null
+			- reguläre Ausdrücke
+			
+	- legt den Typ von Records fest
+	- Klassen können schemalos, schema-full oder gemischt sein
+	- können abstrakt sein
+	- 
+
+- Vererbung wird erlaubt
+	- Attribute werden vererbt	
+	- alles public
+	- Anfragen sind polymorph (betreffen auch Subtypen)
+	- keine Mehrfachvererbung	
+	- oberste Klasse: \texttt{OGraphVertex}
+	- außer oberste Klasse muss die Vererbung explizit angegeben werden
+- jeder Klasse ist automatisch ein Cluster zugeordnet (mehrere sind möglich)
+	- Beispiel: Klasse Invoice und Cluster invoice2012, invoice2013 -> Anfragen auf konkretes Cluster
+	- Record einer Klasse ist nur in einem Cluster (Basisklasse)
+- polymorphe Anfragen (wie HypergraphDB)
+
+% Identität änderbar?
+
+\paragraph*{Rechteverwaltung}
+
+
+- vergleichbar mit relationalen Datenbanksystemen (z.B. MySQL)
+- Definition von Nutzern und Rollen
+	- Nutzer besitzt mehrere Rollen
+		- Rolle definiert sich durch eine Menge von Regeln
+		- Regeln werden entweder erlaubt oder verboten (Whitelist- und Blacklist-Prinzip)
+	- Nutzer identifiziert sich via Passwort
+	- es existiert ein Nutzer \texttt{root} zur Verwaltung von Nutzern und Rollen
+- Record Level Security
 
 \subsection{Zugriffsmechanismen}
 
-Blubb
+- native Java API für Dokumentenmodell
+- native Java API für Graphenmodell
+- native Java API für Objektmodell
+- Traversierung via Gremlin (-> Titan)
+- SQL
+- Besonderheiten
+
+\paragraph*{Blueprints Java API}
+
+\paragraph*{SQL}
+
+\paragraph*{Traversierung in SQL}
+
+- Definition eines abstrakten Pfades als Prädikat
+- Sub-Queries
+- Operatoren (toUpperCase, matches)
+
+\paragraph*{Besonderheiten}
+
+- Hooks (Trigger)
+	- \url{https://github.com/orientechnologies/orientdb/wiki/Hook}
+- Functions 
+	- \url{https://github.com/orientechnologies/orientdb/wiki/Functions}
+	- Stored Procedures in JavaScript
+	- können via REST und auch embedded ausgeführt werden
+	- gegenseitiger Aufruf + Rekursion
+
+
+\paragraph*{Transaktionen}
+
+% Ausführung
+- falls im aktuellen Kontext noch keine Tx aktiv ist, wird diese implizit bei einer Änderungsoperation gestartet
+
+% Verschachtelung
+
+- Im Gegensatz zu den bisher betrachteten Systemen unterstützt OrientDB keine verschachtelten Transaktionen.
+
+- ACID
+
+% MVCC
+- MVCC (Objektversionen)
+- Ausnahme bei Konflikt -> Anwendung entscheidet (auto-retry)
+% Logging
+- UNDO-Log
+
+\paragraph*{Indexierung}
+
+- MVRB-Tree
+	- kombiniert B+-Baum und Rot-Schwarz-Baum
+	- schnelles Einfügen und Updaten
 
 \subsection{Persistenz}
+% Record
 
-Blubb
+% Storage
+- physische Datenbank
+- orchestriert Zugriff auf Cluster und Datensegmente
+
+% Cluster
+- Gruppierung von Records anhand des Typs oder eines Attributs
+- werden auf das lokale Dateisystem abgebildet
+	- 1 - n Cluster-Files (ocl)
+		- enthält Zeiger zu den Records im Datensegment (+ Metadaten)
+	- 1 Cluster-Holes-File (och)
+		- speichert Position in Cluster-Files an denen gelöscht wurde
+
+% Datensegment
+- speichert die Nutzdaten (= Records)
+- werden auf das lokale Dateisystem abgebildet
+	- 1 - n Data-Files (oda)
+		- beinhaltet Records
+	- 1 Data-Holes-File (odh)
+- Format: https://github.com/orientechnologies/orientdb/wiki/Types
+
+
+
+
+\paragraph*{Cacheverwaltung}
+
+- nutzt kompletten verfügbaren Speicher (Heap)
+
+- Level 1 Database Level (1 Cache per Thread)
+
+- Level 2 Storage Level (1 per JVM)
 
 \subsection{Verteilung}
 
-Blubb
+- Multi-Master-Replikation
+- Log-Replikation
+
+
+% Titan
 
 \section{Titan}
 
@@ -609,9 +817,7 @@ Blubb
 Blubb
 
 
-\section{Gegenüberstellung}
-
-\subsection{Unterstützung graphenspezifischer Operationen}
+\section{Zwischenfazit}
 
 \paragraph*{Neo4j}
 
@@ -656,12 +862,10 @@ allShortestPaths -> grundlage für centrality maße
 - Aggregation und Summierung
 	- Aggregation von Werten ist möglich
 	- Summierung von topologischen Strukturen ist nicht möglich
-	
-\subsection{Speicherung}
-
-\paragraph*{HyperGraphDB}
 
 - logarithmische Komplexität beim Zugriff auf die B-Bäume
 	- indexfreie Adjazenz: Caches sind Hashtabellen, können aber nicht immer die komplette Datenbasis aufnehmen
 - Verhungern langer Transaktionen (First-Come-First-Serve Prinzip)
 
+\paragraph*{OrientDB}
+- Avoid putting properties on edges -> \url{https://github.com/orientechnologies/orientdb/wiki/Performance-Tuning-Blueprints}
