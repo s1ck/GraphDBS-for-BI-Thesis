@@ -618,7 +618,15 @@ Das Modellieren von Vererbungshierarchien ist ebenfalls möglich: Attribute von O
 - SQL
 - Besonderheiten
 
-\paragraph*{Blueprints Java API}
+\paragraph*{CRUD-Operationen via Blueprints API}
+
+Die Blueprints API ist eine imperative Java API und der Core API von Neo4j sehr ähnlich. Es stehen Methoden zum Erzeugen und Lesen von Knoten und Kanten zur Verfügung, deren Ergebnis ist eine Referenz auf das persistente Objekt mit einer eindeutigen Identität. Kanten können nur unter Angabe existierender Knoten erzeugt werden, deren Reihenfolge bestimmt die Kantenrichtung. Die Spezifikation eines Kantenbezeichners ist obligatorisch, dieser ist ein Wert vom Typ \texttt{String} und kann folglich statisch in der Anwendung oder dynamisch zur Laufzeit festgelegt werden. Sowohl Knoten als auch Kanten verfügen über Methoden zum Anlegen von Attributen, die Attributwerte müssen einem der vordefinierten Typen entsprechen. Werden Arrays, Mengen oder assoziative Arrays unterstützter Datentypen als Wert angegeben, erzeugt das GDBMS automatisch eine eingebettete Beziehung. Knoten- und Kantenattribute können aktualisiert oder gelöscht werden. Knoten verfügen über zusätzliche Funktionen zum Auslesen inzidenter Kanten und adjazenter Knoten, Kanten verfügen wiederum über Methoden zum Auslesen von Start- und Zielknoten sowie ihres Bezeichners. Sowohl Knoten als auch Kanten lassen sich aus der Datenbasis entfernen, dabei stellt das GDBMS die referentielle Integrität sicher.
+
+% Klassen
+OrientDB erweitert die Blueprints-Implementierung des PGM um Methoden zum Verwalten von Klassen. Diese werden unter Angabe eines Namens erzeugt, anschließend lassen sich Attributdefinitionen, bestehend aus Attributname und Typ sowie eventueller Integritätsbedingungen, für die Klasse festlegen. Wird diese als strikt deklariert, sind alle Attribute obligatorisch und müssen von den Instanzen angegeben werden. Eine Klasse ohne jegliche Attribute entspricht hingegen dem Konzept des Knotenlabels in Neo4j. Beim Erzeugen einer Klasse kann diese als abstrakt deklariert und optional eine Oberklasse angegeben werden. Die Zuordnung einer Knoten- oder Kanteninstanz zu einer Klasse erfolgt beim Erzeugen, der Knoten- bzw. Kantenbezeichner entspricht dem Klassennamen. Pflichtattribute müssen dabei unmittelbar, optionale Attribute können nachträglich angegeben werden.  Wird ein Schema definiert, erlaubt dies die Verwendung zusätzlicher API-Methoden für die Selektion von Instanzen anhand ihres Typs. Hierbei ist zu beachten, dass die Methoden polymorph sind und folglich auch die Instanzen aller Unterklassen im Ergebnis enthalten sind. Ein Beispiel für die Verwendung der API in Verbindung mit dem Typsystem findet sich in Anhang \ref{anh:orientdb_blueprints_api}.
+
+% Algorithmen
+Aus den Ausführungen geht hervor, dass sich unter Verwendung der Blueprints API beliebige Graphalgorithmen anwendungsseitig implementieren lassen, OrientDB selbst bietet keine Implementierungen an. Innerhalb des Blueprints-Projektes stellt jedoch das Paket Furnace\footnote{\url{https://github.com/tinkerpop/furnace/wiki}} bereits einige Algorithmen zur Verfügung. So werden Suchverfahren, wie der A*-Algorithmus sowie die Tiefen- und Breitensuche, genauso angeboten wie der Dijkstra- und Bellman-Ford-Algorithmus für das Finden kürzester Pfade in gewichteten Graphen. Neben den Pfadsuchalgorithmen wird mit dem Bron-Kerbosch-Algorithmus\cite{Bron:1973:AFC:362342.362367} auch ein Verfahren zum Auffinden von Cliquen implementiert. Anzumerken ist, dass keines der implementierten Verfahren Einschränkungen hinsichtlich zu berücksichtigender Knoten- oder Kantenklassen zulässt.
 
 \paragraph*{SQL}
 
@@ -757,6 +765,7 @@ allShortestPaths -> grundlage für centrality maße
 
 - CRUD
 	- in Java API möglich
+	- Algorithmen unterstützten Einschränkungen auf Graphen (im Gegensatz zu Blueprints)
 
 - Traversierung
 	- algorithmische Traversierung mittels Traversal Framework
