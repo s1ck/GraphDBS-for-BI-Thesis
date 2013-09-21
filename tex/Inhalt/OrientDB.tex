@@ -1,0 +1,213 @@
+\section{OrientDB}
+
+% Firma + Lizenz
+OrientDB ist ein quelloffenes GDBMS, das von der Firma Orient Technologies\footnote{\url{http://www.orientechnologies.com
+}} entwickelt wird. Der Quellcode steht unter Apache 2.0 Lizenz, was bedeutet, dass er in freien, aber auch auch in kommerziellen Anwendungen verwendet werden darf. Das GDBMS wurde 2010 veröffentlicht, die erste stabile Version 1.0 erschien 2012. Für die Implementierung wird ausschließlich Java verwendet, die Ausführung ist somit analog zu Neo4j und HyperGraphDB an die JVM gebunden und auf kompatiblen Plattformen möglich. OrientDB ist ein natives Graphdatenbanksystem, da sowohl Modellierung und Zugriff als auch Verarbeitung und Speicherung der Daten graphenorientiert erfolgen. Es wird entweder in Form einer eingebetteten Bibliothek innerhalb von Java-Anwendungen oder in einer Client-Server-Konfiguration verwendet. Der Server bietet zwei Wege für den Datenaustausch: Mittels HTTP/REST-Schnittstelle können Informationen im JSON-Format übertragen werden, für den schnellen Datenaustausch ist es darüber hinaus möglich, auf TCP-Ebene unter Verwendung eines Binärprotokoll zu kommunizieren. Entsprechende Clients stehen für beide Varianten zur Verfügung, für Java bietet OrientDB darüber hinaus einen JDBC-Treiber an.\footnote{Für den Zugriff via Rest steht eine Vielzahl von Client-Implementierungen zur Verfügung. Diese sind unter \url{https://github.com/orientechnologies/orientdb/wiki/Programming-Language-Bindings} gelistet. Das Binärprotokoll wird aktuell nur von C/C++, PHP und nodejs unterstützt: \url{https://github.com/orientechnologies/orientdb/wiki/Network-Binary-Protocol}.} OrientDB kann sowohl als zentrales GDBMS als auch in einer verteilten Konfiguration eingesetzt werden. Hierfür wird eine Master-Master-Replikation realisiert, die eine horizontale Skalierbarkeit von Lese- und Schreibanfragen sowie eine erhöhte Ausfallsicherheit verspricht. Die Speicherung der Datenbasis erfolgt disk-zentriert, das System bietet zwar die ausschließliche Nutzung des Hauptspeichers an, dies entspricht jedoch nicht der definierten hauptspeicher-zentrierten Speicherung, sondern ist für die Verwendung im Rahmen von Unit-Tests konzipiert.
+
+% Besonderheiten (Dokumente, Typsystem) + Anwendungsfall
+Eine besonderes Merkmal von OrientDB ist die Möglichkeit, die Datenbank mit verschiedenen Datenmodellen nutzen zu können: So erfolgt die Speicherung der Informationen grundlegend in Form von Dokumenten, welche aus Schlüssel-Wert-Paaren bestehen und beliebig verschachtelt sein können. Ein darauf aufbauendes graphenorientiertes Datenmodell ermöglicht die Definition von Beziehungen zwischen Dokumenten. Darüber hinaus lässt sich OrientDB als objektorientiertes Datenbanksystem einsetzen, wobei Objektinstanzen ebenfalls auf Dokumente abgebildet werden. In allen drei Datenmodellen gestattet das DBMS die Definition eines Schemas zur Modellierung einer Anwendungsdomäne und zur Festlegung von Integritätsbedingungen. Der vollständige Verzicht auf ein Schema und die Kombination eines Schemas mit semi-strukturierten Daten ist hingegen ebenfalls möglich.\\
+Ein Alleinstellungsmerkmal von OrientDB in der vorliegenden Evaluation ist die Verwendung des SQL-Standards für die Formulierung von Anfragen an die Datenbasis. OrientDB stellt eine Teilmenge des Standards zur Verfügung und erweitert diese mit graphenspezifischen Operationen. Ein weiteres Alleinstellungsmerkmal ist die bereits integrierte Nutzer- und Rollenverwaltung.
+
+% Ausführungen beziehen sich auf ... + Quellen
+Die nachfolgende Evaluation basiert auf der im September 2013 freigegebenen Version 1.5.1. Der Großteil der Informationen stammt aus den Ausführungen zu OrientDB in \cite{EdlichFriedlandHampeBrauer201010} und der offiziellen Dokumentation\cite{Orient_doku:2013}. Es werden ausschließlich das Dokumenten- und das darauf aufbauende Graphdatenmodell berücksichtigt, da insbesondere letzteres für die Evaluation relevant ist.
+
+\subsection{Datenmodell, Typsystem und Rechteverwaltung}
+
+Wie bereits erwähnt, ist das Dokumentenmodell das grundlegende Datenmodell in OrientDB. Die Basiseinheit zur Darstellung von Informationen ist das Dokument, welches sich aus einer Menge von Schlüssel-Wert-Paaren zusammensetzt. Schlüssel sind innerhalb eines Dokumentes eindeutige Bezeichner vom Typ \texttt{String}, zugehörige Werte sind typisiert und dienen zur Speicherung der Nutzdaten. Das System unterstützt eine Vielzahl vordefinierter Typen, wie zum Beispiel \texttt{int} oder \texttt{float}, und erlaubt darüber hinaus die Definition eigener Typen.\footnote{Eine Liste aller vordefinierter Datentypen kann unter \url{https://github.com/orientechnologies/orientdb/wiki/Types} eingesehen werden.} Ein Wert kann auch ein Dokument bzw. eine Menge von Dokumenten sein, wodurch sich beliebige Einbettungen realisieren lassen.
+
+% Graphenmodell
+Für die Modellierung von Graphen bietet OrientDB das Property-Graph-Modell an. Dieses kann entsprechend der Definition schemalos verwendet werden, analog zu Neo4j wird jedoch die Definition eines Schemas empfohlen um das Formulieren von Anfragen zu vereinfachen und gleichzeitig deren effizientere Ausführung zu ermöglichen. Die Knoten innerhalb des Graphen und ihre Attribute werden auf Dokumente abgebildet. Ist die Vergabe von Knotenbezeichnern erforderlich, kann dies entweder durch ein dediziertes Schlüssel-Wert-Paar oder durch die Zuordnung des Knotens zu einer Klasse erfolgen.
+
+Für die Repräsentation von Beziehungen unterscheidet OrientDB zwei Arten: Referenzierte und eingebettete Beziehungen. Beziehungsinformationen werden generell als Schlüssel-Wert-Paare am Knoten abgelegt. Eine referenzierte Beziehung entspricht dem Konzept einer gerichteten Kante. Der Schlüssel ist der Kantenbezeichner, welcher sich aus dem Typ der entsprechenden Kante ergibt. Werden keine Kantenattribute verwendet, so ist der zugehörige Wert die Menge der Identitäten aller Zielknoten, die über eine entsprechend bezeichnete Kante mit dem Startknoten verbunden sind. Besitzt die Kante hingegen Attribute, so wird sie durch ein eigenes Dokument in der Datenbasis repräsentiert. Der Wert am Startknoten ist in diesem Fall eine Menge der Kanten-Identitäten. In beiden Fällen kann diese Menge unsortiert oder geordnet sein. Die Zielknoten enthalten ebenfalls dedizierte Schlüssel-Wert-Paare, welche Informationen über die eingehenden Kanten speichern. Auch hier wird entweder direkt auf Startknoten oder auf Kanten-Dokumente verwiesen.\footnote{Die dargelegten Informationen basieren auf der Untersuchung der physischen Repräsentation des in Anhang \ref{anh:domain_example} gezeigten Beispiels.} Daraus geht hervor, dass auch in OrientDB eine einzelne Kante zur Darstellung einer bidirektionalen Beziehung ausreicht.
+
+Eine zweite Art, Abhängigkeiten zwischen Informationen zu modellieren, ist die Verwendung eingebetteter Beziehungen. Diese werden üblicherweise in dokumentenorientierten Datenbanken eingesetzt in denen das Konzept der Fremdschlüssel nicht vorhanden ist. Die Beziehung zwischen zwei Objekten A und B wird durch das Einbetten von B in A oder umgekehrt modelliert und ist vergleichbar mit der Komposition in der UML. Das eingebettete Objekt besitzt keine eigene Identität innerhalb der Datenbasis. Der Schlüssel bezeichnet die Art der Beziehung, der Wert die referenzierte Information. Abbildung \ref{fig:orient_example} verdeutlicht die verschiedenen Beziehungsarten. Sollen mehrere Werte mit dem gleichen Schlüssel eingebettet werden, so ist dies analog zu referenzierten Beziehungen in geordneten Listen oder unsortierten Mengen möglich. Generell bietet sich diese Art der Modellierung an, wenn die eingebetteten Informationen nur für den jeweiligen Knoten relevant sind und nicht mehreren Knoteninstanzen zugeordnet sein können. Letzteres würde zu Redundanz führen und folglich die Konsistenzerhaltung erschweren.
+
+% Identität
+Die Identität eines Dokumentes wird systemseitig vergeben und ist unveränderbar. Dokumente können mittels ihrer Identität adressiert werden, sie entspricht somit dem Konzept des Primärschlüssels. Aus den vorhergehenden Ausführungen geht hervor, dass sowohl Knoten als auch Kanten in Form von referenzierten Beziehungen eine Identität besitzen. Bei nicht-attributierten Kanten setzt sich diese aus den Identitäten der Start- und Zielknoten zusammen. Anzumerken ist, dass eine Identität nach dem Löschen der zugehörigen Instanz neu vergeben werden kann. Der detaillierte Aufbau wird im Zusammenhang mit der physischen Repräsentation des Graphen erläutert.
+
+% Datenbank
+Im Gegensatz zu den bisher vorgestellten GDBMS erlaubt OrientDB das Verwalten mehrere Datenbanken in einer GDBMS-Instanz. Dabei benötigt jede Datenbank einen eindeutigen Bezeichner, ein Datenbank-übergreifender Zugriff innerhalb von Anfragen ist jedoch nicht möglich. Beim Initialisieren einer Datenbank kann festgelegt werden, ob sich diese lokal im Dateisystem oder entfernt im Netzwerk befindet, alternativ kann sie für Testzwecke komplett im Hauptspeicher gehalten werden.
+
+\paragraph*{Typsystem} 
+
+Anzahl und Struktur der Schlüssel-Wert-Paare können für jedes Dokument individuell verschieden sein oder aber durch ein Schema festgelegt werden. Darüber hinaus ist es in OrientDB möglich, nur einen Teil der Informationen durch ein Schema zu beschreiben und dieses beliebig zu erweitern. Folglich ist auch hier eine hohe Flexibilität hinsichtlich der Schemaevolution innerhalb einer Anwendung gegeben.\\
+Ein Schema definiert sich in OrientDB durch eine Menge von Klassen, wobei eine Klasse an das entsprechende Konzept in der Objektorientierung angelehnt ist. Eine Klasse legt den Typ eines Dokumentes fest und definiert, welche Attribute dieses besitzt und welche Integritätsbedingungen sie aufweisen. Beispielweise kann der Wertebereich durch den entsprechenden Typ implizit eingeschränkt werden. Darüber hinaus lassen sich Wertebereiche numerischer Datentypen durch das Angeben von Intervallen oder im Fall von alphanumerischen Typen durch das Formulieren regulärer Ausdrücke explizit einschränken. Zusätzlich lässt sich festgelegen, ob ein Attribut obligatorisch ist und ob es den Wert \texttt{null} annehmen darf. Wird ein Attribut als \texttt{UNIQUE} deklariert, erzeugt das System einen Index und das Attribut kann neben der eigentlichen Identität des Dokuments als Primärschlüssel verwendet werden. Durch das Konzept der eingebetteten Beziehungen können auch Typen verschachtelt werden um die Struktur entsprechender Dokumente beschreiben zu können.
+
+Das Modellieren von Vererbungshierarchien ist ebenfalls möglich: Attribute von Oberklassen werden an alle Unterklassen weitergegeben, eine Einschränkung der Sichtbarkeit ist nicht vorgesehen. OrientDB erlaubt das Anlegen abstrakter Klassen, welche analog zur Objektorientierung nicht instanziiert werden, sondern ausschließlich Attribute für ihre Spezialisierungen vorgeben. Mehrfachvererbungen sind generell nicht möglich. Wird keine explizite Oberklasse angegeben, so wird für Knoten die Klasse \texttt{OGraphVertex}, für Kanten die Klasse \texttt{OGraphEdge} verwendet.
+
+\paragraph*{Rechteverwaltung} Als einziges der evaluierten Systeme bietet OrientDB eine integrierte Nutzer- und Rollenverwaltung an. Ein Nutzer wird durch einen Namen und ein optionales Passwort identifiziert und besitzt eine oder mehrere Rollen. Eine Rolle definiert sich wiederum durch eine Menge von Regeln die entweder nach Whitelist-Prinzip erlaubt oder nach Blacklist-Prinzip verboten werden. Eine Rolle \texttt{Reader} verbietet zum Beispiel alle Regeln bis auf das Lesen anwendungsspezifischer Datenbanken, wohingegen eine Rolle \texttt{Writer} alles erlaubt bis auf das Lesen und Schreiben von Nutzerinformationen. Innerhalb des Systems existiert ein Nutzer \texttt{admin} dessen Rolle alle Regeln erlaubt. Da Rollen selbst typisierte Dokumente sind, unterstützen sie auch das Konzept der Vererbung. Die Granularität einer Regel lässt sich standardmäßig bis auf Klassenebene einstellen, durch das Erben einer dedizierten Klasse erlaubt OrientDB darüber hinaus eine Rechteverwaltung auf Instanzebene. 
+%Hierfür muss der Typ des Dokuments von einer dedizierten Klasse erben, anschließend können Nutzer mit den selben Rechten auf der Klasse nur ihre eigenen Änderungen sehen. Ein Beispiel hierfür ist ein Blog in dem Beiträge von mehreren Nutzern verfasst werden. Die Rechtevergabe auf Dokumentebene erlaubt eine genaue Festlung
+
+\subsection{Zugriffsmechanismen}
+
+Das GDBMS bietet mehrere Optionen für den Zugriff auf die Datenbasis: Wie HyperGraphDB und Neo4j enthält auch OrientDB eine Java API für die Verwaltung des Graphen mittels CRUD-Operationen. Hierfür implementiert das GDBMS die im Blueprints-Projekt definierte Referenz-Schnittstelle des PGM.\footnote{OrientDB enthält auch eine eigene Core API, diese wurde jedoch in Version 1.4 als veraltet deklariert und wird folglich in der Evaluation nicht betrachtet.} Infolgedessen lässt sich auch die Anfragesprache Gremlin in OrientDB verwenden. Die primäre Anfragesprache ist jedoch der deklarative OrientDB-SQL-Dialekt, welcher einen Teil des SQL-92-Standards übernimmt und mit graphenspezifischen Operatoren erweitert. Gremlin wird im Zusammenhang mit Titan vorgestellt.\\
+Das Traversieren des Graphen ist sowohl in Java als auch im Rahmen von SQL möglich. Da die Verwendung in beiden Fällen sehr ähnlich ist, wird hier nur auf den Traverse-Operator in SQL eingegangen. Ein Beispiel für die Traversierung in Java findet sich in Anhang \ref{anh:orientdb_traverse_java}. Die Konzepte der Functions und Hooks werden ebenfalls kurz vorgestellt.
+
+\paragraph*{CRUD-Operationen via Blueprints API}
+
+Die Blueprints API ist eine imperative Java API und der Core API von Neo4j sehr ähnlich. Es stehen Methoden zum Erzeugen und Lesen von Knoten und Kanten zur Verfügung, deren Ergebnis ist eine Referenz auf das persistente Objekt mit einer eindeutigen Identität. Kanten können nur unter Angabe existierender Knoten erzeugt werden, deren Reihenfolge bestimmt die Kantenrichtung. Die Spezifikation eines Kantenbezeichners ist obligatorisch, dieser ist ein Wert vom Typ \texttt{String} und kann folglich statisch in der Anwendung oder dynamisch zur Laufzeit festgelegt werden. Sowohl Knoten als auch Kanten verfügen über Methoden zum Anlegen von Attributen, die Attributwerte müssen einem der vordefinierten Typen entsprechen. Werden Arrays, Mengen oder assoziative Arrays unterstützter Datentypen als Wert angegeben, erzeugt das GDBMS automatisch eine eingebettete Beziehung. Knoten- und Kantenattribute können aktualisiert oder gelöscht werden. Knoten verfügen über zusätzliche Funktionen zum Auslesen inzidenter Kanten und adjazenter Knoten, Kanten verfügen wiederum über Methoden zum Auslesen von Start- und Zielknoten sowie ihres Bezeichners. Sowohl Knoten als auch Kanten lassen sich aus der Datenbasis entfernen, dabei stellt das GDBMS die referentielle Integrität sicher.
+
+% Klassen
+OrientDB erweitert die Blueprints-Implementierung des PGM um Methoden zum Verwalten von Klassen. Diese werden unter Angabe eines Namens erzeugt, anschließend lassen sich Attributdefinitionen, bestehend aus Attributname und Typ sowie eventueller Integritätsbedingungen, für die Klasse festlegen. Wird diese als strikt deklariert, sind alle Attribute obligatorisch und müssen von den Instanzen angegeben werden. Eine Klasse ohne jegliche Attribute entspricht hingegen dem Konzept des Knotenlabels in Neo4j. Beim Erzeugen einer Klasse kann diese als abstrakt deklariert und optional eine Oberklasse angegeben werden. Die Zuordnung einer Knoten- oder Kanteninstanz zu einer Klasse erfolgt beim Erzeugen, der Knoten- bzw. Kantenbezeichner entspricht dem Klassennamen. Pflichtattribute müssen dabei unmittelbar, optionale Attribute können nachträglich angegeben werden.  Wird ein Schema definiert, erlaubt dies die Verwendung zusätzlicher API-Methoden für die Selektion von Instanzen anhand ihres Typs. Hierbei ist zu beachten, dass die Methoden polymorph sind und folglich auch die Instanzen aller Unterklassen im Ergebnis enthalten sind. Ein Beispiel für die Verwendung der API in Verbindung mit dem Typsystem findet sich in Anhang \ref{anh:orientdb_blueprints_api}.
+
+% Algorithmen
+Aus den Ausführungen geht hervor, dass sich unter Verwendung der Blueprints API beliebige Graphalgorithmen anwendungsseitig implementieren lassen, OrientDB selbst bietet keine Implementierungen an. Innerhalb des Blueprints-Projektes stellt jedoch das Paket Furnace\footnote{\url{https://github.com/tinkerpop/furnace/wiki}} bereits einige Algorithmen zur Verfügung. So werden Suchverfahren, wie der A*-Algorithmus sowie die Tiefen- und Breitensuche, genauso angeboten wie der Dijkstra- und Bellman-Ford-Algorithmus für das Finden kürzester Pfade in gewichteten Graphen. Neben den Pfadsuchalgorithmen wird mit dem Bron-Kerbosch-Algorithmus\cite{Bron:1973:AFC:362342.362367} auch ein Verfahren zum Auffinden von Cliquen implementiert. Anzumerken ist, dass keines der implementierten Verfahren Einschränkungen hinsichtlich zu berücksichtigender Knoten- oder Kantenklassen zulässt.
+
+\paragraph*{OrientDB-SQL-Dialekt}
+
+OrientDB verwendet SQL für die Anfrageformulierung und zur Schemaverwaltung. Die Entwickler entschieden sich für SQL, da es eine im Bereich der relationalen Datenbanken etablierte Sprache ist und den Einstieg erleichtern soll. Nachfolgend bezeichnet SQL den in OrientDB verwendeten Dialekt, Standard-SQL hingegen bezieht sich auf SQL-92\cite{SQL_92:2013}. Ziel ist es nicht, den kompletten Standard zu erläutern, sondern auf die Besonderheiten in Bezug auf die graphenorientierte Verwendung in OrientDB einzugehen. Die Darstellung erfolgt analog zu Cypher an einem einfachen Beispiel und bezieht sich auf das Graphdatenmodell in OrientDB, die ausführliche Beschreibung der Sprache findet sich in der offiziellen Dokumentation\cite{Orient_doku:2013}.
+
+\begin{figure}[h] 
+	\centering
+		\includegraphics[scale=1]{orientdb_example.pdf}
+	\caption[OrientDB: Beispielgraph]{Einfaches Beispiel eines Graphen mit den Knotenklassen \texttt{Employee} und \texttt{Project} sowie den Kantenklassen \texttt{WorksWith}, \texttt{WorksIn} und \texttt{ResponsibleFor}.}
+	\label{fig:orientdb_example}
+\end{figure}
+
+Abbildung \ref{fig:orientdb_example} zeigt ein einfaches Beispiel eines schematisierten Graphen. Für die Definition der Knoten- und Kantenklassen stellt OrientDB den \texttt{CREATE CLASS}-Operator zur Verfügung. Eine Klasse ähnelt der Relation in einem RDBMS, Instanzen können ein Schema jedoch beliebig erweitern. Nachfolgend wird eine Klasse \texttt{Employee} erzeugt, welcher ein Pflichtattribut \texttt{name} vom Typ \texttt{STRING} und ein optionales Attribut \texttt{age} vom Typ \texttt{INTEGER} hinzugefügt wird. Letzteres wird durch die Angabe der Integritätsbedingung \texttt{MIN} eingeschränkt.
+Die Klasse selbst erbt von \texttt{V}, welche alle Knoten innerhalb des Graphen repräsentiert. Die Definition der Klasse \texttt{Project} erfolgt analog.
+
+\texttt{CREATE CLASS Employee EXTENDS V;}\newline
+\texttt{CREATE PROPERTY Employee.name STRING;}\newline
+\texttt{CREATE PROPERTY Employee.age INTEGER;}\newline
+\texttt{ALTER PROPERTY Employee.name MANDATORY true;}\newline
+\texttt{ALTER PROPERTY Employee.age MIN 18;}
+
+Das Definieren von Kantentypen erfolgt ebenfalls mit dem gezeigten Operator, sie erben jedoch von \texttt{E}, der Klasse aller Kanten. Attribute werden wie bereits für Knoten gezeigt definiert. Nachfolgend wird stellvertretend der Befehl für das Anlegen des Kantentyps \texttt{WorksWith} dargestellt:
+
+\texttt{CREATE CLASS WorksWith EXTENDS E;}
+
+Für die Manipulation der Datenbasis stehen in Standard-SQL die Befehle \texttt{INSERT}, \texttt{UPDATE} und \texttt{DELETE} zur Verfügung. \texttt{INSERT} wird auch in OrientDB angeboten, ist jedoch nur für die Verwendung mit Dokumenten vorgesehen, für das Erzeugen von Knoten- und Kanteninstanzen muss der Befehl \texttt{CREATE VERTEX} bzw. \texttt{CREATE EDGE} verwendet werden, welche auf die darunterliegende Blueprints API abgebildet sind. Der folgende Befehl erzeugt eine Knoteninstanz vom Typ \texttt{Employee} und weist die entsprechenden Attribute zu:
+
+\texttt{CREATE VERTEX Employee SET name=\string"Alice\string", age=25;}
+
+Das Erzeugen einer Kanteninstanz erfordert die Angabe der Identitäten von Start- und Zielknoten, diese können entweder direkt angegeben, oder durch eine geschachtelte Selektion gelesen werden. Nachfolgend wird stellvertretend die \texttt{WorksWith}-Beziehung zwischen den Mitarbeitern \texttt{Alice} und \texttt{Bob} eingefügt, optional können via \texttt{SET} Attribute angegeben werden:
+
+\texttt{CREATE EDGE WorksWith}\newline
+\texttt{FROM (SELECT FROM Employee WHERE name= \string"Alice\string")}\newline
+\texttt{TO (SELECT FROM Employee WHERE name=\string"Bob\string");}
+
+
+
+
+%\texttt{INSERT INTO Employee (name) VALUES ("Alice")}\newline
+%\texttt{INSERT INTO Employee (name) VALUES ("Bob")}\newline
+%\texttt{INSERT INTO Employee (name) VALUES ("Eve")}\newline
+%\texttt{INSERT INTO Project (name) VALUES ("ProjectX")}\newline
+%\texttt{UPDATE Employee SET works_with=(SELECT FROM Employee WHERE name="Bob") WHERE name="Alice"}\newline
+%\texttt{UPDATE Employee SET works_with=(SELECT FROM Employee WHERE name="Eve") WHERE name="Bob"}\newline
+%\texttt{UPDATE Employee SET works_with=(SELECT FROM Employee WHERE name="Alice") WHERE name="Eve"}\newline
+%\texttt{UPDATE Employee SET responsible_for=(SELECT FROM Project WHERE name="ProjectX") WHERE name="Bob"}
+
+Abfrage der Beziehung, Verzicht auf Join, polymorphe Anfrage
+
+%\texttt{SELECT name, works_with.name FROM Employee}\newline
+%\texttt{SELECT name, works_with.responsible_for.name FROM Employee}\newline
+%\textit{select name from Employee where works_with.responsible_for.name = "ProjectX"}
+
+% Traversierung
+
+% Aggregation Gruppierung
+
+- Gruppierung nach Projekt der Freunde
+
+
+
+
+
+
+
+
+- polymorphe Anfragen (wie HypergraphDB)
+
+- Definition eines abstrakten Pfades als Prädikat
+- Sub-Queries
+- Operatoren (toUpperCase, matches)
+
+\paragraph*{Besonderheiten}
+
+- Hooks (Trigger)
+	- \url{https://github.com/orientechnologies/orientdb/wiki/Hook}
+- Functions 
+	- \url{https://github.com/orientechnologies/orientdb/wiki/Functions}
+	- Stored Procedures in JavaScript
+	- können via REST und auch embedded ausgeführt werden
+	- gegenseitiger Aufruf + Rekursion
+
+
+\paragraph*{Transaktionen}
+
+% Ausführung
+- falls im aktuellen Kontext noch keine Tx aktiv ist, wird diese implizit bei einer Änderungsoperation gestartet
+
+% Verschachtelung
+
+- Im Gegensatz zu den bisher betrachteten Systemen unterstützt OrientDB keine verschachtelten Transaktionen.
+
+- ACID
+
+% MVCC
+- MVCC (Objektversionen)
+- Ausnahme bei Konflikt -> Anwendung entscheidet (auto-retry)
+% Logging
+- UNDO-Log
+
+\paragraph*{Indexierung}
+
+- MVRB-Tree
+	- kombiniert B+-Baum und Rot-Schwarz-Baum
+	- schnelles Einfügen und Updaten
+
+\subsection{Persistenz}
+% Record
+- Dokumente werden systemseitig durch Record repräsentiert
+- Records werden in physischen Clustern zusammengefasst
+- besitzt eindeutigen Bezeichner: RecordID (Primärschlüssel)
+	- setzt sich aus ClusterID und Position im Cluster zusammen
+	- systemseitig, unveränderbar
+	- kann nach Löschen wiederverwendet werden -> nicht in Anwendung verwenden
+	- Zugriff via RecordID möglich
+- Records besitzen Versionsnummer
+	- inkrementiert bei Änderung, wird bei Transaktionsausführung verwendet
+- Knoten und referenzierte Beziehungen besitzen Identität
+	- bei referenzierten Beziehungen ohne Attribute setzt sich die Identität aus der Identität des Start- und Zielknotens zusammen
+
+% Storage
+- physische Datenbank
+- orchestriert Zugriff auf Cluster und Datensegmente
+
+% Cluster
+- Gruppierung von Records anhand des Typs oder eines Attributs
+- werden auf das lokale Dateisystem abgebildet
+	- 1 - n Cluster-Files (ocl)
+		- enthält Zeiger zu den Records im Datensegment (+ Metadaten)
+	- 1 Cluster-Holes-File (och)
+		- speichert Position in Cluster-Files an denen gelöscht wurde
+- jeder Klasse ist automatisch ein Cluster zugeordnet (mehrere sind möglich)
+	- Beispiel: Klasse Invoice und Cluster invoice2012, invoice2013 -> Anfragen auf konkretes Cluster
+	- Record einer Klasse ist nur in einem Cluster (Basisklasse)
+
+% Datensegment
+- speichert die Nutzdaten (= Records)
+- werden auf das lokale Dateisystem abgebildet
+	- 1 - n Data-Files (oda)
+		- beinhaltet Records
+	- 1 Data-Holes-File (odh)
+- Format: https://github.com/orientechnologies/orientdb/wiki/Types
+
+
+
+
+\paragraph*{Cacheverwaltung}
+
+- nutzt kompletten verfügbaren Speicher (Heap)
+
+- Level 1 Database Level (1 Cache per Thread)
+
+- Level 2 Storage Level (1 per JVM)
+
+\subsection{Verteilung}
+
+- Multi-Master-Replikation
+- Log-Replikation
+
