@@ -55,7 +55,7 @@ Aus den Ausführungen geht hervor, dass sich unter Verwendung der Blueprints API 
 
 \paragraph*{OrientDB-SQL-Dialekt}
 
-OrientDB verwendet SQL für die Anfrageformulierung und zur Schemaverwaltung. Die Entwickler entschieden sich für SQL, da es eine im Bereich der relationalen Datenbanken etablierte Sprache ist und den Einstieg erleichtern soll. Nachfolgend bezeichnet SQL den in OrientDB verwendeten Dialekt, Standard-SQL hingegen bezieht sich auf SQL-92\cite{SQL_92:2013}. Ziel ist es nicht, den kompletten Standard zu erläutern, sondern auf die Besonderheiten in Bezug auf die graphenorientierte Verwendung in OrientDB einzugehen. Die Darstellung erfolgt analog zu Cypher an einem einfachen Beispiel und bezieht sich auf das Graphdatenmodell in OrientDB, die ausführliche Beschreibung der Sprache findet sich in der offiziellen Dokumentation\cite{Orient_doku:2013}.
+OrientDB verwendet SQL für Schemadefinition, Anfrageformulierung, Datenmanipulation und Nutzerverwaltung. Die Entwickler entschieden sich für SQL, da es eine im Bereich der relationalen Datenbanksysteme etablierte Sprache ist und den Einstieg in das GDBMS erleichtern soll. Nachfolgend bezeichnet SQL den in OrientDB verwendeten Dialekt, Standard-SQL hingegen bezieht sich auf SQL-92\cite{SQL_92:2013}. Ziel ist es nicht, den Standard komplett zu erläutern, sondern auf die Besonderheiten hinsichtlich der graphenorientierten Verwendung in OrientDB einzugehen. Dies erfolgt analog zu Cypher an einem einfachen Beispiel und bezieht sich dabei ausschließlich auf das Graphdatenmodell in OrientDB. Eine ausführliche Beschreibung der Sprache findet sich in der offiziellen Dokumentation\cite{Orient_doku:2013}.
 
 \begin{figure}[h] 
 	\centering
@@ -64,7 +64,7 @@ OrientDB verwendet SQL für die Anfrageformulierung und zur Schemaverwaltung. Die
 	\label{fig:orientdb_example}
 \end{figure}
 
-Abbildung \ref{fig:orientdb_example} zeigt ein einfaches Beispiel eines schematisierten Graphen. Für die Definition der Knoten- und Kantenklassen stellt OrientDB den \texttt{CREATE CLASS}-Operator zur Verfügung. Eine Klasse ähnelt der Relation in einem RDBMS, Instanzen können ein Schema jedoch beliebig erweitern. Nachfolgend wird eine Klasse \texttt{Employee} erzeugt, welcher ein Pflichtattribut \texttt{name} vom Typ \texttt{STRING} und ein optionales Attribut \texttt{age} vom Typ \texttt{INTEGER} hinzugefügt wird. Letzteres wird durch die Angabe der Integritätsbedingung \texttt{MIN} eingeschränkt.
+Abbildung \ref{fig:orientdb_example} zeigt einen schematisierten Graphen, welcher die Beziehungen zwischen Mitarbeitern und Projekten repräsentiert, sowohl Knoten als auch Kanten sind Klassen zugeordnet. Für deren Definition stellt OrientDB den \texttt{CREATE CLASS}-Operator zur Verfügung. Nachfolgend wird eine Klasse \texttt{Employee} erzeugt, dieser wird ein Pflichtattribut \texttt{name} vom Typ \texttt{STRING} und ein optionales Attribut \texttt{age} vom Typ \texttt{INTEGER} zugewiesen. Mit der Angabe der Integritätsbedingung \texttt{MIN} erfolgt für Letzteres die Einschränkung zulässiger Werte.
 Die Klasse selbst erbt von \texttt{V}, welche alle Knoten innerhalb des Graphen repräsentiert. Die Definition der Klasse \texttt{Project} erfolgt analog.
 
 \texttt{CREATE CLASS Employee EXTENDS V;}\newline
@@ -73,56 +73,57 @@ Die Klasse selbst erbt von \texttt{V}, welche alle Knoten innerhalb des Graphen 
 \texttt{ALTER PROPERTY Employee.name MANDATORY true;}\newline
 \texttt{ALTER PROPERTY Employee.age MIN 18;}
 
-Das Definieren von Kantentypen erfolgt ebenfalls mit dem gezeigten Operator, sie erben jedoch von \texttt{E}, der Klasse aller Kanten. Attribute werden wie bereits für Knoten gezeigt definiert. Nachfolgend wird stellvertretend der Befehl für das Anlegen des Kantentyps \texttt{WorksWith} dargestellt:
+Das Definieren von Kantentypen erfolgt ebenfalls mit dem gezeigten Operator, sie erben jedoch von \texttt{E}, der Klasse aller Kanten. Attribute werden wie bereits für Knoten gezeigt definiert. Nachfolgend ist stellvertretend der Befehl für das Anlegen des Kantentyps \texttt{WorksWith} dargestellt:
 
 \texttt{CREATE CLASS WorksWith EXTENDS E;}
 
-Für die Manipulation der Datenbasis stehen in Standard-SQL die Befehle \texttt{INSERT}, \texttt{UPDATE} und \texttt{DELETE} zur Verfügung. \texttt{INSERT} wird auch in OrientDB angeboten, ist jedoch nur für die Verwendung mit Dokumenten vorgesehen, für das Erzeugen von Knoten- und Kanteninstanzen muss der Befehl \texttt{CREATE VERTEX} bzw. \texttt{CREATE EDGE} verwendet werden, welche auf die darunterliegende Blueprints API abgebildet sind. Der folgende Befehl erzeugt eine Knoteninstanz vom Typ \texttt{Employee} und weist die entsprechenden Attribute zu:
+Für die Manipulation der Datenbasis stehen in Standard-SQL die Befehle \texttt{INSERT}, \texttt{UPDATE} und \texttt{DELETE} zur Verfügung. Diese werden auch in OrientDB angeboten, \texttt{INSERT} ist jedoch nur für die Verwendung mit Dokumenten vorgesehen, das Erzeugen von Knoten- und Kanteninstanzen erfolgt mit den Befehlen \texttt{CREATE VERTEX} bzw. \texttt{CREATE EDGE}. Die folgende Anweisung erzeugt eine Knoteninstanz vom Typ \texttt{Employee} und weist die entsprechenden Attribute zu:
 
 \texttt{CREATE VERTEX Employee SET name=\string"Alice\string", age=25;}
 
-Das Erzeugen einer Kanteninstanz erfordert die Angabe der Identitäten von Start- und Zielknoten, diese können entweder direkt angegeben, oder durch eine geschachtelte Selektion gelesen werden. Nachfolgend wird stellvertretend die \texttt{WorksWith}-Beziehung zwischen den Mitarbeitern \texttt{Alice} und \texttt{Bob} eingefügt, optional können via \texttt{SET} Attribute angegeben werden:
+Das Erzeugen einer Kanteninstanz erfordert die Angabe der Identitäten von Start- und Zielknoten, diese können entweder direkt angegeben, oder durch eine geschachtelte Selektion gelesen werden. Nachfolgend wird stellvertretend die Instanz der \texttt{WorksWith}-Beziehung zwischen den Mitarbeitern \texttt{Alice} und \texttt{Bob} eingefügt, bei Bedarf können Kantenattribute via \texttt{SET} angegeben werden:
 
 \texttt{CREATE EDGE WorksWith}\newline
-\texttt{FROM (SELECT FROM Employee WHERE name= \string"Alice\string")}\newline
+\texttt{FROM (SELECT FROM Employee WHERE name=\string"Alice\string")}\newline
 \texttt{TO (SELECT FROM Employee WHERE name=\string"Bob\string");}
 
+Die Informationsextraktion erfolgt entweder über den \texttt{SELECT}- oder den \texttt{TRAVERSE}-Operator. Analog zu Standard-SQL können diese beliebig geschachtelt werden. Die folgende Anfrage selektiert die Namen der Mitarbeiter zu denen \texttt{Alice} eine gerichtete Kante vom Typ \texttt{WorksWith} besitzt:
 
+\texttt{SELECT name FROM}\newline
+\texttt{(SELECT expand(out(\string"WorksWith\string")) FROM Employee WHERE name=\string"Alice\string");} 
 
+Die Funktion \texttt{out} legt dabei die Richtung der Kante fest und kann wahlweise durch \texttt{in} oder \texttt{both} ersetzt werden. Das Ergebnis der drei Funktionen ist eine Menge von Identitäten, deren Instanzen durch \texttt{expand} aufgelöst und für weitere Anfragen verwendbar gemacht werden.\\
+Die gezeigte Anfrage entspricht einer Verbundoperation in einem RDBMS. Der wesentliche Unterschied ist, dass die Beziehungsinformationen materialisiert am Dokument gespeichert sind und nicht zur Laufzeit berechnet werden müssen. Ersetzt man die Projektion der inneren \texttt{SELECT}-Anweisung durch: 
 
-%\texttt{INSERT INTO Employee (name) VALUES ("Alice")}\newline
-%\texttt{INSERT INTO Employee (name) VALUES ("Bob")}\newline
-%\texttt{INSERT INTO Employee (name) VALUES ("Eve")}\newline
-%\texttt{INSERT INTO Project (name) VALUES ("ProjectX")}\newline
-%\texttt{UPDATE Employee SET works_with=(SELECT FROM Employee WHERE name="Bob") WHERE name="Alice"}\newline
-%\texttt{UPDATE Employee SET works_with=(SELECT FROM Employee WHERE name="Eve") WHERE name="Bob"}\newline
-%\texttt{UPDATE Employee SET works_with=(SELECT FROM Employee WHERE name="Alice") WHERE name="Eve"}\newline
-%\texttt{UPDATE Employee SET responsible_for=(SELECT FROM Project WHERE name="ProjectX") WHERE name="Bob"}
+\texttt{expand(out(\string"WorksWith\string").out(\string"ResponsibleFor\string"))}
 
-Abfrage der Beziehung, Verzicht auf Join, polymorphe Anfrage
+werden die Namen der Projekte ausgegeben, für welche die Kollegen von \texttt{Alice} verantwortlich sind. Handelt es sich bei beiden Beziehungen um $n:m$ Relationen, erfordert diese Anfrage in einer relationalen Datenbank vier Verbundoperationen. In OrientDB ist die Berechnung ausschließlich von der Anzahl der Beziehungen zwischen den einzelnen Knoteninstanzen abhängig.
 
-%\texttt{SELECT name, works_with.name FROM Employee}\newline
-%\texttt{SELECT name, works_with.responsible_for.name FROM Employee}\newline
-%\textit{select name from Employee where works_with.responsible_for.name = "ProjectX"}
+Die Selektion erfolgt durch die optionale Angabe einer \texttt{WHERE}-Klausel. OrientDB stellt vergleichende, boolesche und mathematische Operatoren für die Definition und Verknüpfung von Prädikaten zur Verfügung. Diese können in Verbindung mit einzelnen oder mehreren Attributwerten definiert werden. Ein Prädikat berücksichtigt ausschließlich Dokumente an denen das Attribut vorhanden ist, alle anderen sind nicht in der Ergebnismenge enthalten.\\
+Die Projektion erlaubt die Auswahl einzelner Attribute aus der Ergebnismenge und ermöglicht die Berechnung von Aggregaten und das Ausführen von Funktionen. Verschiedene Aggregatfunktionen, wie zum Beispiel \texttt{count}, \texttt{min}, \texttt{max} und \texttt{avg} stehen zur Verfügung. Analog zu Neo4j erlaubt OrientDB die Verwendung zusätzlicher skalarer, mathematischer, string-basierter und mengenorientierter Funktionen.\footnote{Eine vollständige Übersicht über Operatoren und Funktionen findet sich unter \url{https://github.com/orientechnologies/orientdb/wiki/SQL-Where}.} Die Ergebnismenge kann gruppiert\footnote{In OrientDB 1.5.1 ist die Gruppierung nur für ein Attribut möglich.}, sortiert sowie durch \texttt{SKIP} und \texttt{LIMIT} eingeschränkt werden.
 
 % Traversierung
 
-% Aggregation Gruppierung
+Das Prüfen der Erreichbarkeit und das Berechnen kürzester Pfade ist in SQL ebenfalls möglich. Der \texttt{TRAVERSE}-Operator ermöglicht das Traversieren ausgehend von einem konkreten Knoten oder einer Knotenmenge. Folgende Anfrage selektiert zum Beispiel alle Knoten, die über eine \texttt{WorksWith}-Beziehung mit einem Startknoten verbunden sind und einen maximalen Abstand von drei zu diesem aufweisen:
 
-- Gruppierung nach Projekt der Freunde
+\texttt{TRAVERSE out(\string"WorksWith\string") FROM \#11:0 WHILE \$depth<=3;}
 
+Der Ausgangsknoten ist hierbei durch seine Identität \texttt{\#11:0} vorgegeben. Die Traversierung definiert einen abstrakten Weg, bei dem alle Kanten gerichtet und vom Typ \texttt{WorksWith} sind. Der Abstand zum Startknoten beträgt höchstens drei und wird sowohl zur Laufzeit als auch im Ergebnis an die Systemvariable \texttt{\$depth} gebunden. Das Ergebnis dieses Operators ist die Menge aller Dokumente, welche durch Instanzen des beschriebenen Weges verbunden sind. Die Einschränkung der zu berücksichtigenden Knotenbezeichner sowie Knoten- und Kantenattribute erfolgt durch die Einbettung in eine Selektion:
 
+\texttt{SELECT name, min(\$depth) as dist FROM}\newline
+\texttt{(TRAVERSE out(\string"WorksWith\string") FROM \#11:0 WHILE \$depth<=3 STRATEGY breadth\_first)}\newline
+\texttt{GROUP BY name ORDER BY dist;}
 
+Die gezeigte Anfrage listet alle Kollegen eines Mitarbeiters sortiert nach ihrem minimalen Abstand zueinander auf. Die \texttt{TRAVERSE}-Operation berechnet unter Verwendung der Breitensuche alle Pfade. Da zwei Mitarbeiter über mehrere Pfade verbunden sein können, werden diese anschließend nach dem Namen des Kollegen gruppiert. Die Projektion schränkt die Ergebnismenge durch Aggregation der Pfadlängen mittels \texttt{min} ein.\\
+Eine weitere Anfrage zeigt die Einschränkung der relevanten Knoteninstanzen: Es sollen alle Projekte mit denen ein Mitarbeiter direkt oder transitiv verbunden ist, zusammen mit dem Abstand zum Mitarbeiter ausgegeben werden:
 
+\texttt{SELECT name, min(\$depth) FROM}\newline
+\texttt{(TRAVERSE both() FROM \#11:0 WHILE \$depth<=4 STRATEGY breadth\_first)}\newline
+\texttt{WHERE @Class=\string"Project\string" GROUP BY name;}
 
+In dieser Anfrage werden ein- und ausgehende Kanten jeglichen Typs traversiert. Die Menge der Knoten wird durch das Prädikat \texttt{@Class=\string"Project\string"} auf Projekte eingeschränkt.
 
-
-
-- polymorphe Anfragen (wie HypergraphDB)
-
-- Definition eines abstrakten Pfades als Prädikat
-- Sub-Queries
-- Operatoren (toUpperCase, matches)
+Für das Berechnen kürzester Pfade stellt OrientDB die Funktionen \texttt{shortestPath} für ungewichtete und \texttt{dijkstra} für gewichtete Graphen zur Verfügung. Beide Funktionen unterstützen lediglich das Festlegen einer Kantenrichtung, Typ- oder Attributeinschränkungen sind weder für Knoten noch für Kanten möglich.
 
 \paragraph*{Besonderheiten}
 

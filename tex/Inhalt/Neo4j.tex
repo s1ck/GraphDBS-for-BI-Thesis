@@ -60,7 +60,14 @@ In der optionalen \texttt{START}-Klausel werden Bezeichner festgelegt und an Kno
 
 zur Suche nach einem Knoten mit der Eigenschaft \texttt{name=\string"Alice\string"} innerhalb des Index\linebreak \texttt{Employees}. Existiert eine entsprechende Instanz, erfolgt die Bindung an den Bezeichner \texttt{a}. Trifft die Bedingung auf mehrere Instanzen zu, so verweist \texttt{a} auf die entsprechende Menge. Alle gebundenen Bezeichner können in den nachfolgenden Teilen der Anfrage verwendet werden. Zulässige Datentypen für Bezeichner und Variablen sind generell Knoten, Kanten, Pfade und Literale bzw. deren Mengen.
 
-Wird keine \texttt{START}-Klausel definiert, ist die nachfolgende \texttt{MATCH}-Klausel obligatorisch. Sie ermöglicht die Definition eines Mustergraphen zum Auslesen von Informationen aus der Datenbasis. Ein Mustergraph besteht aus einer beliebigen Anzahl Variablen, welche beim Finden einer Übereinstimmung an Objektinstanzen gebunden werden. Mit dem Ziel, einen Mustergraphen in Textform zu repräsentieren, wird dieser in Fragmente zerlegt, wobei jedes Fragment der Definition eines abstrakten Weges entspricht. Der in Abbildung \ref{fig:neo4j_pattern_graph} gezeigte Mustergraph lässt sich durch zwei Fragmente beschreiben:
+\begin{figure}[h] 
+	\centering
+		\includegraphics[scale=1]{neo4j_pattern.pdf}
+	\caption[Neo4j: Mustergraph]{Beispiel für einen Mustergraphen: Der grau hinterlegte Knoten ist eine Konstante und stellt die Bindung zur Datenbasis her, weiß hinterlegte Knoten sind Variablen, welche während der Mustersuche gebunden werden.}
+	\label{fig:neo4j_pattern}
+\end{figure}
+
+Wird keine \texttt{START}-Klausel definiert, ist die nachfolgende \texttt{MATCH}-Klausel obligatorisch. Sie ermöglicht die Definition eines Mustergraphen zum Auslesen von Informationen aus der Datenbasis. Ein Mustergraph besteht aus einer beliebigen Anzahl Variablen, welche beim Finden einer Übereinstimmung an Objektinstanzen gebunden werden. Mit dem Ziel, einen Mustergraphen in Textform zu repräsentieren, wird dieser in Fragmente zerlegt, wobei jedes Fragment der Definition eines abstrakten Weges entspricht. Der in Abbildung \ref{fig:neo4j_pattern} gezeigte Mustergraph lässt sich durch zwei Fragmente beschreiben:
 
 \texttt{MATCH\newline
 c:Employee---a-[:WORKS\_WITH]->b:Employee-[:WORKS\_WITH]->c, // 1\newline
