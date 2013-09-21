@@ -1,0 +1,28 @@
+CREATE CLASS Employee EXTENDS V
+CREATE PROPERTY Employee.name STRING
+ALTER PROPERTY Employee.name MANDATORY true
+
+CREATE CLASS Project EXTENDS V
+CREATE PROPERTY Project.name STRING
+ALTER PROPERTY Project.name MANDATORY true
+
+CREATE CLASS WorksWith EXTENDS E
+CREATE CLASS ResponsibleFor EXTENDS E
+
+CREATE VERTEX Employee SET name="Alice"
+CREATE VERTEX Employee SET name="Bob"
+CREATE VERTEX Employee SET name="Eve"
+CREATE VERTEX Project SET name="ProjectX"
+
+CREATE EDGE WorksWith FROM (SELECT FROM Employee WHERE name="Alice") TO (SELECT FROM Employee WHERE name="Bob")
+CREATE EDGE WorksWith FROM (SELECT FROM Employee WHERE name="Bob") TO (SELECT FROM Employee WHERE name="Eve")
+CREATE EDGE WorksWith FROM (SELECT FROM Employee WHERE name="Eve") TO (SELECT FROM Employee WHERE name="Alice")
+
+CREATE EDGE ResponsibleFor FROM (SELECT FROM Employee WHERE name="Bob") TO (SELECT FROM Project WHERE name="ProjectX")
+
+
+SELECT $depth as level, name FROM (TRAVERSE out("WorksWith"), out("ResponsibleFor") FROM #11:0 WHILE $depth <= 5) ORDER BY level
+
+SELECT $depth as level, name FROM (TRAVERSE out() FROM #11:0 WHILE $depth <= 5) ORDER BY level
+
+SELECT $depth as level, name FROM (TRAVERSE out() FROM #11:0 WHILE $depth <= 5) WHERE @Class="Employee" ORDER BY level

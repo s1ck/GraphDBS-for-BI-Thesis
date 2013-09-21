@@ -573,7 +573,7 @@ Durch eine anwendungsseitige Aufteilung des Schemas und die mehrfache Definition
 
 % Firma + Lizenz
 OrientDB ist ein quelloffenes GDBMS, das von der Firma Orient Technologies\footnote{\url{http://www.orientechnologies.com
-}} entwickelt wird. Der Quellcode steht unter Apache 2.0 Lizenz, was bedeutet, dass er in freien, aber auch auch in kommerziellen Anwendungen verwendet werden darf. Das GDBMS wurde 2010 veröffentlicht, die erste stabile Version 1.0 erschien 2012. Für die Implementierung wird ausschließlich Java verwendet, die Ausführung ist somit analog zu Neo4j und HyperGraphDB an die JVM gebunden und auf kompatiblen Plattformen möglich. OrientDB ist ein natives Graphdatenbanksystem, da sowohl Modellierung und Zugriff als auch Verarbeitung und Speicherung der Daten graphenorientiert erfolgen. Es wird entweder in Form einer eingebetteten Bibliothek innerhalb von Java-Anwendungen oder in einer Client-Server-Konfiguration verwendet. Der Server bietet den Zugriff auf die Datenbasis mittels einer REST-Schnittstelle an, entsprechende Clients stehen in vielen Programmiersprachen zur Verfügung.\footnote{\url{https://github.com/orientechnologies/orientdb/wiki/Programming-Language-Bindings}} OrientDB kann sowohl als zentrales GDBMS als auch in einer verteilten Konfiguration eingesetzt werden. Hierfür wird eine Master-Master-Replikation realisiert, die eine horizontale Skalierbarkeit von Lese- und Schreibanfragen sowie eine erhöhte Ausfallsicherheit verspricht. Die Speicherung der Datenbasis erfolgt disk-zentriert, das System bietet zwar die ausschließliche Nutzung des Hauptspeichers an, dies entspricht jedoch nicht der definierten hauptspeicher-zentrierten Speicherung, sondern ist für die Verwendung im Rahmen von Unit-Tests konzipiert.
+}} entwickelt wird. Der Quellcode steht unter Apache 2.0 Lizenz, was bedeutet, dass er in freien, aber auch auch in kommerziellen Anwendungen verwendet werden darf. Das GDBMS wurde 2010 veröffentlicht, die erste stabile Version 1.0 erschien 2012. Für die Implementierung wird ausschließlich Java verwendet, die Ausführung ist somit analog zu Neo4j und HyperGraphDB an die JVM gebunden und auf kompatiblen Plattformen möglich. OrientDB ist ein natives Graphdatenbanksystem, da sowohl Modellierung und Zugriff als auch Verarbeitung und Speicherung der Daten graphenorientiert erfolgen. Es wird entweder in Form einer eingebetteten Bibliothek innerhalb von Java-Anwendungen oder in einer Client-Server-Konfiguration verwendet. Der Server bietet zwei Wege für den Datenaustausch: Mittels HTTP/REST-Schnittstelle können Informationen im JSON-Format übertragen werden, für den schnellen Datenaustausch ist es darüber hinaus möglich, auf TCP-Ebene unter Verwendung eines Binärprotokoll zu kommunizieren. Entsprechende Clients stehen für beide Varianten zur Verfügung, für Java bietet OrientDB darüber hinaus einen JDBC-Treiber an.\footnote{Für den Zugriff via Rest steht eine Vielzahl von Client-Implementierungen zur Verfügung. Diese sind unter \url{https://github.com/orientechnologies/orientdb/wiki/Programming-Language-Bindings} gelistet. Das Binärprotokoll wird aktuell nur von C/C++, PHP und nodejs unterstützt: \url{https://github.com/orientechnologies/orientdb/wiki/Network-Binary-Protocol}.} OrientDB kann sowohl als zentrales GDBMS als auch in einer verteilten Konfiguration eingesetzt werden. Hierfür wird eine Master-Master-Replikation realisiert, die eine horizontale Skalierbarkeit von Lese- und Schreibanfragen sowie eine erhöhte Ausfallsicherheit verspricht. Die Speicherung der Datenbasis erfolgt disk-zentriert, das System bietet zwar die ausschließliche Nutzung des Hauptspeichers an, dies entspricht jedoch nicht der definierten hauptspeicher-zentrierten Speicherung, sondern ist für die Verwendung im Rahmen von Unit-Tests konzipiert.
 
 % Besonderheiten (Dokumente, Typsystem) + Anwendungsfall
 Eine besonderes Merkmal von OrientDB ist die Möglichkeit, die Datenbank mit verschiedenen Datenmodellen nutzen zu können: So erfolgt die Speicherung der Informationen grundlegend in Form von Dokumenten, welche aus Schlüssel-Wert-Paaren bestehen und beliebig verschachtelt sein können. Ein darauf aufbauendes graphenorientiertes Datenmodell ermöglicht die Definition von Beziehungen zwischen Dokumenten. Darüber hinaus lässt sich OrientDB als objektorientiertes Datenbanksystem einsetzen, wobei Objektinstanzen ebenfalls auf Dokumente abgebildet werden. In allen drei Datenmodellen gestattet das DBMS die Definition eines Schemas zur Modellierung einer Anwendungsdomäne und zur Festlegung von Integritätsbedingungen. Der vollständige Verzicht auf ein Schema und die Kombination eines Schemas mit semi-strukturierten Daten ist hingegen ebenfalls möglich.\\
@@ -611,12 +611,8 @@ Das Modellieren von Vererbungshierarchien ist ebenfalls möglich: Attribute von O
 
 \subsection{Zugriffsmechanismen}
 
-- native Java API für Dokumentenmodell
-- native Java API für Graphenmodell
-- native Java API für Objektmodell
-- Traversierung via Gremlin (-> Titan)
-- SQL
-- Besonderheiten
+Das GDBMS bietet mehrere Optionen für den Zugriff auf die Datenbasis: Wie HyperGraphDB und Neo4j enthält auch OrientDB eine Java API für die Verwaltung des Graphen mittels CRUD-Operationen. Hierfür implementiert das GDBMS die im Blueprints-Projekt definierte Referenz-Schnittstelle des PGM.\footnote{OrientDB enthält auch eine eigene Core API, diese wurde jedoch in Version 1.4 als veraltet deklariert und wird folglich in der Evaluation nicht betrachtet.} Infolgedessen lässt sich auch die Anfragesprache Gremlin in OrientDB verwenden. Die primäre Anfragesprache ist jedoch der deklarative OrientDB-SQL-Dialekt, welcher einen Teil des SQL-92-Standards übernimmt und mit graphenspezifischen Operatoren erweitert. Gremlin wird im Zusammenhang mit Titan vorgestellt.\\
+Das Traversieren des Graphen ist sowohl in Java als auch im Rahmen von SQL möglich. Da die Verwendung in beiden Fällen sehr ähnlich ist, wird hier nur auf den Traverse-Operator in SQL eingegangen. Ein Beispiel für die Traversierung in Java findet sich in Anhang \ref{anh:orientdb_traverse_java}. Die Konzepte der Functions und Hooks werden ebenfalls kurz vorgestellt.
 
 \paragraph*{CRUD-Operationen via Blueprints API}
 
@@ -628,11 +624,72 @@ OrientDB erweitert die Blueprints-Implementierung des PGM um Methoden zum Verwal
 % Algorithmen
 Aus den Ausführungen geht hervor, dass sich unter Verwendung der Blueprints API beliebige Graphalgorithmen anwendungsseitig implementieren lassen, OrientDB selbst bietet keine Implementierungen an. Innerhalb des Blueprints-Projektes stellt jedoch das Paket Furnace\footnote{\url{https://github.com/tinkerpop/furnace/wiki}} bereits einige Algorithmen zur Verfügung. So werden Suchverfahren, wie der A*-Algorithmus sowie die Tiefen- und Breitensuche, genauso angeboten wie der Dijkstra- und Bellman-Ford-Algorithmus für das Finden kürzester Pfade in gewichteten Graphen. Neben den Pfadsuchalgorithmen wird mit dem Bron-Kerbosch-Algorithmus\cite{Bron:1973:AFC:362342.362367} auch ein Verfahren zum Auffinden von Cliquen implementiert. Anzumerken ist, dass keines der implementierten Verfahren Einschränkungen hinsichtlich zu berücksichtigender Knoten- oder Kantenklassen zulässt.
 
-\paragraph*{SQL}
+\paragraph*{OrientDB-SQL-Dialekt}
+
+OrientDB verwendet SQL für die Anfrageformulierung und zur Schemaverwaltung. Die Entwickler entschieden sich für SQL, da es eine im Bereich der relationalen Datenbanken etablierte Sprache ist und den Einstieg erleichtern soll. Nachfolgend bezeichnet SQL den in OrientDB verwendeten Dialekt, Standard-SQL hingegen bezieht sich auf SQL-92\cite{SQL_92:2013}. Ziel ist es nicht, den kompletten Standard zu erläutern, sondern auf die Besonderheiten in Bezug auf die graphenorientierte Verwendung in OrientDB einzugehen. Die Darstellung erfolgt analog zu Cypher an einem einfachen Beispiel und bezieht sich auf das Graphdatenmodell in OrientDB, die ausführliche Beschreibung der Sprache findet sich in der offiziellen Dokumentation\cite{Orient_doku:2013}.
+
+\begin{figure}[h] 
+	\centering
+		\includegraphics[scale=1]{orientdb_example.pdf}
+	\caption[OrientDB: Beispielgraph]{Einfaches Beispiel eines Graphen mit den Knotenklassen \texttt{Employee} und \texttt{Project} sowie den Kantenklassen \texttt{WorksWith}, \texttt{WorksIn} und \texttt{ResponsibleFor}.}
+	\label{fig:orientdb_example}
+\end{figure}
+
+Abbildung \ref{fig:orientdb_example} zeigt ein einfaches Beispiel eines schematisierten Graphen. Für die Definition der Knoten- und Kantenklassen stellt OrientDB den \texttt{CREATE CLASS}-Operator zur Verfügung. Eine Klasse ähnelt der Relation in einem RDBMS, Instanzen können ein Schema jedoch beliebig erweitern. Nachfolgend wird eine Klasse \texttt{Employee} erzeugt, welcher ein Pflichtattribut \texttt{name} vom Typ \texttt{STRING} und ein optionales Attribut \texttt{age} vom Typ \texttt{INTEGER} hinzugefügt wird. Letzteres wird durch die Angabe der Integritätsbedingung \texttt{MIN} eingeschränkt.
+Die Klasse selbst erbt von \texttt{V}, welche alle Knoten innerhalb des Graphen repräsentiert. Die Definition der Klasse \texttt{Project} erfolgt analog.
+
+\texttt{CREATE CLASS Employee EXTENDS V;}\newline
+\texttt{CREATE PROPERTY Employee.name STRING;}\newline
+\texttt{CREATE PROPERTY Employee.age INTEGER;}\newline
+\texttt{ALTER PROPERTY Employee.name MANDATORY true;}\newline
+\texttt{ALTER PROPERTY Employee.age MIN 18;}
+
+Das Definieren von Kantentypen erfolgt ebenfalls mit dem gezeigten Operator, sie erben jedoch von \texttt{E}, der Klasse aller Kanten. Attribute werden wie bereits für Knoten gezeigt definiert. Nachfolgend wird stellvertretend der Befehl für das Anlegen des Kantentyps \texttt{WorksWith} dargestellt:
+
+\texttt{CREATE CLASS WorksWith EXTENDS E;}
+
+Für die Manipulation der Datenbasis stehen in Standard-SQL die Befehle \texttt{INSERT}, \texttt{UPDATE} und \texttt{DELETE} zur Verfügung. \texttt{INSERT} wird auch in OrientDB angeboten, ist jedoch nur für die Verwendung mit Dokumenten vorgesehen, für das Erzeugen von Knoten- und Kanteninstanzen muss der Befehl \texttt{CREATE VERTEX} bzw. \texttt{CREATE EDGE} verwendet werden, welche auf die darunterliegende Blueprints API abgebildet sind. Der folgende Befehl erzeugt eine Knoteninstanz vom Typ \texttt{Employee} und weist die entsprechenden Attribute zu:
+
+\texttt{CREATE VERTEX Employee SET name=\string"Alice\string", age=25;}
+
+Das Erzeugen einer Kanteninstanz erfordert die Angabe der Identitäten von Start- und Zielknoten, diese können entweder direkt angegeben, oder durch eine geschachtelte Selektion gelesen werden. Nachfolgend wird stellvertretend die \texttt{WorksWith}-Beziehung zwischen den Mitarbeitern \texttt{Alice} und \texttt{Bob} eingefügt, optional können via \texttt{SET} Attribute angegeben werden:
+
+\texttt{CREATE EDGE WorksWith}\newline
+\texttt{FROM (SELECT FROM Employee WHERE name= \string"Alice\string")}\newline
+\texttt{TO (SELECT FROM Employee WHERE name=\string"Bob\string");}
+
+
+
+
+%\texttt{INSERT INTO Employee (name) VALUES ("Alice")}\newline
+%\texttt{INSERT INTO Employee (name) VALUES ("Bob")}\newline
+%\texttt{INSERT INTO Employee (name) VALUES ("Eve")}\newline
+%\texttt{INSERT INTO Project (name) VALUES ("ProjectX")}\newline
+%\texttt{UPDATE Employee SET works_with=(SELECT FROM Employee WHERE name="Bob") WHERE name="Alice"}\newline
+%\texttt{UPDATE Employee SET works_with=(SELECT FROM Employee WHERE name="Eve") WHERE name="Bob"}\newline
+%\texttt{UPDATE Employee SET works_with=(SELECT FROM Employee WHERE name="Alice") WHERE name="Eve"}\newline
+%\texttt{UPDATE Employee SET responsible_for=(SELECT FROM Project WHERE name="ProjectX") WHERE name="Bob"}
+
+Abfrage der Beziehung, Verzicht auf Join, polymorphe Anfrage
+
+%\texttt{SELECT name, works_with.name FROM Employee}\newline
+%\texttt{SELECT name, works_with.responsible_for.name FROM Employee}\newline
+%\textit{select name from Employee where works_with.responsible_for.name = "ProjectX"}
+
+% Traversierung
+
+% Aggregation Gruppierung
+
+- Gruppierung nach Projekt der Freunde
+
+
+
+
+
+
+
 
 - polymorphe Anfragen (wie HypergraphDB)
-
-\paragraph*{Traversierung in SQL}
 
 - Definition eines abstrakten Pfades als Prädikat
 - Sub-Queries
