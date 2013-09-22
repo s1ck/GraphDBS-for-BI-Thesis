@@ -9,7 +9,7 @@ Eine besonderes Merkmal von OrientDB ist die Möglichkeit, die Datenbank mit vers
 Ein Alleinstellungsmerkmal von OrientDB in der vorliegenden Evaluation ist die Verwendung des SQL-Standards für die Formulierung von Anfragen an die Datenbasis. OrientDB stellt eine Teilmenge des Standards zur Verfügung und erweitert diese mit graphenspezifischen Operationen. Ein weiteres Alleinstellungsmerkmal ist die bereits integrierte Nutzer- und Rollenverwaltung.
 
 % Ausführungen beziehen sich auf ... + Quellen
-Die nachfolgende Evaluation basiert auf der im September 2013 freigegebenen Version 1.5.1. Der Großteil der Informationen stammt aus den Ausführungen zu OrientDB in \cite{EdlichFriedlandHampeBrauer201010} und der offiziellen Dokumentation\cite{Orient_doku:2013}. Es werden ausschließlich das Dokumenten- und das darauf aufbauende Graphdatenmodell berücksichtigt, da insbesondere letzteres für die Evaluation relevant ist.
+Die nachfolgende Evaluation basiert auf der im September 2013 freigegebenen Version 1.5.1. Der Großteil der Informationen stammt aus den Ausführungen zu OrientDB in \cite{EdlichFriedlandHampeBrauer201010}, \cite{tesorierogetting} und der offiziellen Dokumentation\cite{Orient_doku:2013}. Es werden ausschließlich das Dokumenten- und das darauf aufbauende Graphdatenmodell berücksichtigt, da insbesondere letzteres für die Evaluation relevant ist.
 
 \subsection{Datenmodell, Typsystem und Rechteverwaltung}
 
@@ -40,8 +40,8 @@ Das Modellieren von Vererbungshierarchien ist ebenfalls möglich: Attribute von O
 
 \subsection{Zugriffsmechanismen}
 
-Das GDBMS bietet mehrere Optionen für den Zugriff auf die Datenbasis: Wie HyperGraphDB und Neo4j enthält auch OrientDB eine Java API für die Verwaltung des Graphen mittels CRUD-Operationen. Hierfür implementiert das GDBMS die im Blueprints-Projekt definierte Referenz-Schnittstelle des PGM.\footnote{OrientDB enthält auch eine eigene Core API, diese wurde jedoch in Version 1.4 als veraltet deklariert und wird folglich in der Evaluation nicht betrachtet.} Infolgedessen lässt sich auch die Anfragesprache Gremlin in OrientDB verwenden. Die primäre Anfragesprache ist jedoch der deklarative OrientDB-SQL-Dialekt, welcher einen Teil des SQL-92-Standards übernimmt und mit graphenspezifischen Operatoren erweitert. Gremlin wird im Zusammenhang mit Titan vorgestellt.\\
-Das Traversieren des Graphen ist sowohl in Java als auch im Rahmen von SQL möglich. Da die Verwendung in beiden Fällen sehr ähnlich ist, wird hier nur auf den Traverse-Operator in SQL eingegangen. Ein Beispiel für die Traversierung in Java findet sich in Anhang \ref{anh:orientdb_traverse_java}. Die Konzepte der Functions und Hooks werden ebenfalls kurz vorgestellt.
+Das GDBMS bietet mehrere Optionen für den Zugriff auf die Datenbasis: Wie HyperGraphDB und Neo4j enthält auch OrientDB eine Java API für die Verwaltung des Graphen mittels CRUD-Operationen. Hierfür implementiert das GDBMS die im Blueprints-Projekt definierte Referenz-Schnittstelle des PGM.\footnote{OrientDB enthält auch eine eigene Core API, diese wurde jedoch in Version 1.4 als veraltet deklariert und wird folglich in der Evaluation nicht betrachtet.} Infolgedessen lässt sich auch die Anfragesprache Gremlin in OrientDB verwenden. Die primäre Anfragesprache ist jedoch der deklarative OrientDB-SQL-Dialekt, welcher einen Teil des SQL-92-Standards\cite{SQL_92:2013} übernimmt und mit graphenspezifischen Operatoren erweitert.\footnote{Zu beachten ist, dass der Orient-SQL-Dialekt nicht mit dem ANSI SQL Standard konform ist\cite{tesorierogetting}.} Gremlin wird im Zusammenhang mit Titan vorgestellt.\\
+Das Traversieren des Graphen ist in Java und SQL möglich. Da die Verwendung in beiden Fällen sehr ähnlich ist, wird nur auf den Traverse-Operator in SQL eingegangen. Ein Beispiel für die Traversierung in Java findet sich in Anhang \ref{anh:orientdb_traverse_java}. Die Konzepte der Functions und Hooks werden ebenfalls kurz vorgestellt.
 
 \paragraph*{CRUD-Operationen via Blueprints API}
 
@@ -55,7 +55,7 @@ Aus den Ausführungen geht hervor, dass sich unter Verwendung der Blueprints API 
 
 \paragraph*{OrientDB-SQL-Dialekt}
 
-OrientDB verwendet SQL für Schemadefinition, Anfrageformulierung, Datenmanipulation und Nutzerverwaltung. Die Entwickler entschieden sich für SQL, da es eine im Bereich der relationalen Datenbanksysteme etablierte Sprache ist und den Einstieg in das GDBMS erleichtern soll. Nachfolgend bezeichnet SQL den in OrientDB verwendeten Dialekt, Standard-SQL hingegen bezieht sich auf SQL-92\cite{SQL_92:2013}. Ziel ist es nicht, den Standard komplett zu erläutern, sondern auf die Besonderheiten hinsichtlich der graphenorientierten Verwendung in OrientDB einzugehen. Dies erfolgt analog zu Cypher an einem einfachen Beispiel und bezieht sich dabei ausschließlich auf das Graphdatenmodell in OrientDB. Eine ausführliche Beschreibung der Sprache findet sich in der offiziellen Dokumentation\cite{Orient_doku:2013}.
+OrientDB verwendet einen eigenen SQL-Dialekt für Schemadefinition, Anfrageformulierung, Datenmanipulation und Nutzerverwaltung. Die Entwickler entschieden sich für SQL, da es eine im Bereich der relationalen Datenbanksysteme etablierte Sprache ist und den Einstieg in das GDBMS erleichtern soll. Nachfolgend bezeichnet SQL den in OrientDB verwendeten Dialekt, Standard-SQL hingegen bezieht sich auf SQL-92. Ziel ist es nicht, den Standard komplett zu erläutern, sondern auf die Besonderheiten hinsichtlich der graphenorientierten Verwendung in OrientDB einzugehen. Dies erfolgt analog zu Cypher an einem einfachen Beispiel und bezieht sich dabei ausschließlich auf das Graphdatenmodell. Eine ausführlichere Beschreibung der Sprache findet sich in der offiziellen Dokumentation\cite{Orient_doku:2013} sowie in \cite{tesorierogetting}.
 
 \begin{figure}[h] 
 	\centering
@@ -77,7 +77,7 @@ Das Definieren von Kantentypen erfolgt ebenfalls mit dem gezeigten Operator, sie
 
 \texttt{CREATE CLASS WorksWith EXTENDS E;}
 
-Für die Manipulation der Datenbasis stehen in Standard-SQL die Befehle \texttt{INSERT}, \texttt{UPDATE} und \texttt{DELETE} zur Verfügung. Diese werden auch in OrientDB angeboten, \texttt{INSERT} ist jedoch nur für die Verwendung mit Dokumenten vorgesehen, das Erzeugen von Knoten- und Kanteninstanzen erfolgt mit den Befehlen \texttt{CREATE VERTEX} bzw. \texttt{CREATE EDGE}. Die folgende Anweisung erzeugt eine Knoteninstanz vom Typ \texttt{Employee} und weist die entsprechenden Attribute zu:
+Für die Manipulation der Datenbasis stehen in Standard-SQL die Befehle \texttt{INSERT}, \texttt{UPDATE} und \texttt{DELETE} zur Verfügung. Diese werden auch in OrientDB angeboten, \texttt{INSERT} ist jedoch nur für die Verwendung mit Dokumenten vorgesehen, das Erzeugen von Knoten- und Kanteninstanzen erfolgt mit den Befehlen \texttt{CREATE VERTEX} bzw. \texttt{CREATE EDGE}. Die folgende Anweisung fügt dem Graphen eine attributierte Knoteninstanz vom Typ \texttt{Employee} hinzu:
 
 \texttt{CREATE VERTEX Employee SET name=\string"Alice\string", age=25;}
 
@@ -87,13 +87,13 @@ Das Erzeugen einer Kanteninstanz erfordert die Angabe der Identitäten von Start-
 \texttt{FROM (SELECT FROM Employee WHERE name=\string"Alice\string")}\newline
 \texttt{TO (SELECT FROM Employee WHERE name=\string"Bob\string");}
 
-Die Informationsextraktion erfolgt entweder über den \texttt{SELECT}- oder den \texttt{TRAVERSE}-Operator. Analog zu Standard-SQL können diese beliebig geschachtelt werden. Die folgende Anfrage selektiert die Namen der Mitarbeiter zu denen \texttt{Alice} eine gerichtete Kante vom Typ \texttt{WorksWith} besitzt:
+Die Informationsextraktion erfolgt entweder über den \texttt{SELECT}- oder den \texttt{TRAVERSE}-Operator. Analog zu Standard-SQL können diese beliebig geschachtelt werden. Die folgende Anfrage selektiert die Namen der Mitarbeiter zu denen \texttt{Alice} eine ausgehende Kante vom Typ \texttt{WorksWith} besitzt:
 
 \texttt{SELECT name FROM}\newline
 \texttt{(SELECT expand(out(\string"WorksWith\string")) FROM Employee WHERE name=\string"Alice\string");} 
 
-Die Funktion \texttt{out} legt dabei die Richtung der Kante fest und kann wahlweise durch \texttt{in} oder \texttt{both} ersetzt werden. Das Ergebnis der drei Funktionen ist eine Menge von Identitäten, deren Instanzen durch \texttt{expand} aufgelöst und für weitere Anfragen verwendbar gemacht werden.\\
-Die gezeigte Anfrage entspricht einer Verbundoperation in einem RDBMS. Der wesentliche Unterschied ist, dass die Beziehungsinformationen materialisiert am Dokument gespeichert sind und nicht zur Laufzeit berechnet werden müssen. Ersetzt man die Projektion der inneren \texttt{SELECT}-Anweisung durch: 
+Die Funktion \texttt{out} legt dabei die Richtung der Kante fest und kann wahlweise durch \texttt{in} oder \texttt{both} ersetzt werden. Das Ergebnis der drei Funktionen ist eine Menge von Identitäten, deren Instanzen durch \texttt{expand} aufgelöst werden und damit in übergeordneten Anfragen verwendbar sind.\\
+Das gezeigte Beispiel entspricht einer Verbundoperation in einem RDBMS. Der wesentliche Unterschied ist, dass die Beziehungsinformationen materialisiert an Knoten gespeichert sind und nicht zur Laufzeit berechnet werden müssen. Ersetzt man die Projektion der inneren \texttt{SELECT}-Anweisung durch: 
 
 \texttt{expand(out(\string"WorksWith\string").out(\string"ResponsibleFor\string"))}
 
@@ -104,18 +104,18 @@ Die Projektion erlaubt die Auswahl einzelner Attribute aus der Ergebnismenge und
 
 % Traversierung
 
-Das Prüfen der Erreichbarkeit und das Berechnen kürzester Pfade ist in SQL ebenfalls möglich. Der \texttt{TRAVERSE}-Operator ermöglicht das Traversieren ausgehend von einem konkreten Knoten oder einer Knotenmenge. Folgende Anfrage selektiert zum Beispiel alle Knoten, die über eine \texttt{WorksWith}-Beziehung mit einem Startknoten verbunden sind und einen maximalen Abstand von drei zu diesem aufweisen:
+Das Prüfen der Erreichbarkeit und das Berechnen von Pfaden ist in SQL ebenfalls möglich. Der \texttt{TRAVERSE}-Operator führt eine Traversierung ausgehend von einem konkreten Knoten oder einer Knotenmenge durch. Folgende Anfrage selektiert alle Knoten, die über eine \texttt{WorksWith}-Beziehung mit einem Startknoten verbunden sind und einen maximalen Abstand von drei zu diesem aufweisen:
 
 \texttt{TRAVERSE out(\string"WorksWith\string") FROM \#11:0 WHILE \$depth<=3;}
 
-Der Ausgangsknoten ist hierbei durch seine Identität \texttt{\#11:0} vorgegeben. Die Traversierung definiert einen abstrakten Weg, bei dem alle Kanten gerichtet und vom Typ \texttt{WorksWith} sind. Der Abstand zum Startknoten beträgt höchstens drei und wird sowohl zur Laufzeit als auch im Ergebnis an die Systemvariable \texttt{\$depth} gebunden. Das Ergebnis dieses Operators ist die Menge aller Dokumente, welche durch Instanzen des beschriebenen Weges verbunden sind. Die Einschränkung der zu berücksichtigenden Knotenbezeichner sowie Knoten- und Kantenattribute erfolgt durch die Einbettung in eine Selektion:
+Der Ausgangsknoten ist hierbei durch seine Identität \texttt{\#11:0} vorgegeben, alternativ können Klassen oder eingebettete Anfragen angegeben werden. Die Traversierung definiert einen abstrakten Weg, bei dem alle Kanten gerichtet und vom Typ \texttt{WorksWith} sind. Der Abstand zum Startknoten beträgt höchstens drei und wird sowohl zur Laufzeit als auch im Ergebnis an die Systemvariable \texttt{\$depth} gebunden. Das Ergebnis dieses Operators ist die Menge aller Knoten und Kanten, welche in den Instanzen des beschriebenen Weges enthalten sind. Diese lassen sich in übergeordneten Anfragen weiter verarbeiten:
 
 \texttt{SELECT name, min(\$depth) as dist FROM}\newline
 \texttt{(TRAVERSE out(\string"WorksWith\string") FROM \#11:0 WHILE \$depth<=3 STRATEGY breadth\_first)}\newline
 \texttt{GROUP BY name ORDER BY dist;}
 
-Die gezeigte Anfrage listet alle Kollegen eines Mitarbeiters sortiert nach ihrem minimalen Abstand zueinander auf. Die \texttt{TRAVERSE}-Operation berechnet unter Verwendung der Breitensuche alle Pfade. Da zwei Mitarbeiter über mehrere Pfade verbunden sein können, werden diese anschließend nach dem Namen des Kollegen gruppiert. Die Projektion schränkt die Ergebnismenge durch Aggregation der Pfadlängen mittels \texttt{min} ein.\\
-Eine weitere Anfrage zeigt die Einschränkung der relevanten Knoteninstanzen: Es sollen alle Projekte mit denen ein Mitarbeiter direkt oder transitiv verbunden ist, zusammen mit dem Abstand zum Mitarbeiter ausgegeben werden:
+Die gezeigte Anfrage listet alle Kollegen eines Mitarbeiters sortiert nach ihrem minimalen Abstand zueinander auf. Die \texttt{TRAVERSE}-Operation berechnet unter Verwendung der Breitensuche alle Pfadinstanzen. Da zwei Mitarbeiter über mehrere Pfade verbunden sein können, werden diese anschließend nach dem Namen des Kollegen gruppiert. Die Projektion schränkt die Ergebnismenge durch Aggregation der Pfadlängen mittels \texttt{min} ein.\\
+Die Festlegung zu berücksichtigender Knotenbezeichner sowie von Knoten- und Kantenattributen erfolgt durch die Verwendung einer Selektion: Es sollen alle Projekte mit denen ein Mitarbeiter direkt oder transitiv verbunden ist, zusammen mit dem Abstand zum Mitarbeiter ausgegeben werden:
 
 \texttt{SELECT name, min(\$depth) FROM}\newline
 \texttt{(TRAVERSE both() FROM \#11:0 WHILE \$depth<=4 STRATEGY breadth\_first)}\newline
