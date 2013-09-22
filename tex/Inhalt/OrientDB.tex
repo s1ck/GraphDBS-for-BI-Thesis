@@ -138,20 +138,15 @@ Für das Berechnen kürzester Pfade stellt OrientDB die Funktionen \texttt{shortes
 
 \paragraph*{Transaktionen}
 
-% Ausführung
-- falls im aktuellen Kontext noch keine Tx aktiv ist, wird diese implizit bei einer Änderungsoperation gestartet
+OrientDB unterstützt die Ausführung von Zugriffen innerhalb von Transaktionen. Im Fall von SQL werden diese für Änderungen implizit erzeugt, der Commit erfolgt unmittelbar nach der Ausführung. Alternativ können Transaktionen explizit begonnen, beendet und zurückgesetzt werden. Bei der Verwendung der Java API ist die Ausführung von Änderungen nur in Verbindung mit dem expliziten Verwalten einer Transaktion möglich. Analog zu HyperGraphDB lässt sich die Transaktionsverwaltung beim Systemstart deaktivieren um zum Beispiel den Datenimport zu beschleunigen.
 
-% Verschachtelung
+Im Gegensatz zu den bisher betrachteten Systemen wird das Schachteln von Transaktionen in OrientDB nicht unterstützt. Pro Thread im eingebetteten Betrieb bzw. pro Datenbankverbindung im Client-Server-Betrieb ist zu jedem Zeitpunkt nur eine Transaktion möglich. Ist zum Beginn einer Transaktion bereits eine weitere aktiv, wird diese zurückgesetzt.
 
-- Im Gegensatz zu den bisher betrachteten Systemen unterstützt OrientDB keine verschachtelten Transaktionen.
+OrientDB bezeichnet sich selbst als ACID-konformes GDBMS. Zur Vermeidung von Mehrbenutzeranomalien wird das optimistische Synchronisationsverfahren MVCC eingesetzt, welches bereits im Zusammenhang mit HyperGraphDB beschrieben wurde. Die Ausführung einer Transaktion erfolgt zunächst ausschließlich innerhalb der Anwendung bzw. beim Client. Werden Objekte erzeugt, so erhalten sie eine temporäre Identität, Änderungen an gelesenen Objekten erfolgen ebenfalls unabhängig vom GDBMS im Kontext der Anwendung. Beim Commit werden alle Operationen an das GDBMS übertragen, dort werden sie chronologisch ausgeführt und die Änderungen in die Datenbasis eingebracht. Ein Konflikt liegt vor, wenn ein geändertes Objekt innerhalb der Datenbasis eine andere Version als zum Zeitpunkt des Lesens aufweist. In diesem Fall wird die Transaktion zurückgesetzt.\footnote{Dies kann im Quelltext unter \url{https://github.com/orientechnologies/orientdb/blob/1.5.1/core/src/main/java/com/orientechnologies/orient/core/storage/impl/local/OStorageLocal.java\#L1839-L1854} nachvollzogen werden.}\\
+Wenn auch nicht näher in der offiziellen Dokumentation beschrieben, so geht aus diesem Ansatz hervor, dass die Mehrbenutzeranomalien Non-Repeatable Read und Phantom Problem auftreten können. Änderungen erfolgreich beendeter Transaktionen können von parallel laufenden Transaktionen gelesen werden, dieser Zustand entspricht der Isolationsebene \texttt{READ COMMITTED}.
 
-- ACID
-
-% MVCC
-- MVCC (Objektversionen)
-- Ausnahme bei Konflikt -> Anwendung entscheidet (auto-retry)
-% Logging
-- UNDO-Log
+Kommt es vor dem Commit einer Transaktion zum Ausfall des GDBMS oder des Clients, so sind die bis zu diesem Zeitpunkt erfolgten Änderungen nicht in der Datenbasis vorhanden, folglich ist in den genannten Situationen die atomare Ausführung der Transaktion sichergestellt. Beim Ausführen des Commit werden alle Änderungen einzeln in die Datenbasis eingebracht.\footnote{Dies kann im Quelltext unter \url{https://github.com/orientechnologies/orientdb/blob/1.5.1/core/src/main/java/com/orientechnologies/orient/core/storage/impl/local/OStorageLocalTxExecuter.java\#L83-L88} nachvollzogen werden.} Kommt es dabei zum Ausfall des GDBMS, können bereits Teile einer Transaktion in der Datenbasis vorhanden sein. Um diese Änderungen widerrufen zu können, wird vor dem Ausführen jeder Änderung ein zugehöriger Eintrag in ein Transaktions-Log geschrieben. Beim Löschen oder Ändern eines Datensatzes enthält der Log-Eintrag eine Kopie des ursprünglichen Datensatzes.\footnote{Für das Aktualisieren kann dies im Quelltext unter \url{https://github.com/orientechnologies/orientdb/blob/1.5.1/core/src/main/java/com/orientechnologies/orient/core/storage/impl/local/OStorageLocalTxExecuter.java\#L115} nachvollzogen werden.} Das Ausschreiben der Log-Daten auf den Externspeicher erfolgt unmittelbar, beim Neustart des GDBMS kann somit ein konsistenter Zustand wiederhergestellt werden.  Aus den Ausführungen geht hervor, dass es sich um ein UNDO-Log handelt.\\
+ OrientDB nutzt Memory-Mapped-Files und überlässt es folglich dem Betriebssystem, wann ausgeschriebene Änderungen tatsächlich auf den Externspeicher geschrieben werden. Das Transaktions-Log enthält jedoch keine REDO-Informationen erfolgreich beendeter Transaktionen. Folglich sind deren Änderungen verloren, wenn diese sich zum Zeitpunkt eines Systemausfalls noch nicht auf dem Externspeicher befinden. Das GDBMS ermöglicht das Aktivieren einer FORCE-Strategie, bei der sowohl Log-Informationen als auch Änderungen an der Datenbasis unmittelbar auf den Externspeicher geschrieben werden. Dies ist jedoch auch mit entsprechenden Performance-Einbußen verbunden.
 
 \paragraph*{Indexierung}
 
@@ -188,6 +183,20 @@ Für das Berechnen kürzester Pfade stellt OrientDB die Funktionen \texttt{shortes
 	- Beispiel: Klasse Invoice und Cluster invoice2012, invoice2013 -> Anfragen auf konkretes Cluster
 	- Record einer Klasse ist nur in einem Cluster (Basisklasse)
 
+class OClusterLocal	
+%/**
+% * Handles the table to resolve logical address to physical address. Deleted records have negative versions. <br/>
+% * <br/>
+% * Record structure:<br/>
+% * <code>
+% * +----------------------+----------------------+-------------+----------------------+<br/>
+% * | DATA SEGMENT........ | DATA OFFSET......... | RECORD TYPE | VERSION............. |<br/>
+% * | 2 bytes = max 2^15-1 | 8 bytes = max 2^63-1 | 1 byte..... | 4 bytes = max 2^31-1 |<br/>
+% * +----------------------+----------------------+-------------+----------------------+<br/>
+% * = 15 bytes
+% * </code><br/>
+% */
+
 % Datensegment
 - speichert die Nutzdaten (= Records)
 - werden auf das lokale Dateisystem abgebildet
@@ -196,16 +205,30 @@ Für das Berechnen kürzester Pfade stellt OrientDB die Funktionen \texttt{shortes
 	- 1 Data-Holes-File (odh)
 - Format: https://github.com/orientechnologies/orientdb/wiki/Types
 
-
-
-
+class ODataLocal
+%/**
+% * Handle the table to resolve logical address to physical address.<br/>
+% * <br/>
+% * Record structure:<br/>
+% * <br/>
+% * +--------------+--------------+--------------+----------------------+<br/>
+% * | CONTENT SIZE | CLUSTER ID . | CLUSTER POS. | CONTENT ............ |<br/>
+% * | 4 bytes .... | 2 bytes .... | 8 or 192 | <RECORD SIZE> bytes. |<br/>
+% * +--------------+--------------+--------------+----------------------+<br/>
+% * = 14+? bytes<br/>
+% */
 \paragraph*{Cacheverwaltung}
 
 - nutzt kompletten verfügbaren Speicher (Heap)
-
+- für eingebettete Verwendung
 - Level 1 Database Level (1 Cache per Thread)
-
+- Weak References LinkedHashMap
 - Level 2 Storage Level (1 per JVM)
+- LinkedHashMap
+
+- Aktualisierung erfolgt nach erfolgreichem Commit, nachzuvollziehen in \url{https://github.com/orientechnologies/orientdb/blob/1.5.1/core/src/main/java/com/orientechnologies/orient/core/storage/impl/local/OStorageLocalTxExecuter.java#L189}
+	- zuerst Level 1 Cache
+	- wenn CLuster erlaubt, dann Level 2 Cache
 
 \subsection{Verteilung}
 
