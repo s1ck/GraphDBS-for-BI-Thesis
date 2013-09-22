@@ -48,6 +48,26 @@ Das Traversal Framework erweitert die Core API um ein grundsätzlich deklaratives
 
 Cypher ist eine deklarative, graphenorientierte Anfragesprache für den lesenden und schreibenden Zugriff auf die Datenbasis. Es handelt sich um eine nicht standardisierte Sprache, welche aktuell in Neo4j und in abgeänderter Form im GDBMS-Prototypen GraphPack zur Verfügung steht. Syntaktisch ist Cypher an SQL und SPARQL angelehnt, viele der dort vorhandenen Sprachkonstrukte und Ansätze werden wiederverwendet. Kernfunktion der Sprache ist das Beschreiben von Mustergraphen zur Informationsextraktion. Das Prüfen der Erreichbarkeit im Allgemeinen und das Berechnen kürzester Pfade im Speziellen ist darüber hinaus ebenfalls möglich. Nachfolgend werden die grundlegenden Komponenten der Sprache dargestellt, eine detaillierte Beschreibung kann der offiziellen Dokumentation entnommen werden\cite{Neo4j_manual:2013}.
 
+\begin{figure}[h] 
+	\centering
+		\includegraphics[scale=1]{neo4j_example.pdf}
+	\caption[Neo4j: Beispielgraph]{Einfaches Beispiel eines Graphen mit den Knotenlabeln \texttt{Employee} und \texttt{Project} sowie den Kantenlabeln \texttt{WORKS\_WITH}, \texttt{WORKS\_IN} und \texttt{RESPONSIBLE\_FOR}.}
+	\label{fig:neo4j_example}
+\end{figure}
+
+Abbildung \ref{fig:neo4j_example} zeigt einen schematisierten Beispielgraphen, welcher die Beziehungen zwischen Projekten und Mitarbeitern beschreibt. Knoten und Kanten besitzen entsprechende Label, Attribute werden ausschließlich an Knoten definiert. Cypher ermöglicht die Manipulation der Datenbasis: Unter Verwendung der \texttt{CREATE}-Klausel lassen sich Knoten- und Kanteninstanzen mit Labels und Properties erzeugen, mit der \texttt{SET}-Klausel Properties und Knotenlabel aktualisieren und die \texttt{DELETE}- bzw. \texttt{REMOVE}-Klausel ermöglicht das Löschen von Instanzen bzw. Properties. Mit der Anweisung
+
+\texttt{CREATE (n:Employee \{name: \string"Alice\string", age: 25\})}
+
+wird eine Knoteninstanz mit dem Label \texttt{Employee} und den Properties \texttt{name} und \texttt{age} erzeugt. Das Anlegen einer Kante erfordert das Vorhandensein der entsprechenden Knoten:
+
+\texttt{MATCH a:Employee, b:Employee}\newline
+\texttt{WHERE a.name = \string"Alice\string" AND b.name = \string"Bob\string"}\newline
+\texttt{CREATE a-[r:WORKS\_WITH]->b}\newline
+\texttt{RETURN r}
+
+\texttt{MATCH}- und \texttt{WHERE}-Klausel dienen der Selektion von Objekten und werden nachfolgend im Zusammenhang mit lesenden Anfragen erläutert. Die \texttt{CREATE}-Klausel erzeugt eine Kante von Alice nach Bob mit dem Label \texttt{WORKS\_WITH}. Die Richtung kann dabei durch die Verwendung von \texttt{<-} oder \texttt{->} angegeben werden, das Anfügen von Kantenproperties ist in der Form \texttt{[r:WORKS\_WITH \{\string"since\string": 2010\}]} möglich.
+
 Eine rein lesende Anfrage setzt sich aus den folgenden Komponenten zusammen:
 
 \texttt{[START] [MATCH] [WHERE]\newline
@@ -93,8 +113,6 @@ Am Ende einer rein lesenden Cypher-Anfrage befindet sich die obligatorische \tex
 Cypher ermöglicht die Berechnung von Aggregaten sowohl in der \texttt{RETURN}- als auch in der \texttt{WITH}-Klausel, verschiedene Aggregatfunktionen, wie zum Beispiel \texttt{min}, \texttt{max} und \texttt{avg}, stehen zur Verfügung. Darüber hinaus ermöglicht Cypher die Verwendung von skalaren (z.B. \texttt{LENGTH} und \texttt{TYPE}), mathematischen (z.B. \texttt{ABS} und \texttt{ROUND}), string-basierten (z.B. \texttt{SUBSTRING} und \texttt{LOWER}) und mengenorientierten (z.B. \texttt{FILTER} und \texttt{REDUCE}) Funktionen.
 
 \texttt{MATCH}-, \texttt{WITH}- und \texttt{WHERE}-Klauseln lassen sich beliebig oft in beliebiger Reihenfolge kombinieren, so können zum Beispiel Ergebnismengen oder Aggregate in einer nachfolgenden Musterdefinition verwendet werden. Analog zum Traversal Framework werden rein lesende Anfragen erst ausgeführt, wenn der Nutzer auf die Ergebnisse zugreift, dies ist insbesondere dann sinnvoll, wenn ein Muster keine Bindung zur Datenbasis besitzt und diese folglich komplett durchsucht werden muss.
-
-Neben rein lesenden Anfragen ist auch die Modifikation der Datenbasis mit Cypher möglich. Unter Verwendung der \texttt{CREATE}-Klausel lassen sich Knoten- und Kanteninstanzen mit Labels und Properties erzeugen, mit der \texttt{SET}-Klausel Properties und Knotenlabel aktualisieren und die \texttt{DELETE}-Klausel ermöglicht das Löschen von Instanzen.
 
 Die Sprache wird permanent weiterentwickelt, was bedeutet, dass mit Änderungen und Erweiterungen der Syntax zu rechnen ist. Schwerpunkt der Version 2.0 ist unter anderem die automatische Anfrageoptimierung. Eine manuelle Anfrageoptimierung ist möglich, der Ausführungsplan einer Cypher-Anfrage lässt sich im eingebetteten Betrieb zusammen mit dem Anfrageergebnis abrufen und evaluieren.\\ Ein Vorteil gegenüber den bisher vorgestellten Zugriffsmöglichkeiten ist der rein deklarative Charakter der Sprache. Im Gegensatz zur Core API wird in Cypher festgelegt was gesucht wird und nicht wie es gesucht wird. Dies ermöglicht eine abstrakte Anfrageformulierung und eröffnet mehr Möglichkeiten zur systemseitigen Anfrageoptimierung. Demgegenüber ermöglichen es Core API und Traversal Framework eigene Algorithmen zu implementieren und somit spezielle Anwendungsfälle abzudecken. Die Aufgabe der Abstraktion erfordert dabei einen höheren Entwicklungsaufwand und eine engere Kopplung de Implementierung an die Struktur der hinterlegten Daten. Dies erlaubt jedoch eine höhere Performance, da gezielt optimiert werden kann und die Schritte Anfrageübersetzung und -optimierung entfallen.
 

@@ -104,7 +104,7 @@ Die Projektion erlaubt die Auswahl einzelner Attribute aus der Ergebnismenge und
 
 % Traversierung
 
-Das Prüfen der Erreichbarkeit und das Berechnen von Pfaden ist in SQL ebenfalls möglich. Der \texttt{TRAVERSE}-Operator führt eine Traversierung ausgehend von einem konkreten Knoten oder einer Knotenmenge durch. Folgende Anfrage selektiert alle Knoten, die über eine \texttt{WorksWith}-Beziehung mit einem Startknoten verbunden sind und einen maximalen Abstand von drei zu diesem aufweisen:
+Das Prüfen der Erreichbarkeit und das Berechnen von Pfaden ist in SQL ebenfalls möglich. Der \texttt{TRAVERSE}-Operator führt eine Traversierung ausgehend von einem konkreten Knoten oder einer Knotenmenge durch. Ein mehrfaches Besuchen von Knoten- und Kanteninstanzen wird durch das GDBMS verhindert, eine feingranulare Einstellmöglichkeit wie bei Neo4j oder die Möglichkeit zur manuellen Definition wie bei HyperGraphDB besteht nicht. Folgende Anfrage selektiert alle Knoten, die über eine \texttt{WorksWith}-Beziehung mit einem Startknoten verbunden sind und einen maximalen Abstand von drei zu diesem aufweisen:
 
 \texttt{TRAVERSE out(\string"WorksWith\string") FROM \#11:0 WHILE \$depth<=3;}
 
@@ -114,7 +114,7 @@ Der Ausgangsknoten ist hierbei durch seine Identität \texttt{\#11:0} vorgegeben,
 \texttt{(TRAVERSE out(\string"WorksWith\string") FROM \#11:0 WHILE \$depth<=3 STRATEGY breadth\_first)}\newline
 \texttt{GROUP BY name ORDER BY dist;}
 
-Die gezeigte Anfrage listet alle Kollegen eines Mitarbeiters sortiert nach ihrem minimalen Abstand zueinander auf. Die \texttt{TRAVERSE}-Operation berechnet unter Verwendung der Breitensuche alle Pfadinstanzen. Da zwei Mitarbeiter über mehrere Pfade verbunden sein können, werden diese anschließend nach dem Namen des Kollegen gruppiert. Die Projektion schränkt die Ergebnismenge durch Aggregation der Pfadlängen mittels \texttt{min} ein.\\
+Die gezeigte Anfrage listet alle Kollegen eines Mitarbeiters sortiert nach ihrem minimalen Abstand zueinander auf. Die \texttt{TRAVERSE}-Operation berechnet unter Verwendung der Breitensuche alle Pfadinstanzen.\footnote{Standardmäßig entspricht die Reihenfolge der zu traversierenden Knoten einem Tiefendurchlauf. Da Knoten jedoch systemseitig nicht mehrfach besucht werden können, weisen die gefundenen Pfadinstanzen nicht zwingend die minimale Länge auf.} Da zwei Mitarbeiter über mehrere Pfade verbunden sein können, werden diese anschließend nach dem Namen des Kollegen gruppiert. Die Projektion schränkt die Ergebnismenge durch Aggregation der Pfadlängen mittels \texttt{min} ein.\\
 Die Festlegung zu berücksichtigender Knotenbezeichner sowie von Knoten- und Kantenattributen erfolgt durch die Verwendung einer Selektion: Es sollen alle Projekte mit denen ein Mitarbeiter direkt oder transitiv verbunden ist, zusammen mit dem Abstand zum Mitarbeiter ausgegeben werden:
 
 \texttt{SELECT name, min(\$depth) FROM}\newline
