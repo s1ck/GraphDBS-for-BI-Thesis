@@ -51,13 +51,13 @@
 		<dependency>
 			<groupId>com.orientechnologies</groupId>
 			<artifactId>orient-commons</artifactId>
-			<version>1.4.1</version>
+			<version>1.5.1</version>
 			<type>bundle</type>
 		</dependency>
 		<dependency>
 			<groupId>com.orientechnologies</groupId>
 			<artifactId>orientdb-core</artifactId>
-			<version>1.4.1</version>
+			<version>1.5.1</version>
 			<type>bundle</type>
 		</dependency>
 
