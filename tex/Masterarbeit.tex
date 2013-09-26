@@ -22,7 +22,7 @@
 	liststotoc,				% Verzeichnisse im Inhaltsverzeichnis aufführen
 	bibtotoc,				% Literaturverzeichnis im Inhaltsverzeichnis aufführen
 	idxtotoc,				% Index im Inhaltsverzeichnis aufführen
-	tablecaptionabove,	% Beschriftung von Tabellen oberhalb ausgeben	
+	tablecaptionabove,	% Beschriftung von Tabellen oberhalb ausgeben
 	final						% Status des Dokuments (final/draft)
 ]{scrreprt}
 
@@ -125,11 +125,12 @@
 %		Die Inhalte des Anhangs werden analog zu den Kapiteln inkludiert.
 %		Dies geschieht in der Datei Anhang.tex
 % --------------------------------------------------------------------------
-\begin{appendix}
-	\clearpage
-	\pagenumbering{roman}
-	\include{Inhalt/Anhang}
-\end{appendix}
+\appendix
+\clearpage
+\renewcommand*{\thesection}{\Alph{section}} 
+\pagenumbering{roman}
+\include{Inhalt/Anhang}
+
 
 
 % Index --------------------------------------------------------------------
