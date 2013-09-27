@@ -1,19 +1,89 @@
 \section{Titan}
 
-Blubb
+% quelloffen (Lizenz), Firma, Veröffentlichung, Version
+% Sprache
+- Java
+% nativ / nicht nativ (Abbildung auf Key-Column-Store)
+- Modellierung / Verarbeitung nativ
+- Speicherung nicht-nativ 
+- verschiedene Backends: Cassandra, HBase, BerkeleyDB
+% embedded, remote
+% zentral, verteilt (Replikation Partitionierung)
+% disk-zentriert / in-memory
+
+% Besonderheiten
+	% Skalierbarkeit (Refernz auf Benchmark)
+
+% Erläuterungen / Version / Quellen
+% Bezug auf BerkeleyDB
+	% Vergleichbarkeit mit HyperGraphDB
+	% Verteilung spielt im Benchmark keine Rolle
 
 \subsection{Datenmodell}
 
-Blubb
+% PGM (+eventuelle Änderungen), Knotenlabel?
+% Knoten (Label?)
+% Kanten (Richtung, Traversieren, Label, Semantik
+% Properties (Typen, mehrfache Properties, Fehlen einer Property)
+% Identität
+% Integrität (modellinhärent, Integritätsbedingungen)
+% Anzahl der Datenbanken (wie Partitionierung)
+% Schema
+	% Flexibilität
 
-\subsection{Zugriffsmechanismen}
+\subsection{Zugriffsmechanismen, Transaktionen und Indexverwaltung}
 
-Blubb
+% Varianten nennen (eingebettet, remote)
+% Blueprints-Stack kurz erklären
 
-\subsection{Persistenz}
+% CRUD-Operationen analog zu OrientDB (+Typdefinition)
+	% Unterschiede zu OrientDB aufzeigen (z.B. Typen statt Strings)
+	% beliebig durch API
+	% angebotene Algorithmen (entsprechend OrientDB im Furnace Paket)
+	% imperativ
+% Gremlin als wesentlicher Inhalt
+	% Paradigma (imperativ)
+	% standardisiert (quasi-standard)
+		% von allen GDBMS nutzbar, welche die Blueprints API implementieren
+	% Definition
+	% Manipulation (Einfügen Knoten / Kante)
+	% Traversierung
+	% Mustersuche
+	
+\paragraph*{Transaktionen}
 
-Blubb
+% obligatorisch
+% Erzeugen (implizit, explizit)
+% Schachtelung
+% BerkeleyDB siehe OrientDB
+	% Dauerhaftigkeit ist standardmäßig aktiviert (Quelltext)
+	% REPEATABLE READ (keine Mehrbenutzeranomalien)
+	% Behandlung von Deadlocks
+% Transaktionen innerhalb von Titan?
+% Anmerkung zu Cassandra und HBase
 
-\subsection{Verteilung}
+\paragraph*{Indexverwaltung}
 
-Blubb
+% Primary Key
+% Property-Index
+	% Aktualisierung (autmatische, manuelle Indizes)
+	% Beispiel
+% Vertex-centric Index!
+% Erweiterung?
+
+\subsection{Persistenz- und Cacheverwaltung}
+
+% BerkeleyDB: B-Baum, Transaktions-Log
+% Abbildung des Graphen auf KV-Store (reicht!)
+% Komplexität Nachbarschaft / Traversierung
+
+\paragraph*{Cacheverwaltung}
+
+% BerkeleyDB
+% eigene Caches
+
+\subsection{Verteilung und Skalierbarkeit}
+
+% BerkeleyDB ausschließlich zentral
+% Replikation und Partitionierung via Cassandra / HBase
+% vielleicht kurz beschreiben (+Skalierbarkeit)

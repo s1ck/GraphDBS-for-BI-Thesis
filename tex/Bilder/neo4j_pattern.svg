@@ -54,7 +54,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8"
-     inkscape:cx="113.23765"
+     inkscape:cx="69.666221"
      inkscape:cy="177.02273"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -168,19 +168,6 @@
          id="tspan6702-8-6"
          x="-157.97589"
          y="372.40094"
-         style="font-size:8px">WORKS_WITH</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:10px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       x="-388.68039"
-       y="81.55072"
-       id="text6700-1-1"
-       sodipodi:linespacing="125%"
-       transform="matrix(0,-1,1,0,0,0)"><tspan
-         sodipodi:role="line"
-         id="tspan6702-5-8"
-         x="-388.68039"
-         y="81.55072"
          style="font-size:8px">WORKS_WITH</tspan></text>
     <text
        xml:space="preserve"
@@ -344,5 +331,16 @@
          id="tspan5488"
          x="252.99365"
          y="453.621">d</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="81.461494"
+       y="302.75989"
+       id="text3036"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3038"
+         x="81.461494"
+         y="302.75989">a</tspan></text>
   </g>
 </svg>

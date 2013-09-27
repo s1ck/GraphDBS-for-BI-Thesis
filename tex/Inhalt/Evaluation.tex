@@ -47,25 +47,8 @@ Kritik:
 allShortestPaths -> grundlage für centrality maße
 
 - CRUD
-	- in Java API möglich
-	- Algorithmen unterstützten Einschränkungen auf Graphen (im Gegensatz zu Blueprints)
-
-- Traversierung
-	- algorithmische Traversierung mittels Traversal Framework
-
-- Erreichbarkeit
-	- selber implementieren oder Dijkstra
-
-- Mustersuche
-	- nicht möglich
-
-- Aggregation und Summierung
-	- nicht möglich
-	
-\paragraph*{HyperGraphDB}
-
-- CRUD
 	- in nativer API und Cypher möglich
+	- Algorithmen unterstützten Einschränkungen auf Graphen (im Gegensatz zu Blueprints)
 
 - Traversierung
 	- algorithmische Traversierung mittels Traversal Framework
@@ -81,15 +64,36 @@ allShortestPaths -> grundlage für centrality maße
 	- Aggregation von Werten ist möglich
 	- Summierung von topologischen Strukturen ist nicht möglich
 
+	
+\paragraph*{HyperGraphDB}
+- CRUD
+	- in Java API möglich
+
+- Traversierung
+	- algorithmische Traversierung mittels Traversal Framework
+
+- Erreichbarkeit
+	- selber implementieren oder Dijkstra
+
+- Mustersuche
+	- nicht möglich
+
+- Aggregation und Summierung
+	- nicht möglich
+	- selber implementieren (hg.apply)
+
 - logarithmische Komplexität beim Zugriff auf die B-Bäume
 	- indexfreie Adjazenz: Caches sind Hashtabellen, können aber nicht immer die komplette Datenbasis aufnehmen
-- Verhungern langer Transaktionen (First-Come-First-Serve Prinzip)
 
 \paragraph*{OrientDB}
 - Avoid putting properties on edges -> \url{https://github.com/orientechnologies/orientdb/wiki/Performance-Tuning-Blueprints}
+
+- Dokumentation sehr eingeschränkt, inkonsistent, viel Quelltextrecherche
 
 - widersprüchliche Dokumentation, wenig Beispiele
 - Bugs z.B. falsche Ergebnisse beim Traversieren, expand(shortestPath) und expand(dijkstra) haben kein Effekt
 
 - Ergebnisse zwischen Tiefen- und Breitensuche unterscheiden sich durch Verhindern des wiederholten Zugriffs
+
+- physische Repräsentation: Deserialisieren der Attribute kann sich negativ auf Performance auswirken, attributierte Kanten ebenfalls
 
