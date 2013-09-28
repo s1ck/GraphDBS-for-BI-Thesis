@@ -1,31 +1,37 @@
 \section{Titan}
 
-% quelloffen (Lizenz), Firma, Veröffentlichung, Version
-% Sprache
-- Java
-% nativ / nicht nativ (Abbildung auf Key-Column-Store)
-- Modellierung / Verarbeitung nativ
-- Speicherung nicht-nativ 
-- verschiedene Backends: Cassandra, HBase, BerkeleyDB
-% embedded, remote
-% zentral, verteilt (Replikation Partitionierung)
-% disk-zentriert / in-memory
+Das vierte System, welches im Rahmen der Evaluation betrachtet wird, ist Titan, ein quelloffenes, unter Apache 2.0 lizenziertes GDBMS. Es wird von der Firma Aurelius\footnote{\url{http://thinkaurelius.com/}} entwickelt und ist im Vergleich zu den bisher betrachteten Systemen ein sehr junges Projekt. Die erste Veröffentlichung erfolgte im September 2012, seit Mai 2013 ist die stabile Version 0.3.2 aktuell. Aurelius arbeitet eng mit dem TinkerPop-Projekt zusammen und implementiert die darin definierte Blueprints API. Titan selbst ist ausschließlich in Java umgesetzt, die Ausführung ist somit auf kompatiblen Plattformen möglich. Es handelt sich um ein GDBMS, in dem Modellierung und Verwendung der Daten nativ sind, Speicherung und Verarbeitung sind hingegen nicht-nativ: Der Graph wird analog zu HyperGraphDB auf ein Key-Value-Datenmodell abgebildet. Das verwendete Speichersystem ist austauschbar, Titan unterstützt aktuell die spaltenorientierten, verteilten Datenbanken Apache Cassandra\footnote{\url{http://cassandra.apache.org/}} und Apache HBase\footnote{\url{http://hbase.apache.org/}} sowie die bereits vorgestellte, zentrale Key-Value-Datenbank BerkeleyDB Java Edition. Die genannten Speichersysteme sind disk-orientiert, Titan bietet jedoch auch eine integrierte hauptspeicher-zentrierte Implementierung an. Die Verwendung des GDBMS erfolgt entweder eingebettet innerhalb von Java-Anwendungen oder im Client-Server-Betrieb.
 
-% Besonderheiten
-	% Skalierbarkeit (Refernz auf Benchmark)
+Im Gegensatz zu den bisher betrachteten Systemen wird Titan primär für den Einsatz als verteiltes GDBMS entwickelt. Dabei nutzt es die Eigenschaften und Vorteile vorhandener Speichertechnologien für die horizontale Skalierung sowohl paralleler Zugriffe in als auch des Datenvolumens von umfangreichen Graphen. Aurelius definiert Graphen als umfangreich, wenn diese mehrere Milliarden Knoten und Kanten aufweisen.\footnote{Im Mai 2013 veröffentlichte Aurelius einen beeindruckenden Benchmark in dem die Performance paralleler Zugriffe auf einen Graph mit ca. 6 Milliarden Knoten und 121 Milliarden Kanten auf einem Titan-Cassandra-Cluster gemessen wurde. Die Ergebnisse können unter \cite{titan_bench:2013} eingesehen werden.} Entsprechend der vorgestellten Kategorisierung handelt es sich somit um eine Kombination aus Graphdatenbanksystem und Graph Processing System, welches Zugriffe mit lokalem Bezug auf umfangreichen Graphen ermöglicht. Eine weitere Besonderheit von Titan ist die Verwendung von Indizes an Knoten. Diese versprechen einen effizienteren Zugriff auf inzidente Kanten bei Knoten mit hohem Grad.
 
-% Erläuterungen / Version / Quellen
-% Bezug auf BerkeleyDB
-	% Vergleichbarkeit mit HyperGraphDB
-	% Verteilung spielt im Benchmark keine Rolle
+Die nachfolgenden Erläuterungen beziehen sich auf Version 0.3.2 des GDBMS in Verbindung mit BerkeleyDB. Dies ermöglicht im nachfolgenden Benchmark den direkten Vergleich mit HyperGraphDB. Die verteilte Konfiguration der GDBMS wird im Benchmark nicht betrachtet, auf die Eigenschaften von Apache Cassandra und Apache HBase wird jedoch kurz in Abschnitt \ref{subsec:titan_verteilung} eingegangen. Die Informationen stammen vorrangig aus der offiziellen Dokumentation zu Titan\cite{titan_doku:2013} und Gremlin\cite{gremlin_doku:2013} sowie aus der offiziellen Mailing-Liste\cite{titan_mail:2013} des GDBMS.
 
 \subsection{Datenmodell}
 
 % PGM (+eventuelle Änderungen), Knotenlabel?
+- PGM
+	- Schlüssel-Wert-Paare müssen als TitanKey definiert werden
+		- legt Schlüsselname fest
+		- legt Datentyp des Wertes fest
+		- kann unique sein (Bezogen auf Schlüssel-Wert-Paar)
 % Knoten (Label?)
+	- Label attributbasiert
+	
 % Kanten (Richtung, Traversieren, Label, Semantik
+- Label = TitanLabel
+	- Bezeichner
+	- Signatur (TitanKey)
+	- Funktionale Kanten = Kante mit entsprechendem TitanLabel darf nur einmal zwischen zwei Knoten definiert sein = UNIQUE-Constraint für inzidente Kanten
+	- Traversieren standardmäßig in beide Richtungen
+		- Richtung kann eingeschränkt werden
 % Properties (Typen, mehrfache Properties, Fehlen einer Property)
+- mehrfache Properties mit gleichen Schlüsselnamen sind möglich
+	- Unterscheidungsmerkmal ist TitanKey
 % Identität
+- globaler ID Pool
+	- 64-Bit Ganzzahl
+	- wird vom GDBMS verwaltet
+	- im verteilten Fall werden Teilmengen des Pools zu den GDBMS-Instanzen zugeordnet
 % Integrität (modellinhärent, Integritätsbedingungen)
 % Anzahl der Datenbanken (wie Partitionierung)
 % Schema
@@ -35,6 +41,7 @@
 
 % Varianten nennen (eingebettet, remote)
 % Blueprints-Stack kurz erklären
+	- Integration in Neo4j, OrientDB, Dex, InfiniteGraph
 
 % CRUD-Operationen analog zu OrientDB (+Typdefinition)
 	% Unterschiede zu OrientDB aufzeigen (z.B. Typen statt Strings)
@@ -42,6 +49,8 @@
 	% angebotene Algorithmen (entsprechend OrientDB im Furnace Paket)
 	% imperativ
 % Gremlin als wesentlicher Inhalt
+	- Gremlin = DSL auf Basis von Groovy\footnote{\url{http://groovy.codehaus.org/}}, einer dynamischen Programmiersprache für die Java-Plattform
+	- Titan erweitert Gremlin mit Hilfsmethoden
 	% Paradigma (imperativ)
 	% standardisiert (quasi-standard)
 		% von allen GDBMS nutzbar, welche die Blueprints API implementieren
@@ -49,6 +58,9 @@
 	% Manipulation (Einfügen Knoten / Kante)
 	% Traversierung
 	% Mustersuche
+	- https://github.com/tinkerpop/gremlin/wiki/SPARQL-vs.-Gremlin --> Testen
+	% DSL
+	- Groovy ermöglicht DSL\footnote{\url{http://thinkaurelius.com/2013/07/25/developing-a-domain-specific-language-in-gremlin/}}
 	
 \paragraph*{Transaktionen}
 
@@ -60,22 +72,59 @@
 	% REPEATABLE READ (keine Mehrbenutzeranomalien)
 	% Behandlung von Deadlocks
 % Transaktionen innerhalb von Titan?
+- nur für inkonsistente Speichersysteme
+	- MVCC
+	
+
 % Anmerkung zu Cassandra und HBase
 
 \paragraph*{Indexverwaltung}
 
 % Primary Key
 % Property-Index
+- interne Indexstrukturen auf Attributen
+\texttt{g.createKeyIndex("name", Vertex.class)}
+	- Graph.query()
+	- Besonderheiten: Geosuche, Volltextsuche
+
+- externe Indeximplementierungen
+	- ElasticSearch
+	- Lucene
+
 	% Aktualisierung (autmatische, manuelle Indizes)
 	% Beispiel
 % Vertex-centric Index!
+- Vertex-Centric Indices
+	- Supernode-Problem (Hubs, große Nachbarschaft, sehr großer Knotengrad)
+	- B-Baum zur Indizierung inzidenter Knoten ermöglicht schnellen Lookup bei Einschränkung auf Richtung, Kantenbezeichner und -attribute
+		- disk-zentriertes Sortieren und Indexierung ->mehrdimensionaler Index
+			- Kantenbezeichner -> Attribut
+		- Vertex.query()
+	- \texttt{final TitanKey time = graph.makeType().name(\string"time\string").dataType(Integer.class).makePropertyKey();}
+	- \texttt{graph.makeType().name(\string"battled\string").primaryKey(time).makeEdgeLabel();}
+	- $\mathcal{O}(\log(\left|N_v\right|))$
+	
+
 % Erweiterung?
 
 \subsection{Persistenz- und Cacheverwaltung}
 
+% https://groups.google.com/forum/?hl=de#!searchin/aureliusgraphs/storage$20single$20machine/aureliusgraphs/qO9Bi-y7uLs/EG5Ol-ulHjAJ
+
+- Data Management
+	- immutable atomic edges
+	- OCC
+	- feingranulares Locking auf Knoten- und Kantenebene
+- Edge Compression
+
+- Vertex-Centric Indizes
 % BerkeleyDB: B-Baum, Transaktions-Log
 % Abbildung des Graphen auf KV-Store (reicht!)
+- Kantenkompression
+	- Speicherung der ID-Differenz zwischen Ziel- und Startknoten
 % Komplexität Nachbarschaft / Traversierung
+- abhängig vom Speichersystem
+	- BerkeleyDB logarithmisch
 
 \paragraph*{Cacheverwaltung}
 
@@ -83,7 +132,17 @@
 % eigene Caches
 
 \subsection{Verteilung und Skalierbarkeit}
+\label{subsec:titan_verteilung}
 
 % BerkeleyDB ausschließlich zentral
 % Replikation und Partitionierung via Cassandra / HBase
+- Cassandra
+	- Hochverfügbarkeit (Replikation)
+	- Peer-To-Peer Verteilung (Distributed Hashtable)
+	- Caching
+	- Eventual Consistency
+- HBase
+	- lineare Skalierbarkeit
+	- Strong Consistency
+	
 % vielleicht kurz beschreiben (+Skalierbarkeit)
