@@ -8,9 +8,10 @@ public class Constants {
     public static final String KEY_NODE_EDGE_TYPE = "__type__";
     public static final String KEY_NODE_EDGE_ID = "__id__";
 
-    public static final String VALUE_TYPE_PRODUCT = "p";
     public static final String VALUE_TYPE_GROUP = "g";
+    public static final String VALUE_TYPE_PRODUCT = "p";
     public static final String VALUE_TYPE_USER = "u";
+    public static final String VALUE_TYPE_REVIEW = "r";
     
     /*
      * Labels

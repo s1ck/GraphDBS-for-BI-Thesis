@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -41,12 +40,10 @@ public class SubgraphExtraction {
     private Configuration cfg;
     private Index<Node> index;
     private GraphDatabaseService graphDb;
-    private ExecutionEngine engine;
 
     private Set<Node> nodes;
     private Set<Relationship> edges;
 
-    private StringBuffer sb;
     private Gson gson;
 
     private int groupCnt = 0;
@@ -62,21 +59,23 @@ public class SubgraphExtraction {
     /**
      * Graph settings
      */
-    private int nodeLimit = 100;
     /*
-     * k-Products/Users means the k-neighbourhood of a node. 2-neighbourhood for
+     * Maximum number of products inside the graph
+     */
+    private int nodeLimit = 1000;
+    /*
+     * k-Products/Users means the k-neighborhood of a node. 2-neighborhood for
      * users is p.e. all friends and their friends
      */
-    private int k_Products = 2;
-    private int k_Users = 0;
+    private int k_Products = 4;
+    private int k_Users = 1;
 
     private Random r;
     long seed = 1337L;
 
     public SubgraphExtraction() {
-	cfg = Configs.get("neo4j");
+	cfg = Configs.get(Neo4jConstants.INSTANCE_NAME);
 	graphDb = Neo4jHelper.getGraphDB(cfg);
-	engine = new ExecutionEngine(graphDb);
 	// loading idx must happen in tx oO
 	Transaction tx = graphDb.beginTx();
 	try {
@@ -89,7 +88,6 @@ public class SubgraphExtraction {
 	nodes = new HashSet<Node>();
 	edges = new HashSet<Relationship>();
 	gson = new Gson();
-	sb = new StringBuffer();
     }
 
     public static void main(String[] args) {
@@ -137,7 +135,8 @@ public class SubgraphExtraction {
     }
 
     private void extractSubgraph(int groupId, int nodeIdx) {
-	Node group = getNode(Integer.toString(groupId));
+	Node group = getNode(Constants.VALUE_TYPE_GROUP + "_"
+		+ Integer.toString(groupId));
 	Node product = null;
 	int i = 0;
 	for (Relationship e : group.getRelationships(Direction.INCOMING,
@@ -227,7 +226,7 @@ public class SubgraphExtraction {
 
 	if (depth > 0) {
 	    Node endNode = null;
-	    for (Relationship e : user.getRelationships(Direction.BOTH,
+	    for (Relationship e : user.getRelationships(Direction.OUTGOING,
 		    Neo4jRelationshipTypes.FRIEND_OF)) {
 		edges.add(e);
 		friendCnt++;
@@ -260,7 +259,8 @@ public class SubgraphExtraction {
 	// iterate all groups (0-9)
 	for (int i = 0; i < 10; i++) {
 	    // get the group from the index
-	    groupNode = getNode(Integer.toString(i));
+	    groupNode = getNode(Constants.VALUE_TYPE_GROUP + "_"
+		    + Integer.toString(i));
 	    // count the number of associated products
 	    groupCounts[i] = IteratorUtil.count(groupNode.getRelationships(
 		    Direction.INCOMING, Neo4jRelationshipTypes.BELONGS_TO));

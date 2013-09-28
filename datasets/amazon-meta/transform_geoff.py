@@ -18,6 +18,7 @@ import json
 import os
 import re
 import sys
+import uuid
 
 # needs trailing slash!
 OUT_DIR = 'out/'
@@ -30,7 +31,7 @@ NODES_FILE = 'nodes-amazon.geoff'
 EDGES_FILE = 'edges-amazon.geoff'
 
 GROUPS = {}
-GROUP_ID = 0 # initial id (will be incremented)
+GROUP_ID = 0
 
 # need to avoid duplicates
 USERS = set()
@@ -43,6 +44,7 @@ TYPE_KEY = '__type__'
 TYPE_PRODUCT = 'p'
 TYPE_GROUP = 'g'
 TYPE_USER = 'u'
+TYPE_REVIEWED = 'r'
 
 # statistics
 STATS = {'n_product_cnt': 0,
@@ -67,9 +69,10 @@ def parse_group(line):
     group_name = parse_line(line, 1)
     global GROUP_ID
     if group_name not in GROUPS:
-        GROUPS[group_name] = GROUP_ID
-        save_geoff_node(f_nodes, GROUP_ID, {"name": group_name, TYPE_KEY:
-            TYPE_GROUP, ID_KEY: GROUP_ID})
+        new_id = ('%s_%d') % (TYPE_GROUP, GROUP_ID)
+        GROUPS[group_name] = new_id
+        save_geoff_node(f_nodes, new_id, {"name": group_name, TYPE_KEY:
+            TYPE_GROUP, ID_KEY: new_id})
         GROUP_ID += 1
         STATS['n_group_cnt'] += 1
     return GROUPS[group_name]
@@ -80,7 +83,8 @@ def parse_reviews(f_nodes, f_edges, reviews, product_asin):
     '''
     for review in reviews:
         items = re.sub(r"\s+", ' ', review).split(' ')
-        data = {'date': items[0],
+        data = {TYPE_KEY : TYPE_REVIEWED,
+                'date': items[0],
                 'rating': int(items[4]),
                 'votes': int(items[6]),
                 'helpful': int(items[8]),
@@ -113,7 +117,7 @@ def parse_product_meta(product_meta, f_nodes, f_edges):
         #    product['id'] = int(parse_line(line, 1))
         # amazon standard identification number (ASIN)
         if line.startswith('ASIN'):
-            product[ID_KEY] = parse_line(line, 1)
+            product[ID_KEY] = str(parse_line(line, 1))
         elif line.startswith('discontinued'):
             return None
         # title
@@ -125,7 +129,7 @@ def parse_product_meta(product_meta, f_nodes, f_edges):
                 product['title'] = 'untitled'
         # group (resulting in an edge)
         elif line.startswith('group'):
-            group_id = int(parse_group(line))
+            group_id = parse_group(line)
             # instantly store the edge
             save_geoff_edge(f_edges, product[ID_KEY], group_id, 'BELONGS_TO')
             STATS['e_belongs_cnt'] += 1

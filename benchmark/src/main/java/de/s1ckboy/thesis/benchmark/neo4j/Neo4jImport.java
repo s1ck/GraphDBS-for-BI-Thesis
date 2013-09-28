@@ -56,7 +56,7 @@ public class Neo4jImport extends Neo4jBenchmark {
     private long edgeCnt = 1L;
 
     private long missingEndNodeCnt = 0L;
-    
+
     public Neo4jImport(int runs) {
 	this.setRuns(runs);
     }
@@ -66,7 +66,7 @@ public class Neo4jImport extends Neo4jBenchmark {
 	if (cfg.getBoolean("drop")) {
 	    IOHelper.removeDirectory(cfg.getString("location"));
 	}
-	
+
 	/*
 	 * Batch Inserter has to be initialized separately. This is why I
 	 * reconfigure.
@@ -143,14 +143,13 @@ public class Neo4jImport extends Neo4jBenchmark {
 
 	// get corresponding node label
 	Label l = null;
-	switch ((String) properties.get(Constants.KEY_NODE_EDGE_TYPE)) {
-	case Constants.VALUE_TYPE_PRODUCT:
-	    l = Neo4jConstants.PRODUCT_LABEL;
-	    break;
-	case Constants.VALUE_TYPE_GROUP:
+	String typeValue = (String) properties
+		.get(Constants.KEY_NODE_EDGE_TYPE);
+	if (typeValue.equals(Constants.VALUE_TYPE_GROUP)) {
 	    l = Neo4jConstants.GROUP_LABEL;
-	    break;
-	case Constants.VALUE_TYPE_USER:
+	} else if (typeValue.equals(Constants.VALUE_TYPE_PRODUCT)) {
+	    l = Neo4jConstants.PRODUCT_LABEL;
+	} else if (typeValue.equals(Constants.VALUE_TYPE_USER)) {
 	    l = Neo4jConstants.USER_LABEL;
 	}
 	// remove type attribute from properties
