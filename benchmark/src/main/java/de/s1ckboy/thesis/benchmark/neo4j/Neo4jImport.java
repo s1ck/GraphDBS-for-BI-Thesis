@@ -1,16 +1,14 @@
 package de.s1ckboy.thesis.benchmark.neo4j;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.neo4j.graphdb.DynamicRelationshipType;
+import org.neo4j.graphdb.Label;
 import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.index.lucene.unsafe.batchinsert.LuceneBatchInserterIndexProvider;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
@@ -24,6 +22,7 @@ import de.s1ckboy.thesis.generic.GraphElement;
 import de.s1ckboy.thesis.generic.Node;
 import de.s1ckboy.thesis.io.GeoffReader;
 import de.s1ckboy.thesis.io.GraphElementIterator;
+import de.s1ckboy.thesis.io.IOHelper;
 
 /**
  * Neo4j Importer uses a GraphElementIterator to insert nodes into the database.
@@ -38,19 +37,14 @@ import de.s1ckboy.thesis.io.GraphElementIterator;
  * 
  */
 public class Neo4jImport extends Neo4jBenchmark {
-
-    private String datasetPath;
-
     private BatchInserter inserter;
 
     private BatchInserterIndexProvider indexProvider;
-
     /**
      * Indexes created and populated using BatchInserterIndexs from this
      * provider are compatible with the normal Indexes.
      */
     private BatchInserterIndex nodeIdx;
-
     /**
      * Used to map the original ids to the created node ids. This is needed for
      * edge creation after inserting all nodes.
@@ -62,43 +56,39 @@ public class Neo4jImport extends Neo4jBenchmark {
     private long edgeCnt = 1L;
 
     private long missingEndNodeCnt = 0L;
-
-    public Neo4jImport(String datasetPath) {
-	this.datasetPath = datasetPath;
-	this.nodeCache = new HashMap<String, Long>();
+    
+    public Neo4jImport(int runs) {
+	this.setRuns(runs);
     }
 
     @Override
     public void setUp() {
-	try {
-	    File f = new File(cfg.getPropertyAsString("location"));
-	    if (f.exists()) {
-		log.info("Deleting database directory");
-		FileUtils.deleteDirectory(f);
-	    }
-	} catch (IOException e) {
-	    log.error(e);
+	if (cfg.getBoolean("drop")) {
+	    IOHelper.removeDirectory(cfg.getString("location"));
 	}
-	// load config
+	
+	/*
+	 * Batch Inserter has to be initialized separately. This is why I
+	 * reconfigure.
+	 */
 	Map<String, String> importCfg = new HashMap<String, String>();
 	importCfg.put("neostore.nodestore.db.mapped_memory",
-		cfg.getPropertyAsString("neostore.nodestore.db.mapped_memory"));
-	importCfg
-		.put("neostore.relationshipstore.db.mapped_memory",
-			cfg.getPropertyAsString("neostore.relationshipstore.db.mapped_memory"));
-	importCfg
-		.put("neostore.propertystore.db.mapped_memory",
-			cfg.getPropertyAsString("neostore.propertystore.db.mapped_memory"));
-	importCfg
-		.put("neostore.propertystore.db.strings.mapped_memory",
-			cfg.getPropertyAsString("neostore.propertystore.db.strings.mapped_memory"));
+		cfg.getString("neostore.nodestore.db.mapped_memory"));
+	importCfg.put("neostore.relationshipstore.db.mapped_memory",
+		cfg.getString("neostore.relationshipstore.db.mapped_memory"));
+	importCfg.put("neostore.propertystore.db.mapped_memory",
+		cfg.getString("neostore.propertystore.db.mapped_memory"));
+	importCfg.put("neostore.propertystore.db.strings.mapped_memory", cfg
+		.getString("neostore.propertystore.db.strings.mapped_memory"));
 	importCfg
 		.put("neostore.propertystore.db.arrays.mapped_memory",
-			cfg.getPropertyAsString("neostore.propertystore.db.arrays.mapped_memory"));
+			cfg.getString("neostore.propertystore.db.arrays.mapped_memory"));
 
+	// setup node cache for
+	nodeCache = new HashMap<String, Long>();
 	// setup batch inserter
-	inserter = BatchInserters.inserter(cfg.getPropertyAsString("location"),
-		importCfg);
+	inserter = BatchInserters
+		.inserter(cfg.getString("location"), importCfg);
 	// setup batch inserter index provider
 	indexProvider = new LuceneBatchInserterIndexProvider(inserter);
 	// setup index to store the original node ids
@@ -110,8 +100,8 @@ public class Neo4jImport extends Neo4jBenchmark {
     public void run() {
 	try {
 	    GraphElementIterator it = new GraphElementIterator(
-		    new BufferedReader(new FileReader(datasetPath)),
-		    new GeoffReader());
+		    new BufferedReader(new FileReader(
+			    cfg.getString("dataset.path"))), new GeoffReader());
 
 	    GraphElement element;
 	    while (it.hasNext()) {
@@ -134,34 +124,51 @@ public class Neo4jImport extends Neo4jBenchmark {
 	}
     }
 
+    /**
+     * Store a node including label and properties in Neo4j.
+     * 
+     * @param node
+     */
     @SuppressWarnings("unchecked")
     private void storeNode(Node node) {
 	Map<String, Object> properties = node.getProperties();
-	if (properties.containsKey(Constants.PRODUCT_CATEGORIES)) {
+	if (properties.containsKey(Constants.KEY_PRODUCT_CATEGORIES)) {
 	    // neo4j doesnt support ArrayList as a property Type, so I have to
 	    // convert it to an array of string
 	    ArrayList<String> list = (ArrayList<String>) properties
-		    .get(Constants.PRODUCT_CATEGORIES);
-	    properties.put(Constants.PRODUCT_CATEGORIES,
+		    .get(Constants.KEY_PRODUCT_CATEGORIES);
+	    properties.put(Constants.KEY_PRODUCT_CATEGORIES,
 		    list.toArray(new String[list.size()]));
 	}
-	long nodeId = inserter.createNode(node.getProperties());
+
+	// get corresponding node label
+	Label l = null;
+	switch ((String) properties.get(Constants.KEY_NODE_EDGE_TYPE)) {
+	case Constants.VALUE_TYPE_PRODUCT:
+	    l = Neo4jConstants.PRODUCT_LABEL;
+	    break;
+	case Constants.VALUE_TYPE_GROUP:
+	    l = Neo4jConstants.GROUP_LABEL;
+	    break;
+	case Constants.VALUE_TYPE_USER:
+	    l = Neo4jConstants.USER_LABEL;
+	}
+	// remove type attribute from properties
+	properties.remove(Constants.KEY_NODE_EDGE_TYPE);
+	// and create the node
+	long nodeId = inserter.createNode(properties, l);
 	nodeCache.put(node.getId(), nodeId);
 	nodeIdx.add(nodeId,
-		MapUtil.map(Neo4jConstants.NODE_ID_KEY, node.getId()));
+		MapUtil.map(Constants.KEY_NODE_EDGE_ID, node.getId()));
 	nodeCnt++;
     }
 
+    /**
+     * Stores an edge with corresponding label and properties in Neo4j.
+     * 
+     * @param edge
+     */
     private void storeRelationship(Edge edge) {
-	// log.info(String.format("(%s)-[:%s]->(%s)", edge.getFromId(),
-	// edge.getLabel(), edge.getToId()));
-	// log.info(nodeIdx == null);
-	// log.info(edge == null);
-	// log.info("fromId: " + edge.getFromId());
-	// log.info("toId: " + edge.getToId());
-	// log.info("label: " + edge.getLabel());
-	// log.info(nodeIdx.get(edge.getFromId()) == null);
-	// log.info(nodeIdx.get(edge.getToId()) == null);
 	if (nodeCache.containsKey(edge.getToId())) {
 	    inserter.createRelationship(nodeCache.get(edge.getFromId()),
 		    nodeCache.get(edge.getToId()),

@@ -1,4 +1,4 @@
-package de.s1ckboy.thesis.benchmark.neo4j;
+package de.s1ckboy.thesis.benchmark.titan;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +8,10 @@ import org.apache.commons.configuration.Configuration;
 import de.s1ckboy.thesis.benchmark.Configs;
 import de.s1ckboy.thesis.benchmark.generic.Benchmark;
 import de.s1ckboy.thesis.benchmark.generic.BenchmarkSuite;
+import de.s1ckboy.thesis.benchmark.neo4j.Neo4jQ1;
 
-public class Neo4jSuite extends BenchmarkSuite {
-
-    private Configuration cfg = Configs.get(Neo4jConstants.INSTANCE_NAME);
+public class TitanSuite extends BenchmarkSuite {
+    private Configuration cfg = Configs.get(TitanConstants.INSTANCE_NAME);
 
     @Override
     public void execute() {
@@ -24,7 +24,7 @@ public class Neo4jSuite extends BenchmarkSuite {
 	 * Import
 	 */
 	if (cfg.getBoolean("import")) {
-	    benchmarks.add(new Neo4jImport(1));
+	    benchmarks.add(new TitanImport(1));
 	}
 
 	/**

@@ -1,21 +1,26 @@
 package de.s1ckboy.thesis.benchmark;
 
-import de.s1ckboy.thesis.benchmark.generic.BenchmarkSuite;
+import de.s1ckboy.thesis.benchmark.hypergraphdb.HGDBSuite;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jSuite;
+import de.s1ckboy.thesis.benchmark.orientdb.OrientSuite;
+import de.s1ckboy.thesis.benchmark.titan.TitanSuite;
 
 public class App {
     public static void main(String[] args) {
-	// Pattern p =
-	// Pattern.compile("^\\(([^)]+)\\)-\\[\\:(.*?)\\]->\\(([^)]+)\\)(\\s(\\{.*?\\}))?");
-	// Matcher m = p.matcher("(0827229534)-[:BELONGS_TO]->(0)");
-	// if (m.matches()) {
-	// System.out.println("blubb");
-	// System.out.println(m.group(1));
-	// System.out.println(m.group(2));
-	// System.out.println(m.group(3));
-	// }
-	BenchmarkSuite neo4jSuite = new Neo4jSuite();
+	boolean neo4j = false;
+	boolean titan = true;
+	boolean orientdb = false;
+	boolean hgdb = false;
 
-	neo4jSuite.execute();
+	
+	
+	if (neo4j)
+	    new Neo4jSuite().execute();
+	if (titan)
+	    new TitanSuite().execute();
+	if (orientdb)
+	    new OrientSuite().execute();
+	if (hgdb)
+	    new HGDBSuite().execute();
     }
 }

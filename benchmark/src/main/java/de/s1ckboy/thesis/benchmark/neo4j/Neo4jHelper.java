@@ -3,49 +3,41 @@ package de.s1ckboy.thesis.benchmark.neo4j;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.configuration.Configuration;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
-import de.s1ckboy.thesis.benchmark.Configuration;
-
 public class Neo4jHelper {
 
-    private static Logger log = Logger.getLogger(Neo4jHelper.class);
     private static GraphDatabaseService graphDB;
 
-    public static GraphDatabaseService getConnection(Configuration cfg) {
+    public static GraphDatabaseService getGraphDB(Configuration cfg) {
 	Map<String, String> dbConfig = new HashMap<String, String>();
 	dbConfig.put("neostore.nodestore.db.mapped_memory",
-		cfg.getPropertyAsString("neostore.nodestore.db.mapped_memory"));
-	dbConfig.put(
-		"neostore.relationshipstore.db.mapped_memory",
-		cfg.getPropertyAsString("neostore.relationshipstore.db.mapped_memory"));
-	dbConfig.put("neostore.propertystore.db.mapped_memory", cfg
-		.getPropertyAsString("neostore.propertystore.db.mapped_memory"));
-	dbConfig.put(
-		"neostore.propertystore.db.strings.mapped_memory",
-		cfg.getPropertyAsString("neostore.propertystore.db.strings.mapped_memory"));
-	dbConfig.put(
-		"neostore.propertystore.db.arrays.mapped_memory",
-		cfg.getPropertyAsString("neostore.propertystore.db.arrays.mapped_memory"));
-	dbConfig.put("cache_type", cfg.getPropertyAsString("cache_type"));
+		cfg.getString("neostore.nodestore.db.mapped_memory"));
+	dbConfig.put("neostore.relationshipstore.db.mapped_memory",
+		cfg.getString("neostore.relationshipstore.db.mapped_memory"));
+	dbConfig.put("neostore.propertystore.db.mapped_memory",
+		cfg.getString("neostore.propertystore.db.mapped_memory"));
+	dbConfig.put("neostore.propertystore.db.strings.mapped_memory", cfg
+		.getString("neostore.propertystore.db.strings.mapped_memory"));
+	dbConfig.put("neostore.propertystore.db.arrays.mapped_memory",
+		cfg.getString("neostore.propertystore.db.arrays.mapped_memory"));
+	dbConfig.put("cache_type", cfg.getString("cache_type"));
 
 	// init db
 	graphDB = new GraphDatabaseFactory()
-		.newEmbeddedDatabaseBuilder(cfg.getPropertyAsString("location"))
+		.newEmbeddedDatabaseBuilder(cfg.getString("location"))
 		.setConfig(dbConfig).newGraphDatabase();
 
 	registerShutdownHook(graphDB);
 	return graphDB;
     }
 
-    public static void destroyConnection() {
+    public static void closeGraphDB() {
 	try {
 	    graphDB.shutdown();
-	    log.info("Destroy connection successful");
 	} catch (Exception e) {
-	    log.error("Destroy connection failed");
 	    e.printStackTrace();
 	}
     }
@@ -57,7 +49,7 @@ public class Neo4jHelper {
 	Runtime.getRuntime().addShutdownHook(new Thread() {
 	    @Override
 	    public void run() {
-		Neo4jHelper.destroyConnection();
+		Neo4jHelper.closeGraphDB();
 	    }
 	});
     }

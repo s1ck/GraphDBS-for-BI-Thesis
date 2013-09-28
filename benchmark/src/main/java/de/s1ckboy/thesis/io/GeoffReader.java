@@ -11,6 +11,15 @@ import de.s1ckboy.thesis.generic.Edge;
 import de.s1ckboy.thesis.generic.GraphElement;
 import de.s1ckboy.thesis.generic.Node;
 
+/**
+ * The Geoff-Reader reads nodes and edges encoded in the Geoff format thereby
+ * supporting properties on nodes and edges.
+ * 
+ * The properties are parsed using the gson parser.
+ * 
+ * @author Martin Junghanns
+ * 
+ */
 public class GeoffReader implements FormatParser {
 
     private static final Pattern NODE_PATTERN = Pattern

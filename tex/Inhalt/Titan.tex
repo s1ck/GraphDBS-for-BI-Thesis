@@ -6,10 +6,42 @@ Im Gegensatz zu den bisher betrachteten Systemen wird Titan primär für den Einsa
 
 Die nachfolgenden Erläuterungen beziehen sich auf Version 0.3.2 des GDBMS in Verbindung mit BerkeleyDB. Dies ermöglicht im nachfolgenden Benchmark den direkten Vergleich mit HyperGraphDB. Die verteilte Konfiguration der GDBMS wird im Benchmark nicht betrachtet, auf die Eigenschaften von Apache Cassandra und Apache HBase wird jedoch kurz in Abschnitt \ref{subsec:titan_verteilung} eingegangen. Die Informationen stammen vorrangig aus der offiziellen Dokumentation zu Titan\cite{titan_doku:2013} und Gremlin\cite{gremlin_doku:2013} sowie aus der offiziellen Mailing-Liste\cite{titan_mail:2013} des GDBMS.
 
-\subsection{Datenmodell}
+\subsection{Datenmodell und Typsystem}
+
+Titan implementiert das Property-Graph-Modell und verzichtet auf Erweiterungen: Knoten sind attributiert, Kanten gerichtet, attributiert und bezeichnet. Attributschlüssel sind vom Typ \texttt{String} während Attributwerte 
+
+- Attributschlüssel und Kantenbezeichner sind typisiert
+	- optional
+		- Typen werden mit Standardeinstellung erzeugt
+	- \texttt{TitanKey} bzw. \texttt{TitanLabel}
+	- beide
+		- global eindeutiger Schlüssel bzw. Bezeichner
+		- unique 
+			- Key:
+				- out-unique: nur ein Wert innerhalb der Wertmenge eines Knotens ist diesem Schlüssel zugeordnet (z.B. Name)
+				- in-unique: nur ein Wert innerhalb der Wertemenge aller Knoten ist diesem Schlüssel zugeordnet (z.B. SSN)
+			- Label: nur eine Kante innerhalb der inzidenten Kanten besitzt diesen Bezeichner
+				- z.B. Vater
+		- können in Gruppen zusammengefasst werden
+	- TitanKey
+		- legt Datentyp des Wertes fest
+		- können indexiert werden
+	- TitanLabel
+		- Festlegung eines Primärschlüssels
+			- erlaubt das effiziente Auslesen inzidenter Kanten sortiert nach zugehörigem Wert			
+		- Festlegung einer Signatur
+			- Alternative zum Primärschlüssel
+			- keine Indexierung aber
+			- eine Art Kantenschema für effizienteres Speichern und Laden)
+		- gerichtete Kanten
+			- können in beide Richtungen traversiert werden
+			- werden beim Löschen der Knoten automatisch gelöscht
+		- unidirektionale Kanten 
+			- können nur in eine Richtung traversiert werden			
+			- müssen manuell gelöscht werden
 
 % PGM (+eventuelle Änderungen), Knotenlabel?
-- PGM
+- Property-Graph-Modell
 	- Schlüssel-Wert-Paare müssen als TitanKey definiert werden
 		- legt Schlüsselname fest
 		- legt Datentyp des Wertes fest
@@ -29,7 +61,7 @@ Die nachfolgenden Erläuterungen beziehen sich auf Version 0.3.2 des GDBMS in Ver
 	- Unterscheidungsmerkmal ist TitanKey
 % Identität
 - globaler ID Pool
-	- 64-Bit Ganzzahl
+	- 64-Bit Ganzzahl\footnote{\url{https://github.com/thinkaurelius/titan/blob/0.3.2/titan-core/src/main/java/com/thinkaurelius/titan/core/TitanElement.java\#L52}}
 	- wird vom GDBMS verwaltet
 	- im verteilten Fall werden Teilmengen des Pools zu den GDBMS-Instanzen zugeordnet
 % Integrität (modellinhärent, Integritätsbedingungen)

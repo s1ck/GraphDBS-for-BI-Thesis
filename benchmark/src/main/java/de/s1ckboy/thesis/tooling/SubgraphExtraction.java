@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.Direction;
@@ -22,10 +23,11 @@ import org.neo4j.helpers.collection.IteratorUtil;
 
 import com.google.gson.Gson;
 
-import de.s1ckboy.thesis.benchmark.Configuration;
+import de.s1ckboy.thesis.benchmark.Configs;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jConstants;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jHelper;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jRelationshipTypes;
+import de.s1ckboy.thesis.generic.Constants;
 
 /**
  * This class extract subgraphs from the full amazon-pokec-graph.
@@ -72,8 +74,8 @@ public class SubgraphExtraction {
     long seed = 1337L;
 
     public SubgraphExtraction() {
-	cfg = Configuration.getInstance("neo4j");
-	graphDb = Neo4jHelper.getConnection(cfg);
+	cfg = Configs.get("neo4j");
+	graphDb = Neo4jHelper.getGraphDB(cfg);
 	engine = new ExecutionEngine(graphDb);
 	// loading idx must happen in tx oO
 	Transaction tx = graphDb.beginTx();
@@ -249,7 +251,7 @@ public class SubgraphExtraction {
     }
 
     private Node getNode(String id) {
-	return index.get(Neo4jConstants.NODE_ID_KEY, id).getSingle();
+	return index.get(Constants.KEY_NODE_EDGE_ID, id).getSingle();
     }
 
     private int[] getGroupCounts() {
@@ -299,14 +301,14 @@ public class SubgraphExtraction {
 
     private String getGeoffNodeString(Node n) {
 	return String.format("(%s) %s",
-		n.getProperty(Neo4jConstants.NODE_ID_KEY),
+		n.getProperty(Constants.KEY_NODE_EDGE_ID),
 		getPropertiesString(n));
     }
 
     private String getGeoffEdgeString(Relationship e) {
 	return String.format("(%s)-[:%s]->(%s) %s", e.getStartNode()
-		.getProperty(Neo4jConstants.NODE_ID_KEY), e.getType().name(), e
-		.getEndNode().getProperty(Neo4jConstants.NODE_ID_KEY),
+		.getProperty(Constants.KEY_NODE_EDGE_ID), e.getType().name(), e
+		.getEndNode().getProperty(Constants.KEY_NODE_EDGE_ID),
 		getPropertiesString(e));
     }
 

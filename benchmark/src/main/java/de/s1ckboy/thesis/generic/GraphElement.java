@@ -8,6 +8,8 @@ public interface GraphElement {
     
     String getId();
     
+    boolean hasProperty(String key);
+    
     Object getProperty(String key);
     
     Map<String, Object> getProperties();

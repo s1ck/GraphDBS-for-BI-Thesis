@@ -12,11 +12,13 @@ public abstract class AbstractGraphElement implements GraphElement {
     }
 
     @Override
+    public boolean hasProperty(String key) {
+	return properties.containsKey(key);
+    }
+
+    @Override
     public Object getProperty(String key) {
-	if (properties.containsKey(key)) {
-	    return properties.get(key);
-	}
-	return null;
+	return properties.get(key);
     }
 
     @Override

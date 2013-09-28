@@ -6,6 +6,15 @@ import java.util.Iterator;
 
 import de.s1ckboy.thesis.generic.GraphElement;
 
+/**
+ * Can be used to iterate the content of a graph stored in a file in a supported
+ * format.
+ * 
+ * Returned elements are parsed by a given FormatParser.
+ * 
+ * @author Martin Junghanns
+ * 
+ */
 public class GraphElementIterator implements Iterator<GraphElement> {
 
     private BufferedReader reader;
@@ -42,5 +51,4 @@ public class GraphElementIterator implements Iterator<GraphElement> {
     public void remove() {
 	throw new UnsupportedOperationException();
     }
-
 }

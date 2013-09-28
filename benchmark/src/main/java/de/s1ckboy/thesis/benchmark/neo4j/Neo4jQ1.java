@@ -2,10 +2,16 @@ package de.s1ckboy.thesis.benchmark.neo4j;
 
 import java.util.Random;
 
-public class Query1_Neo4j extends Neo4jBenchmark {
+public class Neo4jQ1 extends Neo4jBenchmark {
     private Random r;
     
     private long sleep;
+    
+    public Neo4jQ1() {}
+    
+    public Neo4jQ1(int runs) {
+	this.setRuns(runs);
+    }
 
     @Override
     public void setUp() {

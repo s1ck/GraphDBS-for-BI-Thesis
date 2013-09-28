@@ -9,9 +9,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 
-import de.s1ckboy.thesis.benchmark.Configuration;
+import de.s1ckboy.thesis.benchmark.Configs;
 
 /**
  * Abstract base class for all benchmark suites.
@@ -116,11 +117,11 @@ public abstract class BenchmarkSuite {
      * @param benchmark
      */
     protected static void storeResults(long[] results, Benchmark benchmark) {
-	Configuration cfg = Configuration.getInstance(benchmark
+	Configuration cfg = Configs.get(benchmark
 		.getDatabaseName().toLowerCase());
 
 	String dirString = "out/benchmarks/"
-		+ cfg.getPropertyAsString("database")
+		+ cfg.getString("database")
 		+ "/"
 		+ benchmark.getName().toLowerCase()
 		+ "/"
