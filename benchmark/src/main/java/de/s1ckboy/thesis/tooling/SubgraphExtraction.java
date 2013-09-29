@@ -63,7 +63,7 @@ public class SubgraphExtraction {
     /*
      * Maximum number of products inside the graph
      */
-    private int nodeLimit = 100;
+    private int nodeLimit = 10000;
     /*
      * k-Products/Users means the k-neighborhood of a node. 2-neighborhood for
      * users is p.e. all friends and their friends
@@ -296,15 +296,20 @@ public class SubgraphExtraction {
 	String graphName = String.format("graph_%d_%d_%d.geoff", nodeLimit,
 		k_Products, k_Users);
 
+	long i = 0;
 	BufferedWriter bw = null;
 	bw = new BufferedWriter(new FileWriter(graphName));
 
 	for (Node n : nodes) {
 	    bw.write(getGeoffNodeString(n) + "\n");
+	    i++;
+	    if (i % 10000 == 0) bw.flush();
 	}
 
 	for (Relationship e : edges) {
 	    bw.write(getGeoffEdgeString(e) + "\n");
+	    i++;
+	    if (i % 10000 == 0) bw.flush();
 	}
 
 	bw.close();
