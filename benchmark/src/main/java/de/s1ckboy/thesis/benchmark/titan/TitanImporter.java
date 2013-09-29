@@ -57,8 +57,8 @@ public class TitanImporter extends AbstractImporter {
 
 	// __id__, __type__
 	graphDB.makeType().name(Constants.KEY_NODE_EDGE_ID)
-		.unique(Direction.IN).dataType(String.class)
-		.indexed(Vertex.class).makePropertyKey();
+		.unique(Direction.BOTH).indexed(Vertex.class)
+		.dataType(String.class).makePropertyKey();
 	graphDB.makeType().name(Constants.KEY_NODE_EDGE_TYPE)
 		.unique(Direction.OUT).dataType(String.class).makePropertyKey();
 	/*
@@ -70,7 +70,8 @@ public class TitanImporter extends AbstractImporter {
 		.dataType(Integer.class).unique(Direction.OUT)
 		.makePropertyKey();
 	graphDB.makeType().name(Constants.KEY_PRODUCT_CATEGORIES)
-		.dataType(ArrayList.class).makePropertyKey();
+		.dataType(ArrayList.class).unique(Direction.OUT)
+		.makePropertyKey();
 	/*
 	 * Node: Group(name)
 	 */
