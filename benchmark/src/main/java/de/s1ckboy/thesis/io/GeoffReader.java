@@ -108,7 +108,7 @@ public class GeoffReader implements FormatParser {
 			    ((Double) entry.getValue()).intValue());
 		} else if (entry.getKey().equals(Constants.KEY_USER_GENDER)) {
 		    validProperties.put(Constants.KEY_USER_GENDER,
-			    ((String) entry.getValue()).equals("1"));
+			    Boolean.parseBoolean(entry.getValue().toString()));
 		} else if (entry.getKey().equals(Constants.KEY_USER_EYE_COLOR)) {
 		    validProperties.put(Constants.KEY_USER_EYE_COLOR,
 			    (String) entry.getValue());

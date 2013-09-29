@@ -9,7 +9,7 @@ Die nachfolgenden Erläuterungen beziehen sich auf Version 0.3.2 des GDBMS in Ver
 \subsection{Datenmodell und Typsystem}
 
 Titan implementiert das Property-Graph-Modell und verzichtet auf Erweiterungen: Knoten sind attributiert, Kanten gerichtet, attributiert und bezeichnet. Attributschlüssel sind vom Typ \texttt{String} während Attributwerte 
-
+% PGM (+eventuelle Änderungen), Knotenlabel?
 - Attributschlüssel und Kantenbezeichner sind typisiert
 	- optional
 		- Typen werden mit Standardeinstellung erzeugt
@@ -40,14 +40,8 @@ Titan implementiert das Property-Graph-Modell und verzichtet auf Erweiterungen: 
 			- können nur in eine Richtung traversiert werden			
 			- müssen manuell gelöscht werden
 
-% PGM (+eventuelle Änderungen), Knotenlabel?
-- Property-Graph-Modell
-	- Schlüssel-Wert-Paare müssen als TitanKey definiert werden
-		- legt Schlüsselname fest
-		- legt Datentyp des Wertes fest
-		- kann unique sein (Bezogen auf Schlüssel-Wert-Paar)
-% Knoten (Label?)
-	- Label attributbasiert
+
+
 	
 % Kanten (Richtung, Traversieren, Label, Semantik
 - Label = TitanLabel

@@ -16,7 +16,7 @@ public class TitanImport extends TitanBenchmark {
 
     @Override
     public void setUp() {
-	if (cfg.getBoolean("drop")) {
+	if (cfg.getBoolean("import.drop.db")) {
 	    IOHelper.removeDirectory(cfg.getString("storage.directory"));
 	}
 	super.setUp(); // starts the graphdb

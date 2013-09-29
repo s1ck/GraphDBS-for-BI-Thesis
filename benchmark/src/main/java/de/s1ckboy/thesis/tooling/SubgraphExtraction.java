@@ -1,6 +1,7 @@
 package de.s1ckboy.thesis.tooling;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
@@ -62,13 +63,13 @@ public class SubgraphExtraction {
     /*
      * Maximum number of products inside the graph
      */
-    private int nodeLimit = 1000;
+    private int nodeLimit = 100;
     /*
      * k-Products/Users means the k-neighborhood of a node. 2-neighborhood for
      * users is p.e. all friends and their friends
      */
-    private int k_Products = 4;
-    private int k_Users = 1;
+    private int k_Products = 2;
+    private int k_Users = 2;
 
     private Random r;
     long seed = 1337L;
@@ -96,12 +97,22 @@ public class SubgraphExtraction {
 
     public void run() {
 	Transaction tx = graphDb.beginTx();
+	
 	try {
 	    extractSubgraphs(getGroupCounts());
-	    log.info(String
-		    .format("\n%d nodes\n%d edges\n---\n%d groups\n%d products\n%d users\n%d similar_to\n%d reviewed_by\n%d friend_of",
+	    // store stats in info file
+	    String graphInfo = String.format("graph_%d_%d_%d.info", nodeLimit,
+			k_Products, k_Users);
+	    String stats = String
+		    .format("\n%d nodes\n%d edges\n---\n%d groups\n%d products\n%d users\n%d belongs_to\n%d similar_to\n%d reviewed_by\n%d friend_of",
 			    nodes.size(), edges.size(), groupCnt, productCnt,
-			    userCnt, similarCnt, reviewCnt, friendCnt));
+			    userCnt, productCnt, similarCnt, reviewCnt, friendCnt);
+	    FileWriter fw = new FileWriter(new File(graphInfo));
+	    fw.write(stats);
+	    fw.close();
+	    
+	    log.info(stats);
+	    // store graph
 	    storeSubgraph();
 	    tx.success();
 	} catch (IOException e) {

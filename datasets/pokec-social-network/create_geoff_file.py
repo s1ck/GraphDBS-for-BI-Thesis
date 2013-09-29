@@ -60,7 +60,7 @@ def store_graph(nodes, edges, node_list_out, edge_list_out):
             # store node info
             data = {TYPE_KEY: TYPE_USER, ID_KEY: info[0]}
             if info[1] != 'null':
-                data['gender'] = info[1]
+                data['gender'] = True if info[1] == '1' else False
             if info[2] != 'null' and len(info[2]) > 0:
                 data['region'] = info[2]
             if info[3].isdigit() and int(info[3]) > 0:

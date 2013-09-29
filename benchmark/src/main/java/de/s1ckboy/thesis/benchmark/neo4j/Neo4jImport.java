@@ -63,7 +63,7 @@ public class Neo4jImport extends Neo4jBenchmark {
 
     @Override
     public void setUp() {
-	if (cfg.getBoolean("drop")) {
+	if (cfg.getBoolean("import.drop.db")) {
 	    IOHelper.removeDirectory(cfg.getString("location"));
 	}
 
@@ -101,7 +101,7 @@ public class Neo4jImport extends Neo4jBenchmark {
 	try {
 	    GraphElementIterator it = new GraphElementIterator(
 		    new BufferedReader(new FileReader(
-			    cfg.getString("dataset.path"))), new GeoffReader());
+			    cfg.getString("import.dataset.path"))), new GeoffReader());
 
 	    GraphElement element;
 	    while (it.hasNext()) {
@@ -153,7 +153,9 @@ public class Neo4jImport extends Neo4jBenchmark {
 	    l = Neo4jConstants.USER_LABEL;
 	}
 	// remove type attribute from properties
-	properties.remove(Constants.KEY_NODE_EDGE_TYPE);
+	if(cfg.getBoolean("import.drop.type")) {
+	    properties.remove(Constants.KEY_NODE_EDGE_TYPE);
+	}
 	// and create the node
 	long nodeId = inserter.createNode(properties, l);
 	nodeCache.put(node.getId(), nodeId);

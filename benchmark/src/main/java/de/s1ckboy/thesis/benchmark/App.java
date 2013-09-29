@@ -12,8 +12,6 @@ public class App {
 	boolean orientdb = false;
 	boolean hgdb = false;
 
-	
-	
 	if (neo4j)
 	    new Neo4jSuite().execute();
 	if (titan)
