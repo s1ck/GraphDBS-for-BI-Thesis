@@ -7,8 +7,8 @@ import de.s1ckboy.thesis.benchmark.titan.TitanSuite;
 
 public class App {
     public static void main(String[] args) {
-	boolean neo4j = true;
-	boolean titan = false;
+	boolean neo4j = false;
+	boolean titan = true;
 	boolean orientdb = false;
 	boolean hgdb = false;
 

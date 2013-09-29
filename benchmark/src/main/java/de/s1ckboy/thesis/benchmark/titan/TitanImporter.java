@@ -1,60 +1,53 @@
 package de.s1ckboy.thesis.benchmark.titan;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.commons.configuration.Configuration;
+
+import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Vertex;
 
+import de.s1ckboy.thesis.benchmark.generic.AbstractImporter;
 import de.s1ckboy.thesis.generic.Constants;
-import de.s1ckboy.thesis.io.IOHelper;
+import de.s1ckboy.thesis.generic.Edge;
+import de.s1ckboy.thesis.generic.Node;
 
-public class TitanImport extends TitanBenchmark {
+public class TitanImporter extends AbstractImporter {
 
-    public TitanImport(int runs) {
-	this.setRuns(runs);
+    private TitanGraph graphDB;
+
+    private Map<String, Long> nodeCache;
+
+    public TitanImporter(Configuration cfg) {
+	this.cfg = cfg;
+	this.nodeCache = new HashMap<String, Long>();
     }
 
     @Override
     public void setUp() {
-	if (cfg.getBoolean("import.drop.db")) {
-	    IOHelper.removeDirectory(cfg.getString("storage.directory"));
-	}
-	super.setUp(); // starts the graphdb
-
+	super.setUp();
+	this.graphDB = TitanHelper.getGraphDB(cfg);
 	createTypes();
     }
 
     @Override
-    public void run() {
-	
+    protected void storeNode(Node node) {
+	Vertex v = graphDB.addVertex(null);
+	nodeCache.put((String) node.getProperty(Constants.KEY_NODE_EDGE_ID),
+		(Long) v.getId());
+	for (Map.Entry<String, Object> entry : node.getProperties().entrySet()) {
+	    v.setProperty(entry.getKey(), entry.getValue());
+	}
+	nodeCnt++;
     }
-    
-    @Override
-    public void tearDown() {
-
-    }
 
     @Override
-    public void beforeRun() {
+    protected void storeEdge(Edge edge) {
 	// TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public void afterRun() {
-	// TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void warmup() {
-	// TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String getName() {
-	return "import";
     }
 
     private void createTypes() {
@@ -71,15 +64,13 @@ public class TitanImport extends TitanBenchmark {
 	/*
 	 * Node: Product(title, salesrank, categories)
 	 */
-
 	graphDB.makeType().name(Constants.KEY_PRODUCT_TITLE)
 		.dataType(String.class).unique(Direction.OUT).makePropertyKey();
 	graphDB.makeType().name(Constants.KEY_PRODUCT_SALESRANK)
 		.dataType(Integer.class).unique(Direction.OUT)
 		.makePropertyKey();
-	graphDB.makeType().name(Constants.KEY_PRODUCT_SALESRANK)
+	graphDB.makeType().name(Constants.KEY_PRODUCT_CATEGORIES)
 		.dataType(ArrayList.class).makePropertyKey();
-
 	/*
 	 * Node: Group(name)
 	 */
@@ -102,28 +93,24 @@ public class TitanImport extends TitanBenchmark {
 	/*
 	 * Edge Labels
 	 */
-	
+
 	/*
 	 * Edge: BELONGS_TO
 	 */
 	graphDB.makeType().name(Constants.LABEL_EDGE_BELONGS_TO)
 		.unique(Direction.OUT).makeEdgeLabel();
-
 	/*
 	 * Edge: SIMILAR_TO
 	 */
 	graphDB.makeType().name(Constants.LABEL_EDGE_SIMILAR_TO)
 		.makeEdgeLabel();
-
 	/*
-	 * Edge: REVIEWED_BY
+	 * Edge: FRIEND_OF
 	 */
 	graphDB.makeType().name(Constants.LABEL_EDGE_FRIEND_OF).makeEdgeLabel();
 	/*
 	 * Edge: REVIEWED_BY(votes, rating, helpful, date)
 	 */
-	graphDB.makeType().name(Constants.LABEL_EDGE_REVIEWED_BY).directed()
-		.makeEdgeLabel();
 	graphDB.makeType().name(Constants.KEY_REVIEW_VOTES)
 		.dataType(Integer.class).unique(Direction.OUT)
 		.makePropertyKey();
@@ -135,5 +122,8 @@ public class TitanImport extends TitanBenchmark {
 		.makePropertyKey();
 	graphDB.makeType().name(Constants.KEY_REVIEW_DATE)
 		.dataType(String.class).unique(Direction.OUT).makePropertyKey();
+
+	graphDB.makeType().name(Constants.LABEL_EDGE_REVIEWED_BY).directed()
+		.makeEdgeLabel();
     }
 }

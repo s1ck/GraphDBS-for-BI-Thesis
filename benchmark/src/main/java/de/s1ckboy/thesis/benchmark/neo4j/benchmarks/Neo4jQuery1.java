@@ -1,15 +1,17 @@
-package de.s1ckboy.thesis.benchmark.neo4j;
+package de.s1ckboy.thesis.benchmark.neo4j.benchmarks;
 
 import java.util.Random;
 
-public class Neo4jQ1 extends Neo4jBenchmark {
+import de.s1ckboy.thesis.benchmark.neo4j.Neo4jBenchmark;
+
+public class Neo4jQuery1 extends Neo4jBenchmark {
     private Random r;
     
     private long sleep;
     
-    public Neo4jQ1() {}
+    public Neo4jQuery1() {}
     
-    public Neo4jQ1(int runs) {
+    public Neo4jQuery1(int runs) {
 	this.setRuns(runs);
     }
 

@@ -8,6 +8,8 @@ import org.apache.commons.configuration.Configuration;
 import de.s1ckboy.thesis.benchmark.Configs;
 import de.s1ckboy.thesis.benchmark.generic.Benchmark;
 import de.s1ckboy.thesis.benchmark.generic.BenchmarkSuite;
+import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jImportBenchmark;
+import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jQuery1;
 
 public class Neo4jSuite extends BenchmarkSuite {
 
@@ -24,14 +26,14 @@ public class Neo4jSuite extends BenchmarkSuite {
 	 * Import
 	 */
 	if (cfg.getBoolean("import")) {
-	    benchmarks.add(new Neo4jImport(1));
+	    benchmarks.add(new Neo4jImportBenchmark(new Neo4jImporter(cfg), 1));
 	}
 
 	/**
 	 * Benchmarks
 	 */
 	if (cfg.getBoolean("query1")) {
-	    benchmarks.add(new Neo4jQ1(cfg.getInt("query1.runs")));
+	    benchmarks.add(new Neo4jQuery1(cfg.getInt("query1.runs")));
 	}
 
 	runBenchmarks(benchmarks, logToFile, doWarmup);

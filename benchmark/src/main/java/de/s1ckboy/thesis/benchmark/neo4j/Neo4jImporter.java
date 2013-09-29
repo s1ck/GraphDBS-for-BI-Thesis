@@ -1,12 +1,10 @@
 package de.s1ckboy.thesis.benchmark.neo4j;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.configuration.Configuration;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Label;
 import org.neo4j.helpers.collection.MapUtil;
@@ -16,13 +14,10 @@ import org.neo4j.unsafe.batchinsert.BatchInserterIndex;
 import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
+import de.s1ckboy.thesis.benchmark.generic.AbstractImporter;
 import de.s1ckboy.thesis.generic.Constants;
 import de.s1ckboy.thesis.generic.Edge;
-import de.s1ckboy.thesis.generic.GraphElement;
 import de.s1ckboy.thesis.generic.Node;
-import de.s1ckboy.thesis.io.GeoffReader;
-import de.s1ckboy.thesis.io.GraphElementIterator;
-import de.s1ckboy.thesis.io.IOHelper;
 
 /**
  * Neo4j Importer uses a GraphElementIterator to insert nodes into the database.
@@ -36,7 +31,8 @@ import de.s1ckboy.thesis.io.IOHelper;
  * @author Martin Junghanns
  * 
  */
-public class Neo4jImport extends Neo4jBenchmark {
+public class Neo4jImporter extends AbstractImporter {
+
     private BatchInserter inserter;
 
     private BatchInserterIndexProvider indexProvider;
@@ -51,22 +47,13 @@ public class Neo4jImport extends Neo4jBenchmark {
      */
     private Map<String, Long> nodeCache;
 
-    private long nodeCnt = 0L;
-
-    private long edgeCnt = 1L;
-
-    private long missingEndNodeCnt = 0L;
-
-    public Neo4jImport(int runs) {
-	this.setRuns(runs);
+    public Neo4jImporter(Configuration cfg) {
+	this.cfg = cfg;
     }
 
     @Override
     public void setUp() {
-	if (cfg.getBoolean("import.drop.db")) {
-	    IOHelper.removeDirectory(cfg.getString("location"));
-	}
-
+	super.setUp();
 	/*
 	 * Batch Inserter has to be initialized separately. This is why I
 	 * reconfigure.
@@ -88,40 +75,21 @@ public class Neo4jImport extends Neo4jBenchmark {
 	nodeCache = new HashMap<String, Long>();
 	// setup batch inserter
 	inserter = BatchInserters
-		.inserter(cfg.getString("location"), importCfg);
+		.inserter(cfg.getString("storage.directory"), importCfg);
 	// setup batch inserter index provider
 	indexProvider = new LuceneBatchInserterIndexProvider(inserter);
 	// setup index to store the original node ids
 	nodeIdx = indexProvider.nodeIndex(Neo4jConstants.NODE_IDX_NAME,
 		MapUtil.stringMap("type", "exact"));
+
     }
 
     @Override
-    public void run() {
-	try {
-	    GraphElementIterator it = new GraphElementIterator(
-		    new BufferedReader(new FileReader(
-			    cfg.getString("import.dataset.path"))), new GeoffReader());
-
-	    GraphElement element;
-	    while (it.hasNext()) {
-		element = it.next();
-		if (element.isNode()) {
-		    storeNode((Node) element);
-		} else {
-		    storeRelationship((Edge) element);
-		}
-		// some logging
-		if (nodeCnt % Neo4jConstants.NODE_LOG_CNT == 0) {
-		    log.info(String.format("Stored %d nodes", nodeCnt));
-		}
-		if (edgeCnt % Neo4jConstants.EDGE_LOG_CNT == 0) {
-		    log.info(String.format("Stored %d edges", edgeCnt));
-		}
-	    }
-	} catch (FileNotFoundException e) {
-	    e.printStackTrace();
-	}
+    public void tearDown() {
+	// flush the index to make changes visible for reads
+	nodeIdx.flush();
+	inserter.shutdown();
+	super.tearDown();
     }
 
     /**
@@ -130,7 +98,8 @@ public class Neo4jImport extends Neo4jBenchmark {
      * @param node
      */
     @SuppressWarnings("unchecked")
-    private void storeNode(Node node) {
+    @Override
+    protected void storeNode(Node node) {
 	Map<String, Object> properties = node.getProperties();
 	if (properties.containsKey(Constants.KEY_PRODUCT_CATEGORIES)) {
 	    // neo4j doesnt support ArrayList as a property Type, so I have to
@@ -153,7 +122,7 @@ public class Neo4jImport extends Neo4jBenchmark {
 	    l = Neo4jConstants.USER_LABEL;
 	}
 	// remove type attribute from properties
-	if(cfg.getBoolean("import.drop.type")) {
+	if (cfg.getBoolean("import.drop.type")) {
 	    properties.remove(Constants.KEY_NODE_EDGE_TYPE);
 	}
 	// and create the node
@@ -162,6 +131,7 @@ public class Neo4jImport extends Neo4jBenchmark {
 	nodeIdx.add(nodeId,
 		MapUtil.map(Constants.KEY_NODE_EDGE_ID, node.getId()));
 	nodeCnt++;
+
     }
 
     /**
@@ -169,7 +139,8 @@ public class Neo4jImport extends Neo4jBenchmark {
      * 
      * @param edge
      */
-    private void storeRelationship(Edge edge) {
+    @Override
+    protected void storeEdge(Edge edge) {
 	if (nodeCache.containsKey(edge.getToId())) {
 	    inserter.createRelationship(nodeCache.get(edge.getFromId()),
 		    nodeCache.get(edge.getToId()),
@@ -179,27 +150,5 @@ public class Neo4jImport extends Neo4jBenchmark {
 	} else {
 	    missingEndNodeCnt++;
 	}
-    }
-
-    @Override
-    public String getName() {
-	return "import";
-    }
-
-    @Override
-    public void warmup() {
-	// no need to do a warmup
-    }
-
-    @Override
-    public void tearDown() {
-	// flush the index to make changes visible for reads
-	nodeIdx.flush();
-
-	inserter.shutdown();
-
-	log.info(String.format(
-		"Imported %d nodes, %d edges. Got %d missing end nodes",
-		nodeCnt, edgeCnt, missingEndNodeCnt));
     }
 }
