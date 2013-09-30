@@ -3,16 +3,16 @@ package de.s1ckboy.thesis.generic;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Edge extends AbstractGraphElement {
+public class EdgeDTO extends AbstractGraphElement {
     private String fromId;
     private String toId;
     private String label;
 
-    public Edge(String fromId, String toId, String label) {
+    public EdgeDTO(String fromId, String toId, String label) {
 	this(fromId, toId, label, new HashMap<String, Object>());
     }
 
-    public Edge(String fromId, String toId, String label,
+    public EdgeDTO(String fromId, String toId, String label,
 	    Map<String, Object> properties) {
 	this.fromId = fromId;
 	this.toId = toId;

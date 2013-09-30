@@ -10,9 +10,9 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
 import de.s1ckboy.thesis.generic.Constants;
-import de.s1ckboy.thesis.generic.Edge;
+import de.s1ckboy.thesis.generic.EdgeDTO;
 import de.s1ckboy.thesis.generic.GraphElement;
-import de.s1ckboy.thesis.generic.Node;
+import de.s1ckboy.thesis.generic.NodeDTO;
 
 /**
  * The Geoff-Reader reads nodes and edges encoded in the Geoff format thereby
@@ -43,9 +43,9 @@ public class GeoffReader implements FormatParser {
 	if (nodeMatcher.matches()) {
 	    id1 = nodeMatcher.group(1);
 	    if (nodeMatcher.group(3) != null) {
-		return new Node(id1, parseProperties(nodeMatcher.group(3)));
+		return new NodeDTO(id1, parseProperties(nodeMatcher.group(3)));
 	    } else {
-		return new Node(id1);
+		return new NodeDTO(id1);
 	    }
 	} else {
 	    edgeMatcher = EDGE_PATTERN.matcher(line);
@@ -54,10 +54,10 @@ public class GeoffReader implements FormatParser {
 		label = edgeMatcher.group(2);
 		id2 = edgeMatcher.group(3);
 		if (edgeMatcher.group(5) != null) {
-		    return new Edge(id1, id2, label,
+		    return new EdgeDTO(id1, id2, label,
 			    parseProperties(edgeMatcher.group(5)));
 		} else {
-		    return new Edge(id1, id2, label);
+		    return new EdgeDTO(id1, id2, label);
 		}
 	    } else {
 		throw new IllegalArgumentException("no match for line: " + line);

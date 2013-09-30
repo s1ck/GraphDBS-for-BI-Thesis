@@ -8,12 +8,13 @@ import org.apache.commons.configuration.Configuration;
 
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
 import de.s1ckboy.thesis.benchmark.generic.AbstractImporter;
 import de.s1ckboy.thesis.generic.Constants;
-import de.s1ckboy.thesis.generic.Edge;
-import de.s1ckboy.thesis.generic.Node;
+import de.s1ckboy.thesis.generic.EdgeDTO;
+import de.s1ckboy.thesis.generic.NodeDTO;
 
 public class TitanImporter extends AbstractImporter {
 
@@ -30,11 +31,12 @@ public class TitanImporter extends AbstractImporter {
     public void setUp() {
 	super.setUp();
 	this.graphDB = TitanHelper.getGraphDB(cfg);
+
 	createTypes();
     }
 
     @Override
-    protected void storeNode(Node node) {
+    protected void storeNode(NodeDTO node) {
 	Vertex v = graphDB.addVertex(null);
 	nodeCache.put((String) node.getProperty(Constants.KEY_NODE_EDGE_ID),
 		(Long) v.getId());
@@ -45,9 +47,18 @@ public class TitanImporter extends AbstractImporter {
     }
 
     @Override
-    protected void storeEdge(Edge edge) {
-	// TODO Auto-generated method stub
+    protected void storeEdge(EdgeDTO edge) {
+	Long fromID = nodeCache.get(edge.getFromId());
+	Long toID = nodeCache.get(edge.getToId());
 
+	Edge e = graphDB.addEdge(null, graphDB.getVertex(fromID),
+		graphDB.getVertex(toID), edge.getLabel());
+
+	for (Map.Entry<String, Object> entry : edge.getProperties().entrySet()) {
+	    e.setProperty(entry.getKey(), entry.getValue());
+	}
+
+	edgeCnt++;
     }
 
     private void createTypes() {

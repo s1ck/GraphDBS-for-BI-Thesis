@@ -8,9 +8,9 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jConstants;
-import de.s1ckboy.thesis.generic.Edge;
+import de.s1ckboy.thesis.generic.EdgeDTO;
 import de.s1ckboy.thesis.generic.GraphElement;
-import de.s1ckboy.thesis.generic.Node;
+import de.s1ckboy.thesis.generic.NodeDTO;
 import de.s1ckboy.thesis.io.GeoffReader;
 import de.s1ckboy.thesis.io.GraphElementIterator;
 import de.s1ckboy.thesis.io.IOHelper;
@@ -54,9 +54,9 @@ public abstract class AbstractImporter implements Importer {
 	    while (it.hasNext()) {
 		element = it.next();
 		if (element.isNode()) {
-		    storeNode((Node) element);
+		    storeNode((NodeDTO) element);
 		} else {
-		    storeEdge((Edge) element);
+		    storeEdge((EdgeDTO) element);
 		}
 		// some logging
 		if (nodeCnt % Neo4jConstants.NODE_LOG_CNT == 0) {
@@ -72,8 +72,8 @@ public abstract class AbstractImporter implements Importer {
 
     }
 
-    protected abstract void storeNode(Node node);
+    protected abstract void storeNode(NodeDTO node);
 
-    protected abstract void storeEdge(Edge edge);
+    protected abstract void storeEdge(EdgeDTO edge);
 
 }

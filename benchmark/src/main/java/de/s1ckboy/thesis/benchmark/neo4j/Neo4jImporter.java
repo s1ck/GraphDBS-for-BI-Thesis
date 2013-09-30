@@ -16,8 +16,8 @@ import org.neo4j.unsafe.batchinsert.BatchInserters;
 
 import de.s1ckboy.thesis.benchmark.generic.AbstractImporter;
 import de.s1ckboy.thesis.generic.Constants;
-import de.s1ckboy.thesis.generic.Edge;
-import de.s1ckboy.thesis.generic.Node;
+import de.s1ckboy.thesis.generic.EdgeDTO;
+import de.s1ckboy.thesis.generic.NodeDTO;
 
 /**
  * Neo4j Importer uses a GraphElementIterator to insert nodes into the database.
@@ -99,7 +99,7 @@ public class Neo4jImporter extends AbstractImporter {
      */
     @SuppressWarnings("unchecked")
     @Override
-    protected void storeNode(Node node) {
+    protected void storeNode(NodeDTO node) {
 	Map<String, Object> properties = node.getProperties();
 	if (properties.containsKey(Constants.KEY_PRODUCT_CATEGORIES)) {
 	    // neo4j doesnt support ArrayList as a property Type, so I have to
@@ -140,7 +140,7 @@ public class Neo4jImporter extends AbstractImporter {
      * @param edge
      */
     @Override
-    protected void storeEdge(Edge edge) {
+    protected void storeEdge(EdgeDTO edge) {
 	if (nodeCache.containsKey(edge.getToId())) {
 	    inserter.createRelationship(nodeCache.get(edge.getFromId()),
 		    nodeCache.get(edge.getToId()),
