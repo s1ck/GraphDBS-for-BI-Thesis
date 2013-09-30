@@ -12,19 +12,19 @@ public class Constants {
     public static final String VALUE_TYPE_PRODUCT = "p";
     public static final String VALUE_TYPE_USER = "u";
     public static final String VALUE_TYPE_REVIEW = "r";
-    
+
     /*
      * Labels
      */
     public static final String LABEL_NODE_PRODUCT = "Product";
     public static final String LABEL_NODE_GROUP = "Group";
     public static final String LABEL_NODE_USER = "User";
-    
+
     public static final String LABEL_EDGE_BELONGS_TO = "BELONGS_TO";
     public static final String LABEL_EDGE_SIMILAR_TO = "SIMILAR_TO";
     public static final String LABEL_EDGE_REVIEWED_BY = "REVIEWED_BY";
     public static final String LABEL_EDGE_FRIEND_OF = "FRIEND_OF";
-    
+
     /*
      * Product
      */
@@ -49,10 +49,16 @@ public class Constants {
     public static final String KEY_REVIEW_RATING = "rating";
     public static final String KEY_REVIEW_HELPFUL = "helpful";
     public static final String KEY_REVIEW_DATE = "date";
-    
+
     /**
      * Benchmark specific
      */
     public static final Integer DEFAULT_BENCHMARK_RUNS = 100;
+
+    /**
+     * Import specific
+     */
+    public static final Integer NODE_LOG_CNT = 100000;
+    public static final Integer EDGE_LOG_CNT = 100000;
 
 }

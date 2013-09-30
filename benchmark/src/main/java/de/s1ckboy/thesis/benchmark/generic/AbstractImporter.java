@@ -7,7 +7,7 @@ import java.io.FileReader;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 
-import de.s1ckboy.thesis.benchmark.neo4j.Neo4jConstants;
+import de.s1ckboy.thesis.generic.Constants;
 import de.s1ckboy.thesis.generic.EdgeDTO;
 import de.s1ckboy.thesis.generic.GraphElement;
 import de.s1ckboy.thesis.generic.NodeDTO;
@@ -59,10 +59,10 @@ public abstract class AbstractImporter implements Importer {
 		    storeEdge((EdgeDTO) element);
 		}
 		// some logging
-		if (nodeCnt % Neo4jConstants.NODE_LOG_CNT == 0) {
+		if (nodeCnt % Constants.NODE_LOG_CNT == 0) {
 		    log.info(String.format("Stored %d nodes", nodeCnt));
 		}
-		if (edgeCnt % Neo4jConstants.EDGE_LOG_CNT == 0) {
+		if (edgeCnt % Constants.EDGE_LOG_CNT == 0) {
 		    log.info(String.format("Stored %d edges", edgeCnt));
 		}
 	    }

@@ -16,7 +16,7 @@ import de.s1ckboy.thesis.generic.Constants;
 public abstract class Benchmark {
 
     protected static Logger log = Logger.getLogger(Benchmark.class);
-
+    
     /**
      * Number of benchmark runs
      */

@@ -86,9 +86,11 @@ public abstract class BenchmarkSuite {
 	    log.info(String.format("Starting run %d ...", i));
 	    benchmark.beforeRun();
 	    benchmark.setCurrentRun(i);
+//	    start = System.nanoTime();
 	    start = System.currentTimeMillis();
 	    benchmark.run();
 	    diff = System.currentTimeMillis() - start;
+//	    diff = System.nanoTime() - start;
 	    benchmark.afterRun();
 	    results[i] = diff;
 	    totalResults[i] = diff;
@@ -117,11 +119,11 @@ public abstract class BenchmarkSuite {
      * @param benchmark
      */
     protected static void storeResults(long[] results, Benchmark benchmark) {
-	Configuration cfg = Configs.get(benchmark
-		.getDatabaseName().toLowerCase());
+	Configuration cfg = Configs.get(benchmark.getDatabaseName()
+		.toLowerCase());
 
 	String dirString = "out/benchmarks/"
-		+ cfg.getString("database")
+		+ getDatabaseName(cfg.getString("import.dataset.path"))
 		+ "/"
 		+ benchmark.getName().toLowerCase()
 		+ "/"
@@ -153,5 +155,10 @@ public abstract class BenchmarkSuite {
 			.getRuntime().totalMemory() / 1024 / 1024), (Runtime
 			.getRuntime().maxMemory() / 1024 / 1024), (Runtime
 			.getRuntime().freeMemory() / 1024 / 1024)));
+    }
+
+    private static String getDatabaseName(String cfgName) {
+	return cfgName.substring(cfgName.lastIndexOf('/'),
+		cfgName.lastIndexOf('.'));
     }
 }
