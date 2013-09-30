@@ -1,0 +1,28 @@
+cfg = new BaseConfiguration();
+cfg.setProperty("storage.directory", "/tmp/titan-eval");
+g = TitanFactory.open(cfg);
+
+// TitanKeys
+g.makeType().name('type').unique(OUT).dataType(String.class).makePropertyKey();
+g.makeType().name('name').unique(OUT).indexed(Vertex.class).dataType(String.class).makePropertyKey();
+g.makeType().name('age').unique(OUT).dataType(Integer.class).makePropertyKey();
+
+// TitanValues
+g.makeType().name('WORKS_WITH').makeEdgeLabel();
+g.makeType().name('WORKS_IN').unique(OUT).makeEdgeLabel();
+g.makeType().name('RESPONSIBLE_FOR').unique(BOTH).makeEdgeLabel();
+
+alice = g.addVertex([type:'Employee',name:'Alice',age:25]);
+bob = g.addVertex([type:'Employee',name:'Bob',age:31]);
+eve = g.addVertex([type:'Employee',name:'Eve',age:27]);
+projectX = g.addVertex([type:'Project',name:'ProjectX']);
+
+g.addEdge(alice,bob,'WORKS_WITH');
+g.addEdge(bob,eve,'WORKS_WITH');
+g.addEdge(eve,alice,'WORKS_WITH');
+
+g.addEdge(bob,projectX,'RESPONSIBLE_FOR');
+g.addEdge(eve,projectX,'WORKS_IN');
+
+
+

@@ -28,7 +28,7 @@ In HyperGraphDB existieren aus Anwendungssicht keine Primärschlüssel, die Identi
 
 HyperGraphDB bietet keine dedizierte Anfragesprache an, sondern erlaubt den Zugriff auf die Datenbasis ausschließlich via Java API im eingebetteten Betrieb. In diesem Zusammenhang stehen CRUD- und mengenorientierte Operationen sowie die Möglichkeit zur Traversierung des Graphen zur Verfügung.
 
-\paragraph*{CRUD-Operationen}
+\paragraph*{CRUD-Operationen via Java API}
 
 Das GDBMS bietet grundlegende Funktionen zum Erzeugen, Auslesen und Löschen von Atomen an. Da Werte innerhalb der Datenbasis unveränderlich sind, erfolgt das Aktualisieren ausschließlich über den Austausch von Werten.
 
@@ -40,7 +40,7 @@ In Verbindung mit dem flexiblen Typsystem und den vorhandenen Typimplementierung
 Kanten werden in HyperGraphDB nicht durch Referenzen zwischen Objektinstanzen, sondern durch spezielle Kantenobjekte modelliert. Letztere sind Implementierungen der Schnittstelle \texttt{HGLink}, das GDBMS stellt drei Implementierungen zur Verfügung: Kanten können ohne jegliche Zusatzinformationen, zum Beispiel ohne eine semantische Bedeutung oder ohne Nutzdaten, angelegt werden. Eine zweite Implementierung erlaubt das Speichern von Nutzdaten, dies können beliebig komplexe Objektinstanzen oder einfache Zeichenketten zur Festlegung eines Kantenbezeichners sein. Ein dritter Typ ermöglicht zudem das Festlegen zulässiger Typen innerhalb der Zielmenge und gestattet damit die Definition von Integritätsbedingungen.\\
 Kanten werden unter Angabe ihrer Zielmenge und eventueller Nutzdaten erzeugt und anschließend mittels Handle identifiziert, Auslesen und Löschen erfolgen wie bereits für Knoten beschrieben. Kanten bieten darüber hinaus Funktionen zum Lesen der Zielmenge und der Arität an. Da die Zielmenge ein Tupel und somit geordnet ist, können Handles unter Angabe ihrer Position innerhalb der Zielmenge ausgelesen werden. Dies ermöglicht die Definition von Kantentypen die einzelnen Positionen innerhalb der Zielmenge eine Semantik zuordnen.
 
-\paragraph*{Mengenorientierte Anfragen}
+\paragraph*{Mengenorientierte Operationen via Java API}
 
 Neben dem Auslesen von Atomen unter Angabe ihres Handles bietet HyperGraphDB die Möglichkeit, deklarative, mengenorientierte Anfragen an die Datenbasis zu stellen. Die hierfür vorhandene API basiert auf der Definition von Prädikaten zur Einschränkung der Ergebnismenge. Prädikate lassen sich konjunktiv bzw. disjunktiv verknüpfen sowie beliebig schachteln und negieren. Sie beziehen sich entweder auf den Wert eines Atoms oder auf die Topologie des Graphen. Die folgende Anfrage definiert zum Beispiel die Menge aller Mitarbeiter, deren Attribut \texttt{age} kleiner oder gleich dem Wert 25 ist:
 
@@ -63,7 +63,7 @@ Optional kann innerhalb einer Anfrage eine Abbildung definiert und mittels \text
 
 An dieser Stelle sei auf die offene Architektur des GDBMS hingewiesen: Neue Operatoren lassen sich durch das Implementieren der Schnittstellen \texttt{HGAtomPredicate} und \texttt{HGQueryCondition} hinzufügen. Dies erlaubt das Definieren beliebiger domänenspezifischer Operatoren im Rahmen des beschriebenen Forschungsprojektes. Ein Beispiel hierfür ist das Prüfen, ob eine gegebene Kante eine kausale Abhängigkeit beschreibt. Dies ist genau dann der Fall, wenn alle in der Zielmenge vorhandenen Typen einen Datentyp zur Beschreibung transaktionaler Daten subsumieren.
 
-\paragraph*{Traversierung}
+\paragraph*{Traversierung via Java API}
 
 Vergleichbar mit Neo4j steht in HyperGraphDB eine Menge von Schnittstellen zur Verfügung, mit der sich eine Traversierung innerhalb der Datenbasis beschreiben lässt. Die Reihenfolge, in der ein Graph durchlaufen wird, kann durch die Implementierung der Schnittstelle \texttt{HGTraversal} festgelegt werden. Es handelt sich um einen Iterator, dessen Elemente Paare von Handles sind. Jedes Paar besteht aus einer Kante und einem Atom, auf welches die Kante zeigt. Die Schnittstelle kann darüber hinaus prüfen, ob ein Handle bereits während der Traversierung besucht wurde. HyperGraphDB stellt zwei Implementierungen der Schnittstelle zur Verfügung: \texttt{HGBreadthFirstTraversal} für die Durchführung eines Breitendurchlaufs und \texttt{HGDepthFirstTraversal} für die Durchführung eines Tiefendurchlaufs. 
 

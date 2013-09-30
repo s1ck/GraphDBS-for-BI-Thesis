@@ -2,9 +2,9 @@
 
 Das vierte System, welches im Rahmen der Evaluation betrachtet wird, ist Titan, ein quelloffenes, unter Apache 2.0 lizenziertes GDBMS. Es wird von der Firma Aurelius\footnote{\url{http://thinkaurelius.com/}} entwickelt und ist im Vergleich zu den bisher betrachteten Systemen ein sehr junges Projekt. Die erste Veröffentlichung erfolgte im September 2012, seit Mai 2013 ist die stabile Version 0.3.2 aktuell. Aurelius arbeitet eng mit dem TinkerPop-Projekt zusammen und implementiert die darin definierte Blueprints API. Titan selbst ist ausschließlich in Java umgesetzt, die Ausführung ist somit auf kompatiblen Plattformen möglich. Es handelt sich um ein GDBMS, in dem Modellierung und Verwendung der Daten nativ sind, Speicherung und Verarbeitung sind hingegen nicht-nativ: Der Graph wird analog zu HyperGraphDB auf ein Key-Value-Datenmodell abgebildet. Das verwendete Speichersystem ist austauschbar, Titan unterstützt aktuell die spaltenorientierten, verteilten Datenbanken Apache Cassandra\footnote{\url{http://cassandra.apache.org/}} und Apache HBase\footnote{\url{http://hbase.apache.org/}} sowie die bereits vorgestellte, zentrale Key-Value-Datenbank BerkeleyDB Java Edition. Die genannten Speichersysteme sind disk-orientiert, Titan bietet jedoch auch eine integrierte hauptspeicher-zentrierte Implementierung an. Die Verwendung des GDBMS erfolgt entweder eingebettet innerhalb von Java-Anwendungen oder im Client-Server-Betrieb.
 
-Im Gegensatz zu den bisher betrachteten Systemen wird Titan primär für den Einsatz als verteiltes GDBMS entwickelt. Dabei nutzt es die Eigenschaften und Vorteile vorhandener Speichertechnologien für die horizontale Skalierung sowohl paralleler Zugriffe in als auch des Datenvolumens von umfangreichen Graphen. Aurelius definiert Graphen als umfangreich, wenn diese mehrere Milliarden Knoten und Kanten aufweisen.\footnote{Im Mai 2013 veröffentlichte Aurelius einen beeindruckenden Benchmark in dem die Performance paralleler Zugriffe auf einen Graph mit ca. 6 Milliarden Knoten und 121 Milliarden Kanten auf einem Titan-Cassandra-Cluster gemessen wurde. Die Ergebnisse können unter \cite{titan_bench:2013} eingesehen werden.} Entsprechend der vorgestellten Kategorisierung handelt es sich somit um eine Kombination aus Graphdatenbanksystem und Graph Processing System, welches Zugriffe mit lokalem Bezug auf umfangreichen Graphen ermöglicht. Eine weitere Besonderheit von Titan ist die Verwendung von Indizes an Knoten. Diese versprechen einen effizienteren Zugriff auf inzidente Kanten bei Knoten mit hohem Grad.
+Im Gegensatz zu den bisher betrachteten Systemen wird Titan primär für den Einsatz als verteiltes GDBMS  zur Verwaltung umfangreicher Graphen entwickelt. Dabei nutzt es die Eigenschaften und Vorteile vorhandener Speichertechnologien um eine horizontale Skalierbarkeit paralleler Zugriffe und Datenvolumen zu gewährleisten. Aurelius definiert Graphen als umfangreich, wenn diese mehrere Milliarden Knoten und Kanten aufweisen.\footnote{Im Mai 2013 veröffentlichte Aurelius einen beeindruckenden Benchmark in dem die Performance paralleler Zugriffe auf einen Graph mit ca. 6 Milliarden Knoten und 121 Milliarden Kanten auf einem Titan-Cassandra-Cluster gemessen wurde. Die Ergebnisse können unter \cite{titan_bench:2013} eingesehen werden.} Entsprechend der vorgestellten Kategorisierung handelt es sich somit um eine Kombination aus Graphdatenbanksystem und Graph Processing System, welches Zugriffe mit lokalem Bezug auf umfangreichen Graphen ermöglicht. Eine weitere Besonderheit von Titan ist die Verwendung von Indizes an Knoten. Diese versprechen einen effizienteren Zugriff auf inzidente Kanten bei Knoten mit hohem Grad.
 
-Die nachfolgenden Erläuterungen beziehen sich auf Version 0.3.2 des GDBMS in Verbindung mit BerkeleyDB. Dies ermöglicht im nachfolgenden Benchmark den direkten Vergleich mit HyperGraphDB. Die verteilte Konfiguration der GDBMS wird im Benchmark nicht betrachtet, auf die Eigenschaften von Apache Cassandra und Apache HBase wird jedoch kurz in Abschnitt \ref{subsec:titan_verteilung} eingegangen. Die Informationen stammen vorrangig aus der offiziellen Dokumentation zu Titan\cite{titan_doku:2013} und Gremlin\cite{gremlin_doku:2013} sowie aus der offiziellen Mailing-Liste\cite{titan_mail:2013} des GDBMS.
+Die nachfolgenden Erläuterungen beziehen sich auf Version 0.3.2 des GDBMS in Verbindung mit BerkeleyDB. Dies ermöglicht im nachfolgenden Benchmark den direkten Vergleich mit HyperGraphDB. Die verteilte Konfiguration der GDBMS wird im Benchmark nicht betrachtet, auf die Eigenschaften von Apache Cassandra und Apache HBase wird jedoch kurz in Abschnitt \ref{subsec:titan_verteilung} eingegangen. Die Informationen stammen vorrangig aus der offiziellen Dokumentation zu Titan\cite{titan_doku:2013} und Gremlin\cite{gremlin_doku:2013} sowie aus der offiziellen Mailing-Liste\cite{titan_mail:2013} des Herstellers.
 
 \subsection{Datenmodell und Typsystem}
 
@@ -13,7 +13,7 @@ Titan implementiert das Property-Graph-Modell: Attribute können an Knoten und Ka
 Das GDBMS verwendet spezielle Datentypen für Attributschlüssel und Kantenbezeichner: \texttt{TitanKey} und \texttt{TitanLabel}. Diese lassen sich entweder manuell festlegen oder bei erstmaliger Verwendung eines Schlüssels oder Bezeichners automatisch durch das System erzeugen. Das manuelle Vorgehen bietet mehrere Vorteile: Die Möglichkeit zur Definition von Integritätsbedingungen, eine verbesserte Speichereffizienz sowie eine erhöhte Performance. Die genannten Typen definieren kein Knoten- oder Kantenschema; weist jedoch eine Instanz ein typisiertes Attribut oder Label auf, so müssen die geforderten Integritätsbedingungen eingehalten werden.
 
 Typen besitzen einen systemweit eindeutigen Namen, dieser entspricht dem Attributschlüssel bzw. dem Kantenbezeichner. Instanzen von \texttt{TitanKey} und \texttt{TitanLabel} können als \texttt{UNIQUE} deklariert werden: Für Attributschlüssel lässt sich die Bedingung entweder auf einen einzelnen Knoten bzw. eine einzelne Kante oder auf den gesamten Graphen anwenden. Im ersten Fall darf dem entsprechend typisierten Attributschlüssel an einer Knoten- oder Kanteninstanz höchstens ein Wert zugeordnet sein, im zweiten Fall gilt die Einmaligkeit eines Schlüssel-Wert-Paares systemweit und ermöglicht folglich die Definition anwendungsbezogener Primärschlüssel. Standardmäßig kann ein Attributschlüssel mehrfach an einem Knoten vorkommen.\\
-Für Kantenbezeichner hingegen legt die \texttt{UNIQUE}-Bedingung fest, dass entsprechend bezeichnete Instanzen innerhalb der Nachbarschaft eines Knotens höchstens einmal vorkommen dürfen. Hierbei kann zwischen eingehenden und ausgehenden Kanten unterschieden werden.\footnote{Der Name eines Mitarbeiters ist ein Beispiel für ein einmaliges Attribut an einem Knoten während die Personalnummer innerhalb der gesamten Knotenmenge eindeutig sein muss. Ein Beispiel für eine einmalige Kante ist die Beziehung vom Angestellten zum Vorgesetzten.} Sowohl Attributschlüssel als auch Kantenbezeichner lassen sich gruppieren, dies ermöglicht ein effizienteres Abfragen von Attributen und Beziehungen.\footnote{Eine mögliche Gruppierung von Kanten sind zum Beispiel die Beziehungen zwischen Mitarbeiter und Projekt gruppiert nach Abteilung.} 
+Für Kantenbezeichner legt die \texttt{UNIQUE}-Bedingung hingegen fest, dass zugehörige Instanzen innerhalb der Nachbarschaft eines Knotens höchstens einmal vorkommen dürfen. Hierbei kann zwischen eingehenden und ausgehenden Kanten unterschieden werden.\footnote{Der Name eines Mitarbeiters ist ein Beispiel für ein einmaliges Attribut an einem Knoten während die Personalnummer innerhalb der gesamten Knotenmenge eindeutig sein muss. Ein Beispiel für eine einmalige Kante ist die Beziehung vom Angestellten zum Vorgesetzten.} Folglich lassen sich die Kardinalitäten der an einer Beziehung beteiligten Entitäten festlegen: Das Weglassen der \texttt{UNIQUE}-Bedingung definiert eine $n:m$-Beziehung, der Standard im PGM. Gilt die Bedingung in ausgehender Richtung, modelliert dies eine $1:n$-, in eingehender Richtung eine $n:1$-Beziehung. Gilt die \texttt{UNIQUE}-Bedingung in beiden Richtungen, so entspricht dies einer $1:1$-Beziehung. Sowohl Attributschlüssel als auch Kantenbezeichner lassen sich gruppieren, dies ermöglicht ein effizienteres Abfragen von Attributen und Beziehungen.\footnote{Eine mögliche Gruppierung von Kanten sind zum Beispiel die Beziehungen zwischen Mitarbeiter und Projekt gruppiert nach Abteilung.} 
 
 Neben dem Namen und der Eindeutigkeit definiert ein \texttt{TitanKey} den Datentyp des zugeordneten Attributwertes, was zum Einen dessen Wertebereich festlegt und zum Anderen die effizientere Speicherung ermöglicht. Des Weiteren können Attributschlüssel indexiert und somit der direkte, effiziente Zugriff auf die zugehörigen Instanzen unter Angabe von Schlüssel-Wert-Paaren realisiert werden.\\
 Im Gegensatz dazu lässt sich an einem \texttt{TitanLabel} ein Primärschlüssel festlegen: Weist eine Kante das entsprechende Attribut auf, erlaubt dies das effizientere Auslesen inzidenter Kanten unter Angabe eines Wertes oder Wertebereiches.\footnote{Besitzt eine Beziehung vom Mitarbeiter zum Projekt einen Zeitstempel, welcher den Beitritt des Mitarbeiters datiert, und ist dieser Zeitstempel ein Primärschlüssel, dann lassen sich Anfragen wie zum Beispiel \textit{An welchen Projekten hat Mitarbeiter x im Mai 2013 mitgearbeitet?} effizienter beantworten.} Dies ist ein Alleinstellungsmerkmal von Titan und verspricht eine höhere Performance beim Traversieren des Graphen. Aurelius bezeichnet dieses Konzept als \textit{vertex-centric indices}. Neben dem Primärschlüssel kann ein Kantenbezeichner eine Signatur definieren: Diese gibt an, welche Attribute die zugehörigen Kanteninstanzen besitzen bzw. voraussichtlich besitzen und verspricht ein effizienteres Speichern und Laden von Attributen.\\
@@ -31,24 +31,63 @@ Aus den Ausführungen geht hervor, dass Titan sehr flexibel bezüglich der Definit
 
 \subsection{Zugriffsmechanismen, Transaktionen und Indexverwaltung}
 
-% Varianten nennen (eingebettet, remote)
-% Blueprints-Stack kurz erklären
-	- Integration in Neo4j, OrientDB, Dex, InfiniteGraph
+Titan implementiert die Blueprints API\footnote{An dieser Stelle sei angemerkt, dass es sich bei der Blueprints API um eine Art Quasi-Standard für GDBMS handelt, viele Anbieter, u.a. Neo4j, Dex und InfiniteGraph, bieten neben ihren proprietären APIs eine Implementierung der Blueprints API an. Diese Implementierung bildet CRUD-Operationen auf die proprietäre API ab und stellt somit eine zusätzliche Indirektion um Aufruf dar. Teilweise kann hierdurch nicht der volle Funktionsumfang des GDBMS genutzt werden. OrientDB und Titan hingegen implementieren die Blueprints API nativ, was bedeutet, dass Aufrufe unmittelbar an das GDBMS weitergegeben werden und der komplette Funktionsumfang des GDBMS zur Verfügung steht.} und stellt somit hinsichtlich CRUD-Operationen den gleichen Funktionsumfang wie OrientDB zur Verfügung. Analog zu Letztgenannter erweitert Titan die API um Funktionen zum Erzeugen von Typen. Diese sind Instanzen von \texttt{TitanKey} bzw. \texttt{TitanLabel} und können unter Anwendung der beschriebenen Einschränkungen definiert werden. Ein Beispiel für die Verwendung der API in Titan findet sich in Anhang \ref{anh:titan_blueprints_api}. Aufgrund der Implementierung der Blueprints API können alle im Rahmen des TinkerPop-Projektes angebotenen Werkzeuge in Titan verwendet werden. Neben der bereits im Zusammenhang mit OrientDB beschrieben Algorithmensammlung Furnace ist dies u.a. Gremlin, eine Sprache zur Traversierung und Mustersuche in Graphen. Für den Client-Server-Betrieb nutzt Titan das Projekt Rexter\footnote{\url{https://github.com/tinkerpop/rexster/wiki}}, welches eine HTTP/REST-Schnittstelle und ein Binärprotokoll für den Zugriff auf das GDBMS zur Verfügung stellt. Die nachfolgenden Erläuterungen beziehen sich auf die generelle Verwendung von Gremlin sowohl im eingebetteten als auch im entfernten Betrieb.
 
-% CRUD-Operationen analog zu OrientDB (+Typdefinition)
-	% Unterschiede zu OrientDB aufzeigen (z.B. Typen statt Strings)
-	% beliebig durch API
-	% angebotene Algorithmen (entsprechend OrientDB im Furnace Paket)
-	% imperativ
-% Gremlin als wesentlicher Inhalt
-	- Gremlin = DSL auf Basis von Groovy\footnote{\url{http://groovy.codehaus.org/}}, einer dynamischen Programmiersprache für die Java-Plattform
-	- Titan erweitert Gremlin mit Hilfsmethoden
-	% Paradigma (imperativ)
-	% standardisiert (quasi-standard)
-		% von allen GDBMS nutzbar, welche die Blueprints API implementieren
-	% Definition
-	% Manipulation (Einfügen Knoten / Kante)
-	% Traversierung
+\paragraph*{CRUD-Operationen via Gremlin}
+
+Gremlin ist eine deklarative Programmiersprache, welche für das Verarbeiten von Graphen entwickelt wurde. Sie ist eine Teilmenge von Groovy\footnote{\url{http://groovy.codehaus.org/}}, einer dynamischen Programmiersprache für die Java-Plattform.  Gremlin lässt sich auch direkt in Java verwenden und bietet Unterstützung für weitere JVM-Sprachen.\footnote{Die nachfolgenden Syntaxbeispiele beziehen sich auf die Groovy-Syntax. Im Benchmark wird die Java-Implementierung von Gremlin eingesetzt.} Gremlin wird von den Entwicklern als \textit{graph traversal language} bezeichnet, eignet sich jedoch auch für die Mustersuche innerhalb der Datenbasis. Nachfolgend wird die Verwendung der Sprache analog zu Neo4j und OrientDB anhand eines Beispiels erläutert.
+	
+\begin{figure}[h] 
+	\centering
+		\includegraphics[scale=1]{titan_example.pdf}
+	\caption[Titan: Beispielgraph]{Einfaches Beispiel eines Graphen in Titan. Kanten mit ausgefüllter Spitze modellieren eine $n:m$- Beziehung und können mehrfach innerhalb der Nachbarschaft eines Knotens vorkommen. Kanten mit leerer Spitze modellieren eine $1:n$-, Kanten mit einem Karo am Startknoten eine $n:1$-Beziehung. Mitarbeiter können folglich mit beliebig vielen Kollegen zusammenarbeiten, jedoch nur an einem Projekt mitwirken. Nur ein Mitarbeiter darf für ein Projekt verantwortlich sein, dieser darf jedoch nicht die Verantwortung über weitere Projekte übernehmen. Hervorgehobene Attributschlüssel sind indexiert, Knoten können unter Angabe eines entsprechenden Schlüssel-Wert-Paares direkt gelesen werden.}
+	\label{fig:titan_example}
+\end{figure}	
+
+% Manipulation (Einfügen Knoten / Kante)
+
+Abbildung \ref{fig:titan_example} zeigt einen Beispielgraphen, wie er in Titan definiert werden kann. Zu beachten sind dabei die Einschränkungen der Kardinalität an den einzelnen Beziehungsarten. Für die Definition von Typen für Attributschlüssel und Kantenbezeichner erweitert Titan die Sprache um Hilfsfunktionen.  Zum Beispiel lässt sich ein \texttt{TitanKey} für den Attributschlüssel \texttt{name} wie folgt definieren:
+
+\texttt{g.makeType().name('name').unique(OUT).indexed(Vertex.class)}\newline
+\texttt{.dataType(String.class).makePropertyKey();}
+
+In Gremlin werden Befehle durch die Aneinanderreihung von Funktionen gebildet, ein Befehl wird immer von links nach rechts gelesen: Im Beispiel ist \texttt{g} eine Referenz auf den verwalteten Graphen; die Funktion \texttt{name('name')} definiert den global eindeutigen Attributschlüssel; \texttt{unique(OUT)} legt die Eindeutigkeit des Attributes auf Instanzebene fest; die Funktion \texttt{indexed(Vertex.class)} erzeugt einen Index für Knoteninstanzen mit dem entsprechenden Attribut; \texttt{dataType(String.class)} legt den Datentyp des Attributwertes fest und \texttt{makePropertyKey()} erzeugt den Typen innerhalb der Datenbasis.
+
+Ein \texttt{TitanLabel} lässt sich ebenfalls durch die Aneinanderreihung der benötigen Funktionen definieren. Soll zum Beispiel der Kantenbezeichner \texttt{WORKS\_IN} für die zugehörige $n:1$-Beziehung zwischen Mitarbeiter und Projekt erzeugt werden, so erfolgt dies mit der Anweisung:
+
+\texttt{g.makeType().name('WORKS\_IN').unique(OUT).makeEdgeLabel();}
+
+Die Funktion \texttt{unique(OUT)} legt dabei die Eindeutigkeit innerhalb der ausgehenden Kanten des Startknotens fest, \texttt{makeEdgeLabel()} erzeugt den Typen innerhalb der Datenbasis. Anzumerken ist, dass bei der Definition eines Kantenbezeichners keine Festlegung auf bestimmte Knotentypen für Start- oder Zielknoten erfolgt.
+
+Gremlin ermöglicht die Manipulation der Datenbasis und stellt Funktionen für das Anlegen und Löschen von Knoten und Kanten zur Verfügung. Nachfolgend wird beispielhaft ein Knoten für den Mitarbeiter \texttt{Eve} angelegt und einer Variable zugewiesen:
+
+\texttt{eve = g.addVertex([type:\string'Employee',name:'Eve',age:27]);}
+
+Titan unterstützt keine Knotenbezeichner, ist eine Unterscheidung der Instanzen erforderlich, muss hierfür ein dediziertes Attribut definiert werden. Im gezeigten Beispiel ist dies der Attributschlüssel \texttt{type}. Das Aktualisieren von Knoten- und Kantenattributen ist ebenfalls möglich und erfolgt direkt an der Instanz.
+
+Beim Erzeugen einer Kante, gibt die Reihenfolge der Parameter die Richtung vor, der Kantenbezeichner wird als Zeichenkette an die Funktion übergeben. Existiert kein entsprechender Knotenbezeichner, erzeugt das GDBMS diesen mit Standardeinstellungen. Der Befehl
+
+\texttt{g.addEdge(eve,projectX,'WORKS\_IN');}
+
+erzeugt eine gerichtete Kante von \texttt{Eve} zu \texttt{ProjectX}. Kantenattribute können wie bereits für Knoten gezeigt an die Funktion übergeben werden.
+
+\paragraph*{Traversierung via Gremlin}
+
+- abstrakte Wege durch Verkettung von speziellen Funktionen zur Traversierung
+
+Die nachfolgend gezeigten Beispiele zeigen nur einen geringen Teil des Funktionsumfangs von Gremlin. Für weitere Information sei auf die offizielle Dokumention\cite{gremlin_doku:2013} verwiesen.
+
+% Beispiele
+% Namen aller Mitarbeiter
+% Namen der Projekte an denen Kollegen beteiligt sind
+% dynamischer Abstand
+% minimale Weglänge zu allen Kollegen bis Tiefe 3
+% minimale Weglänge zu allen Projekten bis Tiefe 4 Gruppierung nach Name, minimaler Pfad
+
+% kürzester Pfad
+	
+\paragraph*{Mustersuche via Gremlin}
+
 	% Mustersuche
 	- https://github.com/tinkerpop/gremlin/wiki/SPARQL-vs.-Gremlin --> Testen
 	% DSL

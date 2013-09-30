@@ -52,7 +52,7 @@ OrientDB erweitert die Blueprints-Implementierung des PGM um Methoden zum Verwal
 % Algorithmen
 Aus den Ausführungen geht hervor, dass sich unter Verwendung der Blueprints API beliebige Graphalgorithmen anwendungsseitig implementieren lassen, OrientDB selbst bietet keine Implementierungen an. Innerhalb des Blueprints-Projektes stellt jedoch das Paket Furnace\footnote{\url{https://github.com/tinkerpop/furnace/wiki}} bereits einige Algorithmen zur Verfügung. So werden Suchverfahren, wie der A*-Algorithmus und die Tiefen- bzw. Breitensuche, genauso angeboten, wie der Dijkstra- und Bellman-Ford-Algorithmus für das Finden kürzester Pfade in gewichteten Graphen. Neben den Pfadsuchalgorithmen wird mit dem Bron-Kerbosch-Algorithmus\cite{Bron:1973:AFC:362342.362367} auch ein Verfahren zum Auffinden von Cliquen implementiert. Anzumerken ist, dass keines der implementierten Verfahren Einschränkungen hinsichtlich zu berücksichtigender Knoten- oder Kantenklassen zulässt.
 
-\paragraph*{OrientDB-SQL-Dialekt}
+\paragraph*{CRUD-Operationen via OrientDB-SQL}
 
 OrientDB verwendet einen eigenen SQL-Dialekt für Schemadefinition, Anfrageformulierung, Datenmanipulation und Nutzerverwaltung. Die Entwickler entschieden sich für SQL, da es eine im Bereich der relationalen Datenbanksysteme etablierte Sprache ist und den Einstieg in das GDBMS erleichtern soll. Nachfolgend bezeichnet SQL den in OrientDB verwendeten Dialekt, Standard-SQL hingegen bezieht sich auf SQL-92. Ziel ist es nicht, den Standard komplett zu erläutern, sondern auf die Besonderheiten hinsichtlich der graphenorientierten Verwendung in OrientDB einzugehen. Dies erfolgt analog zu Cypher an einem einfachen Beispiel und bezieht sich dabei ausschließlich auf das Graphdatenmodell. Eine ausführlichere Beschreibung der Sprache findet sich in der offiziellen Dokumentation\cite{Orient_doku:2013} sowie in \cite{tesorierogetting}.
 
@@ -86,6 +86,8 @@ Das Erzeugen einer Kanteninstanz erfordert die Angabe der Identitäten von Start-
 \texttt{FROM (SELECT FROM Employee WHERE name=\string"Alice\string")}\newline
 \texttt{TO (SELECT FROM Employee WHERE name=\string"Bob\string");}
 
+\paragraph*{Mengenorientierte Operationen via OrientDB-SQL}
+
 Die Informationsextraktion erfolgt entweder über den \texttt{SELECT}- oder den \texttt{TRAVERSE}-Operator. Analog zu Standard-SQL können diese beliebig geschachtelt werden. Die folgende Anfrage selektiert die Namen der Mitarbeiter zu denen \texttt{Alice} eine ausgehende Kante vom Typ \texttt{WorksWith} besitzt:
 
 \texttt{SELECT name FROM}\newline
@@ -101,6 +103,7 @@ Die Selektion erfolgt durch die optionale Angabe einer \texttt{WHERE}-Klausel. O
 Die Projektion erlaubt die Auswahl einzelner Attribute aus der Ergebnismenge und ermöglicht die Berechnung von Aggregaten und das Ausführen von Funktionen. Verschiedene Aggregatfunktionen, wie zum Beispiel \texttt{count}, \texttt{min}, \texttt{max} und \texttt{avg} stehen zur Verfügung. Analog zu Neo4j erlaubt OrientDB die Verwendung zusätzlicher skalarer, mathematischer, string-basierter und mengenorientierter Funktionen.\footnote{Eine vollständige Übersicht über Operatoren und Funktionen findet sich unter \url{https://github.com/orientechnologies/orientdb/wiki/SQL-Where}.} Die Ergebnismenge kann gruppiert\footnote{In OrientDB 1.5.1 ist die Gruppierung nur für ein Attribut möglich.}, sortiert sowie durch \texttt{SKIP} und \texttt{LIMIT} eingeschränkt werden.
 
 % Traversierung
+\paragraph*{Traversierung via OrientDB-SQL}
 
 Das Prüfen der Erreichbarkeit und das Berechnen von Pfaden ist in SQL ebenfalls möglich. Der \texttt{TRAVERSE}-Operator führt eine Traversierung ausgehend von einem konkreten Knoten oder einer Knotenmenge durch. Ein mehrfaches Besuchen von Knoten- und Kanteninstanzen wird durch das GDBMS verhindert, eine feingranulare Einstellmöglichkeit wie bei Neo4j oder die Möglichkeit zur manuellen Definition wie bei HyperGraphDB besteht nicht. Folgende Anfrage selektiert alle Knoten, die über eine \texttt{WorksWith}-Beziehung mit einem Startknoten verbunden sind und einen maximalen Abstand von drei zu diesem aufweisen:
 
