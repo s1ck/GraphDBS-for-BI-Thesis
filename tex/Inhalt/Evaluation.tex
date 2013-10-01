@@ -33,69 +33,143 @@ Das Projekt verfolgt drei Ziele: Zunächst ist die Integration von Unternehmensda
 
 \section{Zusammenfassung und Zwischenfazit}
 
-\paragraph*{Neo4j}
+\paragraph*{Dokumentation}
 
-Kritik:
+Neo4j
+	- sehr gute Dokumentation
+	- Weg der Länge $k$ führt zu $\mathcal{O}(\left|N(v_1)\right| \times \left|N(v_2)\right| \times \cdots \times \left|N(v_k)\right|)$
+	- Support auf Mailingliste
 
-- sehr gute Dokumentation
-- keine Objekteinbettung
-- keine Schemadefinition (attribute)
-- Weg der Länge $k$ führt zu $\mathcal{O}(\left|N(v_1)\right| \times \left|N(v_2)\right| \times \cdots \times \left|N(v_k)\right|)$
-- Fragmentierung der Stores
-- Verteilung: was passiert bei Partitionierung des Netzwerkes
-
-allShortestPaths -> grundlage für centrality maße
-
-- CRUD
-	- in nativer API und Cypher möglich
-	- Algorithmen unterstützten Einschränkungen auf Graphen (im Gegensatz zu Blueprints)
-
-- Traversierung
-	- algorithmische Traversierung mittels Traversal Framework
-
-- Erreichbarkeit
-	- native API stellt Algorithmen zur Verfügung
-	- Cypher bietet shortestPath allShortestPath-Funktionen an
-
-- Mustersuche
-	- Cypher ermöglicht die Definition beliebiger Mustergraphen
-
-- Aggregation und Summierung
-	- Aggregation von Werten ist möglich
-	- Summierung von topologischen Strukturen ist nicht möglich
-
+HyperGraphDB
+	- gut Dokumentation
+	- Support auf Mailingliste
 	
-\paragraph*{HyperGraphDB}
-- CRUD
-	- in Java API möglich
+OrientDB
+	- Dokumentation sehr eingeschränkt, inkonsistent, viel Quelltextrecherche
+	- Support auf Mailingliste
+	
+Titan
+	- gute Doku für junges Projekt
+	- Support auf Mailingliste
+	
+\paragraph*{Datenmodell}
 
-- Traversierung
-	- algorithmische Traversierung mittels Traversal Framework
+% Tabelle
 
-- Erreichbarkeit
-	- selber implementieren oder Dijkstra
+- Neo4j: PGM + Knotenlabel
+	- keine Objekteinbettung
+	- keine Schemadefinition an Knoten und Kanten
+- HyperGraphDB: 
+	- Atom-Modell sehr generisch
+	- Schema durch Klassendefinition
+- OrientDB: 
+	- Dokumentmodell als Basis
+	- PGM auf Dokumente abgebildet 
+	- Schema durch Klassendefinition
+- Titan: PGM + TitanKey + TitanLabel
+	- keine Schemadefinition an Knoten und Kanten
+	- Einschränkung der Attribute
+	- Einschränkung der Kanten
+	- Einschränkung Datentypen
+	- verschachtelte Attributwerte (Maps)
+	- Vertex-centric Indices
+	- unidirektionale Kanten
 
-- Mustersuche
-	- nicht möglich
+\paragraph*{Zugriffsmechanismen}
 
-- Aggregation und Summierung
-	- nicht möglich
-	- selber implementieren (hg.apply)
+CRUD-Operationen:
+	- Neo4j: CRUD
+		- in nativer API und Cypher möglich
+		- Algorithmen unterstützten Einschränkungen auf Graphen (im Gegensatz zu Blueprints)
+	- HyperGraphDB: CRUD
+	- OrientDB: CRUD
+	- Titan: CRUD
+Traversierung:
+	- Neo4j:
+		- algorithmische Traversierung mittels Traversal Framework -> Java
+	- HyperGraphDB
+		- algorithmische Traversierung mittels Traversal Framework -> Java
+	- OrientDB
+		- TRAVERSE-Operator oder Gremlin
+	- Titan:
+		- Gremlin, turing-mächtig
+Erreichbarkeit
+	- Neo4j:
+		- native API stellt Algorithmen zur Verfügung
+		- Cypher bietet shortestPath allShortestPath-Funktionen an
+	- HyperGraphDB
+		- durch Traversierung umsetzbar
+		- Dijkstra-Implementierung
+	- OrientDB
+		- durch Traversierung umsetzbar
+		- shortestPath und dijkstra in API
+	- Titan
+		- durch Traversierung umsetzbar
+Mustersuche
+	- Neo4j:
+		- Cypher ermöglicht die Definition beliebiger Mustergraphen
+	- HyperGraphDB
+	 	- keine native Unterstützung
+		- einfache Muster durch entsprechende Prädikatkombinationen
+	- OrientDB
+		- keine native Unterstützung
+		- evtl. durch Schachtelung von SELECT und TRAVERSE
+	- Titan
+		- Musterdefinition via Gremlin und table-Funktion
+		- weniger elegant als Cypher
+Aggregation und Summierung
+	- Neo4j:
+		- Aggregation ja
+		- Summierung nein
+	- HyperGraphDB
+		- Aggregation nein -> (hg.apply)
+		- Summierung nein
+	- OrientDB
+		- Aggregation ja
+		- Summierung nein
+	- Titan
+		- Aggregation ja
+		- Summierung nein
+Metriken
+	- Neo4j: allShortestPaths -> grundlage für centrality maße
+	- bis auf Kardinalität der Knoten- / Kantenmenge nichts zusätzliches
 
-- logarithmische Komplexität beim Zugriff auf die B-Bäume
-	- indexfreie Adjazenz: Caches sind Hashtabellen, können aber nicht immer die komplette Datenbasis aufnehmen
+Transaktionen
+	- Neo4j: ACID, Locking, READ COMMITTED
+	- HyperGraphDB: ACI(D), MVCC (GDBMS) + Locking (BerkeleyDB), SERIALIZABLE
+	- OrientDB: ACID, MVCC, SERIALIZABLE
+	- Titan: ACID, Locking (BerkeleyDB), SERIALIZABLE (BerkeleyDB)
+	
+\paragraph*{Speicherung und Caching}
 
-\paragraph*{OrientDB}
-- Avoid putting properties on edges -> \url{https://github.com/orientechnologies/orientdb/wiki/Performance-Tuning-Blueprints}
+- Neo4j: nativ
+	- Trennung Topologie und Daten
+	- Traversierung: O(1)
+	- Fragmentierung der Stores
+- HyperGraphDB: nicht-nativ
+	- keine Trennung von Topologie und Daten
+	- Speicherung in KV-Store 
+	- Traversierung: O(logn)
+- OrientDB: nativ
+	- keine Trennung von Topologie und Daten 
+	- Traversierung: O(N\_v)
+	- Fragmentierung der Stores
+	- attributierte Kanten sind zusätzliche Indirektion\url{https://github.com/orientechnologies/orientdb/wiki/Performance-Tuning-Blueprints}
+- Titan: nicht-nativ
+	- keine Trennung von Topologie und Daten
+	- Speicherung in KV-Store 
+	- Traversierung O(logn)
 
-- Dokumentation sehr eingeschränkt, inkonsistent, viel Quelltextrecherche
+- generell: Beschleunigung via Caches -> Hashtabellen  O(1) (wenn da)
 
-- widersprüchliche Dokumentation, wenig Beispiele
-- Bugs z.B. falsche Ergebnisse beim Traversieren, expand(shortestPath) und expand(dijkstra) haben kein Effekt
 
-- Ergebnisse zwischen Tiefen- und Breitensuche unterscheiden sich durch Verhindern des wiederholten Zugriffs
+OrientDB:
+	- widersprüchliche Dokumentation, wenig Beispiele
+	- Bugs z.B. falsche Ergebnisse beim Traversieren, expand(shortestPath) und expand(dijkstra) haben 	kein Effekt
 
-- physische Repräsentation: Deserialisieren der Attribute kann sich negativ auf Performance auswirken, attributierte Kanten ebenfalls
+	- Ergebnisse zwischen Tiefen- und Breitensuche unterscheiden sich durch Verhindern des wiederholten Zugriffs
+
+	- physische Repräsentation: Deserialisieren der Attribute kann sich negativ auf Performance auswirken, attributierte Kanten ebenfalls
 
 \paragraph*{Titan}
 

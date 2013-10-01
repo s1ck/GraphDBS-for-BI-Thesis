@@ -23,19 +23,19 @@ Kanten sind standardmäßig gerichtet und können in beiden Richtungen traversiert 
 Die Identität von Knoten- und Kanteninstanzen wird analog zu Neo4j durch eine 64-Bit-Ganzzahl repräsentiert.\footnote{Nachzuvollziehen unter \url{https://github.com/thinkaurelius/titan/blob/0.3.2/titan-core/src/main/java/com/thinkaurelius/titan/core/TitanElement.java\#L52}.} Diese wird vom GDBMS vergeben und nach dem Löschen von Instanzen wiederverwendet. Unter Angabe einer Identität lässt sich auf die zugehörige Instanz zugreifen, dies entspricht der Definition eines Primärschlüssels.
 
 % Anzahl der Datenbanken (wie Partitionierung)
-Titan verwaltet genau eine Graphdatenbank, dieser sind alle Knoten und Kanten zugeordnet. Eine anwendungsseitige Partitionierung der Knoten- oder Kantenmenge zur unabhängigen Verwaltung von Teilgraphen ist ausschließlich unter Verwendung dedizierter Attribute möglich.
+Titan verwaltet genau eine Graphdatenbank, dieser sind alle Knoten und Kanten zugeordnet. Eine anwendungsseitige Partitionierung der Knoten- und Kantenmenge zur unabhängigen Verwaltung von Teilgraphen ist ausschließlich unter Verwendung dedizierter Attribute möglich.
 
 % Flexiblität
-Aus den Ausführungen geht hervor, dass Titan sehr flexibel bezüglich der Definition, Änderung und Verwendung eines Schemas ist. Analog zu Neo4j ist die Definition von Kantenbezeichnern im Gegensatz zu ihrer Berücksichtigung obligatorisch. Die hinterlegten Nutzdaten sind semi-strukturiert und lassen sich dynamisch zur Laufzeit manipulieren. Wird auf das manuelle Erzeugen von \texttt{TitanKeys} verzichtet, können einem Attributschlüssel Attributwerte verschiedenen Datentyps zugeordnet sein. Wie die bisher betrachteten GDBMS empfiehlt jedoch auch Titan die manuelle Typ-Definition um von den genannten Vorteilen zu profitieren.
+Aus den Ausführungen geht hervor, dass Titan sehr flexibel bezüglich der Definition, Änderung und Verwendung eines Schemas ist. Analog zu Neo4j ist die Definition von Kantenbezeichnern im Gegensatz zu ihrer Berücksichtigung innerhalb von Anfragen obligatorisch. Die hinterlegten Nutzdaten sind semi-strukturiert und lassen sich dynamisch zur Laufzeit manipulieren. Wird auf das manuelle Erzeugen von \texttt{TitanKeys} verzichtet, können einem Attributschlüssel Attributwerte verschiedenen Datentyps zugeordnet sein. Wie die bisher betrachteten GDBMS empfiehlt jedoch auch Titan die manuelle Typ-Definition um von den genannten Vorteilen zu profitieren.
 
 
 \subsection{Zugriffsmechanismen, Transaktionen und Indexverwaltung}
 
-Titan implementiert die Blueprints API\footnote{An dieser Stelle sei angemerkt, dass es sich bei der Blueprints API um eine Art Quasi-Standard für GDBMS handelt, viele Anbieter, u.a. Neo4j, Dex und InfiniteGraph, bieten neben ihren proprietären APIs eine Implementierung der Blueprints API an. Diese Implementierung bildet CRUD-Operationen auf die proprietäre API ab und stellt somit eine zusätzliche Indirektion um Aufruf dar. Teilweise kann hierdurch nicht der volle Funktionsumfang des GDBMS genutzt werden. OrientDB und Titan hingegen implementieren die Blueprints API nativ, was bedeutet, dass Aufrufe unmittelbar an das GDBMS weitergegeben werden und der komplette Funktionsumfang des GDBMS zur Verfügung steht.} und stellt somit hinsichtlich CRUD-Operationen den gleichen Funktionsumfang wie OrientDB zur Verfügung. Analog zu Letztgenannter erweitert Titan die API um Funktionen zum Erzeugen von Typen. Diese sind Instanzen von \texttt{TitanKey} bzw. \texttt{TitanLabel} und können unter Anwendung der beschriebenen Einschränkungen definiert werden. Ein Beispiel für die Verwendung der API in Titan findet sich in Anhang \ref{anh:titan_blueprints_api}. Aufgrund der Implementierung der Blueprints API können alle im Rahmen des TinkerPop-Projektes angebotenen Werkzeuge in Titan verwendet werden. Neben der bereits im Zusammenhang mit OrientDB beschrieben Algorithmensammlung Furnace ist dies u.a. Gremlin, eine Sprache zur Traversierung und Mustersuche in Graphen. Für den Client-Server-Betrieb nutzt Titan das Projekt Rexter\footnote{\url{https://github.com/tinkerpop/rexster/wiki}}, welches eine HTTP/REST-Schnittstelle und ein Binärprotokoll für den Zugriff auf das GDBMS zur Verfügung stellt. Die nachfolgenden Erläuterungen beziehen sich auf die generelle Verwendung von Gremlin sowohl im eingebetteten als auch im entfernten Betrieb.
+Titan implementiert ebenfalls die Blueprints API\footnote{An dieser Stelle sei angemerkt, dass es sich bei der Blueprints API um einen Quasi-Standard für GDBMS handelt. Viele Anbieter, u.a. Neo4j, Dex und InfiniteGraph, bieten neben ihren proprietären APIs eine Implementierung der Blueprints API an. Diese Implementierung bildet CRUD-Operationen auf die proprietäre API ab und stellt somit eine zusätzliche Indirektion im Aufruf dar. Teilweise kann hierdurch nicht der volle Funktionsumfang des GDBMS genutzt werden. OrientDB und Titan implementieren die Blueprints API hingegen nativ, was bedeutet, dass Aufrufe unmittelbar an das GDBMS weitergegeben werden und der komplette Funktionsumfang zur Verfügung steht.} und stellt somit hinsichtlich CRUD-Operationen den gleichen Funktionsumfang wie OrientDB zur Verfügung. Analog zu Letztgenannter erweitert Titan die API um Funktionen zum Erzeugen von Typen. Diese sind Instanzen von \texttt{TitanKey} bzw. \texttt{TitanLabel} und lassen sich unter Anwendung der beschriebenen Einschränkungen definieren. Ein Beispiel hierfür findet sich in Anhang \ref{anh:titan_blueprints_api}. Aufgrund der Implementierung der Blueprints API können alle im Rahmen des TinkerPop-Projektes angebotenen Werkzeuge in Titan verwendet werden. Neben der bereits im Zusammenhang mit OrientDB beschrieben Algorithmensammlung Furnace ist dies u.a. Gremlin, eine Sprache zur Traversierung und Mustersuche in Graphen.
 
 \paragraph*{CRUD-Operationen via Gremlin}
 
-Gremlin ist eine deklarative Programmiersprache, welche für das Verarbeiten von Graphen entwickelt wurde. Sie ist eine Teilmenge von Groovy\footnote{\url{http://groovy.codehaus.org/}}, einer dynamischen Programmiersprache für die Java-Plattform.  Gremlin lässt sich auch direkt in Java verwenden und bietet Unterstützung für weitere JVM-Sprachen.\footnote{Die nachfolgenden Syntaxbeispiele beziehen sich auf die Groovy-Syntax. Im Benchmark wird die Java-Implementierung von Gremlin eingesetzt.} Gremlin wird von den Entwicklern als \textit{graph traversal language} bezeichnet, eignet sich jedoch auch für die Mustersuche innerhalb der Datenbasis. Nachfolgend wird die Verwendung der Sprache analog zu Neo4j und OrientDB anhand eines Beispiels erläutert.
+Gremlin ist eine deklarative, graphenorientierte Anfragesprache für den lesenden und schreibenden Zugriff auf die Datenbasis. Das TinkerPop-Projekt bietet Gremlin für verschiedene JVM-Sprachen an, in den nachfolgenden Beispielen wird die Groovy-Syntax verwendet.\footnote{Groovy ist eine dynamische Programmiersprache für die Java-Plattform: \url{http://groovy.codehaus.org/}.} Aufgrund ihrer Kernfunktion, dem Beschreiben abstrakter Wege zur Traversierung des Graphen, wird Gremlin als  \textit{graph traversal language} bezeichnet. Das Finden von Mustern innerhalb der Datenbasis ist jedoch ebenfalls möglich. Analog zu Cypher handelt es sich um eine nicht standardisierte Sprache, sie kann jedoch in allen GDBMS eingesetzt werden, welche die Blueprints API implementieren und wird von Titan als primäre Anfragesprache angeboten. Nachfolgend werden die grundlegenden Komponenten erläutert, die vollständige Beschreibung der Sprache kann der offiziellen Dokumentation entnommen werden\cite{gremlin_doku:2013}.
 	
 \begin{figure}[h] 
 	\centering
@@ -46,7 +46,7 @@ Gremlin ist eine deklarative Programmiersprache, welche für das Verarbeiten von 
 
 % Manipulation (Einfügen Knoten / Kante)
 
-Abbildung \ref{fig:titan_example} zeigt einen Beispielgraphen, wie er in Titan definiert werden kann. Zu beachten sind dabei die Einschränkungen der Kardinalität an den einzelnen Beziehungsarten. Für die Definition von Typen für Attributschlüssel und Kantenbezeichner erweitert Titan die Sprache um Hilfsfunktionen.  Zum Beispiel lässt sich ein \texttt{TitanKey} für den Attributschlüssel \texttt{name} wie folgt definieren:
+Abbildung \ref{fig:titan_example} zeigt eine mögliche Abbildung des Mitarbeiter-Projekt-Beispiels in Titan. Zu beachten sind dabei die zusätzlichen Einschränkungen an einzelnen Beziehungsarten. Für die Definition von Typen für Attributschlüssel und Kantenbezeichner erweitert Titan die Sprache um Hilfsfunktionen.  Zum Beispiel lässt sich ein \texttt{TitanKey} für den Attributschlüssel \texttt{name} wie folgt definieren:
 
 \texttt{g.makeType().name('name').unique(OUT).indexed(Vertex.class)}\newline
 \texttt{.dataType(String.class).makePropertyKey();}
@@ -57,7 +57,7 @@ Ein \texttt{TitanLabel} lässt sich ebenfalls durch die Aneinanderreihung der ben
 
 \texttt{g.makeType().name('WORKS\_IN').unique(OUT).makeEdgeLabel();}
 
-Die Funktion \texttt{unique(OUT)} legt dabei die Eindeutigkeit innerhalb der ausgehenden Kanten des Startknotens fest, \texttt{makeEdgeLabel()} erzeugt den Typen innerhalb der Datenbasis. Anzumerken ist, dass bei der Definition eines Kantenbezeichners keine Festlegung auf bestimmte Knotentypen für Start- oder Zielknoten erfolgt.
+Für Kantenbezeichner legt die Funktion \texttt{unique(OUT)} fest, dass eine entsprechend deklarierte Kanteninstanz in der Menge ausgehender Kanten eines Startknotens höchstens einmal vorkommen darf; \texttt{makeEdgeLabel()} erzeugt den Typen innerhalb der Datenbasis. Anzumerken ist, dass bei der Definition eines Kantenbezeichners keine Festlegung auf bestimmte Knotentypen für Start- oder Zielknoten erfolgt.
 
 Gremlin ermöglicht die Manipulation der Datenbasis und stellt Funktionen für das Anlegen und Löschen von Knoten und Kanten zur Verfügung. Nachfolgend wird beispielhaft ein Knoten für den Mitarbeiter \texttt{Eve} angelegt und einer Variable zugewiesen:
 
@@ -65,33 +65,75 @@ Gremlin ermöglicht die Manipulation der Datenbasis und stellt Funktionen für das
 
 Titan unterstützt keine Knotenbezeichner, ist eine Unterscheidung der Instanzen erforderlich, muss hierfür ein dediziertes Attribut definiert werden. Im gezeigten Beispiel ist dies der Attributschlüssel \texttt{type}. Das Aktualisieren von Knoten- und Kantenattributen ist ebenfalls möglich und erfolgt direkt an der Instanz.
 
-Beim Erzeugen einer Kante, gibt die Reihenfolge der Parameter die Richtung vor, der Kantenbezeichner wird als Zeichenkette an die Funktion übergeben. Existiert kein entsprechender Knotenbezeichner, erzeugt das GDBMS diesen mit Standardeinstellungen. Der Befehl
+Beim Erzeugen einer Kante, gibt die Reihenfolge der Parameter die Richtung vor, der Kantenbezeichner wird als Zeichenkette an die Funktion übergeben. Existiert keine zugehörige \texttt{TitanLabel}-Instanz, erzeugt das GDBMS diese mit Standardeinstellungen. Der Befehl
 
 \texttt{g.addEdge(eve,projectX,'WORKS\_IN');}
 
-erzeugt eine gerichtete Kante von \texttt{Eve} zu \texttt{ProjectX}. Kantenattribute können wie bereits für Knoten gezeigt an die Funktion übergeben werden.
+fügt der Datenbasis eine gerichtete Kante von \texttt{Eve} nach \texttt{ProjectX} hinzu. Kantenattribute können wie bereits für Knoten gezeigt ebenfalls an die Funktion übergeben werden.
 
 \paragraph*{Traversierung via Gremlin}
 
 - abstrakte Wege durch Verkettung von speziellen Funktionen zur Traversierung
+% Berücksichtigung Kantenbezeichner
 
 Die nachfolgend gezeigten Beispiele zeigen nur einen geringen Teil des Funktionsumfangs von Gremlin. Für weitere Information sei auf die offizielle Dokumention\cite{gremlin_doku:2013} verwiesen.
 
-% Beispiele
-% Namen aller Mitarbeiter
-% Namen der Projekte an denen Kollegen beteiligt sind
-% dynamischer Abstand
-% minimale Weglänge zu allen Kollegen bis Tiefe 3
-% minimale Weglänge zu allen Projekten bis Tiefe 4 Gruppierung nach Name, minimaler Pfad
+% Zugriff auf Knoten
+	% Index name='Alice'
 
-% kürzester Pfad
+% Beispiele
+	% Einschränkung Kantenbezeichner und Richtung (Whitelist)
+	% Breiten- oder Tiefendurchlauf
+	% Uniqueness Knoten / Kanten
+	
+% Selektion
+	% Filter und Abbruchkriterium
+	% Beispiel Alter > 30
+	
+% Projektion: Namen aller Mitarbeiter
+	% direkter Attributzugriff
+
+% feste / variable Pfadlängen (Erreichbarkeit)
+
+% kürzeste Pfade
+
+% Gruppierung
+	% minimale Weglänge zu allen Projekten bis Tiefe 4 Gruppierung nach Name, minimaler Pfad
+	
+% Aggregation
+
+% Skip und Limit
+
+% Funktionen (String usw.) -> Java
+	% skalar
+	% mathematische
+	% string-basierte
+	% mengenorientert
 	
 \paragraph*{Mustersuche via Gremlin}
+
+% Bindung an Datenbasis (welche Datentypen? nur knoten und kanten?)
+	% Konstanten im Muster (gebunden an Datenbasis)
+	% Variablen im Muster (werden gefunden)
+	% Datentypen für Konstanten und Variablen (Knoten und Kanten)
+% Mustergraph wird durch Traversierung beschrieben (back)
+	% komplexer als Cypher
+%a.as(a)
+%	.out(workswith).filter(type=Employee).as(b)
+%	.out(workswith).filter(type=Employee).as(c)
+%	.both().contains(a)
+%	.back(b)
+%	.out(responsiblefor).filter(type=Project).as(d)
+% Variablen
 
 	% Mustersuche
 	- https://github.com/tinkerpop/gremlin/wiki/SPARQL-vs.-Gremlin --> Testen
 	% DSL
 	- Groovy ermöglicht DSL\footnote{\url{http://thinkaurelius.com/2013/07/25/developing-a-domain-specific-language-in-gremlin/}}
+	
+% abschließende Worte
+	% deklarativ
+	% Optimierung usw.
 	
 \paragraph*{Transaktionen}
 
