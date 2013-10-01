@@ -11,17 +11,18 @@ ALTER PROPERTY Project.name MANDATORY true;
 CREATE CLASS WorksWith EXTENDS E;
 CREATE CLASS ResponsibleFor EXTENDS E;
 
-CREATE VERTEX Employee SET name="Alice", age=25
-CREATE VERTEX Employee SET name="Bob", age=31
-CREATE VERTEX Employee SET name="Eve", age=27
+CREATE VERTEX Employee SET name="Alice", age=25;
+CREATE VERTEX Employee SET name="Bob", age=31;
+CREATE VERTEX Employee SET name="Eve", age=27;
 CREATE VERTEX Employee SET name="Jim", age=30;
 
 CREATE VERTEX Project SET name="ProjectX";
 CREATE VERTEX Project SET name="ProjectY";
 
-CREATE EDGE WorksWith FROM (SELECT FROM Employee WHERE name="Alice") TO (SELECT FROM Employee WHERE name="Bob");
-CREATE EDGE WorksWith FROM (SELECT FROM Employee WHERE name="Bob") TO (SELECT FROM Employee WHERE name="Eve");
-CREATE EDGE WorksWith FROM (SELECT FROM Employee WHERE name="Eve") TO (SELECT FROM Employee WHERE name="Alice");
+CREATE EDGE WorksWith FROM (SELECT FROM Employee WHERE name="Alice") TO (SELECT FROM Employee WHERE name="Bob") SET since=2011;
+CREATE EDGE WorksWith FROM (SELECT FROM Employee WHERE name="Bob") TO (SELECT FROM Employee WHERE name="Eve") SET since=2012;
+CREATE EDGE WorksWith FROM (SELECT FROM Employee WHERE name="Eve") TO (SELECT FROM Employee WHERE name="Alice") SET since=2013;
+
 CREATE EDGE WorksWith FROM (SELECT FROM Employee WHERE name="Alice") TO (SELECT FROM Employee WHERE name="Jim");
 CREATE EDGE WorksWith FROM (SELECT FROM Employee WHERE name="Bob") TO (SELECT FROM Employee WHERE name="Jim");
 
@@ -34,13 +35,16 @@ CREATE EDGE ResponsibleFor FROM (SELECT FROM Employee WHERE name="Jim") TO (SELE
 SELECT expand(out("WorksWith")) FROM Employee WHERE name="Alice"
 SELECT expand(out("WorksWith").out("ResponsibleFor")) FROM Employee WHERE name="Alice"
 
+// join + selektion
+SELECT since, in.name as name, in.age as age FROM (SELECT expand(outE("WorksWith")) from Employee) WHERE since > 2011 and in.age > 25
+
 // traverse
 
 // k-Nachbarschaft Kollegen bis Abstand 3 (Tiefensuche)
 TRAVERSE out("WorksWith") FROM #11:0 WHILE $depth <= 3
 
 // Kollegen bis Abstand 3 (Breitensuche -> Name + Abstand)
-SELECT name, min($depth) as dist FROM (TRAVERSE out("WorksWith") FROM #11:0 WHILE $depth <= 3 strategy breadth_first) GROUP BY name ORDER BY dist
+SELECT name, min($depth) as dist FROM (TRAVERSE out("WorksWith") FROM #11:5 WHILE $depth <= 3 strategy breadth_first) GROUP BY name ORDER BY dist
 
 // Projekte bis Abstand 4 (Breitensuche -> Name + minimaler Abstand)
 SELECT name, min($depth) FROM (TRAVERSE out() FROM #11:0 WHILE $depth <= 4 strategy breadth_first) WHERE @Class="Project" GROUP BY name
@@ -48,5 +52,11 @@ SELECT name, min($depth) FROM (TRAVERSE out() FROM #11:0 WHILE $depth <= 4 strat
 // paths
 
 select shortestPath(#11:0,#12:0,'BOTH').asString()
+
+// test
+
+
+
+SELECT name, min($depth) as dist FROM (TRAVERSE out("WorksWith") FROM #11:0 WHILE $depth <= 3 STRATEGY breadth_first) GROUP by name order by dist;
 
 

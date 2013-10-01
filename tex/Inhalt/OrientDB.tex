@@ -59,7 +59,7 @@ OrientDB verwendet einen eigenen SQL-Dialekt für Schemadefinition, Anfrageformul
 \begin{figure}[h] 
 	\centering
 		\includegraphics[scale=1]{orientdb_example.pdf}
-	\caption[OrientDB: Beispielgraph]{Einfaches Beispiel eines Graphen mit den Knotenklassen \texttt{Employee} und \texttt{Project} sowie den Kantenklassen \texttt{WorksWith}, \texttt{WorksIn} und \texttt{ResponsibleFor}.}
+	\caption[OrientDB: Beispielgraph]{Einfaches Beispiel eines Graphen mit den Knotenklassen \texttt{Employee} und \texttt{Project} sowie den Kantenklassen \texttt{WorksWith}, \texttt{WorksIn} und \texttt{ResponsibleFor}. Die \texttt{WorksWith}-Beziehung besitzt ein zusätzliches Attribut, welches den Erstellzeitpunkt der Beziehung datiert.}
 	\label{fig:orientdb_example}
 \end{figure}
 
@@ -80,11 +80,12 @@ Für die Manipulation der Datenbasis stehen in Standard-SQL die Befehle \texttt{I
 
 \texttt{CREATE VERTEX Employee SET name=\string"Alice\string", age=25;}
 
-Das Erzeugen einer Kanteninstanz erfordert die Angabe der Identitäten von Start- und Zielknoten, diese können entweder direkt angegeben, oder durch eine geschachtelte Selektion gelesen werden. Nachfolgend wird stellvertretend die Instanz der \texttt{WorksWith}-Beziehung zwischen den Mitarbeitern \texttt{Alice} und \texttt{Bob} eingefügt, bei Bedarf können Kantenattribute via \texttt{SET} angegeben werden:
+Das Erzeugen einer Kanteninstanz erfordert die Angabe der Identitäten von Start- und Zielknoten, diese können entweder direkt angegeben, oder durch eine geschachtelte Selektion gelesen werden. Nachfolgend wird stellvertretend die Instanz der \texttt{WorksWith}-Beziehung zwischen den Mitarbeitern \texttt{Alice} und \texttt{Bob} eingefügt, Kantenattribute können ohne Beachtung der Schemadefinition angefügt werden:
 
 \texttt{CREATE EDGE WorksWith}\newline
 \texttt{FROM (SELECT FROM Employee WHERE name=\string"Alice\string")}\newline
-\texttt{TO (SELECT FROM Employee WHERE name=\string"Bob\string");}
+\texttt{TO (SELECT FROM Employee WHERE name=\string"Bob\string")}\newline
+\texttt{SET since=2011;}
 
 \paragraph*{Mengenorientierte Operationen via OrientDB-SQL}
 
@@ -99,8 +100,17 @@ Die Funktion \texttt{out} legt dabei die Richtung der Kante fest und kann wahlwe
 
 werden die Namen der Projekte ausgegeben, für welche die Kollegen von \texttt{Alice} verantwortlich sind. Handelt es sich bei beiden Beziehungen um $n:m$ Relationen, erfordert diese Anfrage in einer relationalen Datenbank vier Verbundoperationen. In OrientDB ist die Berechnung ausschließlich von der Anzahl der Beziehungen zwischen den einzelnen Knoteninstanzen abhängig.
 
-Die Selektion erfolgt durch die optionale Angabe einer \texttt{WHERE}-Klausel. OrientDB stellt vergleichende, boolesche und mathematische Operatoren für die Definition und Verknüpfung von Prädikaten zur Verfügung. Diese können in Verbindung mit einzelnen oder mehreren Attributwerten definiert werden. Ein Prädikat berücksichtigt ausschließlich Dokumente an denen das Attribut vorhanden ist, alle anderen sind nicht in der Ergebnismenge enthalten.\\
-Die Projektion erlaubt die Auswahl einzelner Attribute aus der Ergebnismenge und ermöglicht die Berechnung von Aggregaten und das Ausführen von Funktionen. Verschiedene Aggregatfunktionen, wie zum Beispiel \texttt{count}, \texttt{min}, \texttt{max} und \texttt{avg} stehen zur Verfügung. Analog zu Neo4j erlaubt OrientDB die Verwendung zusätzlicher skalarer, mathematischer, string-basierter und mengenorientierter Funktionen.\footnote{Eine vollständige Übersicht über Operatoren und Funktionen findet sich unter \url{https://github.com/orientechnologies/orientdb/wiki/SQL-Where}.} Die Ergebnismenge kann gruppiert\footnote{In OrientDB 1.5.1 ist die Gruppierung nur für ein Attribut möglich.}, sortiert sowie durch \texttt{SKIP} und \texttt{LIMIT} eingeschränkt werden.
+Eine etwas komplexere Anfrage bezieht Kantenattribute mit ein und selektiert alle Kollegen von \texttt{Bob} mit denen er seit 2012 zusammenarbeitet und die älter als 25 sind:
+
+\texttt{SELECT since, in.name as name, in.age as age FROM}\newline
+\texttt{(SELECT expand(outE(\string"WorksWith\string")) FROM Employee WHERE name=\string"Bob\string")}\newline
+\texttt{WHERE since > 2011 AND in.age > 25;}
+
+Die innere Anfrage selektiert mittels \texttt{outE} alle ausgehenden Kanten von \texttt{Bob}, welche anschließend durch das Prädikat \texttt{since > 2011} eingeschränkt werden. Die Funktion \texttt{in} verweist auf die Zielknoten der inzidenten Kanten, diese müssen den Attributschlüssel \texttt{age} mit einem zugehörigen Wert größer als 25 aufweisen.
+
+Aus den gezeigten Beispiel geht hervor, dass die Selektion durch die optionale Angabe einer \texttt{WHERE}-Klausel möglich ist. OrientDB stellt vergleichende, boolesche und mathematische Operatoren für die Definition und Verknüpfung von Prädikaten zur Verfügung. Diese können in Verbindung mit einzelnen oder mehreren Attributwerten definiert werden. Ein Prädikat berücksichtigt ausschließlich Dokumente an denen das Attribut vorhanden ist, alle anderen sind nicht in der Ergebnismenge enthalten.\\
+Die Projektion erlaubt die Auswahl einzelner Attribute aus der Ergebnismenge und ermöglicht die Berechnung von Aggregaten und das Ausführen von Funktionen.\\
+Verschiedene Aggregatfunktionen, wie zum Beispiel \texttt{count}, \texttt{min}, \texttt{max} und \texttt{avg} stehen zur Verfügung. Analog zu Neo4j erlaubt OrientDB die Verwendung zusätzlicher skalarer, mathematischer, string-basierter und mengenorientierter Funktionen.\footnote{Eine vollständige Übersicht über Operatoren und Funktionen findet sich unter \url{https://github.com/orientechnologies/orientdb/wiki/SQL-Where}.} Die Ergebnismenge kann gruppiert\footnote{In OrientDB 1.5.1 ist die Gruppierung nur für ein Attribut möglich.}, sortiert sowie durch \texttt{SKIP} und \texttt{LIMIT} eingeschränkt werden.
 
 % Traversierung
 \paragraph*{Traversierung via OrientDB-SQL}

@@ -31,7 +31,7 @@ Aus den Ausführungen geht hervor, dass Titan sehr flexibel bezüglich der Definit
 
 \subsection{Zugriffsmechanismen, Transaktionen und Indexverwaltung}
 
-Titan implementiert ebenfalls die Blueprints API\footnote{An dieser Stelle sei angemerkt, dass es sich bei der Blueprints API um einen Quasi-Standard für GDBMS handelt. Viele Anbieter, u.a. Neo4j, Dex und InfiniteGraph, bieten neben ihren proprietären APIs eine Implementierung der Blueprints API an. Diese Implementierung bildet CRUD-Operationen auf die proprietäre API ab und stellt somit eine zusätzliche Indirektion im Aufruf dar. Teilweise kann hierdurch nicht der volle Funktionsumfang des GDBMS genutzt werden. OrientDB und Titan implementieren die Blueprints API hingegen nativ, was bedeutet, dass Aufrufe unmittelbar an das GDBMS weitergegeben werden und der komplette Funktionsumfang zur Verfügung steht.} und stellt somit hinsichtlich CRUD-Operationen den gleichen Funktionsumfang wie OrientDB zur Verfügung. Analog zu Letztgenannter erweitert Titan die API um Funktionen zum Erzeugen von Typen. Diese sind Instanzen von \texttt{TitanKey} bzw. \texttt{TitanLabel} und lassen sich unter Anwendung der beschriebenen Einschränkungen definieren. Ein Beispiel hierfür findet sich in Anhang \ref{anh:titan_blueprints_api}. Aufgrund der Implementierung der Blueprints API können alle im Rahmen des TinkerPop-Projektes angebotenen Werkzeuge in Titan verwendet werden. Neben der bereits im Zusammenhang mit OrientDB beschrieben Algorithmensammlung Furnace ist dies u.a. Gremlin, eine Sprache zur Traversierung und Mustersuche in Graphen.
+Titan implementiert ebenfalls die Blueprints API\footnote{An dieser Stelle sei angemerkt, dass es sich bei der Blueprints API um einen Quasi-Standard für GDBMS handelt. Viele Anbieter, u.a. Neo4j, Dex und InfiniteGraph, bieten neben ihren proprietären APIs eine Implementierung der Blueprints API an. Diese Implementierung bildet CRUD-Operationen auf die proprietäre API ab und stellt somit eine zusätzliche Indirektion im Aufruf dar. Teilweise kann hierdurch nicht der volle Funktionsumfang des GDBMS genutzt werden. OrientDB und Titan implementieren die Blueprints API hingegen nativ, was bedeutet, dass Aufrufe unmittelbar an das GDBMS weitergegeben werden und der komplette Funktionsumfang zur Verfügung steht.} und stellt somit hinsichtlich CRUD-Operationen den gleichen Funktionsumfang wie OrientDB zur Verfügung. Analog zu Letztgenannter erweitert Titan die API um Funktionen zum Erzeugen von Typen. Diese sind Instanzen von \texttt{TitanKey} bzw. \texttt{TitanLabel} und lassen sich unter Anwendung der beschriebenen Einschränkungen definieren. Ein Beispiel hierfür findet sich in Anhang \ref{anh:titan_blueprints_api}. Aufgrund der Implementierung der Blueprints API können alle im Rahmen des TinkerPop-Projektes angebotenen Werkzeuge in Titan verwendet werden. Neben der bereits im Zusammenhang mit OrientDB beschrieben Algorithmensammlung Furnace ist dies u.a. Gremlin, eine Sprache zur Traversierung und Mustersuche in Property-Graphen.
 
 \paragraph*{CRUD-Operationen via Gremlin}
 
@@ -40,7 +40,7 @@ Gremlin ist eine deklarative, graphenorientierte Anfragesprache für den lesenden
 \begin{figure}[h] 
 	\centering
 		\includegraphics[scale=1]{titan_example.pdf}
-	\caption[Titan: Beispielgraph]{Einfaches Beispiel eines Graphen in Titan. Kanten mit ausgefüllter Spitze modellieren eine $n:m$- Beziehung und können mehrfach innerhalb der Nachbarschaft eines Knotens vorkommen. Kanten mit leerer Spitze modellieren eine $1:n$-, Kanten mit einem Karo am Startknoten eine $n:1$-Beziehung. Mitarbeiter können folglich mit beliebig vielen Kollegen zusammenarbeiten, jedoch nur an einem Projekt mitwirken. Nur ein Mitarbeiter darf für ein Projekt verantwortlich sein, dieser darf jedoch nicht die Verantwortung über weitere Projekte übernehmen. Hervorgehobene Attributschlüssel sind indexiert, Knoten können unter Angabe eines entsprechenden Schlüssel-Wert-Paares direkt gelesen werden.}
+	\caption[Titan: Beispielgraph]{Einfaches Beispiel eines Graphen in Titan. Kanten mit ausgefüllter Spitze modellieren eine $n:m$- Beziehung und können mehrfach innerhalb der Nachbarschaft eines Knotens vorkommen. Kanten mit leerer Spitze modellieren eine $1:n$-, Kanten mit einem Karo am Startknoten eine $n:1$-Beziehung. Mitarbeiter können folglich mit beliebig vielen Kollegen zusammenarbeiten, jedoch nur an einem Projekt mitwirken. Nur ein Mitarbeiter darf für ein Projekt verantwortlich sein, dieser darf jedoch nicht die Verantwortung über weitere Projekte übernehmen. Hervorgehobene Attributschlüssel sind indexiert, Knoten können unter Angabe eines entsprechenden Schlüssel-Wert-Paares direkt gelesen werden. Die \texttt{WORKS\_WITH}-Beziehung ist einem zusätzlichen Kantenattribut ausgezeichnet, welches das Jahr der Erstellung der Kanteninstanz datiert.}
 	\label{fig:titan_example}
 \end{figure}	
 
@@ -74,21 +74,33 @@ fügt der Datenbasis eine gerichtete Kante von \texttt{Eve} nach \texttt{ProjectX
 \paragraph*{Traversierung via Gremlin}
 
 - abstrakte Wege durch Verkettung von speziellen Funktionen zur Traversierung
-% Berücksichtigung Kantenbezeichner
 
-Die nachfolgend gezeigten Beispiele zeigen nur einen geringen Teil des Funktionsumfangs von Gremlin. Für weitere Information sei auf die offizielle Dokumention\cite{gremlin_doku:2013} verwiesen.
 
 % Zugriff auf Knoten
+- Menge aller Knoten \texttt{g.V}
+- Menge aller Kanten \texttt{g.E}
+
 	% Index name='Alice'
+- Zugriff auf einzelne Knoten anhand ihrer Identität oder via Index	
+\texttt{alice = g.v(name='Alice')}
+- Zugriff auf Attributwerte durch Angabe der Attributschlüssel
+\texttt{alice.age}
 
 % Beispiele
 	% Einschränkung Kantenbezeichner und Richtung (Whitelist)
+\texttt{alice.out('WORKS\_WITH').name}
+\texttt{alice.outE.label}
+
+- \texttt{in} und \texttt{both}
+
 	% Breiten- oder Tiefendurchlauf
 	% Uniqueness Knoten / Kanten
 	
 % Selektion
+- via Filter-Funktion
 	% Filter und Abbruchkriterium
 	% Beispiel Alter > 30
+\texttt{alice.outE.filter\{it.since > 2011\}.inV.filter\{it.age > 30\}}
 	
 % Projektion: Namen aller Mitarbeiter
 	% direkter Attributzugriff
