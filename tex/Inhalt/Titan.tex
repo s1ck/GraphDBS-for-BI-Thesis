@@ -35,31 +35,31 @@ Titan implementiert ebenfalls die Blueprints API\footnote{An dieser Stelle sei a
 
 \paragraph*{CRUD-Operationen via Gremlin}
 
-Gremlin ist eine deklarative, graphenorientierte Anfragesprache für den lesenden und schreibenden Zugriff auf die Datenbasis. Das TinkerPop-Projekt bietet Gremlin für verschiedene JVM-Sprachen an, in den nachfolgenden Beispielen wird die Groovy-Syntax verwendet.\footnote{Groovy ist eine dynamische Programmiersprache für die Java-Plattform: \url{http://groovy.codehaus.org/}.} Aufgrund ihrer Kernfunktion, dem Beschreiben abstrakter Wege zur Traversierung des Graphen, wird Gremlin als  \textit{graph traversal language} bezeichnet. Das Finden von Mustern innerhalb der Datenbasis ist jedoch ebenfalls möglich. Analog zu Cypher handelt es sich um eine nicht standardisierte Sprache, sie kann jedoch in allen GDBMS eingesetzt werden, welche die Blueprints API implementieren und wird von Titan als primäre Anfragesprache angeboten. Nachfolgend werden die grundlegenden Komponenten erläutert, die vollständige Beschreibung der Sprache kann der offiziellen Dokumentation entnommen werden\cite{gremlin_doku:2013}.
+Gremlin ist eine imperative, graphenorientierte Anfragesprache für den lesenden und schreibenden Zugriff auf die Datenbasis. Das TinkerPop-Projekt bietet Gremlin für verschiedene JVM-Sprachen an, in den nachfolgenden Beispielen wird die Groovy-Syntax verwendet.\footnote{Groovy ist eine dynamische Programmiersprache für die Java-Plattform: \url{http://groovy.codehaus.org/}.} Aufgrund ihrer Kernfunktion, dem Beschreiben abstrakter Wege zur Traversierung des Graphen, wird Gremlin als  \textit{graph traversal language} bezeichnet. Das Finden von Mustern innerhalb der Datenbasis ist jedoch ebenfalls möglich. Analog zu Cypher handelt es sich um eine nicht standardisierte Sprache, sie kann jedoch in allen GDBMS eingesetzt werden, welche die Blueprints API implementieren und wird von Titan als primäre Anfragesprache angeboten. Nachfolgend werden die grundlegenden Komponenten erläutert, die vollständige Beschreibung der Sprache kann der offiziellen Dokumentation entnommen werden\cite{gremlin_doku:2013}.
 	
 \begin{figure}[h] 
 	\centering
 		\includegraphics[scale=1]{titan_example.pdf}
-	\caption[Titan: Beispielgraph]{Einfaches Beispiel eines Graphen in Titan. Kanten mit ausgefüllter Spitze modellieren eine $n:m$- Beziehung und können mehrfach innerhalb der Nachbarschaft eines Knotens vorkommen. Kanten mit leerer Spitze modellieren eine $1:n$-, Kanten mit einem Karo am Startknoten eine $n:1$-Beziehung. Mitarbeiter können folglich mit beliebig vielen Kollegen zusammenarbeiten, jedoch nur an einem Projekt mitwirken. Nur ein Mitarbeiter darf für ein Projekt verantwortlich sein, dieser darf jedoch nicht die Verantwortung über weitere Projekte übernehmen. Hervorgehobene Attributschlüssel sind indexiert, Knoten können unter Angabe eines entsprechenden Schlüssel-Wert-Paares direkt gelesen werden. Die \texttt{WORKS\_WITH}-Beziehung ist einem zusätzlichen Kantenattribut ausgezeichnet, welches das Jahr der Erstellung der Kanteninstanz datiert.}
+	\caption[Titan: Beispielgraph]{Erweitertes Beispiel eines Property-Graphen. Kanten mit ausgefüllter Spitze modellieren eine $n:m$- Beziehung und können mehrfach innerhalb der Nachbarschaft eines Knotens vorkommen. Kanten mit leerer Spitze modellieren eine $1:n$-, Kanten mit einem Karo am Startknoten eine $n:1$-Beziehung. Mitarbeiter können folglich mit beliebig vielen Kollegen zusammenarbeiten, jedoch nur an einem Projekt mitwirken. Nur ein Mitarbeiter darf für ein Projekt verantwortlich sein, dieser darf jedoch nicht die Verantwortung über weitere Projekte übernehmen. Hervorgehobene Attributschlüssel sind indexiert, Knoten können unter Angabe eines entsprechenden Schlüssel-Wert-Paares direkt gelesen werden.}
 	\label{fig:titan_example}
 \end{figure}	
 
 % Manipulation (Einfügen Knoten / Kante)
 
-Abbildung \ref{fig:titan_example} zeigt eine mögliche Abbildung des Mitarbeiter-Projekt-Beispiels in Titan. Zu beachten sind dabei die zusätzlichen Einschränkungen an einzelnen Beziehungsarten. Für die Definition von Typen für Attributschlüssel und Kantenbezeichner erweitert Titan die Sprache um Hilfsfunktionen.  Zum Beispiel lässt sich ein \texttt{TitanKey} für den Attributschlüssel \texttt{name} wie folgt definieren:
+Abbildung \ref{fig:titan_example} zeigt eine mögliche Realisierung des Mitarbeiter-Projekt-Beispiels in Titan. Zu beachten sind dabei die zusätzlichen Einschränkungen an einzelnen Beziehungsarten. Für die Definition von Typen für Attributschlüssel und Kantenbezeichner erweitert Titan die Sprache um Hilfsfunktionen.  Zum Beispiel lässt sich ein \texttt{TitanKey} für den Attributschlüssel \texttt{name} wie folgt definieren:
 
 \texttt{g.makeType().name('name').unique(OUT).indexed(Vertex.class)}\newline
 \texttt{.dataType(String.class).makePropertyKey();}
 
-In Gremlin werden Befehle durch die Aneinanderreihung von Funktionen gebildet, ein Befehl wird immer von links nach rechts gelesen: Im Beispiel ist \texttt{g} eine Referenz auf den verwalteten Graphen; die Funktion \texttt{name('name')} definiert den global eindeutigen Attributschlüssel; \texttt{unique(OUT)} legt die Eindeutigkeit des Attributes auf Instanzebene fest; die Funktion \texttt{indexed(Vertex.class)} erzeugt einen Index für Knoteninstanzen mit dem entsprechenden Attribut; \texttt{dataType(String.class)} legt den Datentyp des Attributwertes fest und \texttt{makePropertyKey()} erzeugt den Typen innerhalb der Datenbasis.
+In Gremlin werden Befehle durch die Verkettung bzw. Komposition von Funktionen gebildet, ein Befehl wird immer von links nach rechts gelesen: Im Beispiel ist \texttt{g} eine Referenz auf den verwalteten Graphen; die Funktion \texttt{name('name')} definiert den global eindeutigen Attributschlüssel; \texttt{unique(OUT)} legt die Eindeutigkeit des Attributes auf Instanzebene fest; die Funktion \texttt{indexed(Vertex.class)} erzeugt einen Index für Knoteninstanzen mit dem entsprechenden Attribut; \texttt{dataType(String.class)} legt den Datentyp des Attributwertes fest und \texttt{makePropertyKey()} erzeugt den Typen innerhalb der Datenbasis.
 
-Ein \texttt{TitanLabel} lässt sich ebenfalls durch die Aneinanderreihung der benötigen Funktionen definieren. Soll zum Beispiel der Kantenbezeichner \texttt{WORKS\_IN} für die zugehörige $n:1$-Beziehung zwischen Mitarbeiter und Projekt erzeugt werden, so erfolgt dies mit der Anweisung:
+Ein \texttt{TitanLabel} lässt sich ebenfalls durch die Verkettung der benötigen Funktionen definieren. Soll zum Beispiel der Kantenbezeichner \texttt{WORKS\_IN} für die zugehörige $n:1$-Beziehung zwischen Mitarbeiter und Projekt erzeugt werden, so erfolgt dies mit der Anweisung:
 
 \texttt{g.makeType().name('WORKS\_IN').unique(OUT).makeEdgeLabel();}
 
 Für Kantenbezeichner legt die Funktion \texttt{unique(OUT)} fest, dass eine entsprechend deklarierte Kanteninstanz in der Menge ausgehender Kanten eines Startknotens höchstens einmal vorkommen darf; \texttt{makeEdgeLabel()} erzeugt den Typen innerhalb der Datenbasis. Anzumerken ist, dass bei der Definition eines Kantenbezeichners keine Festlegung auf bestimmte Knotentypen für Start- oder Zielknoten erfolgt.
 
-Gremlin ermöglicht die Manipulation der Datenbasis und stellt Funktionen für das Anlegen und Löschen von Knoten und Kanten zur Verfügung. Nachfolgend wird beispielhaft ein Knoten für den Mitarbeiter \texttt{Eve} angelegt und einer Variable zugewiesen:
+Gremlin ermöglicht die Manipulation der Datenbasis und stellt Funktionen für das Anlegen und Löschen von Knoten und Kanten zur Verfügung. Nachfolgend wird beispielhaft eine Knoteninstanz für den Mitarbeiter \texttt{Eve} angelegt und an eine Variable gebunden:
 
 \texttt{eve = g.addVertex([type:\string'Employee',name:'Eve',age:27]);}
 
@@ -69,83 +69,97 @@ Beim Erzeugen einer Kante, gibt die Reihenfolge der Parameter die Richtung vor, 
 
 \texttt{g.addEdge(eve,projectX,'WORKS\_IN');}
 
-fügt der Datenbasis eine gerichtete Kante von \texttt{Eve} nach \texttt{ProjectX} hinzu. Kantenattribute können wie bereits für Knoten gezeigt ebenfalls an die Funktion übergeben werden.
+fügt der Datenbasis eine gerichtete Kante von \texttt{Eve} nach \texttt{ProjectX} hinzu. Kantenattribute können, wie bereits für Knoten gezeigt, ebenfalls an die Funktion übergeben werden.
 
 \paragraph*{Traversierung via Gremlin}
+% Selektion von Instanzen
+Gremlin ermöglicht das algorithmische Durchlaufen des Graphen entweder ausgehend von einer einzelnen Knoten- bzw. Kanteninstanz oder von einer Instanzmenge. Dabei erlaubt eine Referenz auf den Graphen mit der Anweisung \texttt{g.V} bzw. \texttt{g.E} den Zugriff auf die gesamte Knoten- bzw. Kantenmenge. Die Auswahl einzelner oder mehrerer Instanzen erfolgt entweder explizit unter Angabe einer Identität oder mengenorientiert anhand eines Schlüssel-Wert-Paares:
 
-- abstrakte Wege durch Verkettung von speziellen Funktionen zur Traversierung
+\texttt{bob = g.V(23) // direct access via ID 23} \newline 
+\texttt{employees = g.V('type','Employee') // set oriented access} 
 
+Die erste Anweisung bindet die Knoteninstanz mit der Identität 23 an die Variable \texttt{bob} während in der zweiten Anweisung die Menge aller Mitarbeiter der Variable \texttt{employees} zugewiesen wird. Das Auslesen der Attributwerte erfolgt entweder durch die direkte Verkettung mit dem Attributschlüssel (z.B. \texttt{bob.name}) oder durch Anwendung der \texttt{map}-Funktion (z.B. \texttt{bob.map('name','age')}).
 
-% Zugriff auf Knoten
-- Menge aller Knoten \texttt{g.V}
-- Menge aller Kanten \texttt{g.E}
+% Traversierung = Funktionsverkettung
+Das Konzept der Komposition wird in Gremlin zur Definition abstrakter Wege innerhalb des Graphen genutzt. Hierfür stellt die Sprache entsprechende Funktionen, sog. \texttt{steps} zur Verfügung.\footnote{Eine Übersicht über alle verfügbaren Funktionen findet sich unter \url{https://github.com/tinkerpop/gremlin/wiki/Gremlin-Steps}.} Jeder Funktionsaufruf kann als Schritt innerhalb des Pfades interpretiert werden und wird auf die Ergebnismenge des vorhergehenden Schrittes angewendet. Eine komplette Anweisung verkettet einzelne Schritte zu einem abstrakten Weg. Sollen beispielsweise die ausgehenden Kanten des Mitarbeiters \texttt{Bob} traversiert werden, ist dies mit folgender Verkettung möglich:
 
-	% Index name='Alice'
-- Zugriff auf einzelne Knoten anhand ihrer Identität oder via Index	
-\texttt{alice = g.v(name='Alice')}
-- Zugriff auf Attributwerte durch Angabe der Attributschlüssel
-\texttt{alice.age}
+\texttt{bob.out}
 
-% Beispiele
-	% Einschränkung Kantenbezeichner und Richtung (Whitelist)
-\texttt{alice.out('WORKS\_WITH').name}
-\texttt{alice.outE.label}
+Das Ergebnis dieser einfachen Traversierung ist eine Menge von Knoten-Identitäten, welche über eine ausgehende Kante mit \texttt{Bob} verbunden sind. Letzteres wird durch die Richtungsfunktion \texttt{out} formuliert. Soll direkt auf Attributwerte der adjazenten Knoten zugegriffen werden, erfordert dies das Anfügen des entsprechenden Attributschlüssels\footnote{Die Ausgabe berücksichtigt nur jene Knoten die das entsprechende Attribut aufweisen.} (z.B. \texttt{bob.out.name}). Aus Sicht eines Knotens lässt sich darüber hinaus mit Hilfe der Richtungsfunktion \texttt{in} bzw. \texttt{both} auf adjazente Knoten zugreifen, die über eine eingehende Kante bzw. über eine Kante beliebiger Richtung mit einem Knoten verbunden sind. Die Funktionen \texttt{outE}, \texttt{inE} und \texttt{bothE} ermitteln die zu einem Knoten inzidenten Kanten, welche wiederum mittels \texttt{outV} bzw. \texttt{inV} das Abrufen ihres jeweiligen Start- bzw. Zielknotens erlauben. Die Traversierungen \texttt{bob.out} und \texttt{bob.outE.inV} sind folglich äquivalent.
 
-- \texttt{in} und \texttt{both}
+% Einschränkung Kantenbezeichner
+Die Einschränkung zu traversierender Kanten ist durch die Angabe von Kantenbezeichnern möglich. Diese werden als Parameter an die entsprechende Richtungsfunktion übergeben. Sollen zum Beispiel die Namen der Mitarbeiter bestimmt werden, die an einem Projekt arbeiten, für das \texttt{Bob} verantwortlich ist, so lässt sich dies mit folgender Anweisung realisieren:
 
-	% Breiten- oder Tiefendurchlauf
-	% Uniqueness Knoten / Kanten
+\texttt{bob.out('RESPONSIBLE\_FOR').in('WORKS\_IN').name}
+
+Dabei werden im ersten Schritt die Projekte traversiert für die \texttt{Bob} direkt verantwortlich ist. Im zweiten Schritt werden ausgehend von jedem Projekt die eingehenden Kanten vom Typ \texttt{WORKS\_IN} traversiert um zu den entsprechenden Mitarbeitern zu gelangen.
+
+% Einschränkung Attribute
+Neben der Einschränkung der Kantenbezeichner kann in Gremlin auch auf Grundlage der Attribute entschieden werden, ob eine Instanz bei der Traversierung berücksichtigt wird. Die Sprache bietet hierfür die Funktion \texttt{filter}: Diese ermöglicht das Definieren eines sog. Closure, mit dem sich für jedes Element einer Ergebnismenge entscheiden lässt, ob es im nächsten Schritt berücksichtigt wird. Sollen zum Beispiel alle Kollegen von \texttt{Bob} selektiert werden, welche seit 2012 mit ihm zusammenarbeiten und älter als 25 sind, so ist dies wie folgt möglich:
+
+\texttt{bob.bothE('WORKS\_WITH').filter\{it.since > 2011\}.bothV.filter\{it.age > 25\}}
+
+Ausgehend vom Startknoten werden zunächst unter Verwendung von \texttt{bothE} aus- und eingehende Kanten mit dem Bezeichner \texttt{WORKS\_WITH} traversiert. Aus der Menge der inzidenten Kanten werden mittels \texttt{filter\{it.since > 2011\}} jene Instanzen ausgewählt, welche das Prädikat erfüllen. Die Variable \texttt{it} referenziert dabei ein Element in der Ergebnismenge des vorhergehenden Schrittes. Anschließend liest \texttt{bothV} Start- und Zielknoten der Kante aus und filtert jene, die älter als 25 sind. Knoten- und Kanteninstanzen werden in Gremlin standardmäßig mehrfach besucht. Bei genauer Betrachtung des Beispiels wird deutlich, dass ein Berücksichtigen von Start- und Zielknoten auch \texttt{Bob} in die Ergebnismenge der Traversierung einschließt. Dies lässt sich mit der Funktion \texttt{except} vermeiden:
+
+\texttt{bob.bothE('WORKS\_WITH').filter\{it.since > 2011\}.bothV.except([bob])}\newline
+\texttt{.filter\{it.age > 25\}}
+
+Innerhalb der Filterbedingung können verschiedene mathematische, boolesche und string-basierte Funktionen verwendet und kombiniert werden. Entscheidend ist lediglich, dass der Rückgabewert ein Wahrheitswert ist.
 	
-% Selektion
-- via Filter-Funktion
-	% Filter und Abbruchkriterium
-	% Beispiel Alter > 30
-\texttt{alice.outE.filter\{it.since > 2011\}.inV.filter\{it.age > 30\}}
-	
-% Projektion: Namen aller Mitarbeiter
-	% direkter Attributzugriff
-
 % feste / variable Pfadlängen (Erreichbarkeit)
+Die bisher betrachteten abstrakten Wege sind statisch definiert und besitzen eine feste Länge. Für das Traversieren von Wegen beliebiger Länge bietet Gremlin die \texttt{loop}-Funktion. Diese erlaubt es, definierte Abschnitte innerhalb eines Weges zu wiederholen. Soll zum Beispiel bestimmt werden, welche Mitarbeiter zwei Schritte von \texttt{Bob} entfernt sind, so ist dies mit folgender Anweisung realisierbar:
 
-% kürzeste Pfade
+\texttt{bob.as('b').out('WORKS\_WITH').loop('b')\{it.loops < 3\}}
 
-% Gruppierung
-	% minimale Weglänge zu allen Projekten bis Tiefe 4 Gruppierung nach Name, minimaler Pfad
-	
+Die Funktion \texttt{as('b')} legt dabei den Beginn, \texttt{loop('b')} das Ende des zu wiederholenden Abschnittes fest. Die Anzahl der Wiederholungen wird durch eine \texttt{while}-Bedingung definiert, \texttt{it.loops} referenziert dabei eine Laufvariable zu einer konkreten Pfadinstanz. Das Ergebnis der Traversierung ist die Menge der Endknoten der gefundenen Pfadinstanzen. Alternativ können durch Anfügen der Funktion \texttt{path} die Pfadinstanzen als Ergebnis zurückgegeben werden. In Verbindung mit einem zusätzlichen Abbruchkriterium an der \texttt{loop}-Funktion ermöglicht dies das Berechnen von Pfaden zwischen zwei Instanzen:
+
+\texttt{alice.as('a').out.loop('a')\{it.loops < 4\}\{it.object.name == 'ProjectX'\}.path}
+
+Das Ergebnis ist eine Menge von Pfaden, mit einer maximalen Länge von Drei zwischen \texttt{Alice} und \texttt{ProjectX}. Das Auswählen des kürzesten Pfades ist durch anschließendes Sortieren nach Pfadlänge und Einschränken der Ergebnismenge auf ein Element möglich.
+
 % Aggregation
+Analog zu Cypher und OrientDB-SQL unterstützt Gremlin das Gruppierung von Ergebnismengen. Da Gremlin eine Obermenge von Java und somit turing-vollständig ist, lassen sich zum Beispiel Aggregationen durch Java-Funktion umsetzen. Nachfolgendes Beispiel bestimmt das Alter des ältesten Mitarbeiter:
 
-% Skip und Limit
+\texttt{oldest = Integer.MIN\_VALUE;}\newline
+\texttt{g.V('type','Employee').sideEffect\{oldest=(oldest<it.age)?it.age:oldest\}}
 
-% Funktionen (String usw.) -> Java
-	% skalar
-	% mathematische
-	% string-basierte
-	% mengenorientert
+Die Funktion \texttt{sideEffect} kann dazu verwendet werden, den Zustand globaler Variablen zu verändern. Im Beispiel führt der ternäre Ausdruck genau dann zur Aktualisierung der Variable \texttt{oldest} wenn der aktuelle Mitarbeiter älter ist als die bisher betrachteten.\\
+Das Einschränken der Ergebnismenge ist durch die Angabe eines Intervalls möglich. Das Bestimmen der drei jüngsten Mitarbeiter ist zum Beispiel wie folgt möglich:
+
+\texttt{g.V('type','Employee').age.order[0..1]}
+
+Dabei sortiert die \texttt{order}-Funktion die entsprechenden Attributwerte in natürlicher Ordnung und der Filter \texttt{[0..1]} selektiert die ersten beiden Elemente der Ergebnismenge.
 	
-\paragraph*{Mustersuche via Gremlin}
+\paragraph*{Mustersuche via Gremlin} 
 
-% Bindung an Datenbasis (welche Datentypen? nur knoten und kanten?)
-	% Konstanten im Muster (gebunden an Datenbasis)
-	% Variablen im Muster (werden gefunden)
-	% Datentypen für Konstanten und Variablen (Knoten und Kanten)
-% Mustergraph wird durch Traversierung beschrieben (back)
-	% komplexer als Cypher
-%a.as(a)
-%	.out(workswith).filter(type=Employee).as(b)
-%	.out(workswith).filter(type=Employee).as(c)
-%	.both().contains(a)
-%	.back(b)
-%	.out(responsiblefor).filter(type=Project).as(d)
-% Variablen
+In den bisherigen Beispielen wurden entweder Knoten- oder Kanteninstanzen am Ende eines abstrakten Weges, deren Attribute oder komplette Pfadinstanzen als Ergebnis einer Traversierung ausgegeben. Darüber hinaus erlaubt Gremlin das Suchen und Extrahieren von Teilgraphen innerhalb der Datenbasis. Abbildung \ref{fig:titan_pattern} zeigt den bereits für die Evaluation von Cypher verwendeten Mustergraphen.
 
-	% Mustersuche
-	- https://github.com/tinkerpop/gremlin/wiki/SPARQL-vs.-Gremlin --> Testen
-	% DSL
-	- Groovy ermöglicht DSL\footnote{\url{http://thinkaurelius.com/2013/07/25/developing-a-domain-specific-language-in-gremlin/}}
-	
-% abschließende Worte
-	% deklarativ
-	% Optimierung usw.
+\begin{figure}[h] 
+	\centering
+		\includegraphics[scale=1]{titan_pattern.pdf}
+	\caption[Titan: Mustergraph]{Beispiel für einen Mustergraphen: Der grau hinterlegte Knoten ist eine Konstante und stellt die Bindung zur Datenbasis her, weiß hinterlegte Knoten sind Variablen, welche während der Mustersuche gebunden werden.}
+	\label{fig:titan_pattern}
+\end{figure}
+
+Da sich dieses Muster nicht als lineare Sequenz von Knoten und Kanten darstellen lässt, wurde es in Cypher in zwei abstrakte Wegdefinitionen zerteilt. Gremlin begegnet dieser Situation mit dem sog. \textit{Backtracking}. Mit Hilfe der \texttt{back}-Funktion lässt sich an einem beliebigen Punkt innerhalb des abstrakten Weges entweder eine feste Anzahl von Schritten oder direkt zu einem definierten Punkt zurückgehen. Folgendes einfaches Beispiel soll dies verdeutlichen: Gesucht sind alle Kollegen von Alice, die mit Kollegen zusammenarbeiten, die älter als 25 sind:
+
+\texttt{alice.out('WORKS\_WITH').as('a').out('WORKS\_WITH').filter\{it.age>25\}.back('a')}
+
+Dabei werden die adjazenten Knoten von \texttt{Alice} mit \texttt{as('a')} markiert, anschließend werden deren adjazente Knoten entsprechend dem geforderten Prädikat eingeschränkt. Erfüllt ein Nachbar das Prädikat, springt die Traversierung auf den vorher besuchten Knoten zurück und gibt ihn aus.\\
+Dieses Konzept kann für die Mustersuche genutzt werden. Im Beispiel ist \texttt{Alice} die Konstante innerhalb des Musters mit der Bindung an die Datenbasis, \texttt{b}, \texttt{c} und \texttt{d} sind Variablen. Für Kanten- und Knoteninstanzen sind Einschränkungen hinsichtlich ihres Typs bzw. ihres Bezeichners festgelegt. Die nachfolgende Anfrage sucht alle Teilgraphen des entsprechenden Musters aus der Datenbasis und bindet die Variablen an die gefundene Instanzen:
+
+\texttt{t = new Table('a','b','c','d'); // stores results}\newline
+\texttt{alice.as('a') // 1}\newline
+\texttt{.out('WORKS\_WITH').has('type','Employee').as('b') // 2}\newline
+\texttt{.out('RESPONSIBLE\_FOR').has('type','Project').as('d') // 3}\newline
+\texttt{.back('b') // 4}\newline
+\texttt{.out('WORKS\_WITH').has('type','Employee').except('a').as('c') // 5}\newline
+\texttt{.both.has('type','Employee').retain('a') // 6}\newline
+\texttt{.table(t); // store results into t}
+
+Zunächst wird eine \texttt{Table}-Datenstruktur erzeugt, welche die geforderten Instanzen innerhalb der gefundenen Teilgraphen aufnehmen soll. In Schritt 1 wird die Konstante \texttt{Alice} an den Bezeichner \texttt{a} gebunden; anschließend werden die ausgehenden \texttt{WORKS\_WITH}-Beziehungen traversiert und die Menge der Zielknoten auf jene eingeschränkt, die vom Typ \texttt{Employee} sind.\footnote{Die Funktion \texttt{has(key, value)} ist eine Kurzform der \texttt{filter}-Funktion und liefert \texttt{true}, wenn die entsprechende Instanz das Schlüssel-Wert-Paar aufweist, andernfalls \texttt{false}.} Die Menge der Knoten wird der Variable \texttt{b} zugewiesen. Anschließend werden in Schritt 3 deren Projekte selektiert und diese Menge der Variable \texttt{d} zugewiesen. Mittels Backtracking wird in Schritt 4 zurück zu den Projektleitern gegangen. Von diesen ausgehend erfolgt anschließend das Traversieren der ausgehenden \texttt{WORKS\_WITH}-Beziehungen. Die Menge der Zielknoten wird entsprechend ihrem Typ gefiltert und der Variable \texttt{c} zugewiesen. Dabei wird eine eventuell existierende Kante zu \texttt{a} nicht berücksichtigt. In Schritt 6 werden alle inzidenten Kanten der Elemente in \texttt{c} traversiert und dabei mittels \texttt{retain} nur jene Start- bzw. Zielknoten berücksichtigt die \texttt{a} entsprechen. Im letzten Schritt werden die gefunden Instanzen in die vorher definierte Tabelle eingefügt. Jede Zeile innerhalb dieser Tabelle entspricht einem gefundenen Teilgraph innerhalb der Datenbasis.
+
+Die gezeigten Beispiele erlauben einen ersten Einblick in die Ausdrucksstärke der Sprache. Durch die Universalität hinsichtlich der Programmierbarkeit ist Gremlin ein mächtiges Werkzeug in der Verarbeitung von Graphen. Optimierungen in der Anfrageausführung sind in erster Linie von der Implementierung des jeweiligen GDBMS abhängig. Gremlin selbst nutzt, wenn vorhanden, globale Indexstrukturen für das effiziente Auffinden von Knoten und Kanten anhand ihrer Attribute sowie die bereits erwähnten knoten-zentrierten Indizes. Der Ausführungsplan lässt sich ebenfalls ausgeben, was eine manuelle Optimierung zulässt. Auf konkrete Optimierungsmechanismen wird in \cite{gremlin_doku:2013} eingegangen.
 	
 \paragraph*{Transaktionen}
 

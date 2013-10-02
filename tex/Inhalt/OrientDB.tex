@@ -94,7 +94,7 @@ Die Informationsextraktion erfolgt entweder über den \texttt{SELECT}- oder den \
 \texttt{SELECT name FROM}\newline
 \texttt{(SELECT expand(out(\string"WorksWith\string")) FROM Employee WHERE name=\string"Alice\string");} 
 
-Die Funktion \texttt{out} legt dabei die Richtung der Kante fest und kann wahlweise durch \texttt{in} oder \texttt{both} ersetzt werden. Das Ergebnis der drei Funktionen ist eine Menge von Identitäten, deren Instanzen durch \texttt{expand} aufgelöst werden und damit in übergeordneten Anfragen verwendbar sind. Das gezeigte Beispiel entspricht einer Verbundoperation in einem RDBMS. Der wesentliche Unterschied ist, dass die Beziehungsinformationen materialisiert an Knoten gespeichert sind und nicht zur Laufzeit berechnet werden müssen. Ersetzt man die Projektion der inneren \texttt{SELECT}-Anweisung durch: 
+Die Funktion \texttt{out} legt dabei die Richtung der Kante fest und kann wahlweise durch \texttt{in} oder \texttt{both} ersetzt werden. Das Ergebnis der drei Funktionen ist eine Menge von Knoten-Identitäten, deren Instanzen durch \texttt{expand} aufgelöst werden und damit in übergeordneten Anfragen verwendbar sind.\footnote{Sollen inzidente Kanten-Identitäten selektiert werden, so ist dies mit den Funktionen \texttt{outE}, \texttt{inE} und \texttt{bothE} ebenfalls möglich.} Das gezeigte Beispiel entspricht einer Verbundoperation in einem RDBMS. Der wesentliche Unterschied ist, dass die Beziehungsinformationen materialisiert an Knoten gespeichert sind und nicht zur Laufzeit berechnet werden müssen. Ersetzt man die Projektion der inneren \texttt{SELECT}-Anweisung durch: 
 
 \texttt{expand(out(\string"WorksWith\string").out(\string"ResponsibleFor\string"))}
 

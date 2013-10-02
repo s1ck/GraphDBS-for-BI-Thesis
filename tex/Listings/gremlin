@@ -17,12 +17,73 @@ bob = g.addVertex([type:'Employee',name:'Bob',age:31]);
 eve = g.addVertex([type:'Employee',name:'Eve',age:27]);
 projectX = g.addVertex([type:'Project',name:'ProjectX']);
 
-g.addEdge(alice,bob,'WORKS_WITH');
-g.addEdge(bob,eve,'WORKS_WITH');
-g.addEdge(eve,alice,'WORKS_WITH');
+g.addEdge(alice,bob,'WORKS_WITH', [since:2011]);
+g.addEdge(bob,eve,'WORKS_WITH', [since:2012]);
+g.addEdge(eve,alice,'WORKS_WITH', [since:2010]);
 
 g.addEdge(bob,projectX,'RESPONSIBLE_FOR');
 g.addEdge(eve,projectX,'WORKS_IN');
+
+// selektion knoten via index
+bob = g.V('name','Bob').next()
+
+// Namen der Kollegen
+bob.both('WORKS_WITH').name
+
+// Namen der Mitarbeiter die am gleichen Projekt arbeiten
+bob.out('RESPONSIBLE_FOR').in('WORKS_IN').name
+
+// Bobs Kollegen mit deinen er seit 2012 zusammenarbeitet und die älter als 25 sind
+bob.bothE('WORKS_WITH').filter{it.since > 2011}.bothV.filter{it.age > 25}
+bob.bothE('WORKS_WITH').filter{it.since > 2011}.bothV.except([bob]).filter{it.age > 25}.name
+
+// Wiederholen von Pfadabschnitten zur Definition von Pfaden variabler Länge
+bob.as('b').out('WORKS_WITH').loop('b'){it.loops < 3}
+<=>
+bob.out('WORKS_WITH').out('WORKSWITH')
+
+// Erreichbarkeit Pfade
+alice.as('x').outE.inV.loop('x'){it.loops < 3}.path{it.name}{it.label}
+
+// alle Pfade von Alice zu ProjectX über ausgehende Kanten
+alice.as('a').out.loop('a'){it.loops < 4 && it.object.name == 'ProjectX'}.path
+alice.as('x').outE.inV.loop('x'){it.loops < 4}{it.object.getProperty('name') == 'ProjectX'}.path{it.name}{it.label}  
+==>[Alice, WORKS_WITH, Bob, RESPONSIBLE_FOR, ProjectX]
+==>[Alice, WORKS_WITH, Bob, WORKS_WITH, Eve, WORKS_IN, ProjectX]
+
+// gruppiert nach Länge
+alice.as('x').outE.inV.loop('x'){it.loops < 4}{it.object.getProperty('name') == 'ProjectX'}.path{it.name}{it.label}.groupBy{it.size()}{it}.cap.next()
+==>5=[[Alice, WORKS_WITH, Bob, RESPONSIBLE_FOR, ProjectX]]
+==>7=[[Alice, WORKS_WITH, Bob, WORKS_WITH, Eve, WORKS_IN, ProjectX]]
+
+// Aggregieren
+oldest = Integer.MIN_VALUE
+g.V('type','Employee').sideEffect{oldest = (oldest < it.age) ? it.age : oldest}
+
+// Gruppieren
+projects = []
+g.V('type','Project').fill(projects)
+projects._().in.name.groupCount.cap
+
+// Pattern Matching
+
+// Backtracking einfaches Beispiel
+// "Alle Kollegen von Alice, die mit Kollegen zusammenarbeiten, die älter als 25 sind"
+alice.out('WORKS_WITH').as('x').out('WORKS_WITH').filter{it.age > 25}.back('x').name
+
+t = new Table('a','b','c','d')
+// mit bindung
+alice.as('a').out('WORKS_WITH').filter{it.type=='Employee'}.as('b').out('RESPONSIBLE_FOR').filter{it.type=='Project'}.as('d').back('a').both.filter{it.type=='Employee'}.except('b').as('c').table(t)
+// ohne bindung
+g.V.as('a').out('WORKS_WITH').filter{it.type=='Employee'}.as('b').out('RESPONSIBLE_FOR').filter{it.type=='Project'}.as('d').back('a').both.filter{it.type=='Employee'}.except('b').as('c').table(t)
+
+
+alice.as('a')
+	.out('WORKS_WITH').filter{it.type=='Employee'}.as('b')
+		.out('RESPONSIBLE_FOR').filter{it.type=='Project'}.as('d')
+.back('a')
+	.both.filter{it.type=='Employee'}.except('b').as('c')
+	.table(t)
 
 
 
