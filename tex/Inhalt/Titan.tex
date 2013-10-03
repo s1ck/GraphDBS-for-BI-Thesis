@@ -164,22 +164,13 @@ Die gezeigten Beispiele erlauben einen ersten Einblick in die Ausdrucksstärke de
 	
 \paragraph*{Transaktionen}
 
-% obligatorisch
-% Erzeugen (implizit, explizit)
-% Schachtelung
-% BerkeleyDB siehe OrientDB
-	% Dauerhaftigkeit ist standardmäßig aktiviert (Quelltext)
-	% REPEATABLE READ (keine Mehrbenutzeranomalien)
-	% Behandlung von Deadlocks
-% Transaktionen innerhalb von Titan?
-- nur für inkonsistente Speichersysteme
-	- MVCC
-- Locks auf Unique Typen
+Lese- und Schreibzugriffe erfolgen in Titan grundsätzlich im Kontext einer Transaktion. Diese wird beim ersten Zugriff automatisch gestartet und ist an den erzeugenden Thread gebunden. Alle nachfolgenden Operationen nutzen die aktive Transaktion bis diese explizit beendet wird. Hierfür stehen die Funktionen Commit und Rollback zur Verfügung. Kommt es während der Transaktionsausführung zu einem Fehler, wird dieser an die Anwendung weitergegeben. Titan unterscheidet zwischen temporären und dauerhaften Fehlern: Ein temporärer Fehler ist zum Beispiel der kurzzeitige Verbindungsabbruch im Client-Server-Betrieb. Das GDBMS bietet die Option, entsprechend abgebrochene Transaktionen automatisch zu wiederholen. Als dauerhafte Fehler klassifiziert Titan zum Beispiel System- oder Hardwarefehler, bei denen das GDBMS gestoppt wurde. 
 
-Since edges and properties of unique labels and keys must be unique per vertex, inconsistencies could arise when two TitanGraph instances try to update the same unique edge or property concurrently, since one may overwrite the change of the other. To avoid such inconsistencies, Titan will acquire locks on unique edges and properties by default. Acquiring locks, however, can be very expensive depending on the storage backend. In cases where concurrent modifications can be excluded or blind overwrites are acceptable, a unique TitanType can be configured to not acquire locks by passing in UniquenessConsistency.NO\_LOCK as a second argument to TypeMaker.unique(). This configuration option should be used with care and only if the extra performance gain is needed.
-	
+Neben den Thread-gebundenen unterstützt Titan auch Thread-unabhängige Transaktionen. Diese müssen explizit gestartet werden und ermöglichen es, mehrere Threads innerhalb einer Transaktion auszuführen. Hierdurch lässt sich zum Einen parallele Hardware in Graphalgorithmen effizienter nutzen, zum Anderen ermöglicht es die Schachtelung von Transaktionen. Dabei ist jedoch zu beachten, dass Änderungen untergeordneter Transaktionen nicht im Kontext der übergeordneten Transaktion erfolgen und somit nach erfolgreichem Commit global sichtbar sind. Ein Zurücksetzen der übergeordneten Transaktion wird nicht rekursiv auf die eingebetteten Transaktionen angewendet.
 
-% Anmerkung zu Cassandra und HBase
+Die Verantwortung über die Einhaltung der ACID-Eigenschaften bei der Ausführung nebenläufiger Transaktionen wird an die entsprechende Speicherschicht übergeben. In der Evaluation und im Benchmark wird die Verwendung mit BerkeleyDB betrachtet. Dessen transaktionale Eigenschaften wurden bereits im Zusammenhang mit HyperGraphDB erläutert. BerkeleyDB wird in Titan mit Standardeinstellungen verwendet, was bedeutet, dass die Isolationsebene \texttt{REPEATABLE READ} entspricht und somit alle Mehrbenutzeranomalien außer dem Phantom Problem vermieden werden. Im Gegensatz zu HyperGraphDB werden logische Änderungsoperationen am verwalteten B-Baum beim Commit persistiert und sind somit dauerhaft gespeichert.
+
+Ungeachtet dessen muss die Konsistenz innerhalb des Graphen auch während der Transaktionsausführung eingehalten werden: Sind Attributschlüssel oder Kantenbezeichner als \texttt{UNIQUE} deklariert, dürfen diese nicht von parallel ausgeführten Transaktionen geändert werden. Titan implementiert hierfür ein Sperrverfahren um einen exklusiven Zugriff auf die entsprechende Attribute bzw. Kanten zu garantieren. Beim Zugriff wird automatisch durch das GDBMS eine entsprechende Sperre gesetzt und bis zum Ende der Transaktion gehalten. Sperrkonflikte, welche durch das parallele Aktualisieren eindeutiger Attributschlüssel oder Kantenbezeichner entstehen, zählen zu den dauerhaften Fehlern und müssen von der Anwendung behandelt werden.
 
 \paragraph*{Indexverwaltung}
 
@@ -233,6 +224,8 @@ Since edges and properties of unique labels and keys must be unique per vertex, 
 
 % BerkeleyDB
 % eigene Caches
+- multi-threaded Transaktions
+	- Titan nutzt dabei die Datenstrukturen des \texttt{java.util.concurrent}-Packages für den paral
 
 \subsection{Verteilung und Skalierbarkeit}
 \label{subsec:titan_verteilung}
