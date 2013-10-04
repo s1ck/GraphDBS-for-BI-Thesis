@@ -60,6 +60,8 @@ alice.as('x').outE.inV.loop('x'){it.loops < 4}{it.object.getProperty('name') == 
 oldest = Integer.MIN_VALUE
 g.V('type','Employee').sideEffect{oldest = (oldest < it.age) ? it.age : oldest}
 
+// Sortieren Skip und Limit
+
 // Gruppieren
 projects = []
 g.V('type','Project').fill(projects)
@@ -73,17 +75,7 @@ alice.out('WORKS_WITH').as('x').out('WORKS_WITH').filter{it.age > 25}.back('x').
 
 t = new Table('a','b','c','d')
 // mit bindung
-alice.as('a').out('WORKS_WITH').filter{it.type=='Employee'}.as('b').out('RESPONSIBLE_FOR').filter{it.type=='Project'}.as('d').back('a').both.filter{it.type=='Employee'}.except('b').as('c').table(t)
-// ohne bindung
-g.V.as('a').out('WORKS_WITH').filter{it.type=='Employee'}.as('b').out('RESPONSIBLE_FOR').filter{it.type=='Project'}.as('d').back('a').both.filter{it.type=='Employee'}.except('b').as('c').table(t)
-
-
-alice.as('a')
-	.out('WORKS_WITH').filter{it.type=='Employee'}.as('b')
-		.out('RESPONSIBLE_FOR').filter{it.type=='Project'}.as('d')
-.back('a')
-	.both.filter{it.type=='Employee'}.except('b').as('c')
-	.table(t)
+alice.as('a').out('WORKS_WITH').has('type','Employee').as('b').out('RESPONSIBLE_FOR').has('type','Project').as('d').back('b').out('WORKS_WITH').has('type','Employee').except('a').as('c').both.has('type','Employee').retain('a').table(t)
 
 
 

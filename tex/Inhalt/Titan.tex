@@ -20,7 +20,7 @@ Im Gegensatz dazu lässt sich an einem \texttt{TitanLabel} ein Primärschlüssel fe
 Kanten sind standardmäßig gerichtet und können in beiden Richtungen traversiert werden. Titan bietet hierfür jedoch eine Einschränkung: Kanten können uni-direktional sein, was bedeutet, dass sich diese nur vom Start- zum Zielknoten traversieren lassen. Hierdurch kann Speicherplatz am Zielknoten gespart werden, zu beachten ist jedoch, dass ein Löschen des Zielknotens nicht das Löschen der Kante erfordert und das Einhalten der referentiellen Integrität damit in der Verantwortung der Anwendung liegt.
 
 % Identität
-Die Identität von Knoten- und Kanteninstanzen wird analog zu Neo4j durch eine 64-Bit-Ganzzahl repräsentiert.\footnote{Nachzuvollziehen unter \url{https://github.com/thinkaurelius/titan/blob/0.3.2/titan-core/src/main/java/com/thinkaurelius/titan/core/TitanElement.java\#L52}.} Diese wird vom GDBMS vergeben und nach dem Löschen von Instanzen wiederverwendet. Unter Angabe einer Identität lässt sich auf die zugehörige Instanz zugreifen, dies entspricht der Definition eines Primärschlüssels.
+Die Identität von Knoten- und Kanteninstanzen wird analog zu Neo4j durch eine 64-Bit-Ganzzahl repräsentiert.\footnote{Nachzuvollziehen unter \url{https://github.com/thinkaurelius/titan/blob/0.3.2/titan-core/src/main/java/com/thinkaurelius/titan/core/TitanElement.java\#L52}.} Diese wird vom GDBMS vergeben und nach dem Löschen von Instanzen nicht wiederverwendet. Unter Angabe einer Identität lässt sich auf die zugehörige Instanz zugreifen, dies entspricht der Definition eines Primärschlüssels.
 
 % Anzahl der Datenbanken (wie Partitionierung)
 Titan verwaltet genau eine Graphdatenbank, dieser sind alle Knoten und Kanten zugeordnet. Eine anwendungsseitige Partitionierung der Knoten- und Kantenmenge zur unabhängigen Verwaltung von Teilgraphen ist ausschließlich unter Verwendung dedizierter Attribute möglich.
@@ -172,7 +172,27 @@ Die Verantwortung über die Einhaltung der ACID-Eigenschaften bei der Ausführung 
 
 Ungeachtet dessen muss die Konsistenz innerhalb des Graphen auch während der Transaktionsausführung eingehalten werden: Sind Attributschlüssel oder Kantenbezeichner als \texttt{UNIQUE} deklariert, dürfen diese nicht von parallel ausgeführten Transaktionen geändert werden. Titan implementiert hierfür ein Sperrverfahren um einen exklusiven Zugriff auf die entsprechende Attribute bzw. Kanten zu garantieren. Beim Zugriff wird automatisch durch das GDBMS eine entsprechende Sperre gesetzt und bis zum Ende der Transaktion gehalten. Sperrkonflikte, welche durch das parallele Aktualisieren eindeutiger Attributschlüssel oder Kantenbezeichner entstehen, zählen zu den dauerhaften Fehlern und müssen von der Anwendung behandelt werden.
 
+\subsection{Persistenz-, Index- und Cacheverwaltung}
+
+Titan bildet den Graphen auf ein Datenmodell ab, das nicht für die native Verarbeitung vernetzter Daten konzipiert ist. Es handelt sich um das Key-Column-Value-Modell (KCV), welches von Google entwickelt wurde und im Datenbanksystem BigTable Verwendung findet\cite{Chang:2006:BDS:1267308.1267323}. Es wird u.a. von Apache Cassandra und Apache HBase implementiert und erweitert das Key-Value-Modell um eine zusätzliche Dimension:  Jedem Key ist eine Menge von Einträgen zugeordnet, wobei jeder Eintrag aus einem eigenen Bezeichner (Column) und einem zugeordneten Wert (Value) besteht. Das Modell ist somit vergleichbar mit einer Tabelle im relationalen Datenmodell, wobei jede Zeile individuell verschiedene Attribute besitzen kann.\\
+Eine Beschreibung der Persistenzverwaltung ist bisher nicht Teil der offiziellen Dokumentation des GDBMS\footnote{Laut Mailing-Liste ist eine entsprechende Dokumentation für Version 0.4.0 des GDBMS geplant: \url{https://groups.google.com/forum/?hl=de\#!topic/aureliusgraphs/ixPXcG4UvSQ}.}, ein vollständiges Reverse Engineering wäre jedoch Thema für eine eigenständige Abschlussarbeit. Die nachfolgenden, vereinfachten Erläuterungen basieren auf den Resultaten eines Reverse Engineering\cite{github_delft:2013} vom Juni 2013 und einer teilweisen Untersuchung des Quelltextes. Die Speicherung in Titan lässt sich in zwei Schichten unterteilen: Eine Speicherschicht, welche den Graphen auf das KCV-Modell abbildet und eine Datenbankschicht, welche die hinterlegten Informationen in das Property-Graph-Modell überführt und für die Anwendung zur Verfügung stellt. Nachfolgend wird die Abbildung innerhalb der Speicherschicht erläutert. 
+
+Titan verwendet insgesamt vier KCV-Datenbanken für die Speicherung der Datenbasis und zugehöriger Indexstrukturen. Der \texttt{EdgeStore} beinhaltet die Topologie des Graphen sowie die an Knoten und Kanten hinterlegten Nutzdaten. Analog zu OrientDB und HyperGraphDB werden diese in Titan nicht getrennt gespeichert. Abbildung \ref{fig:titan_edgestore_row} zeigt die vereinfachte Darstellung eines Knotens im KCV-Modell am Beispiel des Mitarbeiters Alice.
+
+\begin{figure}[h] 
+	\centering
+		\includegraphics[scale=.8]{titan_edgestore_record.pdf}
+	\caption[Titan: Datensatz eines Knotens]{Vereinfachte Darstellung der Repräsentation eines Knotens innerhalb der KCV-Datenbank. Grau hinterlegte Bereiche dienen lediglich der Beschreibung der einzelnen Komponenten einer Zeile innerhalb des KCV-Modells.}
+	\label{fig:titan_edgestore_row}
+\end{figure}
+
+Die Speicherung erfolgt knoten-zentriert: Unter Angabe einer Knoten-Identität kann auf den zugehörigen Datensatz zugegriffen werden. Ein Eintrag innerhalb des Datensatzes repräsentiert entweder die Werte eines Knotenattributes oder die Kanteninstanzen zu einem Kantenbezeichner. Die Unterscheidung erfolgt anhand der Column eines Eintrages: Diese ist entweder ein \texttt{TitanKey} oder ein \texttt{TitanLabel}. In der Abbildung wird der Typ durch seinen global eindeutigen Namen dargestellt (z.B. \texttt{age}).\\
+Handelt es sich um einen als \texttt{UNIQUE} deklarierten Typ, so ist dem Eintrag genau ein Wert zugeordnet. Dies trifft im Beispiel auf alle Attributschlüssel des Knotens zu. Im Gegensatz dazu werden die Werte von gewöhnlichen Typen in sog. Super-Columns zusammengefasst. Die Abbildung verdeutlicht dies am Beispiel der \texttt{WORKS\_WITH}-Beziehung: Alle Kanteninstanzen mit dem entsprechenden Bezeichner befinden sich in einer Super-Column. Jede Instanz wird dabei durch einen eigenen Eintrag repräsentiert. Dieser besitzt eine eindeutige Identität, im Beispiel sind dies die Werte \texttt{1} und \texttt{2}. Die Einträge innerhalb der Super-Column werden nach dieser Identät sortiert gespeichert. Wird beim manuellen Erzeugen eines \texttt{TitanLabel} ein Primärschlüssel angegeben, so wird der entsprechende Attributwert als Identität verwendet. Die \texttt{WORKS\_WITH}-Beziehung lässt sich in beiden Richtungen traversieren und ist demzufolge an Start- und Zielknoten gespeichert. Kantenattribute werden dabei als assoziatives Array innerhalb des Wertes redundant hinterlegt.
+
+Der Aufwand, die Nachbarschaft eines Knotens auszulesen, ist im Wesentlichen vom eingesetzten Speichersystem abhängig. Apache Cassandra basiert auf einer verteilten Hashtabelle und erlaubt den Zugriff auf einen Datensatz in konstanter Zeit\cite{Lakshman:2009:CSS:1582716.1582722}, während in BerkeleyDB der Aufwand in einem logarithmischen Verhältnis zur Anzahl der Einträge steht. Ein weiteres Defizit, welches sich aus der Verwendung von BerkeleyDB ergibt, ist die fehlende Unterstützung für den direkten Zugriff auf Attributwerte bzw. inzidente Kanten eines Knotens. Titan bildet das KCV-Modell auf das Key-Value-Modell von BerkeleyDB ab, indem es für jede Eintrag innerhalb eines Datensatzes einen eigenen Eintrag im Key-Value-Modell erzeugt.\footnote{Dies lässt sich im Quelltext unter \url{https://github.com/thinkaurelius/titan/blob/0.3.2/titan-core/src/main/java/com/thinkaurelius/titan/diskstorage/keycolumnvalue/keyvalue/OrderedKeyValueStoreAdapter.java\#L73} nachvollziehen.}
+
 \paragraph*{Indexverwaltung}
+
 
 % Primary Key
 % Property-Index
@@ -197,28 +217,8 @@ Ungeachtet dessen muss die Konsistenz innerhalb des Graphen auch während der Tra
 	- \texttt{final TitanKey time = graph.makeType().name(\string"time\string").dataType(Integer.class).makePropertyKey();}
 	- \texttt{graph.makeType().name(\string"battled\string").primaryKey(time).makeEdgeLabel();}
 	- $\mathcal{O}(\log(\left|N_v\right|))$
-	
 
 % Erweiterung?
-
-\subsection{Persistenz- und Cacheverwaltung}
-
-% https://groups.google.com/forum/?hl=de#!searchin/aureliusgraphs/storage$20single$20machine/aureliusgraphs/qO9Bi-y7uLs/EG5Ol-ulHjAJ
-
-- Data Management
-	- immutable atomic edges
-	- OCC
-	- feingranulares Locking auf Knoten- und Kantenebene
-- Edge Compression
-
-- Vertex-Centric Indizes
-% BerkeleyDB: B-Baum, Transaktions-Log
-% Abbildung des Graphen auf KV-Store (reicht!)
-- Kantenkompression
-	- Speicherung der ID-Differenz zwischen Ziel- und Startknoten
-% Komplexität Nachbarschaft / Traversierung
-- abhängig vom Speichersystem
-	- BerkeleyDB logarithmisch
 
 \paragraph*{Cacheverwaltung}
 
