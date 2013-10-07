@@ -62,6 +62,7 @@ public abstract class BenchmarkSuite {
     protected static void runBenchmark(Benchmark benchmark, boolean log2file,
 	    boolean doWarmup) {
 	int runs = benchmark.getRuns();
+	Unit unit = benchmark.getUnit();
 
 	long[] totalResults = new long[runs];
 
@@ -70,8 +71,8 @@ public abstract class BenchmarkSuite {
 
 	long[] results = new long[runs];
 
-	log.info(String.format("Starting Benchmark: %s with %d runs",
-		benchmark.getName(), runs));
+	log.info(String.format("Starting Benchmark: %s (%s) with %d runs",
+		benchmark.getDatabaseName(), benchmark.getName(), runs));
 
 	benchmark.setUp();
 
@@ -86,11 +87,17 @@ public abstract class BenchmarkSuite {
 	    log.info(String.format("Starting run %d ...", i));
 	    benchmark.beforeRun();
 	    benchmark.setCurrentRun(i);
-//	    start = System.nanoTime();
-	    start = System.currentTimeMillis();
+	    if (unit == Unit.NS) {
+		start = System.nanoTime();
+	    } else {
+		start = System.currentTimeMillis();
+	    }
 	    benchmark.run();
-	    diff = System.currentTimeMillis() - start;
-//	    diff = System.nanoTime() - start;
+	    if (unit == Unit.NS) {
+		diff = System.nanoTime() - start;
+	    } else {
+		diff = System.currentTimeMillis() - start;
+	    }
 	    benchmark.afterRun();
 	    results[i] = diff;
 	    totalResults[i] = diff;
@@ -109,7 +116,8 @@ public abstract class BenchmarkSuite {
 	    storeResults(totalResults, benchmark);
 	}
 
-	log.info(String.format("Finished Benchmark: %s", benchmark.getName()));
+	log.info(String.format("Finished Benchmark: %s (%s)",
+		benchmark.getDatabaseName(), benchmark.getName()));
     }
 
     /**
@@ -123,7 +131,7 @@ public abstract class BenchmarkSuite {
 		.toLowerCase());
 
 	String dirString = "out/benchmarks/"
-		+ getDatabaseName(cfg.getString("import.dataset.path"))
+		+ getDatabaseName(cfg.getString("storage.directory"))
 		+ "/"
 		+ benchmark.getName().toLowerCase()
 		+ "/"
@@ -158,7 +166,6 @@ public abstract class BenchmarkSuite {
     }
 
     private static String getDatabaseName(String cfgName) {
-	return cfgName.substring(cfgName.lastIndexOf('/'),
-		cfgName.lastIndexOf('.'));
+	return cfgName.substring(cfgName.lastIndexOf('/'));		
     }
 }

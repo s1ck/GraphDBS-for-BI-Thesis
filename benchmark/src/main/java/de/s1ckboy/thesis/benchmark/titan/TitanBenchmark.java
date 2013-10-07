@@ -3,8 +3,6 @@ package de.s1ckboy.thesis.benchmark.titan;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.configuration.Configuration;
-
 import com.thinkaurelius.titan.core.TitanGraph;
 import com.thinkaurelius.titan.graphdb.relations.RelationIdentifier;
 import com.tinkerpop.blueprints.Edge;
@@ -26,8 +24,16 @@ public abstract class TitanBenchmark extends Benchmark {
     protected List<Long> userIDs;
     protected List<RelationIdentifier> reviewIDs;
 
-    protected static final Configuration cfg = Configs
-	    .get(TitanConstants.INSTANCE_NAME);
+    @Override
+    public void setUp() {
+	cfg = Configs.get(TitanConstants.INSTANCE_NAME);
+	graphDB = TitanHelper.getGraphDB(cfg);
+
+	groupIDs = new ArrayList<Long>();
+	productIDs = new ArrayList<Long>();
+	userIDs = new ArrayList<Long>();
+	reviewIDs = new ArrayList<RelationIdentifier>();
+    }
 
     @Override
     public void beforeRun() {
@@ -41,6 +47,7 @@ public abstract class TitanBenchmark extends Benchmark {
 
     @Override
     public void warmup() {
+	log.info("Warming up the caches ...");
 	String type;
 	for (Vertex v : graphDB.getVertices()) {
 	    type = v.getProperty(Constants.KEY_NODE_EDGE_TYPE);
@@ -52,22 +59,14 @@ public abstract class TitanBenchmark extends Benchmark {
 		userIDs.add((Long) v.getId());
 	    }
 	}
+	graphDB.commit();
 	for (Edge e : graphDB.getEdges()) {
 	    type = e.getLabel();
 	    if (type.equals(Constants.LABEL_EDGE_REVIEWED_BY)) {
 		reviewIDs.add((RelationIdentifier) e.getId());
 	    }
 	}
-    }
-
-    @Override
-    public void setUp() {
-	graphDB = TitanHelper.getGraphDB(cfg);
-
-	groupIDs = new ArrayList<Long>();
-	productIDs = new ArrayList<Long>();
-	userIDs = new ArrayList<Long>();
-	reviewIDs = new ArrayList<RelationIdentifier>();
+	log.info("done");
     }
 
     @Override

@@ -1,0 +1,19 @@
+import
+	- import time of datasets
+
+n = scale_factor / 10
+
+CRUD
+	Query 1
+		- select n random nodes by id
+	Query 2
+		- select n random nodes and read string property
+	Query 3
+		- select n random nodes and read integer property
+	Query 4
+		- select n random products and read array property
+
+Traversal
+	Query 5
+
+

@@ -4,7 +4,7 @@ import de.s1ckboy.thesis.benchmark.titan.TitanBenchmark;
 
 public class TitanQuery1 extends TitanBenchmark {
 
-    private Long idToRead;
+    private Long nextID;
 
     public TitanQuery1(int runs) {
 	this.setRuns(runs);
@@ -12,12 +12,13 @@ public class TitanQuery1 extends TitanBenchmark {
 
     @Override
     public void beforeRun() {
-	idToRead = getRandomVertexID();
+	nextID = getRandomVertexID();
     }
 
     @Override
     public void run() {
-	graphDB.getVertex(idToRead);
+	graphDB.getVertex(nextID);
+	graphDB.commit();
     }
 
     @Override

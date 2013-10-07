@@ -4,8 +4,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 
+import de.s1ckboy.thesis.benchmark.Configs;
 import de.s1ckboy.thesis.generic.Constants;
 
 /**
@@ -14,9 +16,13 @@ import de.s1ckboy.thesis.generic.Constants;
  * 
  */
 public abstract class Benchmark {
-
     protected static Logger log = Logger.getLogger(Benchmark.class);
-    
+
+    /**
+     * Configuration of that benchmark
+     */
+    protected Configuration cfg = Configs.get(getDatabaseName());
+
     /**
      * Number of benchmark runs
      */
@@ -30,7 +36,7 @@ public abstract class Benchmark {
     /**
      * Constant seed for same random IDs for each benchmark
      */
-    protected Random r = new Random(13003);
+    protected Random r = new Random(1337);
 
     /**
      * Sets the number of benchmarks to run
@@ -52,6 +58,20 @@ public abstract class Benchmark {
     }
 
     /**
+     * Returns the measurement unit for that benchmark.
+     * 
+     * @return Unit (milli- or nanosecond)
+     */
+    public Unit getUnit() {
+	String cfgUnit = cfg.getString(getName() + ".unit", "ms");
+	if ("ns".equals(cfgUnit)) {
+	    return Unit.NS;
+	} else {
+	    return Unit.MS;
+	}
+    }
+
+    /**
      * Set the number of current benchmark run
      * 
      * @param currentRun
@@ -67,6 +87,24 @@ public abstract class Benchmark {
      */
     public int getCurrentRun() {
 	return currentRun;
+    }
+
+    /**
+     * Sets the configuration for that benchmark.
+     * 
+     * @param cfg
+     */
+    public void setConfiguration(Configuration cfg) {
+	this.cfg = cfg;
+    }
+
+    /**
+     * Returns the configuration for that benchmark.
+     * 
+     * @return Configuration
+     */
+    public Configuration getConfiguration() {
+	return cfg;
     }
 
     /**
@@ -127,6 +165,7 @@ public abstract class Benchmark {
      */
     public Map<String, Object> getResults(long[] runtimes) {
 	Map<String, Object> results = new TreeMap<String, Object>();
+	String unit = getUnit().name().toLowerCase();
 
 	// average
 	long sum = 0L;
@@ -135,7 +174,7 @@ public abstract class Benchmark {
 	}
 	double avg = new Double(sum) / runtimes.length;
 
-	results.put("Average [ms]", avg);
+	results.put("Average [" + unit + "]", avg);
 
 	// stdev, min, max
 	long tmp = 0;
@@ -154,9 +193,9 @@ public abstract class Benchmark {
 	}
 	double stdev = Math.sqrt(new Double(tmp) / (runtimes.length));
 
-	results.put("Stdev [ms]", stdev);
-	results.put("Min [ms]", min);
-	results.put("Max [ms]", max);
+	results.put("Stdev [" + unit + "]", stdev);
+	results.put("Min [" + unit + "]", min);
+	results.put("Max [" + unit + "]", max);
 
 	return results;
     }

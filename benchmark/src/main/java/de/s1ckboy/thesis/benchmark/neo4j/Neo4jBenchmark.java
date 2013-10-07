@@ -1,43 +1,64 @@
 package de.s1ckboy.thesis.benchmark.neo4j;
 
-import org.apache.commons.configuration.Configuration;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.tooling.GlobalGraphOperations;
 
 import de.s1ckboy.thesis.benchmark.Configs;
 import de.s1ckboy.thesis.benchmark.generic.Benchmark;
+import de.s1ckboy.thesis.generic.Constants;
 
 public abstract class Neo4jBenchmark extends Benchmark {
-    /*
+    /**
      * indexes nodes by Constants.KEY_NODE_EDGE_ID
      */
     protected Index<Node> nodeIdx;
-    /*
+    /**
      * Neo4j instance
      */
     protected GraphDatabaseService graphDB;
-    /*
+    /**
      * Needed for embedded Cypher execution
      */
     protected ExecutionEngine engine;
-    /*
-     * Access to the config file
+    /**
+     * Used during warmup and for random selection
      */
-    protected static Configuration cfg = Configs
-	    .get(Neo4jConstants.INSTANCE_NAME);
+    protected List<Long> groupIDs;
+    protected List<Long> productIDs;
+    protected List<Long> userIDs;
+    protected List<Long> reviewIDs;
 
     @Override
     public void setUp() {
+	cfg = Configs.get(Neo4jConstants.INSTANCE_NAME);
 	// graph database instance
 	graphDB = Neo4jHelper.getGraphDB(cfg);
 	// cypher execution engine
 	engine = new ExecutionEngine(graphDB);
-	// get index
-	nodeIdx = graphDB.index().forNodes(Neo4jConstants.NODE_IDX_NAME);
+	// get index (must happen in tx)
+	Transaction tx = null;
+	try {
+	    tx = graphDB.beginTx();
+	    nodeIdx = graphDB.index().forNodes(Neo4jConstants.NODE_IDX_NAME);
+	    tx.success();
+	} finally {
+	    if (tx != null) {
+		tx.finish();
+	    }
+	}
+
+	groupIDs = new ArrayList<Long>();
+	productIDs = new ArrayList<Long>();
+	userIDs = new ArrayList<Long>();
+	reviewIDs = new ArrayList<Long>();
     }
 
     @Override
@@ -55,16 +76,65 @@ public abstract class Neo4jBenchmark extends Benchmark {
 	// TODO Auto-generated method stub
     }
 
-    @SuppressWarnings("unused")
     @Override
     public void warmup() {
 	log.info("Warming up the caches ...");
-	for (Node v : GlobalGraphOperations.at(graphDB).getAllNodes()) {
-	}
-	for (Relationship e : GlobalGraphOperations.at(graphDB)
-		.getAllRelationships()) {
+	String type = null;
+	Transaction tx = null;
+	try {
+	    tx = graphDB.beginTx();
+	    for (Node v : GlobalGraphOperations.at(graphDB).getAllNodes()) {
+		if (v.hasProperty(Constants.KEY_NODE_EDGE_TYPE)) {
+		    type = (String) v.getProperty(Constants.KEY_NODE_EDGE_TYPE);
+		    if (type.equals(Constants.VALUE_TYPE_GROUP)) {
+			groupIDs.add(v.getId());
+		    } else if (type.equals(Constants.VALUE_TYPE_PRODUCT)) {
+			productIDs.add(v.getId());
+		    } else if (type.equals(Constants.VALUE_TYPE_USER)) {
+			userIDs.add(v.getId());
+		    }
+		}
+	    }
+	    for (Relationship e : GlobalGraphOperations.at(graphDB)
+		    .getAllRelationships()) {
+		type = e.getType().name();
+		if (type.equals(Constants.LABEL_EDGE_REVIEWED_BY)) {
+		    reviewIDs.add(e.getId());
+		}
+	    }
+	    tx.success();
+	} finally {
+	    tx.finish();
 	}
 	log.info("done");
+    }
+
+    /**
+     * Picks a random class and inside the class a random node id.
+     * 
+     * @return a vertex identifier
+     */
+    protected Long getRandomVertexID() {
+	List<Long> l = null;
+
+	/*
+	 * Set ranges so that the probability to pick a class depends on the
+	 * number of its instances.
+	 */
+	int b1 = groupIDs.size();
+	int b2 = b1 + productIDs.size();
+	int total = b2 + userIDs.size();
+
+	int i = r.nextInt(total);
+
+	if (i >= 0 && i < b1) {
+	    l = groupIDs;
+	} else if (i >= b1 && i < b2) {
+	    l = productIDs;
+	} else {
+	    l = userIDs;
+	}
+	return l.get(r.nextInt(l.size()));
     }
 
     @Override

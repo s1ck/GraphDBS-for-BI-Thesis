@@ -8,7 +8,6 @@ import org.apache.commons.configuration.Configuration;
 import de.s1ckboy.thesis.benchmark.Configs;
 import de.s1ckboy.thesis.benchmark.generic.Benchmark;
 import de.s1ckboy.thesis.benchmark.generic.BenchmarkSuite;
-import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanExample;
 import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanImportBenchmark;
 import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanQuery1;
 
@@ -27,13 +26,6 @@ public class TitanSuite extends BenchmarkSuite {
 	 */
 	if (cfg.getBoolean("import")) {
 	    benchmarks.add(new TitanImportBenchmark(new TitanImporter(cfg), 1));
-	}
-
-	/**
-	 * Example
-	 */
-	if (cfg.getBoolean("example")) {
-	    benchmarks.add(new TitanExample(1));
 	}
 	
 	/**

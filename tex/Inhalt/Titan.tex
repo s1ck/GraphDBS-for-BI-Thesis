@@ -222,3 +222,10 @@ Apache Cassandra bietet durch eine fragmentierte Replikation der Datenbasis die 
 Schreibzugriffe werden vom Koordinator an alle Replikate eines Teilbereiches weitergeleitet. Ein anwendungsseitig definiertes Konsistenz-Level legt fest, auf wie vielen Replikaten der Schreibzugriff erfolgreich sein muss bevor eine Bestätigung an die Anwendung gesendet wird.\footnote{Beispiele für Konsistenz-Level sind \texttt{ONE}, \texttt{QUORUM} und \texttt{ALL} mit denen sich der Anteil zu berücksichtigender Replikate definieren lässt.} Das DBMS stellt sicher, dass alle Replikate letztendlich konsistent sind. Das Konsistenz-Level ermöglicht folglich den Kompromiss zwischen Schreibperformance und Fehlertoleranz.\\
 Bei lesenden Zugriffen wird ebenfalls ein Konsistenz-Level definiert. Es legt fest, an wie viele Replikate eine Anfrage vom Koordinator weitergeleitet wird. Werden mehrere Replikate angefragt, prüft der Koordinator die Konsistenz der gelesenen Informationen. Sind diese nicht konsistent, wird der aktuelle Wert auf Basis eines Zeitstempels ermittelt und an die Anwendung zurückgegeben. Das Konsistenz-Level dient bei Lesezugriffen folglich als Kompromiss zwischen Leseperformance und Aktualität der Daten.\\
 Die eingesetzte Hash-Funktion garantiert eine gleichmäßige Verteilung der Datenbasis auf das Cluster. Folglich können logisch benachbarte Knoten physisch getrennt gespeichert sein. Die Dokumentation von Titan beschreibt nicht, inwieweit die Verteilung beeinflusst werden kann. In \cite{titan_bench:2013} erwähnt Aurelius die Verwendung einer domänenspezifischen Partitionierung des Graphen, geht dabei jedoch nicht auf Details ein. Das Konsistenz-Level für lesende und schreibende Zugriffe lässt sich neben weiteren Einstellungen im GDBMS konfigurieren und ist standardmäßig auf die Mehrheit der Replikate festgelegt. Damit ist sichergestellt, dass gelesene Daten immer aktuell sind.
+
+\begin{figure}[h] 
+	\centering
+		\includegraphics[scale=.5]{test.eps}
+	\caption[Titan: Beispielgraph]{Test}
+	\label{fig:test}
+\end{figure}	

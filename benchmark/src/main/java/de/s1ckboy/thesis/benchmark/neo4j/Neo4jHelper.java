@@ -27,7 +27,7 @@ public class Neo4jHelper {
 
 	// init db
 	graphDB = new GraphDatabaseFactory()
-		.newEmbeddedDatabaseBuilder(cfg.getString("location"))
+		.newEmbeddedDatabaseBuilder(cfg.getString("storage.directory"))
 		.setConfig(dbConfig).newGraphDatabase();
 
 	registerShutdownHook(graphDB);

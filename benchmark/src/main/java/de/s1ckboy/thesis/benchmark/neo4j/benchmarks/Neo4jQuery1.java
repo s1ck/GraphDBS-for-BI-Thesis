@@ -1,38 +1,31 @@
 package de.s1ckboy.thesis.benchmark.neo4j.benchmarks;
 
-import java.util.Random;
+import org.neo4j.graphdb.Transaction;
 
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jBenchmark;
 
 public class Neo4jQuery1 extends Neo4jBenchmark {
-    private Random r;
-    
-    private long sleep;
-    
-    public Neo4jQuery1() {}
-    
+
+    private long nextID;
+
     public Neo4jQuery1(int runs) {
 	this.setRuns(runs);
     }
 
     @Override
-    public void setUp() {
-	super.setUp();
-	r = new Random();
-    }
-
-    @Override
     public void beforeRun() {
-	sleep = r.nextInt(1000);
+	nextID = getRandomVertexID();
     }
 
     @Override
     public void run() {
+	Transaction tx = null;
 	try {
-	    Thread.sleep(sleep);
-	} catch (InterruptedException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	    tx = graphDB.beginTx();
+	    graphDB.getNodeById(nextID);
+	    tx.success();
+	} finally {
+	    tx.finish();
 	}
     }
 
@@ -40,5 +33,4 @@ public class Neo4jQuery1 extends Neo4jBenchmark {
     public String getName() {
 	return "query1";
     }
-
 }
