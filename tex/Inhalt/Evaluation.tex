@@ -31,157 +31,139 @@ Das Projekt verfolgt drei Ziele: Zunächst ist die Integration von Unternehmensda
 \input{Inhalt/OrientDB}
 \input{Inhalt/Titan}
 
-\section{Zusammenfassung}
+\section{Zusammenfassung und Zwischenfazit}
 
-\paragraph*{Dokumentation}
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[t]
+	\centering
+	\begin{footnotesize}
+   	\begin{tabular}{|m{3.1cm}|>{\centering}m{2.8cm}|>{\centering}m{2.8cm}|>{\centering}m{3.1cm}|>{\centering\arraybackslash}m{3cm}|}
+	\hline
+	\textbf{GDBMS} & \textbf{Neo4j} & \textbf{HyperGraphDB} & \textbf{OrientDB} & \textbf{Titan} \\   
+   	\hline
+   	\multicolumn{5}{|c|}{\textbf{Allgemeines}} \\
+	\hline
+   	\textbf{Hersteller} & Neo Technology & Kobrix Software & Orient Technologies & Aurelius \\
+    \textbf{Lizenz} & GPLv3 & LGPL & Apache 2.0 & Apache 2.0 \\
+    \textbf{Version (Jahr)} & 2.0.0-M04 (2013) & 1.2 (2012) & 1.5.1 (2013) & 0.3.2 (2013) \\
+    \textbf{Sprache} & Java, Scala & Java & Java & Java \\
+    \hline
+    \multicolumn{5}{|c|}{\textbf{Kategorisierung}} \\
+    \hline
+    \textbf{Verarbeitung} & nativ & nativ & nativ & nativ \\
+    \textbf{Speicherung} & nativ & je nach Speichersystem & nativ & je nach Speichersystem \\
+    \textbf{Eingebettet} & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \textbf{Client-Server} & \checkmark & - & \checkmark & \checkmark \\
+    \textbf{Disk-zentriert} & \checkmark & je nach Speichersystem & \checkmark & je nach Speichersystem \\
+    \textbf{Hauptspeicher-zentriert} & - & - & - & - \\ 
+   % \textbf{Datenbanken} & eine & eine & mehrere & eine \\
+    \hline
+    \multicolumn{5}{|c|}{\textbf{Datenmodell}} \\
+    \hline
+    \textbf{Datenmodell} & PGM & PHGM & PGM & PGM \\
+    \textbf{Typsystem} & - & \checkmark (Klassen) & \checkmark (Klassen) & \checkmark (Attributschlüssel, Kantenbezeichner) \\
+	\textbf{Knotenbezeichner} & \checkmark  (optional) & \checkmark & \checkmark & - \\
+	\textbf{Kantenbezeichner} & \checkmark & \checkmark  (optional) & \checkmark & \checkmark \\
+	\textbf{Attributschema} & - & \checkmark & \checkmark (optional) & - \\
+	\textbf{dynamische Schemaänderung} & - & \checkmark (Werteaustausch) & \checkmark & - \\
+	\textbf{attributbezogene Integritätsbedingungen} & Datentyp, \texttt{UNIQUE} & Datentyp, \texttt{UNIQUE} & Datentyp, Wertebereich (explizit), \texttt{UNIQUE} & Datentyp, \texttt{UNIQUE} \\
+	\textbf{referentielle Integrität} & \checkmark & \checkmark & \checkmark & \checkmark \\
+	\textbf{Vererbung} & - & \checkmark & \checkmark & - \\
+	\textbf{Besonderheiten} & mehrere Knotenbezeichner & Relationen höherer Ordnung & Multi-Datenmodell & lokal eindeutige Attributschlüssel \& Kantenbezeichner \\
+   	\hline
+   	\end{tabular} 
+	\end{footnotesize}
+	\setlength{\belowcaptionskip}{0.25cm}	
+	\caption[Zusammenfassung: Allgemeines, Kategorisierung und Datenmodell]{Allgemeines, Kategorisierung und Datenmodell.}
+	\label{tab:zusammenfassung_allgemeines}
+\end{table}
+\renewcommand{\arraystretch}{1}
 
-Neo4j
-	- sehr gute Dokumentation
-	- Weg der Länge $k$ führt zu $\mathcal{O}(\left|N(v_1)\right| \times \left|N(v_2)\right| \times \cdots \times \left|N(v_k)\right|)$
-	- Support auf Mailingliste
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[t]
+	\centering
+	\begin{footnotesize}
+   	\begin{tabular}{|m{3.1cm}|>{\centering}m{3cm}|>{\centering}m{3cm}|>{\centering}m{3cm}|>{\centering\arraybackslash}m{3cm}|}
+	\hline	
+   	 \textbf{GDBMS} & \textbf{Neo4j} & \textbf{HyperGraphDB (BerkeleyDB)} & \textbf{OrientDB} & \textbf{Titan (BerkeleyDB)} \\   
+   	\hline
+   	\multicolumn{5}{|c|}{\textbf{Zugriffsmechanismen}} \\
+	\hline
+   	\textbf{Java API} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Traversal API} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Anfragesprachen} & Cypher, Gremlin & Prädikate\newline~(Java API) & OrientDB-SQL, Gremlin & Gremlin \\
+   	\hline
+	\multicolumn{5}{|c|}{\textbf{Operationen}} \\
+   	\hline
+   	\textbf{CRUD} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Mengenorientiert} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Traversierung} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Mustersuche} & \checkmark & - & \checkmark & \checkmark \\
+   	\textbf{Aggregation} & \checkmark & - & \checkmark & \checkmark \\
+   	\textbf{Gruppierung} & \checkmark & - & \checkmark & \checkmark \\
+   	\textbf{Summierung} & - & - & - & - \\
+   	\textbf{Metriken} & - & - & - & - \\
+   	\hline
+	\multicolumn{5}{|c|}{\textbf{Verfügbare Algorithmen}} \\   	
+   	\hline
+   	\textbf{Algorithmen\newline~(nativ)} & Dijkstra, A*, BFS, DFS & Dijkstra & - & - \\
+   	\textbf{Algorithmen\newline~(Blueprints)} & Bellman-Ford & - & Dijkstra, Bellman-Ford, A*, BFS, DFS & Dijkstra, Bellman-Ford, A*, BFS, DFS \\
+   	\hline
+	\multicolumn{5}{|c|}{\textbf{Transaktionen}} \\   	
+   	\hline
+   	\textbf{ACID-Eigenschaften} & ACID & ACI(D) & ACID & ACID \\
+   	\textbf{Isolationsebene} & \texttt{READ COMMITTED} & \texttt{SERIALIZABLE} & \texttt{SERIALIZABLE} & \texttt{REPEATABLE READ} \\
+   	\textbf{Synchronisations-verfahren\newline~(Storage)} & RX-Sperrverfahren & RX-Sperrverfahren & MVCC & RX-Sperrverfahren \\
+   	\textbf{Schachtelung} & ja, kein isoliertes Rücksetzen & ja, isoliertes Rücksetzen & nein & ja, keine Isolation \\
+   	\hline
+	\multicolumn{5}{|c|}{\textbf{Indexverwaltung}} \\   	
+   	\hline
+	\textbf{Primärindex} & \checkmark & \checkmark & \checkmark & \checkmark \\
+	\textbf{Sekundärindex} & \checkmark & \checkmark & \checkmark & \checkmark \\
+	\textbf{Aktualisierung} & automatisch & automatisch & automatisch & automatisch \\
+	\textbf{Externe Indexstrukturen} & Apache Lucene, Neo4j Spatial & - & - & Elastic Search, Apache Lucene \\
+	\textbf{Besonderheiten} & - & - & - & Knoten-zentrierte Indizes \\
+   	\hline
+   	\end{tabular} 
+	\end{footnotesize}
+	\setlength{\belowcaptionskip}{0.25cm}	
+	\caption[Zusammenfassung: Allgemeines und Datenmodell]{Allgemeines und Datenmodell.}
+	\label{tab:zusammenfassung_allgemeines}
+\end{table}
+\renewcommand{\arraystretch}{1}
 
-HyperGraphDB
-	- gut Dokumentation
-	- Support auf Mailingliste
-	
-OrientDB
-	- Dokumentation sehr eingeschränkt, inkonsistent, viel Quelltextrecherche
-	- Support auf Mailingliste
-	
-Titan
-	- gute Doku für junges Projekt
-	- Support auf Mailingliste
-	
-\paragraph*{Datenmodell}
-
-% Tabelle
-
-- Neo4j: PGM + Knotenlabel
-	- keine Objekteinbettung
-	- keine Schemadefinition an Knoten und Kanten
-- HyperGraphDB: 
-	- Atom-Modell sehr generisch
-	- Schema durch Klassendefinition
-- OrientDB: 
-	- Dokumentmodell als Basis
-	- PGM auf Dokumente abgebildet 
-	- Schema durch Klassendefinition
-- Titan: PGM + TitanKey + TitanLabel
-	- keine Schemadefinition an Knoten und Kanten
-	- Einschränkung der Attribute
-	- Einschränkung der Kanten
-	- Einschränkung Datentypen
-	- verschachtelte Attributwerte (Maps)
-	- Vertex-centric Indices
-	- unidirektionale Kanten
-
-\paragraph*{Zugriffsmechanismen}
-
-CRUD-Operationen:
-	- Neo4j: CRUD
-		- in nativer API und Cypher möglich
-		- Algorithmen unterstützten Einschränkungen auf Graphen (im Gegensatz zu Blueprints)
-	- HyperGraphDB: CRUD
-	- OrientDB: CRUD
-	- Titan: CRUD
-Traversierung:
-	- Neo4j:
-		- algorithmische Traversierung mittels Traversal Framework -> Java
-	- HyperGraphDB
-		- algorithmische Traversierung mittels Traversal Framework -> Java
-	- OrientDB
-		- TRAVERSE-Operator oder Gremlin
-	- Titan:
-		- Gremlin, turing-mächtig
-Erreichbarkeit
-	- Neo4j:
-		- native API stellt Algorithmen zur Verfügung
-		- Cypher bietet shortestPath allShortestPath-Funktionen an
-	- HyperGraphDB
-		- durch Traversierung umsetzbar
-		- Dijkstra-Implementierung
-	- OrientDB
-		- durch Traversierung umsetzbar
-		- shortestPath und dijkstra in API
-	- Titan
-		- durch Traversierung umsetzbar
-Mustersuche
-	- Neo4j:
-		- Cypher ermöglicht die Definition beliebiger Mustergraphen
-	- HyperGraphDB
-	 	- keine native Unterstützung
-		- einfache Muster durch entsprechende Prädikatkombinationen
-	- OrientDB
-		- keine native Unterstützung
-		- evtl. durch Schachtelung von SELECT und TRAVERSE
-	- Titan
-		- Musterdefinition via Gremlin und table-Funktion
-		- weniger elegant als Cypher (= komplexer)
-Aggregation und Summierung
-	- Neo4j:
-		- Aggregation ja
-		- Summierung nein
-	- HyperGraphDB
-		- Aggregation nein -> (hg.apply)
-		- Summierung nein
-	- OrientDB
-		- Aggregation ja
-		- Summierung nein
-	- Titan
-		- Aggregation ja
-		- Summierung nein
-Metriken
-	- Neo4j: allShortestPaths -> grundlage für centrality maße
-	- bis auf Kardinalität der Knoten- / Kantenmenge nichts zusätzliches
-
-Transaktionen
-	- generell: Optimierung für Leseoperationen / Konflikte werden an Anwendung weitergegeben (OrientDB und Titan)
-	- Neo4j: ACID, Locking, READ COMMITTED
-	- HyperGraphDB: ACI(D), MVCC (GDBMS) + Locking (BerkeleyDB), SERIALIZABLE
-	- OrientDB: ACID, MVCC, SERIALIZABLE
-	- Titan: ACID, Locking (BerkeleyDB), SERIALIZABLE (BerkeleyDB)
-	
-\paragraph*{Speicherung und Caching}
-
-- Neo4j: nativ
-	- Trennung Topologie und Daten
-	- Traversierung: O(1)
-	- Fragmentierung der Stores
-- HyperGraphDB: nicht-nativ
-	- keine Trennung von Topologie und Daten
-	- Speicherung in KV-Store 
-	- Traversierung: O(logn)
-- OrientDB: nativ
-	- keine Trennung von Topologie und Daten 
-	- Traversierung: O(N\_v)
-	- Fragmentierung der Stores
-	- attributierte Kanten sind zusätzliche Indirektion\url{https://github.com/orientechnologies/orientdb/wiki/Performance-Tuning-Blueprints}
-- Titan: nicht-nativ
-	- keine Trennung von Topologie und Daten
-	- Speicherung in KV-Store 
-	- Traversierung O(logn)
-	- Ein Vorteil gegenüber OrientDB und HyperGraphDB, ist die Möglichkeit des direkten Zugriffes auf Attribute und inzidente Kanten eines Knotens unter Angabe der Knoten-Identität und der geforderten 
-	Column.
-	- Caching und langlaufende Änderungstransaktionen
-
-- generell: Beschleunigung via Caches -> Hashtabellen  O(1) (wenn da)
-
-
-OrientDB:
-	- widersprüchliche Dokumentation, wenig Beispiele
-	- Bugs z.B. falsche Ergebnisse beim Traversieren, expand(shortestPath) und expand(dijkstra) haben 	kein Effekt
-
-	- Ergebnisse zwischen Tiefen- und Breitensuche unterscheiden sich durch Verhindern des wiederholten Zugriffs
-
-	- physische Repräsentation: Deserialisieren der Attribute kann sich negativ auf Performance auswirken, attributierte Kanten ebenfalls
-
-\paragraph*{Titan}
-
-- Besonderheit: 
-	- out-unique Einschränkung innerhalb der Instanz
-	- in-unique entspricht Unique in Neo4j
-	- verschachtelte Attributwerte
-	- Vertex-centric Indices
-	- unidirektionale Kanten
-
-
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[t]
+	\centering
+	\begin{footnotesize}
+   	\begin{tabular}{|m{3.1cm}|>{\centering}m{3cm}|>{\centering}m{3cm}|>{\centering}m{3cm}|>{\centering\arraybackslash}m{3cm}|}
+	\hline
+   	 \textbf{GDBMS} & \textbf{Neo4j} & \textbf{HyperGraphDB} & \textbf{OrientDB} & \textbf{Titan} \\   
+ 	\hline
+ 	\multicolumn{5}{|c|}{\textbf{Persistenzverwaltung}} \\
+	\hline
+	\textbf{Realisierung} & Store-Konzept & Key-Value-Modell & Dokument-Modell & Key-Column-Value-Modell \\
+	\textbf{Trennung Topologie, Nutzdaten} & \checkmark & \checkmark & - & - \\
+	\textbf{Satzlänge} & fest & variabel & variabel & variabel \\
+	\textbf{Zeitkomplexität Zugriff Nachbarschaft} & konstant & logarithmisch (BerkeleyDB) & konstant & logarithmisch (BerkeleyDB), konstant (Cassandra)\\
+	\hline
+	\multicolumn{5}{|c|}{\textbf{Cacheverwaltung}} \\
+	\hline
+	\textbf{Caches} & Memory Mapped Files, Filesystem-Cache (LFU), Objekt-Cache (Schwache Referenzen) & Atomcache (LRU), Inzidenzcache (LRU) & Memory Mapped Files, L2 Cache (FIFO), L1 Cache (Schwache Referenzen) & Transaktionscache \\
+	\hline
+	\multicolumn{5}{|c|}{\textbf{Verteilung}} \\
+	\hline
+	\textbf{Architektur} & Master-Slave (nur Enterprise Edition) & Peer-To-Peer Message Framework & Master-Master & Peer-to-Peer (Cassandra) \\
+	\textbf{Replikation} & \checkmark & - & \checkmark & \checkmark \\
+	\textbf{Partitionierung} & - & - & - & \checkmark \\
+	\textbf{Skalierbarkeit Lesen} & horizontal & - & horizontal & horizontal \\
+	\textbf{Skalierbarkeit Schreiben} & vertikal & - & vertikal & horizontal \\
+	\textbf{Skalierbarkeit Datenvolumen} & vertikal & - & vertikal & horizontal \\
+   	\hline
+  	\end{tabular} 
+	\end{footnotesize}
+	\setlength{\belowcaptionskip}{0.25cm}	
+	\caption[Zusammenfassung: Allgemeines und Datenmodell]{Allgemeines und Datenmodell.}
+	\label{tab:zusammenfassung_allgemeines}
+\end{table}
+\renewcommand{\arraystretch}{1}
