@@ -17,7 +17,7 @@ import de.s1ckboy.thesis.generic.Constants;
 
 public abstract class Neo4jBenchmark extends Benchmark {
     /**
-     * indexes nodes by Constants.KEY_NODE_EDGE_ID
+     * Indexes nodes by Constants.KEY_NODE_EDGE_ID
      */
     protected Index<Node> nodeIdx;
     /**
@@ -31,9 +31,6 @@ public abstract class Neo4jBenchmark extends Benchmark {
     /**
      * Used during warmup and for random selection
      */
-    protected List<Long> groupIDs;
-    protected List<Long> productIDs;
-    protected List<Long> userIDs;
     protected List<Long> reviewIDs;
 
     @Override
@@ -54,11 +51,8 @@ public abstract class Neo4jBenchmark extends Benchmark {
 		tx.finish();
 	    }
 	}
-
-	groupIDs = new ArrayList<Long>();
-	productIDs = new ArrayList<Long>();
-	userIDs = new ArrayList<Long>();
 	reviewIDs = new ArrayList<Long>();
+	super.setUp();
     }
 
     @Override
@@ -106,35 +100,12 @@ public abstract class Neo4jBenchmark extends Benchmark {
 	} finally {
 	    tx.finish();
 	}
+	log.info("Products: " + productIDs.size());
+	log.info("Groups: " + groupIDs.size());
+	log.info("Users: " + userIDs.size());
+	log.info("Reviews: " + reviewIDs.size());
+
 	log.info("done");
-    }
-
-    /**
-     * Picks a random class and inside the class a random node id.
-     * 
-     * @return a vertex identifier
-     */
-    protected Long getRandomVertexID() {
-	List<Long> l = null;
-
-	/*
-	 * Set ranges so that the probability to pick a class depends on the
-	 * number of its instances.
-	 */
-	int b1 = groupIDs.size();
-	int b2 = b1 + productIDs.size();
-	int total = b2 + userIDs.size();
-
-	int i = r.nextInt(total);
-
-	if (i >= 0 && i < b1) {
-	    l = groupIDs;
-	} else if (i >= b1 && i < b2) {
-	    l = productIDs;
-	} else {
-	    l = userIDs;
-	}
-	return l.get(r.nextInt(l.size()));
     }
 
     @Override

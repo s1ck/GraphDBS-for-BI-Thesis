@@ -5,49 +5,13 @@
 	<artifactId>benchmark</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Graph Benchmark Suite</name>
-
-	<repositories>
-		<!-- HypergraphDB -->
-		<repository>
-			<id>hypergraphdb</id>
-			<url>http://hypergraphdb.org/maven</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
-		<!-- HypergraphDB -->
-		<dependency>
-			<groupId>org.hypergraphdb</groupId>
-			<artifactId>hgdb</artifactId>
-			<version>1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hypergraphdb</groupId>
-			<artifactId>hgbdbje</artifactId>
-			<version>1.2</version>
-		</dependency>
-
 		<!-- Neo4j -->
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j</artifactId>
 			<version>2.0.0-M04</version>
 		</dependency>
-
-		<!-- OrientDB -->
-		<dependency>
-			<groupId>com.orientechnologies</groupId>
-			<artifactId>orient-commons</artifactId>
-			<version>1.5.1</version>
-			<type>bundle</type>
-		</dependency>
-		<dependency>
-			<groupId>com.orientechnologies</groupId>
-			<artifactId>orientdb-core</artifactId>
-			<version>1.5.1</version>
-			<type>bundle</type>
-		</dependency>
-
 		<!-- Titan -->
 		<dependency>
 			<groupId>com.thinkaurelius.titan</groupId>
@@ -59,6 +23,11 @@
 			<artifactId>titan-berkeleyje</artifactId>
 			<version>0.3.2</version>
 		</dependency>
+		<dependency>
+            <groupId>com.thinkaurelius.titan</groupId>
+            <artifactId>titan-cassandra</artifactId>
+            <version>0.3.2</version>
+        </dependency>
 
 		<!-- log4j -->
 		<dependency>
@@ -86,7 +55,6 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -98,13 +66,6 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
-			</plugin>
-			<!-- needed for OrientDB -->
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.6</version>
-				<extensions>true</extensions>
 			</plugin>
 		</plugins>
 	</build>

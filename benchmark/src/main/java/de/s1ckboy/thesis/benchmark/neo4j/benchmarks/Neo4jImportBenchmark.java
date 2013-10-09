@@ -1,6 +1,7 @@
 package de.s1ckboy.thesis.benchmark.neo4j.benchmarks;
 
 import de.s1ckboy.thesis.benchmark.generic.Importer;
+import de.s1ckboy.thesis.benchmark.generic.benchmarks.Import;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jBenchmark;
 
 /**
@@ -15,7 +16,7 @@ import de.s1ckboy.thesis.benchmark.neo4j.Neo4jBenchmark;
  * @author Martin Junghanns
  * 
  */
-public class Neo4jImportBenchmark extends Neo4jBenchmark {
+public class Neo4jImportBenchmark extends Neo4jBenchmark implements Import {
 
     private Importer importer;
     

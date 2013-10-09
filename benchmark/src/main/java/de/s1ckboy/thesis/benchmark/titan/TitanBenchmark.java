@@ -15,24 +15,17 @@ import de.s1ckboy.thesis.generic.Constants;
 public abstract class TitanBenchmark extends Benchmark {
 
     protected TitanGraph graphDB;
-
-    /**
-     * Used during warmup and for random selection
-     */
-    protected List<Long> groupIDs;
-    protected List<Long> productIDs;
-    protected List<Long> userIDs;
+    
     protected List<RelationIdentifier> reviewIDs;
 
     @Override
     public void setUp() {
 	cfg = Configs.get(TitanConstants.INSTANCE_NAME);
 	graphDB = TitanHelper.getGraphDB(cfg);
-
-	groupIDs = new ArrayList<Long>();
-	productIDs = new ArrayList<Long>();
-	userIDs = new ArrayList<Long>();
+	
 	reviewIDs = new ArrayList<RelationIdentifier>();
+	
+	super.setUp();
     }
 
     @Override
@@ -49,6 +42,7 @@ public abstract class TitanBenchmark extends Benchmark {
     public void warmup() {
 	log.info("Warming up the caches ...");
 	String type;
+	long cnt = 0L;
 	for (Vertex v : graphDB.getVertices()) {
 	    type = v.getProperty(Constants.KEY_NODE_EDGE_TYPE);
 	    if (type.equals(Constants.VALUE_TYPE_GROUP)) {
@@ -58,14 +52,26 @@ public abstract class TitanBenchmark extends Benchmark {
 	    } else if (type.equals(Constants.VALUE_TYPE_USER)) {
 		userIDs.add((Long) v.getId());
 	    }
+	    if (++cnt % 10000 == 0) {
+		log.info("touched " + cnt + " nodes");
+	    }
 	}
+	cnt = 0L;
 	graphDB.commit();
+	
 	for (Edge e : graphDB.getEdges()) {
 	    type = e.getLabel();
 	    if (type.equals(Constants.LABEL_EDGE_REVIEWED_BY)) {
 		reviewIDs.add((RelationIdentifier) e.getId());
 	    }
+	    if (++cnt % 10000 == 0) {
+		log.info("touched " + cnt + " edges");
+	    }
 	}
+	log.info("Products: " + productIDs.size());
+	log.info("Groups: " + groupIDs.size());
+	log.info("Users: " + userIDs.size());
+	log.info("Reviews: " + reviewIDs.size());
 	log.info("done");
     }
 
@@ -77,33 +83,5 @@ public abstract class TitanBenchmark extends Benchmark {
     @Override
     public String getDatabaseName() {
 	return TitanConstants.INSTANCE_NAME;
-    }
-
-    /**
-     * Picks a random class and inside the class a random node id.
-     * 
-     * @return a vertex identifier
-     */
-    protected Long getRandomVertexID() {
-	List<Long> l = null;
-
-	/*
-	 * Set ranges so that the probability to pick a class depends on the
-	 * number of its instances.
-	 */
-	int b1 = groupIDs.size();
-	int b2 = b1 + productIDs.size();
-	int total = b2 + userIDs.size();
-
-	int i = r.nextInt(total);
-
-	if (i >= 0 && i < b1) {
-	    l = groupIDs;
-	} else if (i >= b1 && i < b2) {
-	    l = productIDs;
-	} else {
-	    l = userIDs;
-	}
-	return l.get(r.nextInt(l.size()));
     }
 }

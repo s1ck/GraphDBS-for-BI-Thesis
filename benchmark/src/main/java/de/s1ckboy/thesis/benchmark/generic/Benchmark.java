@@ -1,5 +1,7 @@
 package de.s1ckboy.thesis.benchmark.generic;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
@@ -37,6 +39,15 @@ public abstract class Benchmark {
      * Constant seed for same random IDs for each benchmark
      */
     protected Random r = new Random(1337);
+
+    /**
+     * Used during warmup and for random selection
+     */
+    protected List<Long> groupIDs;
+
+    protected List<Long> productIDs;
+
+    protected List<Long> userIDs;
 
     /**
      * Sets the number of benchmarks to run
@@ -111,7 +122,11 @@ public abstract class Benchmark {
      * This method is called once before <code>run()</code> is invoked for the
      * first time.
      */
-    public abstract void setUp();
+    public void setUp() {
+	groupIDs = new ArrayList<Long>();
+	productIDs = new ArrayList<Long>();
+	userIDs = new ArrayList<Long>();
+    }
 
     /**
      * This method runs the benchmark
@@ -151,6 +166,46 @@ public abstract class Benchmark {
      * @return
      */
     public abstract String getDatabaseName();
+
+    /**
+     * Picks a random class and inside the class a random node id.
+     * 
+     * @return a vertex identifier
+     */
+    protected Long getRandomVertexID() {
+	List<Long> l = null;
+
+	/*
+	 * Set ranges so that the probability to pick a class depends on the
+	 * number of its instances.
+	 */
+	int b1 = groupIDs.size();
+	int b2 = b1 + productIDs.size();
+	int total = b2 + userIDs.size();
+
+	int i = r.nextInt(total);
+
+	if (i >= 0 && i < b1) {
+	    l = groupIDs;
+	} else if (i >= b1 && i < b2) {
+	    l = productIDs;
+	} else {
+	    l = userIDs;
+	}
+	return l.get(r.nextInt(l.size()));
+    }
+
+    protected Long getRandomProduct() {
+	return productIDs.get(r.nextInt(productIDs.size()));
+    }
+
+    protected Long getRandomUser() {
+	return userIDs.get(r.nextInt(userIDs.size()));
+    }
+
+    protected Long getRandomGroup() {
+	return groupIDs.get(r.nextInt(groupIDs.size()));
+    }
 
     /**
      * This method calculates some default measurement results: average,
