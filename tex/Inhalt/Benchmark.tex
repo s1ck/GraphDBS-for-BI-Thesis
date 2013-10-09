@@ -7,7 +7,7 @@
 
 \section{Testumgebung}
 
-\subsection{Datensätze}
+\subsection{Datengrundlage und Anfragen}
 
 \begin{figure}[h] 
 	\centering
@@ -15,6 +15,20 @@
 	\caption[Benchmark: Schema Testdaten]{Schema}
 	\label{fig:test}
 \end{figure}
+
+\paragraph*{Anfragen}
+
+\begin{itemize}
+	\item[\textbf{Import}] Der Datensatz soll zunächst in das GDBMS importiert werden. Dabei werden die vorhandenen Möglichkeiten zum Bulk Import verwendet.
+	\item[\textbf{Lesezugriff auf Attribute}] Es werden zufällig Produkte und Nutzer ausgewählt und deren Attribute ausgelesen. Dabei soll die Ausführungszeit je nach Datentyp des Attributwertes aufgeschlüsselt werden.
+	\item[\textbf{Teilgraph ähnlicher Produkte}] Ausgehend von zufällig ausgewählten Produkten werden jene Produkte ausgewählt die ebenfalls ähnlich zueinander sind. Dabei sollen nur die Produkte berücksichtigt werden, die sich in Bezug auf den \texttt{salesrank} innerhalb eines definierten Intervalls befinden.
+	\item[\textbf{ Friend-of-Friend}] Ausgehend von zufällig ausgewählten Nutzern soll das Durchschnittsalter der Nutzer berechnet werden die sich zwei Schritte vom Ausgangsknoten entfernt befinden. Das wiederholte Besuchen von Knoten soll dabei ausgeschlossen werden.
+	\item[\textbf{Kürzeste Pfade}] Zufällige Auswahl von zwei Nutzern und Berechnen des kürzesten Pfades unter Verwendung der Beziehungsarten \texttt{FRIEND\_OF}, \texttt{REVIEWED\_BY} und \texttt{SIMILAR\_TO}. Der maximale Abstand wird auf Fünf festgelegt.
+	\item[\textbf{Empfehlungen}] Ausgehend von zufällig ausgewählten Nutzern sollen alle Produkte ausgewählt werden, die von den Freunden des Nutzers bewertet wurden. Die Produkte sollen dabei nach dem Attribut \texttt{rating} der \texttt{REVIEWED\_BY}-Beziehung sortiert und die obersten und untersten fünf Produkte ausgegeben werden.
+	\item[\textbf{Mustersuche}] blubb
+	
+\end{itemize}
+
 
 \begin{itemize}
 	\item Verwendung von ERPNext Schema + Daten (multiplizieren)	
