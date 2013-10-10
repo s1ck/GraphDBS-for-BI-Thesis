@@ -38,33 +38,33 @@ Das Projekt verfolgt drei Ziele: Zunächst ist die Integration von Unternehmensda
 - nur einführende Beispiele
 
 Neo4j
-	- sehr gute, aktuelle Dokumentation	
-	- Support auf Mailingliste
-	- aktive Community (Stackoverflow, Mailing List. viele Präsentationen)
-	- im Entwicklungsstand am weitesten fortgeschritten
-	- nur wenig Quelltextrecherche erforderlich
+	+ sehr gute, aktuelle Dokumentation	
+	+ Support auf Mailingliste
+	+ aktive Community (Stackoverflow, Mailing List. viele Präsentationen)
+	+ im Entwicklungsstand am weitesten fortgeschritten
+	+ nur wenig Quelltextrecherche erforderlich
 
 HyperGraphDB
-	- gute Dokumentation
+	+ gute Dokumentation
 	- wird hauptsächlich von einer Person entwickelt
 		Vorteil: gut strukturierter Quelltext
 		Nachteil: langsame Weiterentwicklung im Gegensatz zu den verglichenen Systemen
-	- Support auf Mailingliste (diese ist jedoch nur schwach frequentiert)
+	+ Support auf Mailingliste (diese ist jedoch nur schwach frequentiert)
 	- kaum zusätzliches Material
-	- an vielen Stellen auf Erweiterung ausgelegt
+	+ an vielen Stellen auf Erweiterung ausgelegt
 	- Quelltextrecherche war notwendig (Transaktionsverwaltung / Caching)
 
 OrientDB
-	- Dokumentation sehr eingeschränkt und inkonsistent mit aktuellem Entwicklungsstand
+	- Dokumentation wirkt umfangreich ist jedoch teilweise unvollständig und inkonsistent mit aktuellem Entwicklungsstand
 	- Zugriffsmechanismen im Graphenmodell: widersprüchliche Dokumentation, wenig Beispiele
 	- viel Quelltextrecherche (Transaktionsverwaltung, Persistenz- und Cacheverwaltung)
-	- Aktivität und Support auf Mailingliste	
+	+ Aktivität und Support auf Mailingliste	
 
 Titan
-	- gute Doku für junges Projekt (fehlende Dokumentation der Persistenzverwaltung)
+	+ gute Doku für junges Projekt (fehlende Dokumentation der Persistenzverwaltung)
 	- Quelltextrecherche
-	- durch Wiederverwendung existierender Lösungen -> Konzentration auf graphenorientierte Verarbeitung
-	- bei Fragen Support auf Mailingliste
+	+ durch Wiederverwendung existierender Lösungen -> Konzentration auf graphenorientierte Verarbeitung
+	+ bei Fragen Support auf Mailingliste
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -102,7 +102,8 @@ Titan
 \paragraph*{Datenmodell}
 
 Tabelle \ref{tab:zusammenfassung_datenmodell} stellt die GDBMS hinsichtlich ihres Datenmodells gegenüber.
-
+- generell
+	- alle Systeme sind flexibel hinsichtlich Schemaänderungen
 % Tabelle
 - Neo4j: PGM
 	+ Knotenlabel (mehrere)
@@ -119,12 +120,14 @@ Tabelle \ref{tab:zusammenfassung_datenmodell} stellt die GDBMS hinsichtlich ihre
 	- kein direkter Zugriff auf Nachbarschaft
 	- komplizierte Definition der Semantik der Position in Zielmenge
 - OrientDB:
-	+ Multi-Modell-Ansatz (Dokumentenmodell als Basis)
-	- Versuch, mehrere Ansätze zu kombinieren	
-	- Deserialisierung erscheint ineffizient (evtl. Verweise auf ältere Benchmarks)	
+	+ Multi-Modell-Ansatz (Dokumentenmodell als Basis) 
+	+ Schema durch Klassendefinition (+ einfache Vererbung)
+	+ umfangreiche attributbezogene Integritätsbedingungen
+	+ Rechteverwaltung
+	- bietet zwar vielfältige Einsatzmöglichkeiten, der Fokus scheint jedoch auf der dokumentenorientierten Verwendung und weniger auf vernetzten Informationen zu liegen	
 	- Dokumentmodell als Basis
-	- PGM auf Dokumente abgebildet 
-	- Schema durch Klassendefinition
+	- PGM auf Dokumente abgebildet
+	
 - Titan: PGM + TitanKey + TitanLabel
 	+ Definition von TitanKey und TitanLabel zur Optimierung der Speicherung (Performance)
 	+ erlaubt mehrfache Verwendung von Attributschlüsseln an Knoten / Kante
@@ -149,14 +152,15 @@ Tabelle \ref{tab:zusammenfassung_datenmodell} stellt die GDBMS hinsichtlich ihre
     \hline
     \textbf{Datenmodell} & PGM & PHGM & PGM & PGM \\
     \textbf{Typsystem} & - & \checkmark (Klassen) & \checkmark (Klassen) & \checkmark (Attributschlüssel, Kantenbezeichner) \\
+    \textbf{Vererbung} & - & einfach & mehrfach & - \\
 	\textbf{Knotenbezeichner} & \checkmark  (optional) & \checkmark & \checkmark & - \\
 	\textbf{Kantenbezeichner} & \checkmark & \checkmark  (optional) & \checkmark & \checkmark \\
 	\textbf{Attributschema} & - & \checkmark & \checkmark (optional) & - \\
 	\textbf{dynamische Schemaänderung} & - & \checkmark (Werteaustausch) & \checkmark & - \\
-	\textbf{attributbezogene Integritätsbedingungen} & \texttt{UNIQUE} & Datentyp, \texttt{UNIQUE} & Datentyp, Wertebereich (explizit), \texttt{UNIQUE} & Datentyp, \texttt{UNIQUE} \\
+	\textbf{attributbezogene Integritätsbedingungen} & \texttt{UNIQUE} & Datentyp, \texttt{UNIQUE} & Datentyp, Wertebereich (explizit), \texttt{UNIQUE}, \texttt{NOT NULL} & Datentyp, \texttt{UNIQUE} \\
 	\textbf{referentielle Integrität} & \checkmark & \checkmark & \checkmark & \checkmark \\
 	\textbf{Vererbung} & - & \checkmark & \checkmark & - \\
-	\textbf{Besonderheiten} & mehrere Knotenbezeichner & n-äre Relationen höherer Ordnung, offene Architektur & Multi-Datenmodell & lokal eindeutige Attributschlüssel \& Kantenbezeichner \\
+	\textbf{Besonderheiten} & mehrere Knotenbezeichner & n-äre Relationen höherer Ordnung, offene Architektur & Multi-Datenmodell, mehrere Datenbanken, Rechteverwaltung & lokal eindeutige Attributschlüssel \& Kantenbezeichner \\
    	\hline
    	\end{tabular} 
 	\end{footnotesize}
@@ -176,8 +180,9 @@ Entfernter Zugriff:
 CRUD-Operationen:
 	- in allen GDBMS möglich
 	- dabei Einschränkung der Ergebnismenge durch Angabe von Schlüssel-Wert-Paaren
+	- wenn vom Modell unterstützt, stehen Methoden für Klassen- / Typ-Definitionen zur Verfügung
 	
-algorithmische Traversierung:
+Traversierung:
 	- Neo4j:
 		+ algorithmische Traversierung mittels Traversal Framework
 			- umfangreiche Möglichkeiten zur Beeinflussung (Richtung, mehrfache Betrachtung, Filter- und Abbruchkriterien, Heuristiken)
@@ -189,13 +194,14 @@ algorithmische Traversierung:
 		+ Prädikate erlauben die Definition von Filterkriterien	für besuchte Kanten / Knoten
 		- kein direkter Zugriff auf die Nachbarschaft eines Knotens (keine intuitive Verwendung)		
 		- hoher manueller Aufwand (z.B. keine Pfadinstanzen)
+	- OrientDB
+		- TRAVERSE-Operator in OrientDB-SQL unzureichend dokumentiert, nur triviale Beispiel, wenig intuitiv
+		- Einschränkungen beim Traversieren durch komplexes Verschachteln von Anfragen möglich		
+		+ Ausrichtung auf dokumentenorientierten Betrieb und mengenorientiertes Verarbeiten semi-strukurierter Daten
 	- OrientDB und Titan
 		+ algorithmische Traversierung durch knoten-zentrierte Anfragen		
 		- vorrangig Nutzung von Gremlin -> Programmiersprache, mächtig
-	- OrientDB
-		- OrientDB-SQL graphenorientierte Verwendung sehr schlecht dokumentiert
-		- Ausrichtung auf dokumentenorientierten Betrieb
-
+	
 Erreichbarkeit
 	- Neo4j:
 		- native API stellt Algorithmen zur Verfügung
@@ -223,9 +229,8 @@ Mustersuche
 	- HyperGraphDB
 	 	- keine native Unterstützung (keine Variablendefinition in Prädikaten)
 	- OrientDB
-		- keine native Unterstützung
+		- keine native Unterstützung / keine Dokumentation
 		- evtl. durch Schachtelung von SELECT und TRAVERSE
-		- kaum dokumentiert
 		- OrientDB-SQL eher für dokumentenzentierten, mengenorientierten Zugriff
 	- Titan
 		- Musterdefinition via Gremlin und table-Funktion
@@ -270,11 +275,11 @@ Metriken
    	\textbf{CRUD} & \checkmark & \checkmark & \checkmark & \checkmark \\
    	\textbf{Mengenorientiert} & \checkmark & \checkmark & \checkmark & \checkmark \\
    	\textbf{Traversierung} & \checkmark & \checkmark & \checkmark & \checkmark \\
-   	\textbf{Mustersuche} & \checkmark & - & \checkmark & \checkmark \\
+   	\textbf{Mustersuche} & \checkmark & - & - & \checkmark \\
    	\textbf{Aggregation} & \checkmark & - & \checkmark & \checkmark \\
    	\textbf{Gruppierung} & \checkmark & - & \checkmark & \checkmark \\
    	\textbf{Summierung} & - & - & - & - \\
-   	\textbf{Metriken} & (\checkmark) & - & (\checkmark) & (\checkmark) \\
+   	\textbf{Metriken} & - & - & - & - \\
    	\hline
 	\multicolumn{5}{|c|}{\textbf{Verfügbare Algorithmen}} \\   	
    	\hline
@@ -346,7 +351,6 @@ Indexverwaltung
 \paragraph*{Persistenz- und Cacheverwaltung, Verteilung}
 
 % Persistenzverwaltung
-
 - Neo4j: nativ
 	+ Trennung von Topologie und Daten
 	+ physische Trennung fein granular durch Store-Konzept
@@ -363,6 +367,7 @@ Indexverwaltung
 - OrientDB: nicht-nativ
 	- keine Trennung von Topologie und Daten 
 	- Traversierung: O(N\_v)
+	- Deserialisierung erscheint ineffizient (evtl. Verweise auf ältere Benchmarks)	
 	- Fragmentierung der Stores
 	- attributierte Kanten sind zusätzliche Indirektion\url{https://github.com/orientechnologies/orientdb/wiki/Performance-Tuning-Blueprints} -> können sich negativ auf die Performance beim Traversieren auswirken
 - Titan: nicht-nativ

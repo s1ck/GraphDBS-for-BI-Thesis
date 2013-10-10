@@ -61,14 +61,18 @@ public class TitanImporter extends AbstractImporter {
 
     @Override
     protected void storeEdge(EdgeDTO edge) {
-	Edge e = graphDB.addEdge(null, graphDB.getVertex(edge.getFromId()),
-		graphDB.getVertex(edge.getToId()), edge.getLabel());
-
-	for (Map.Entry<String, Object> entry : edge.getProperties().entrySet()) {
-	    e.setProperty(entry.getKey(), entry.getValue());
+	Vertex from = graphDB.getVertex(edge.getFromId());
+	Vertex to = graphDB.getVertex(edge.getToId());
+	if (from != null && to != null) {
+	    Edge e = graphDB.addEdge(null, from, to, edge.getLabel());
+	    for (Map.Entry<String, Object> entry : edge.getProperties()
+		    .entrySet()) {
+		e.setProperty(entry.getKey(), entry.getValue());
+	    }
+	    edgeCnt++;
+	} else {
+	    missingEndNodeCnt++;
 	}
-
-	edgeCnt++;
     }
 
     private void createTypes() {

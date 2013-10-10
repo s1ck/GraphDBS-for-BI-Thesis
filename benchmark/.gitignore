@@ -5,3 +5,4 @@ target/*
 datasets/*
 out/*
 *.geoff
+*.info
