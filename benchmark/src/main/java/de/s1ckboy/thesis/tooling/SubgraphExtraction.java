@@ -11,8 +11,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.cassandra.thrift.Cassandra.system_add_column_family_args;
-import org.apache.cassandra.thrift.Cassandra.AsyncClient.system_add_column_family_call;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.neo4j.graphdb.Direction;
@@ -70,7 +68,7 @@ public class SubgraphExtraction {
     /*
      * Maximum number of products inside the graph
      */
-    private int nodeLimit = 10;
+    private int nodeLimit = 1000;
     /*
      * k-Products/Users means the k-neighborhood of a node. 2-neighborhood for
      * users is p.e. all friends and their friends
@@ -127,7 +125,7 @@ public class SubgraphExtraction {
 
 	    log.info(stats);
 	    // store graph
-	    storeSubgraph();
+	    // storeSubgraph();
 	    tx.success();
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
@@ -141,6 +139,7 @@ public class SubgraphExtraction {
 	// while (nodes.size() < nodeLimit) {
 
 	// step 1: get products
+	log.info("Getting products");
 	while (productCnt < nodeLimit) {
 	    int n = r.nextInt(getSum(groupCounts) + 1);
 	    if (showLog) {
@@ -159,25 +158,60 @@ public class SubgraphExtraction {
 		log.info("---");
 	    }
 	}
-	// step 2: get their users
-	// build user subtree
+	// step 2: get the users who reviewed the products
+	log.info("Getting users");
 	Node endNode = null;
 	for (Node product : products) {
 	    for (Relationship e : product.getRelationships(Direction.OUTGOING,
 		    Neo4jRelationshipTypes.REVIEWED_BY)) {
 		// store review edge
-		edges.add(e);
-		reviewCnt++;
-		endNode = e.getEndNode();
-		if (!users.contains(endNode)) {
-		    // store neighbor
-		    users.add(endNode);
-		    userCnt++;
-		    // build user subgraph
-		    buildUserSubgraph(endNode, k_Users);
+		if (!edges.contains(e)) {
+		    edges.add(e);
+		    reviewCnt++;
+
+		    endNode = e.getEndNode();
+		    if (!users.contains(endNode)) {
+			// store neighbor
+			users.add(endNode);
+			userCnt++;
+			// build user subgraph
+			buildUserSubgraph(endNode, k_Users);
+		    }
 		}
 	    }
 	}
+	log.info("Getting missing similar_to relations");
+	// step 3: get similar relations between products
+	for (Node p1 : products) {
+	    for (Node p2 : products) {
+		for (Relationship e : p1.getRelationships(Direction.OUTGOING,
+			Neo4jRelationshipTypes.SIMILAR_TO)) {
+		    if (e.getEndNode().equals(p2) && !edges.contains(e)) {
+			edges.add(e);
+			similarCnt++;
+		    }
+		}
+	    }
+	}
+	
+//	long l = 0L;
+//	log.info("Getting missing friends_of relations");
+//	// step 4: get similar relations between users
+//	for (Relationship e : GlobalGraphOperations.at(graphDb)
+//		.getAllRelationships()) {
+//	    if (++l % 100000 == 0) {
+//		log.info(l);
+//	    }
+//	    if (e.isType(Neo4jRelationshipTypes.FRIEND_OF)) {
+//		if (users.contains(e.getStartNode())
+//			&& users.contains(e.getEndNode())) {
+//		    if (!edges.contains(e)) {
+//			edges.add(e);
+//			friendCnt++;
+//		    }
+//		}
+//	    }
+//	}
     }
 
     private void extractSubgraph(int groupId, int nodeIdx) {
@@ -226,34 +260,35 @@ public class SubgraphExtraction {
 
 	Node endNode = null;
 	if (depth > 0) {
-
 	    // build product similarity subgraph
-	    for (Relationship e : product.getRelationships(Direction.OUTGOING,
+	    for (Relationship e : product.getRelationships(Direction.BOTH,
 		    Neo4jRelationshipTypes.SIMILAR_TO)) {
-		edges.add(e);
-		similarCnt++;
-		endNode = e.getEndNode();
-		if (!products.contains(endNode)) { // avoid cycles
-		    // store neighbor
-		    products.add(endNode);
-		    productCnt++;
-		    // store their group edge
-		    for (Relationship groupEdge : endNode.getRelationships(
-			    Neo4jRelationshipTypes.BELONGS_TO,
-			    Direction.OUTGOING)) {
-			if (!groups.contains(groupEdge.getEndNode())) {
-			    groups.add(groupEdge.getEndNode());
-			    groupCnt++;
+		if (!edges.contains(e)) {
+		    edges.add(e);
+		    similarCnt++;
+		    endNode = (e.getEndNode().equals(product)) ? e
+			    .getStartNode() : e.getEndNode();
+		    if (!products.contains(endNode)) { // avoid cycles
+			// store neighbor
+			products.add(endNode);
+			productCnt++;
+			// store their group edge
+			for (Relationship groupEdge : endNode.getRelationships(
+				Neo4jRelationshipTypes.BELONGS_TO,
+				Direction.OUTGOING)) {
+			    if (!groups.contains(groupEdge.getEndNode())) {
+				groups.add(groupEdge.getEndNode());
+				groupCnt++;
+			    }
+			    edges.add(groupEdge);
+			    belongsCnt++;
 			}
-			edges.add(groupEdge);
-			belongsCnt++;
+			// go deeper into the graph
+			buildProductSubgraph(endNode, depth - 1);
 		    }
-		    // go deeper into the graph
-		    buildProductSubgraph(endNode, depth - 1);
 		}
 	    }
 	}
-
     }
 
     private void buildUserSubgraph(Node user, int depth) {
@@ -275,23 +310,26 @@ public class SubgraphExtraction {
 		    Neo4jRelationshipTypes.REVIEWED_BY)) {
 		// get the product
 		node = e.getStartNode();
-		if (products.contains(node)) {
+		if (products.contains(node) && !edges.contains(e)) {
 		    edges.add(e);
 		    reviewCnt++;
 		}
 	    }
 
 	    // get their friends
-	    for (Relationship e : user.getRelationships(Direction.OUTGOING,
+	    for (Relationship e : user.getRelationships(Direction.BOTH,
 		    Neo4jRelationshipTypes.FRIEND_OF)) {
-		edges.add(e);
-		friendCnt++;
-		node = (e.getEndNode().equals(user)) ? e.getStartNode() : e
-			.getEndNode();
-		if (!users.contains(node)) {
-		    users.add(node);
-		    userCnt++;
-		    buildUserSubgraph(node, depth - 1);
+		if (!edges.contains(e)) {
+		    edges.add(e);
+		    friendCnt++;
+
+		    node = (e.getEndNode().equals(user)) ? e.getStartNode() : e
+			    .getEndNode();
+		    if (!users.contains(node)) {
+			users.add(node);
+			userCnt++;
+			buildUserSubgraph(node, depth - 1);
+		    }
 		}
 	    }
 	}
@@ -357,7 +395,7 @@ public class SubgraphExtraction {
 	    bw.write(getGeoffNodeString(n) + "\n");
 	    i++;
 	    if (i % bufferSize == 0) {
-		log.info(String.format("%.2f" , (i * 100.0 / total)));
+		log.info(String.format("%.2f", (i * 100.0 / total)));
 		bw.flush();
 	    }
 	}
@@ -367,7 +405,7 @@ public class SubgraphExtraction {
 	    bw.write(getGeoffEdgeString(e) + "\n");
 	    i++;
 	    if (i % bufferSize == 0) {
-		log.info(String.format("%.2f" , (i * 100.0 / total)));
+		log.info(String.format("%.2f", (i * 100.0 / total)));
 		bw.flush();
 	    }
 	}
