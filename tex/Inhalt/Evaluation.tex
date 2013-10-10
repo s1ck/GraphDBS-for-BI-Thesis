@@ -83,8 +83,8 @@ Titan
     \hline
     \multicolumn{5}{|c|}{\textbf{Kategorisierung}} \\
     \hline
-    \textbf{Verarbeitung} & nativ & nativ & nativ & nativ \\
-    \textbf{Speicherung} & nativ & je nach Speichersystem & nativ & je nach Speichersystem \\
+    \textbf{Verarbeitung} & nativ & nicht-nativ & nativ & nativ \\
+    \textbf{Speicherung} & nativ & je nach Speichersystem & nicht-nativ & je nach Speichersystem \\
     \textbf{Eingebettet} & \checkmark & \checkmark & \checkmark & \checkmark \\
     \textbf{Client-Server} & \checkmark & - & \checkmark & \checkmark \\
     \textbf{Disk-zentriert} & \checkmark & je nach Speichersystem & \checkmark & je nach Speichersystem \\
@@ -106,12 +106,14 @@ Tabelle \ref{tab:zusammenfassung_datenmodell} stellt die GDBMS hinsichtlich ihre
 % Tabelle
 - Neo4j: PGM
 	+ Knotenlabel (mehrere)
+	+ flexible Schemaänderung
 	- keine Objekteinbettung
-	- keine Schemadefinition für Attribute
+	- keine Schemadefinition für Attribute	
 	- viel Verantwortung wird an die Anwendung übergeben
 - HyperGraphDB: 
-	+ Atom-Modell sehr generisch, für den Anwendungsfall jedoch nicht zwingend erforderlich
-	+ Schema durch Klassendefinition
+	+ Atom-Modell sehr generisch -> für den Anwendungsfall jedoch nicht zwingend erforderlich	
+	+ mächtiges Typsystem, Vererbungshierarchien, Schema durch Klassendefinition
+	+ flexible Schemaänderung
 	+ umfangreiches Typsystem
 	- keine Updates, Änderungen durch Werteaustausch
 	- kein direkter Zugriff auf Nachbarschaft
@@ -174,19 +176,21 @@ Entfernter Zugriff:
 CRUD-Operationen:
 	- in allen GDBMS möglich
 	- dabei Einschränkung der Ergebnismenge durch Angabe von Schlüssel-Wert-Paaren
-Traversierung:
+	
+algorithmische Traversierung:
 	- Neo4j:
-		- algorithmische Traversierung mittels Traversal Framework
+		+ algorithmische Traversierung mittels Traversal Framework
 			- umfangreiche Möglichkeiten zur Beeinflussung (Richtung, mehrfache Betrachtung, Filter- und Abbruchkriterien, Heuristiken)
 			- Verwendung von Java für Entscheidungslogik -> mächtig
-		- alternative Definition abstrakter Wege in Cypher inkl. Einschränkung
-		- beide: Pfadinstanzen als Ergebnis möglich
+		+ alternative Definition abstrakter Wege in Cypher inkl. Einschränkung
+		+ beide: Pfadinstanzen als Ergebnis möglich
 	- HyperGraphDB
-		- algorithmische Traversierung mittels Traversal Framework -> Java
-		- Prädikatdefinition erlaubt Einschränkung der Traversierung
+		+ algorithmische Traversierung mittels Traversal Framework -> Java
+		+ Prädikate erlauben die Definition von Filterkriterien	für besuchte Kanten / Knoten
+		- kein direkter Zugriff auf die Nachbarschaft eines Knotens (keine intuitive Verwendung)		
 		- hoher manueller Aufwand (z.B. keine Pfadinstanzen)
 	- OrientDB und Titan
-		- algorithmische Traversierung durch knoten-zentrierte Anfragen		
+		+ algorithmische Traversierung durch knoten-zentrierte Anfragen		
 		- vorrangig Nutzung von Gremlin -> Programmiersprache, mächtig
 	- OrientDB
 		- OrientDB-SQL graphenorientierte Verwendung sehr schlecht dokumentiert
@@ -200,8 +204,8 @@ Erreichbarkeit
 		- Cypher bietet shortestPath allShortestPath-Funktionen an
 		- Weg der Länge $k$ führt zu $\mathcal{O}(\left|N(v_1)\right| \times \left|N(v_2)\right| \times \cdots \times \left|N(v_k)\right|)$
 	- HyperGraphDB
-		- durch Traversierung umsetzbar
-		- Dijkstra-Implementierung
+		- nur durch Traversierung / manuelle Implementierung umsetzbar
+		- wenig Algorithmen (Dijkstra-Implementierung)
 	- OrientDB und Titan
 		- durch Traversierung umsetzbar
 		- Blueprints Algorithmen
@@ -209,6 +213,7 @@ Erreichbarkeit
 	- OrientDB
 		- Bugs z.B. falsche Ergebnisse beim Traversieren, expand(shortestPath) und expand(dijkstra)  haben keinen Effekt
 		- Ergebnisse zwischen Tiefen- und Breitensuche unterscheiden sich durch Verhindern des wiederholten Zugriffs (link zur Mailing-Liste)
+
 Mustersuche
 	- Neo4j:
 		- Cypher ermöglicht durch die Kombination abstrakter Wege die Definition beliebiger Mustergraphen
@@ -216,8 +221,7 @@ Mustersuche
 		- deklarativ -> intuitives Formulieren möglich (nah am Datenmodell)
 		- Wiederverwendung von Ergebnissen durch Verkettung von Operationen		
 	- HyperGraphDB
-	 	- keine native Unterstützung
-		- einfache Muster durch entsprechende Prädikatverknüpfungen
+	 	- keine native Unterstützung (keine Variablendefinition in Prädikaten)
 	- OrientDB
 		- keine native Unterstützung
 		- evtl. durch Schachtelung von SELECT und TRAVERSE
@@ -230,6 +234,7 @@ Mustersuche
 Aggregation und Summierung
 
 - Summierung wird von keinem GDBMS unterstützt
+
 - Aggregation
 	- Neo4j:
 		- Aggregation und Gruppierung
@@ -289,16 +294,21 @@ Metriken
 Transaktionen
 	- generell: Optimierung für Leseoperationen / Konflikte werden an Anwendung weitergegeben (OrientDB und Titan)
 	- Neo4j
-		- ist ACID konform bietet jedoch gegenüber den anderen GDBMS eine
+		+ ist ACID konform bietet jedoch gegenüber den anderen GDBMS eine
 		- geringe Isolationsebene
 		- wie auch beim Datenmodell liegt die Verantwortung bei der Anwendung wenn höhere Ebene erreicht werden soll
-	- HyperGraphDB: ACI(D), MVCC (GDBMS) + Locking (BerkeleyDB), SERIALIZABLE
+	- HyperGraphDB:
+		+ Dauerhaftigkeit lässt sich bei Bedarf aktivieren
+		+ MVCC im Cache bietet hohe Isolationsebene
+		+ isolierte Transaktionen (gut für langlaufende Änderungstransaktionen -> nicht erforderlich)
 	- OrientDB: ACID, MVCC, SERIALIZABLE
 	- Titan: ACID, Locking (BerkeleyDB), SERIALIZABLE (BerkeleyDB)
 	
 Indexverwaltung
 - Primär- und Sekundärindizes generell möglich
 - Indizes werden automatisch aktualisiert
+	- HyperGraphDB / Titan
+		- generell drei / zwei systemseitige Indexstrukturen, welche bei Schreiboperationen berücksichtigt werden müssen -> Auswirkung auf Performance
 - bis auf OrientDB wird eine Erweiterung um eigene Indexstrukturen dokumentiert
 - Neo4j und Titan mit Unterstützung komplexer Indizierungsmechanismen durch Apache Lucene bzw. Elastic Search
 
@@ -338,15 +348,19 @@ Indexverwaltung
 % Persistenzverwaltung
 
 - Neo4j: nativ
-	- Trennung von Topologie und Daten sowie die effiziente Berechnung physischer Positionen in Folge der festen Satzlänge von Knoten und  Kanten versprechen hohe Performance beim Traversieren des Graphen	
+	+ Trennung von Topologie und Daten
+	+ physische Trennung fein granular durch Store-Konzept
+	+ effiziente Berechnung physischer Positionen in Folge der festen Satzlänge von Knoten und  Kanten versprechen hohe Performance beim Traversieren des Graphen	
+	+ indexfreie Adjazenz wird erreicht
 	- Fragmentierung der Stores durch Löschen einzelner Einträge
 	- logisch benachbarte Knoten sind nicht zwingend physisch benachbart
 
 - HyperGraphDB: nicht-nativ
-	- Trennung von Topologie und Daten, Typsystem jedoch auch in Topologie abgebildet
-	- Speicherung in KV-Store
+	+ Trennung von Topologie und Daten
+	- zu beachten: Typsystem ebenfalls Teil der topologischen Daten
+	- keine indexfreie Adjazenz mit BerkeleyDB
 	- Traversierung: O(logn)
-- OrientDB: nativ
+- OrientDB: nicht-nativ
 	- keine Trennung von Topologie und Daten 
 	- Traversierung: O(N\_v)
 	- Fragmentierung der Stores
@@ -363,6 +377,12 @@ Indexverwaltung
 	
 - generell: Beschleunigung der Zugriffe auf häufig benötige Objekte via Caches
 	- Hashtabellen  O(1) (wenn da)
+- OrientDB
+	- L1 Cache führt zu Konflikten bei parallelen
+- HyperGraphDB / Titan
+	- Caching in den eingesetzten Speichersystemen
+- Titan
+	- Transaktionscache kann im Benchmark zu Speicherproblemen führen
 
 % Verteilung
 - alle außer HyperGraphDB bieten die Möglichkeit zur Replikation 
@@ -386,6 +406,7 @@ Indexverwaltung
 	\textbf{Trennung Topologie, Nutzdaten} & \checkmark & \checkmark & - & - \\
 	\textbf{Satzlänge} & fest & variabel & variabel & variabel \\
 	\textbf{Zeitkomplexität Zugriff Nachbarschaft} & konstant & logarithmisch (BerkeleyDB) & konstant & logarithmisch (BerkeleyDB), konstant (Cassandra)\\
+	\textbf{Indexfreie Adjazenz} & \checkmark & - (BerkeleyDB) & \checkmark & - (BerkeleyDB), \checkmark (Cassandra) \\
 	\hline
 	\multicolumn{5}{|c|}{\textbf{Cacheverwaltung}} \\
 	\hline
@@ -393,7 +414,7 @@ Indexverwaltung
 	\hline
 	\multicolumn{5}{|c|}{\textbf{Verteilung}} \\
 	\hline
-	\textbf{Architektur} & Master-Slave (nur Enterprise Edition) & Peer-To-Peer Message Framework & Master-Master & Peer-to-Peer (Cassandra) \\
+	\textbf{Architektur} & Master-Slave (nur Enterprise Edition) & Peer-To-Peer Nachrichten Framework & Master-Master & Peer-to-Peer (Cassandra) \\
 	\textbf{Replikation} & \checkmark & - & \checkmark & \checkmark \\
 	\textbf{Partitionierung} & - & - & - & \checkmark \\
 	\textbf{Skalierbarkeit Lesen} & horizontal & - & horizontal & horizontal \\
