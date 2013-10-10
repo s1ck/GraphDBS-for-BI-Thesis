@@ -9,8 +9,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.cassandra.thrift.Cassandra.system_add_column_family_args;
+import org.apache.cassandra.thrift.Cassandra.AsyncClient.system_add_column_family_call;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 import org.neo4j.graphdb.Direction;
@@ -22,6 +24,7 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.helpers.collection.IteratorUtil;
 
+import com.google.common.base.Stopwatch;
 import com.google.gson.Gson;
 
 import de.s1ckboy.thesis.benchmark.Configs;
@@ -43,9 +46,8 @@ public class SubgraphExtraction {
     private Index<Node> index;
     private GraphDatabaseService graphDb;
 
-    // stores users and groups
-    private Set<Node> nodes;
-    // stores only products
+    private Set<Node> groups;
+    private Set<Node> users;
     private Set<Node> products;
     private Set<Relationship> edges;
 
@@ -92,7 +94,8 @@ public class SubgraphExtraction {
 	}
 	r = new Random(seed);
 	products = new HashSet<Node>();
-	nodes = new HashSet<Node>();
+	groups = new HashSet<Node>();
+	users = new HashSet<Node>();
 	edges = new HashSet<Relationship>();
 	gson = new Gson();
     }
@@ -105,15 +108,19 @@ public class SubgraphExtraction {
 	Transaction tx = graphDb.beginTx();
 
 	try {
+	    Stopwatch sw = new Stopwatch();
+	    sw.start();
 	    extractSubgraphs(getGroupCounts());
+	    sw.stop();
 	    // store stats in info file
 	    String graphInfo = String.format("graph_%d_%d_%d.info", nodeLimit,
 		    k_Products, k_Users);
 	    String stats = String
-		    .format("\n%d nodes\n%d edges\n---\n%d groups\n%d products\n%d users\n%d belongs_to\n%d similar_to\n%d reviewed_by\n%d friend_of",
-			    nodes.size() + products.size(), edges.size(),
-			    groupCnt, productCnt, userCnt, belongsCnt,
-			    similarCnt, reviewCnt, friendCnt);
+		    .format("\n%d nodes\n%d edges\n---\n%d groups\n%d products\n%d users\n%d belongs_to\n%d similar_to\n%d reviewed_by\n%d friend_of\n---\n%d seconds",
+			    (users.size() + groups.size() + products.size()),
+			    edges.size(), groupCnt, productCnt, userCnt,
+			    belongsCnt, similarCnt, reviewCnt, friendCnt,
+			    sw.elapsedTime(TimeUnit.SECONDS));
 	    FileWriter fw = new FileWriter(new File(graphInfo));
 	    fw.write(stats);
 	    fw.close();
@@ -153,7 +160,24 @@ public class SubgraphExtraction {
 	    }
 	}
 	// step 2: get their users
-
+	// build user subtree
+	Node endNode = null;
+	for (Node product : products) {
+	    for (Relationship e : product.getRelationships(Direction.OUTGOING,
+		    Neo4jRelationshipTypes.REVIEWED_BY)) {
+		// store review edge
+		edges.add(e);
+		reviewCnt++;
+		endNode = e.getEndNode();
+		if (!users.contains(endNode)) {
+		    // store neighbor
+		    users.add(endNode);
+		    userCnt++;
+		    // build user subgraph
+		    buildUserSubgraph(endNode, k_Users);
+		}
+	    }
+	}
     }
 
     private void extractSubgraph(int groupId, int nodeIdx) {
@@ -172,8 +196,8 @@ public class SubgraphExtraction {
 	    }
 	}
 
-	if (!nodes.contains(group)) {
-	    nodes.add(group);
+	if (!groups.contains(group)) {
+	    groups.add(group);
 	    groupCnt++;
 	}
 	if (!products.contains(product)) {
@@ -217,8 +241,8 @@ public class SubgraphExtraction {
 		    for (Relationship groupEdge : endNode.getRelationships(
 			    Neo4jRelationshipTypes.BELONGS_TO,
 			    Direction.OUTGOING)) {
-			if (!nodes.contains(groupEdge.getEndNode())) {
-			    nodes.add(groupEdge.getEndNode());
+			if (!groups.contains(groupEdge.getEndNode())) {
+			    groups.add(groupEdge.getEndNode());
 			    groupCnt++;
 			}
 			edges.add(groupEdge);
@@ -230,21 +254,6 @@ public class SubgraphExtraction {
 	    }
 	}
 
-	// // build user subtree
-	// for (Relationship e : product.getRelationships(Direction.OUTGOING,
-	// Neo4jRelationshipTypes.REVIEWED_BY)) {
-	// // store review edge
-	// edges.add(e);
-	// reviewCnt++;
-	// endNode = e.getEndNode();
-	// if (!nodes.contains(endNode)) {
-	// // store neighbor
-	// nodes.add(endNode);
-	// userCnt++;
-	// // build user subgraph
-	// buildUserSubgraph(endNode, k_Users);
-	// }
-	// }
     }
 
     private void buildUserSubgraph(Node user, int depth) {
@@ -261,30 +270,26 @@ public class SubgraphExtraction {
 	if (depth > 0) {
 	    Node node = null;
 
-	    // get their reviews
+	    // get their reviews to existing products
 	    for (Relationship e : user.getRelationships(Direction.INCOMING,
 		    Neo4jRelationshipTypes.REVIEWED_BY)) {
-		if (!edges.contains(e)) {
+		// get the product
+		node = e.getStartNode();
+		if (products.contains(node)) {
 		    edges.add(e);
 		    reviewCnt++;
-		    // get the product
-		    node = e.getStartNode();
-		    if (!nodes.contains(node)) {
-			productCnt++;
-			nodes.add(node);
-		    }
 		}
 	    }
 
 	    // get their friends
-	    for (Relationship e : user.getRelationships(Direction.BOTH,
+	    for (Relationship e : user.getRelationships(Direction.OUTGOING,
 		    Neo4jRelationshipTypes.FRIEND_OF)) {
 		edges.add(e);
 		friendCnt++;
 		node = (e.getEndNode().equals(user)) ? e.getStartNode() : e
 			.getEndNode();
-		if (!nodes.contains(node)) {
-		    nodes.add(node);
+		if (!users.contains(node)) {
+		    users.add(node);
 		    userCnt++;
 		    buildUserSubgraph(node, depth - 1);
 		}
@@ -336,31 +341,35 @@ public class SubgraphExtraction {
 	String graphName = String.format("graph_%d_%d_%d.geoff", nodeLimit,
 		k_Products, k_Users);
 
+	log.info("Writing into " + graphName);
+
 	long i = 0;
+	long bufferSize = 10000L;
 	BufferedWriter bw = null;
 	bw = new BufferedWriter(new FileWriter(graphName));
 
-	// products
-	for (Node n : products) {
+	groups.addAll(products);
+	groups.addAll(users);
+
+	long total = groups.size() + edges.size();
+	// groups
+	for (Node n : groups) {
 	    bw.write(getGeoffNodeString(n) + "\n");
 	    i++;
-	    if (i % 10000 == 0)
+	    if (i % bufferSize == 0) {
+		log.info(String.format("%.2f" , (i * 100.0 / total)));
 		bw.flush();
+	    }
 	}
 
-	// users and groups
-	for (Node n : nodes) {
-	    bw.write(getGeoffNodeString(n) + "\n");
-	    i++;
-	    if (i % 10000 == 0)
-		bw.flush();
-	}
-
+	// edges
 	for (Relationship e : edges) {
 	    bw.write(getGeoffEdgeString(e) + "\n");
 	    i++;
-	    if (i % 10000 == 0)
+	    if (i % bufferSize == 0) {
+		log.info(String.format("%.2f" , (i * 100.0 / total)));
 		bw.flush();
+	    }
 	}
 
 	bw.close();
