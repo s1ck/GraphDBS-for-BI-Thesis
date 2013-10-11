@@ -1,13 +1,14 @@
 
-// Produkte, für die Freunde ein Review geschrieben haben gruppiert nach Produktname und sortiert nach Summe der Ratings
+// Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben gruppiert nach Produktname und sortiert nach Summe der Ratings
 
-START n=node(1416658) 
-MATCH n-[:FRIEND_OF]->()<-[r:REVIEWED_BY]-p 
-RETURN p.title, sum(r.rating) as h 
+START n=node(1337)  
+MATCH n-[:FRIEND_OF*1..2]-()<-[r:REVIEWED_BY]-p  
+RETURN p.title, count(p), sum(r.rating) as h  
 ORDER BY h DESC;
 
 // Kürzester Pfad zwischen zwei Nutzern unter Verwendung der FRIEND_OF, REVIEWED_BY und SIMILAR_TO-Beziehung
 
-START a=node(1416658), b=node(1797344)
-MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..5]-b) 
-RETURN EXTRACT(n in NODES(p): n.__id__), LENGTH(p);
+START a=node(137), b=node(51043) 
+MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..5]-b)  
+RETURN EXTRACT(n in NODES(p): n.__type__), LENGTH(p);
+
