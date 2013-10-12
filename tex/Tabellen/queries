@@ -1,14 +1,77 @@
 
-// Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben gruppiert nach Produktname und sortiert nach Summe der Ratings
+
+
+/*
+ * Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben gruppiert nach
+ * Produktname und sortiert nach Summe der Ratings
+ */
+
+// Cypher
 
 START n=node(1337)  
 MATCH n-[:FRIEND_OF*1..2]-()<-[r:REVIEWED_BY]-p  
 RETURN p.title, count(p), sum(r.rating) as h  
 ORDER BY h DESC;
 
-// Kürzester Pfad zwischen zwei Nutzern unter Verwendung der FRIEND_OF, REVIEWED_BY und SIMILAR_TO-Beziehung
+// Gremlin
+r = [] // stores the edges
+m = [:] // stores the result
+v.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').aggregate(r) // store edges
 
-START a=node(137), b=node(51043) 
+
+/*
+ * Kürzester Pfad zwischen zwei Nutzern unter Verwendung der FRIEND_OF,
+ * REVIEWED_BY und SIMILAR_TO-Beziehung
+ */  
+
+// Cypher
+
+START a=node(42), b=node(20) 
 MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..5]-b)  
+RETURN EXTRACT(n in NODES(p): n.__type__), LENGTH(p); // 4
+
+START a=node(42), b=node(20) 
+MATCH p=shortestPath(a-[*..5]-b)  
 RETURN EXTRACT(n in NODES(p): n.__type__), LENGTH(p);
+
+// Gremlin
+(https://groups.google.com/forum/#!searchin/gremlin-users/shortest$20path/gremlin-users/yp_TMMcOVWo/i3zjFOI7bTQJ)
+
+a = g.v(42);
+b = g.v(20);
+visited=[a];
+a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).loop(3){it.object != b && it.loops < 6}.retain([b]).path
+
+/*
+ * Helping stuff
+ */
+
+g = TitanFactory.open('../../master_thesis/benchmark/out/titan-graph_100_4_2');
+a = g.V('__id__', 'A16MCCBGBZIZVR').next();
+b = g.V('__id__', 'A29QUUI26CAZO3').next();
+
+// non-unique foaf
+START n=node(42) MATCH n-[:FRIEND_OF*..2]-p return count(p); // 496
+v.both('FRIEND_OF').both('FRIEND_OF').count(); // 496
+
+// unique foaf
+START n=node(42) MATCH n-[:FRIEND_OF]-()-[:FRIEND_OF]-p return count(distinct p); // 169
+v.both('FRIEND_OF').dedup.both('FRIEND_OF').dedup.count(); // 169
+
+// non unique products
+START n=node(42) MATCH n-[:FRIEND_OF*1..2]-()<-[:REVIEWED_BY]-p return count(p); // 19
+v.both('FRIEND_OF').both('FRIEND_OF').in('REVIEWED_BY').count(); // 19
+
+
+// unique products
+START n=node(42) MATCH n-[:FRIEND_OF*1..2]-()<-[:REVIEWED_BY]-p return count(distinct p); // 4
+v.both('FRIEND_OF').both('FRIEND_OF').in('REVIEWED_BY').dedup.count(); // 4
+
+// Gremlin
+// number of incoming edges for products
+v.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').as('r').outV.groupCount().cap()
+
+
+
+
 

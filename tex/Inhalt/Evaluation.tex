@@ -1,4 +1,4 @@
-\chapter{Evaluation von Graphdatenbanksystemen}
+\chapter{Funktionaler Vergleich von Graphdatenbanksystemen}
 \label{cha:evaluation}
 
 Dieses Kapitel setzt sich mit konkreten GDBMS-Implementierungen auseinander. Mit der Zielstellung, aus der Vielzahl existierender Systeme geeignete auszuwählen, werden zunächst funktionale Anforderungen definiert. Diese ergeben sich aus aktuellen Forschungsvorhaben am Lehrstuhl Datenbanken der Universität Leipzig. Die ausgewählten Systeme werden anschließend im Detail betrachtet, die Schwerpunkte dabei sind: Datenmodellierung und Konsistenzerhaltung, Zugriffsmechanismen und angebotene graphenspezifische Operationen, physische Repräsentation des Graphen und Möglichkeiten der Indexierung und Verteilung. Das Kapitel schließt mit einer Gegenüberstellung der Systeme.
@@ -33,40 +33,11 @@ Das Projekt verfolgt drei Ziele: Zunächst ist die Integration von Unternehmensda
 
 \section{Zusammenfassung, Vergleich und Auswahl}
 
+In diesem Abschnitt werden die Ergebnisse der vorangegangen funktionalen Analyse zusammengefasst. Die tabellarische, kategorisierte Gegenüberstellung der Eigenschaften betrachteter Graphdatenbanksysteme dient dabei als Bewertungsgrundlage für die Eignung im beschriebenen Forschungsvorhaben. Es werden zwei Systeme ausgewählt, welche in der anschließenden technischen Analyse hinsichtlich ihrer Leistungsfähigkeit final gegenübergestellt werden.
+
 \paragraph*{Kategorisierung und Dokumentation}
 
-- nur einführende Beispiele
-
-Neo4j
-	+ sehr gute, aktuelle Dokumentation	
-	+ Support auf Mailingliste
-	+ aktive Community (Stackoverflow, Mailing List. viele Präsentationen)
-	+ im Entwicklungsstand am weitesten fortgeschritten
-	+ nur wenig Quelltextrecherche erforderlich
-
-HyperGraphDB
-	+ gute Dokumentation
-	- wird hauptsächlich von einer Person entwickelt
-		Vorteil: gut strukturierter Quelltext
-		Nachteil: langsame Weiterentwicklung im Gegensatz zu den verglichenen Systemen
-	+ Support auf Mailingliste (diese ist jedoch nur schwach frequentiert)
-	- kaum zusätzliches Material
-	+ an vielen Stellen auf Erweiterung ausgelegt
-	- Quelltextrecherche war notwendig (Transaktionsverwaltung / Caching)
-
-OrientDB
-	- Dokumentation wirkt umfangreich ist jedoch teilweise unvollständig und inkonsistent mit aktuellem Entwicklungsstand
-	- Zugriffsmechanismen im Graphenmodell: widersprüchliche Dokumentation, wenig Beispiele
-	- viel Quelltextrecherche (Transaktionsverwaltung, Persistenz- und Cacheverwaltung)
-	+ Aktivität und Support auf Mailingliste	
-
-Titan
-	+ gute Doku für junges Projekt (fehlende Dokumentation der Persistenzverwaltung)
-	+ gute Integration in TinkerPop-Projekt als Quasi-Standard
-	- Quelltextrecherche für Persistenz
-	+ durch Wiederverwendung existierender Lösungen -> Konzentration auf graphenorientierte Verarbeitung
-	+ verteilte Graphen
-	+ bei Fragen Support auf Mailingliste
+In Tabelle \ref{tab:zusammenfassung_dokumenation} werden allgemeine Informationen zusammengefasst dargestellt und die Systeme entsprechend der in Abschnitt \ref{subsec:gdbms} vorgestellten Kategorien eingeteilt.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -82,6 +53,8 @@ Titan
     \textbf{Lizenz} & GPLv3 & LGPL & Apache 2.0 & Apache 2.0 \\
     \textbf{Version (Jahr)} & 2.0.0-M04 (2013) & 1.2 (2012) & 1.5.1 (2013) & 0.3.2 (2013) \\
     \textbf{Sprache} & Java, Scala & Java & Java & Java \\
+    \textbf{Dokumentation} & +++ & ++ & + & ++ \\
+    \textbf{Besonderheiten} & - & offene Architektur & mehrere Datenbanken, Rechteverwaltung & - \\
     \hline
     \multicolumn{5}{|c|}{\textbf{Kategorisierung}} \\
     \hline
@@ -96,55 +69,56 @@ Titan
    	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption[Zusammenfassung: Allgemeines und Kategorisierung]{Allgemeines und Kategorisierung.}
+	\caption[Zusammenfassung: Allgemeines und Kategorisierung]{Allgemeine Informationen zu den verglichenen Graphdatenbanksystemen und deren Kategorisierung.}
 	\label{tab:zusammenfassung_dokumenation}
 \end{table}
 \renewcommand{\arraystretch}{1} 
 
+Bei der Analyse eines Systems ist die offizielle Dokumentation erster Anlaufpunkt. Neo4j verfügt über eine umfassende, detaillierte und vor allem aktuelle Dokumentation, welche sowohl ausführlich auf Zugriffsmechanismen eingeht als auch Implementierungstechniken ansatzweise beschreibt. Im Gegensatz dazu ist die Dokumentation zu OrientDB teilweise unvollständig und nicht konsistent mit dem aktuellen Entwicklungsstand des GDBMS. Insbesondere bei der Analyse der für Datenbanksysteme wichtigen Transaktionsverwaltung musste auf den Quelltext zurückgegriffen werden. Generell ist die Dokumentation von OrientDB auf die Verwendung als Dokumentendatenbank ausgerichtet, die graphenorientierten Erweiterungen von SQL werden nur durch minimalistische Beispiele beschrieben.\\
+Die Dokumentationen von HyperGraphDB und Titan sind gut strukturiert und entsprechen dem aktuellen Entwicklungsstand. Titan profitiert dabei von den sehr guten Dokumentationen des TinkerPop-Projektes. Eine Quelltextrecherche war jedoch auch bei diesen Systemen im Zusammenhang mit Transaktions- und Persistenzverwaltung notwendig. Alle Hersteller besitzen offizielle Mailinglisten, in denen Fragen beantwortet und Annahmen bestätigt wurden. Die Mailinglisten von Neo4j, OrientDB und Titan sind deutlich aktiver als dies bei HyperGraphDB der Fall ist. Insbesondere Neo4j erweckt den Eindruck einer umfangreichen Entwicklergemeinde; neben den offiziellen Dokumentationen finden sich viele Präsentationen, Blog-Artikel, Twitter-Meldungen oder Forenbeiträge mit Bezug zum GDBMS und dessen Anwendungen.
+
+Die Kategorisierung verdeutlicht, dass nur Neo4j als vollständig natives GDBMS gewertet werden kann. Als einziges bildet es das PGM auf ein explizit dafür entwickeltes Speichersystem ab. Im Gegensatz dazu ist die Einbettung in Java-Anwendungen in allen Systemen möglich; HyperGraphDB beinhaltet keine Unterstützung für den entfernen Zugriff und muss bei Bedarf entsprechend erweitert werden. Ein Speichersystem, welches auf den Hauptspeicher ausgerichtet ist, wird von keinem der Systeme unterstützt. Bezüglich der Verteilung ist Titan hervorzuheben, da es Partitionierung und Replikation der Datenbasis ermöglicht. In diesem Zusammenhang ist die Nutzung etablierter Systeme wie z.B. Apache Cassandra eine innovative Idee und nimmt den Entwicklern zusätzlichen Implementierungsaufwand für die Realisierung von Persistenz-, Transaktions- und Verteilungsmechanismen ab.
+
+
+%Neo4j
+%	+ sehr gute, aktuelle Dokumentation	
+%	+ Support auf Mailingliste
+%	+ aktive Community (Stackoverflow, Mailing List. viele Präsentationen)
+%	+ im Entwicklungsstand am weitesten fortgeschritten
+%	+ nur wenig Quelltextrecherche erforderlich
+%
+%HyperGraphDB
+%	+ gute Dokumentation
+%	- wird hauptsächlich von einer Person entwickelt
+%		Vorteil: gut strukturierter Quelltext
+%		Nachteil: langsame Weiterentwicklung im Gegensatz zu den verglichenen Systemen
+%	+ Support auf Mailingliste (diese ist jedoch nur schwach frequentiert)
+%	- kaum zusätzliches Material
+%	+ an vielen Stellen auf Erweiterung ausgelegt
+%	- Quelltextrecherche war notwendig (Transaktionsverwaltung / Caching)
+%
+%OrientDB
+%	- Dokumentation wirkt umfangreich ist jedoch teilweise unvollständig und inkonsistent mit aktuellem Entwicklungsstand
+%	- Zugriffsmechanismen im Graphenmodell: widersprüchliche Dokumentation, wenig Beispiele
+%	- viel Quelltextrecherche (Transaktionsverwaltung, Persistenz- und Cacheverwaltung)
+%	+ Aktivität und Support auf Mailingliste	
+%
+%Titan
+%	+ gute Doku für junges Projekt (fehlende Dokumentation der Persistenzverwaltung)
+%	+ gute Integration in TinkerPop-Projekt als Quasi-Standard
+%	- Quelltextrecherche für Persistenz
+%	+ durch Wiederverwendung existierender Lösungen -> Konzentration auf graphenorientierte Verarbeitung
+%	+ verteilte Graphen
+%	+ bei Fragen Support auf Mailingliste
+
+
+
 \paragraph*{Datenmodell}
 
-Tabelle \ref{tab:zusammenfassung_datenmodell} stellt die GDBMS hinsichtlich ihres Datenmodells gegenüber.
-- generell
-	- alle Systeme sind flexibel hinsichtlich Schemaänderungen
-% Tabelle
-- Neo4j: PGM
-	+ Knotenlabel (mehrere)
-	+ flexible Schemaänderung
-	- keine Objekteinbettung
-	- keine Schemadefinition für Attribute	
-	- viel Verantwortung wird an die Anwendung übergeben
+Bei der Betrachtung des Datenmodells wurde festgestellt, dass eine Modellierung entsprechend dem PGM von allen Systemen unterstützt wird. Eine sich daraus ergebende weitere Gemeinsamkeit ist die hohe Flexibilität bezüglich Schemaänderungen ohne Beeinflussung bestehender Nutzdaten. Durch diese Eigenschaft eignen sich die Systeme im besonderem Maße für die Datenintegration aus heterogenen Quellsystemen. In Tabelle \ref{tab:zusammenfassung_datenmodell} sind die wichtigsten Eigenschaften gegenüberstellt.
 
-- HyperGraphDB: 
-	+ Atom-Modell sehr generisch -> für den Anwendungsfall jedoch nicht zwingend erforderlich	
-	+ mächtiges Typsystem, Vererbungshierarchien, Schema durch Klassendefinition
-	+ flexible Schemaänderung
-	+ umfangreiches Typsystem
-	- keine Updates, Änderungen durch Werteaustausch
-	- kein direkter Zugriff auf Nachbarschaft
-	- komplizierte Definition der Semantik der Position in Zielmenge
-
-- OrientDB:
-	+ Multi-Modell-Ansatz (Dokumentenmodell als Basis) 
-	+ Schema durch Klassendefinition (+ einfache Vererbung)
-	+ umfangreiche attributbezogene Integritätsbedingungen
-	+ Rechteverwaltung
-	- bietet zwar vielfältige Einsatzmöglichkeiten, der Fokus scheint jedoch auf der dokumentenorientierten Verwendung und weniger auf vernetzten Informationen zu liegen	
-	- Dokumentmodell als Basis
-	- PGM auf Dokumente abgebildet
-	
-- Titan:
-	+ Definition von TitanKey und TitanLabel zur Optimierung der Speicherung (Performance)
-	+ erlaubt mehrfache Verwendung von Attributschlüsseln an Knoten / Kante
-	+ Einschränkung der Kardinalität von Beziehungen
-	- keine Schemadefinition an Knoten und Kanten
-	+ Einschränkung der Attribute
-	+ Einschränkung Datentypen
-	+ verschachtelte Attributwerte (Maps)
-	+ Erweiterungen des PGM
-		+ Vertex-centric Indices
-		+ unidirektionale Kanten
-		+ Einschränkung der Kardinalität
-		+ als einziges System mehrfache Verwendung eines Attributschlüssels an der Instanz
+Neo4j bietet nur wenig Einfluss auf das Schema der hinterlegten Daten und übergibt einen Großteil der Verantwortung hinsichtlich Schemaverwaltung und Konsistenzerhaltung an die Anwendung. Eine Erweiterung des PGM stellen die Knotenbezeichner dar mit denen sich Knoteninstanzen beliebig vielen Gruppen zuordnen lassen. Die Einbettung geschachtelter Objekte als Attributwerte ist in Neo4j nicht möglich und muss bei Bedarf durch dedizierte Knoten realisiert werden.\\
+HyperGraphDB hingegen stellt mit dem Atom-Modell einen generischen Ansatz für die Abbildung komplexer Strukturen mit n-ären und höherwertigen Beziehungen zur Verfügung. Eine Folge der hohen Ausdrucksstärke ist die stellenweise wenig intuitive Verwendung: So muss der Ordnung innerhalb der Zielmenge grundsätzlich eine Semantik zugewiesen werden. Da es sich bei den beschriebenen Informationsnetzwerken vorrangig um binäre Beziehungen handelt und n-äre Relationen auch durch mehrfache binäre Relationen ausgedrückt werden können, ist die Implementierung des PHGM kein wesentlicher Vorteil gegenüber den anderen Systemen. Ungeachtet dessen erlaubt das GDBMS die Definition komplexer Typsysteme und eine Verwendung beliebiger Objektkompositionen zur Beschreibung der Nutzdaten.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -158,15 +132,14 @@ Tabelle \ref{tab:zusammenfassung_datenmodell} stellt die GDBMS hinsichtlich ihre
     \hline
     \textbf{Datenmodell} & PGM & PHGM & PGM & PGM \\
     \textbf{Typsystem} & - & \checkmark (Klassen) & \checkmark (Klassen) & \checkmark (Attributschlüssel, Kantenbezeichner) \\
-    \textbf{Vererbung} & - & einfach & mehrfach & - \\
+    \textbf{Vererbung} & - & mehrfach & einfach & - \\
 	\textbf{Knotenbezeichner} & \checkmark  (optional) & \checkmark & \checkmark & - \\
 	\textbf{Kantenbezeichner} & \checkmark & \checkmark  (optional) & \checkmark & \checkmark \\
 	\textbf{Attributschema} & - & \checkmark & \checkmark (optional) & - \\
 	\textbf{dynamische Schemaänderung} & - & \checkmark (Werteaustausch) & \checkmark & - \\
 	\textbf{attributbezogene Integritätsbedingungen} & \texttt{UNIQUE} & Datentyp, \texttt{UNIQUE} & Datentyp, Wertebereich (explizit), \texttt{UNIQUE}, \texttt{NOT NULL} & Datentyp, \texttt{UNIQUE} \\
 	\textbf{referentielle Integrität} & \checkmark & \checkmark & \checkmark & \checkmark \\
-	\textbf{Vererbung} & - & \checkmark & \checkmark & - \\
-	\textbf{Besonderheiten} & mehrere Knotenbezeichner & n-äre Relationen höherer Ordnung, offene Architektur & Multi-Datenmodell, mehrere Datenbanken, Rechteverwaltung & lokal eindeutige Attributschlüssel \& Kantenbezeichner \\
+	\textbf{Besonderheiten} & mehrere Knotenbezeichner & n-äre Relationen höherer Ordnung & Multi-Datenmodell & Kardinalitäten, unidirektionale Kanten \\
    	\hline
    	\end{tabular} 
 	\end{footnotesize}
@@ -175,6 +148,52 @@ Tabelle \ref{tab:zusammenfassung_datenmodell} stellt die GDBMS hinsichtlich ihre
 	\label{tab:zusammenfassung_datenmodell}
 \end{table}
 \renewcommand{\arraystretch}{1}
+
+OrientDB deckt mit der Unterstützung mehrerer Datenmodelle verschiedene Einsatzszenarien ab. Dokumentenklassen erlauben das Definieren eines Schemas, dabei ist insbesondere auf die Vielzahl attributbezogener Integritätsbedingungen hinzuweisen. Die Möglichkeit, Attribute als obligatorisch zu deklarieren stellt dabei einen Kompromiss zwischen selbstbeschreibender und strukturierter Datenhaltung dar. Durch die Unterstützung eingebetteter Beziehungen sind beliebige Objektkompositionen an Knoten- und Kanteninstanzen möglich.\\
+Die Implementierung des PGM in Titan ist ähnlich zur Umsetzung in Neo4j. Schemadefinitionen für Knoten- und Kantenattribute sind nicht möglich. Knotenbezeichner werden nicht unterstützt, das GDBMS erlaubt jedoch als einziges im Vergleich die mehrfache Verwendung von Attributschlüsseln an Knoten und Kanten sowie die Einschränkung der Kardinalität der an einer Beziehungen beteiligten Instanzen. Infolge der Definition von Attributschlüsseln lässt sich darüber hinaus der Datentyp und somit der Wertebereich der Attributwerte einschränken. Das Konzept der knoten-zentrierten Indizes ist ebenfalls einzigartig und kann insbesondere in stark vernetzten Informationssystemen mit vielen verschiedenen Beziehungsarten vorteilhaft sein.
+
+%- generell
+%	- alle Systeme sind flexibel hinsichtlich Schemaänderungen
+%% Tabelle
+%- Neo4j: PGM
+%	+ Knotenlabel (mehrere)
+%	+ flexible Schemaänderung
+%	- keine Objekteinbettung
+%	- keine Schemadefinition für Attribute	
+%	- viel Verantwortung wird an die Anwendung übergeben
+
+%- HyperGraphDB: 
+%	+ Atom-Modell sehr generisch -> für den Anwendungsfall jedoch nicht zwingend erforderlich	
+%	+ mächtiges Typsystem, Vererbungshierarchien, Schema durch Klassendefinition
+%	+ flexible Schemaänderung
+%	+ umfangreiches Typsystem
+%	- keine Updates, Änderungen durch Werteaustausch
+%	- kein direkter Zugriff auf Nachbarschaft
+%	- komplizierte Definition der Semantik der Position in Zielmenge
+
+%- OrientDB:
+%	+ Multi-Modell-Ansatz (Dokumentenmodell als Basis) 
+%	+ Schema durch Klassendefinition (+ einfache Vererbung)
+%	+ umfangreiche attributbezogene Integritätsbedingungen
+%	+ Rechteverwaltung
+%	- bietet zwar vielfältige Einsatzmöglichkeiten, der Fokus scheint jedoch auf der dokumentenorientierten Verwendung und weniger auf vernetzten Informationen zu liegen	
+%	- Dokumentmodell als Basis
+%	- PGM auf Dokumente abgebildet
+	
+%- Titan:
+%	+ Definition von TitanKey und TitanLabel zur Optimierung der Speicherung (Performance)
+%	+ erlaubt mehrfache Verwendung von Attributschlüsseln an Knoten / Kante
+%	+ Einschränkung der Kardinalität von Beziehungen
+%	- keine Schemadefinition an Knoten und Kanten
+%	+ Einschränkung der Attribute
+%	+ Einschränkung Datentypen
+%	+ verschachtelte Attributwerte (Maps)
+%	+ Erweiterungen des PGM
+%		+ Vertex-centric Indices
+%		+ unidirektionale Kanten
+%		+ Einschränkung der Kardinalität
+%		+ als einziges System mehrfache Verwendung eines Attributschlüssels an der Instanz
+
 
 \paragraph*{Zugriffsmechanismen}
 
@@ -187,6 +206,7 @@ CRUD-Operationen:
 	- in allen GDBMS möglich
 	- dabei Einschränkung der Ergebnismenge durch Angabe von Schlüssel-Wert-Paaren
 	- wenn vom Modell unterstützt, stehen Methoden für Klassen- / Typ-Definitionen zur Verfügung
+	- HyperGraphDB: darüber hinaus ermöglicht das Modell keinen direkten Zugriff auf die Nachbarschaft eines Knotens.
 	
 Traversierung:
 	- Neo4j:
