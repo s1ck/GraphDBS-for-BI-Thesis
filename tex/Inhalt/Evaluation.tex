@@ -197,6 +197,46 @@ Die Implementierung des PGM in Titan ist ähnlich zur Umsetzung in Neo4j. Schemad
 
 \paragraph*{Zugriffsmechanismen}
 
+Tabelle \ref{tab:zusammenfassung_zugriffsmechanismen}
+
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[h]
+	\centering
+	\begin{footnotesize}
+   	\begin{tabular}{|m{3cm}|>{\centering}m{2.9cm}|>{\centering}m{2.9cm}|>{\centering}m{2.9cm}|>{\centering\arraybackslash}m{2.9cm}|}
+	\hline	
+   	 \textbf{GDBMS} & \textbf{Neo4j} & \textbf{HyperGraphDB (BerkeleyDB)} & \textbf{OrientDB} & \textbf{Titan (BerkeleyDB)} \\   
+   	\hline
+   	\multicolumn{5}{|c|}{\textbf{Zugriffsmechanismen}} \\
+	\hline
+   	\textbf{Java API} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Traversal API} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Anfragesprachen} & Cypher, Gremlin & Prädikate\newline~(Java API) & OrientDB-SQL, Gremlin & Gremlin \\
+   	\hline
+	\multicolumn{5}{|c|}{\textbf{Operationen}} \\
+   	\hline
+   	\textbf{CRUD} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Mengenorientiert} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Traversierung} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Mustersuche} & \checkmark & - & - & \checkmark \\
+   	\textbf{Aggregation} & \checkmark & - & \checkmark & \checkmark \\
+   	\textbf{Gruppierung} & \checkmark & - & \checkmark & \checkmark \\
+   	\textbf{Summierung} & - & - & - & - \\
+   	\textbf{Metriken} & - & - & - & - \\
+   	\hline
+	\multicolumn{5}{|c|}{\textbf{Verfügbare Algorithmen}} \\   	
+   	\hline
+   	\textbf{Algorithmen\newline~(nativ)} & Dijkstra, A*, BFS, DFS & Dijkstra & - & - \\
+   	\textbf{Algorithmen\newline~(Blueprints)} & Bellman-Ford & - & Dijkstra, Bellman-Ford, A*, BFS, DFS & Dijkstra, Bellman-Ford, A*, BFS, DFS \\
+   	\hline
+   	\end{tabular} 
+	\end{footnotesize}
+	\setlength{\belowcaptionskip}{0.25cm}	
+	\caption[Zusammenfassung: Zugriffsmechanismen]{Gegenüberstellung Zugriffsmechanismen.}
+	\label{tab:zusammenfassung_zugriffsmechanismen}
+\end{table}
+\renewcommand{\arraystretch}{1}
+
 Eingebetteter Zugriff:
 	- in allen Systemen möglich
 Entfernter Zugriff:
@@ -285,43 +325,7 @@ Metriken
 	- einfache Metriken wie Anzahl Knoten / Kanten
 	- Neo4j: Berechnung aller kürzesten Pfade als Grundlage für komplexere Metriken
 
-\renewcommand{\arraystretch}{1.25}
-\begin{table}[h]
-	\centering
-	\begin{footnotesize}
-   	\begin{tabular}{|m{3cm}|>{\centering}m{2.9cm}|>{\centering}m{2.9cm}|>{\centering}m{2.9cm}|>{\centering\arraybackslash}m{2.9cm}|}
-	\hline	
-   	 \textbf{GDBMS} & \textbf{Neo4j} & \textbf{HyperGraphDB (BerkeleyDB)} & \textbf{OrientDB} & \textbf{Titan (BerkeleyDB)} \\   
-   	\hline
-   	\multicolumn{5}{|c|}{\textbf{Zugriffsmechanismen}} \\
-	\hline
-   	\textbf{Java API} & \checkmark & \checkmark & \checkmark & \checkmark \\
-   	\textbf{Traversal API} & \checkmark & \checkmark & \checkmark & \checkmark \\
-   	\textbf{Anfragesprachen} & Cypher, Gremlin & Prädikate\newline~(Java API) & OrientDB-SQL, Gremlin & Gremlin \\
-   	\hline
-	\multicolumn{5}{|c|}{\textbf{Operationen}} \\
-   	\hline
-   	\textbf{CRUD} & \checkmark & \checkmark & \checkmark & \checkmark \\
-   	\textbf{Mengenorientiert} & \checkmark & \checkmark & \checkmark & \checkmark \\
-   	\textbf{Traversierung} & \checkmark & \checkmark & \checkmark & \checkmark \\
-   	\textbf{Mustersuche} & \checkmark & - & - & \checkmark \\
-   	\textbf{Aggregation} & \checkmark & - & \checkmark & \checkmark \\
-   	\textbf{Gruppierung} & \checkmark & - & \checkmark & \checkmark \\
-   	\textbf{Summierung} & - & - & - & - \\
-   	\textbf{Metriken} & - & - & - & - \\
-   	\hline
-	\multicolumn{5}{|c|}{\textbf{Verfügbare Algorithmen}} \\   	
-   	\hline
-   	\textbf{Algorithmen\newline~(nativ)} & Dijkstra, A*, BFS, DFS & Dijkstra & - & - \\
-   	\textbf{Algorithmen\newline~(Blueprints)} & Bellman-Ford & - & Dijkstra, Bellman-Ford, A*, BFS, DFS & Dijkstra, Bellman-Ford, A*, BFS, DFS \\
-   	\hline
-   	\end{tabular} 
-	\end{footnotesize}
-	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption[Zusammenfassung: Zugriffsmechanismen]{Gegenüberstellung Zugriffsmechanismen.}
-	\label{tab:zusammenfassung_zugriffsmechanismen}
-\end{table}
-\renewcommand{\arraystretch}{1}
+
 
 \paragraph*{Transaktions- und Indexverwaltung}
 
@@ -377,7 +381,7 @@ Indexverwaltung
 	\textbf{mehrdimensional} & - & - & \checkmark & - \\
 	\textbf{Aktualisierung} & automatisch & automatisch & automatisch & automatisch \\
 	\textbf{Externe Indexstrukturen} & Apache Lucene, Neo4j Spatial & - & - & Elastic Search, Apache Lucene \\
-	\textbf{Besonderheiten} & - & - & - & Knoten-zentrierte Indizes \\
+	%\textbf{Besonderheiten} & - & - & - & Knoten-zentrierte Indizes \\
    	\hline
    	\end{tabular} 
 	\end{footnotesize}
