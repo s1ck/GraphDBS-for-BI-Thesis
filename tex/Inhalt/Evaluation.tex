@@ -33,7 +33,7 @@ Das Projekt verfolgt drei Ziele: Zunächst ist die Integration von Unternehmensda
 
 \section{Zusammenfassung, Vergleich und Auswahl}
 
-In diesem Abschnitt werden die Ergebnisse der vorangegangen funktionalen Analyse zusammengefasst. Die tabellarische, kategorisierte Gegenüberstellung der Eigenschaften betrachteter Graphdatenbanksysteme dient dabei als Bewertungsgrundlage für die Eignung im beschriebenen Forschungsvorhaben. Es werden zwei Systeme ausgewählt, welche in der anschließenden technischen Analyse hinsichtlich ihrer Leistungsfähigkeit final gegenübergestellt werden.
+In diesem Abschnitt werden die Ergebnisse der vorangegangen funktionalen Analyse zusammengefasst. Die tabellarische, kategorisierte Gegenüberstellung der Eigenschaften betrachteter Graphdatenbanksysteme dient dabei als Bewertungsgrundlage für die Eignung im beschriebenen Forschungsvorhaben. Ziel ist es, zwei Systeme auszuwählen, welche in der sich anschließenden technischen Analyse hinsichtlich ihrer Leistungsfähigkeit final gegenübergestellt werden.
 
 \paragraph*{Kategorisierung und Dokumentation}
 
@@ -75,7 +75,7 @@ In Tabelle \ref{tab:zusammenfassung_dokumenation} werden allgemeine Informatione
 \renewcommand{\arraystretch}{1} 
 
 Bei der Analyse eines Systems ist die offizielle Dokumentation erster Anlaufpunkt. Neo4j verfügt über eine umfassende, detaillierte und vor allem aktuelle Dokumentation, welche sowohl ausführlich auf Zugriffsmechanismen eingeht als auch Implementierungstechniken ansatzweise beschreibt. Im Gegensatz dazu ist die Dokumentation zu OrientDB teilweise unvollständig und nicht konsistent mit dem aktuellen Entwicklungsstand des GDBMS. Insbesondere bei der Analyse der für Datenbanksysteme wichtigen Transaktionsverwaltung musste auf den Quelltext zurückgegriffen werden. Generell ist die Dokumentation von OrientDB auf die Verwendung als Dokumentendatenbank ausgerichtet, die graphenorientierten Erweiterungen von SQL werden nur durch minimalistische Beispiele beschrieben.\\
-Die Dokumentationen von HyperGraphDB und Titan sind gut strukturiert und entsprechen dem aktuellen Entwicklungsstand. Titan profitiert dabei von den sehr guten Dokumentationen des TinkerPop-Projektes. Eine Quelltextrecherche war jedoch auch bei diesen Systemen im Zusammenhang mit Transaktions- und Persistenzverwaltung notwendig. Alle Hersteller besitzen offizielle Mailinglisten, in denen Fragen beantwortet und Annahmen bestätigt wurden. Die Mailinglisten von Neo4j, OrientDB und Titan sind deutlich aktiver als dies bei HyperGraphDB der Fall ist. Insbesondere Neo4j erweckt den Eindruck einer umfangreichen Entwicklergemeinde; neben den offiziellen Dokumentationen finden sich viele Präsentationen, Blog-Artikel, Twitter-Meldungen oder Forenbeiträge mit Bezug zum GDBMS und dessen Anwendungen.
+Die Dokumentationen von HyperGraphDB und Titan sind gut strukturiert und entsprechen dem aktuellen Entwicklungsstand. Titan profitiert dabei von den sehr guten Dokumentationen des TinkerPop-Projektes. Eine Quelltextrecherche war jedoch auch bei diesen Systemen im Zusammenhang mit Transaktions- und Persistenzverwaltung notwendig. Alle Hersteller besitzen offizielle Mailinglisten, in denen Fragen beantwortet und Annahmen bestätigt wurden. Die Mailinglisten von Neo4j, OrientDB und Titan sind deutlich aktiver als dies bei HyperGraphDB der Fall ist. Insbesondere Neo4j erweckt den Eindruck einer umfangreichen Entwicklergemeinde; neben den offiziellen Dokumentationen finden sich viele Präsentationen, Blog-Artikel, Twitter-Nachrichten oder Forenbeiträge mit Bezug zum GDBMS und dessen Anwendungen.
 
 Die Kategorisierung verdeutlicht, dass nur Neo4j als vollständig natives GDBMS gewertet werden kann. Als einziges bildet es das PGM auf ein explizit dafür entwickeltes Speichersystem ab. Im Gegensatz dazu ist die Einbettung in Java-Anwendungen in allen Systemen möglich; HyperGraphDB beinhaltet keine Unterstützung für den entfernen Zugriff und muss bei Bedarf entsprechend erweitert werden. Ein Speichersystem, welches auf den Hauptspeicher ausgerichtet ist, wird von keinem der Systeme unterstützt. Bezüglich der Verteilung ist Titan hervorzuheben, da es Partitionierung und Replikation der Datenbasis ermöglicht. In diesem Zusammenhang ist die Nutzung etablierter Systeme wie z.B. Apache Cassandra eine innovative Idee und nimmt den Entwicklern zusätzlichen Implementierungsaufwand für die Realisierung von Persistenz-, Transaktions- und Verteilungsmechanismen ab.
 
@@ -115,7 +115,7 @@ Die Kategorisierung verdeutlicht, dass nur Neo4j als vollständig natives GDBMS g
 
 \paragraph*{Datenmodell}
 
-Bei der Betrachtung des Datenmodells wurde festgestellt, dass eine Modellierung entsprechend dem PGM von allen Systemen unterstützt wird. Eine sich daraus ergebende weitere Gemeinsamkeit ist die hohe Flexibilität bezüglich Schemaänderungen ohne Beeinflussung bestehender Nutzdaten. Durch diese Eigenschaft eignen sich die Systeme im besonderem Maße für die Datenintegration aus heterogenen Quellsystemen. In Tabelle \ref{tab:zusammenfassung_datenmodell} sind die wichtigsten Eigenschaften gegenüberstellt.
+Bei der Analyse des jeweiligen Datenmodells wurde festgestellt, dass das PGM von allen Systemen unterstützt wird. Eine sich daraus ergebende weitere Gemeinsamkeit ist die hohe Flexibilität bezüglich Schemaänderungen ohne Beeinflussung bestehender Nutzdaten. Hierdurch eignen sich die Systeme im besonderem Maße für die Datenintegration aus heterogenen Quellsystemen. In Tabelle \ref{tab:zusammenfassung_datenmodell} sind die wichtigsten Merkmale gegenüberstellt.
 
 Neo4j bietet nur wenig Einfluss auf das Schema der hinterlegten Daten und übergibt einen Großteil der Verantwortung hinsichtlich Schemaverwaltung und Konsistenzerhaltung an die Anwendung. Eine Erweiterung des PGM stellen die Knotenbezeichner dar mit denen sich Knoteninstanzen beliebig vielen Gruppen zuordnen lassen. Die Einbettung geschachtelter Objekte als Attributwerte ist in Neo4j nicht möglich und muss bei Bedarf durch dedizierte Knoten realisiert werden.\\
 HyperGraphDB hingegen stellt mit dem Atom-Modell einen generischen Ansatz für die Abbildung komplexer Strukturen mit n-ären und höherwertigen Beziehungen zur Verfügung. Eine Folge der hohen Ausdrucksstärke ist die stellenweise wenig intuitive Verwendung: So muss der Ordnung innerhalb der Zielmenge grundsätzlich eine Semantik zugewiesen werden. Da es sich bei den beschriebenen Informationsnetzwerken vorrangig um binäre Beziehungen handelt und n-äre Relationen auch durch mehrfache binäre Relationen ausgedrückt werden können, ist die Implementierung des PHGM kein wesentlicher Vorteil gegenüber den anderen Systemen. Ungeachtet dessen erlaubt das GDBMS die Definition komplexer Typsysteme und eine Verwendung beliebiger Objektkompositionen zur Beschreibung der Nutzdaten.
@@ -144,13 +144,13 @@ HyperGraphDB hingegen stellt mit dem Atom-Modell einen generischen Ansatz für di
    	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption[Zusammenfassung: Datenmodell]{Gegenüberstellung Datenmodell.}
+	\caption[Zusammenfassung: Datenmodell und Schemaverwaltung]{Gegenüberstellung der wesentlichen Eigenschaften des jeweiligen Datenmodells.}
 	\label{tab:zusammenfassung_datenmodell}
 \end{table}
 \renewcommand{\arraystretch}{1}
 
-OrientDB deckt mit der Unterstützung mehrerer Datenmodelle verschiedene Einsatzszenarien ab. Dokumentenklassen erlauben das Definieren eines Schemas, dabei ist insbesondere auf die Vielzahl attributbezogener Integritätsbedingungen hinzuweisen. Die Möglichkeit, Attribute als obligatorisch zu deklarieren stellt dabei einen Kompromiss zwischen selbstbeschreibender und strukturierter Datenhaltung dar. Durch die Unterstützung eingebetteter Beziehungen sind beliebige Objektkompositionen an Knoten- und Kanteninstanzen möglich.\\
-Die Implementierung des PGM in Titan ist ähnlich zur Umsetzung in Neo4j. Schemadefinitionen für Knoten- und Kantenattribute sind nicht möglich. Knotenbezeichner werden nicht unterstützt, das GDBMS erlaubt jedoch als einziges im Vergleich die mehrfache Verwendung von Attributschlüsseln an Knoten und Kanten sowie die Einschränkung der Kardinalität der an einer Beziehungen beteiligten Instanzen. Infolge der Definition von Attributschlüsseln lässt sich darüber hinaus der Datentyp und somit der Wertebereich der Attributwerte einschränken. Das Konzept der knoten-zentrierten Indizes ist ebenfalls einzigartig und kann insbesondere in stark vernetzten Informationssystemen mit vielen verschiedenen Beziehungsarten vorteilhaft sein.
+OrientDB deckt mit der Unterstützung mehrerer Datenmodelle verschiedene Einsatzszenarien ab. Im Gegensatz zu Neo4j und Titan lassen sich Schemaverwaltung und Konsistenz-erhaltung systemseitig umsetzen. Dokumentenklassen erlauben die Schemadefinition, dabei ist insbesondere auf die Vielzahl attributbezogener Integritätsbedingungen hinzuweisen. Die Möglichkeit, Attribute als obligatorisch zu deklarieren stellt dabei einen Kompromiss zwischen selbstbeschreibender und strukturierter Datenhaltung dar. Durch die Unterstützung eingebetteter Beziehungen sind beliebige Objektkompositionen an Knoten- und Kanteninstanzen möglich.\\
+Die Implementierung des PGM in Titan ist ähnlich zur Umsetzung in Neo4j, Schemadefinitionen für Knoten- und Kantenattribute sind nicht möglich. Knotenbezeichner werden nicht unterstützt, das GDBMS erlaubt jedoch als einziges im Vergleich die mehrfache Verwendung von Attributschlüsseln an Knoten und Kanten sowie die Einschränkung der Kardinalität der an einer Beziehungen beteiligten Instanzen. Infolge der Definition von Attributschlüsseln lässt sich darüber hinaus der Datentyp und somit der Wertebereich der Attributwerte einschränken. Das Konzept der knoten-zentrierten Indizes ist im Vergleich einzigartig und kann insbesondere in stark vernetzten Informationssystemen mit vielen verschiedenen Beziehungsarten vorteilhaft sein.
 
 %- generell
 %	- alle Systeme sind flexibel hinsichtlich Schemaänderungen
@@ -197,7 +197,7 @@ Die Implementierung des PGM in Titan ist ähnlich zur Umsetzung in Neo4j. Schemad
 
 \paragraph*{Zugriffsmechanismen}
 
-Tabelle \ref{tab:zusammenfassung_zugriffsmechanismen}
+Die Systeme wurden hinsichtlich ihrer Eignung für die in Abschnitt \ref{subsec:graph_operations} beschriebenen graphenspezifischen Operationen untersucht, Tabelle \ref{tab:zusammenfassung_zugriffsmechanismen} fasst die Ergebnisse zusammen.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -218,7 +218,7 @@ Tabelle \ref{tab:zusammenfassung_zugriffsmechanismen}
    	\textbf{CRUD} & \checkmark & \checkmark & \checkmark & \checkmark \\
    	\textbf{Mengenorientiert} & \checkmark & \checkmark & \checkmark & \checkmark \\
    	\textbf{Traversierung} & \checkmark & \checkmark & \checkmark & \checkmark \\
-   	\textbf{Mustersuche} & \checkmark & - & - & \checkmark \\
+   	\textbf{Mustersuche} & \checkmark & - & \checkmark & \checkmark \\
    	\textbf{Aggregation} & \checkmark & - & \checkmark & \checkmark \\
    	\textbf{Gruppierung} & \checkmark & - & \checkmark & \checkmark \\
    	\textbf{Summierung} & - & - & - & - \\
@@ -236,96 +236,48 @@ Tabelle \ref{tab:zusammenfassung_zugriffsmechanismen}
 	\label{tab:zusammenfassung_zugriffsmechanismen}
 \end{table}
 \renewcommand{\arraystretch}{1}
+% CRUD alle
+Die Manipulation der Datenbasis ist in allen Systemen möglich, wird darüber hinaus ein Typsystem angeboten, stehen entsprechende Methoden zur Definition eines Schemas zur Verfügung. Beim Auslesen der Daten können Einschränkungen auf Teilmengen der Knoten- bzw. Kantenmenge durch Prädikate realisiert werden. Durch die imperativen Java APIs eigenen sich alle Systeme für die Implementierung eigener Graphalgorithmen.
 
-Eingebetteter Zugriff:
-	- in allen Systemen möglich
-Entfernter Zugriff:
-	- in allen Systemen außer HyperGraphDB möglich
+% Neo4j
+% Traversierung
+Für die Traversierung des Graphen bietet Neo4j mit dem Traversal Framework ein mächtiges Werkzeug an. Die Durchlaufreihenfolge, das mehrfache Betrachten von Instanzen und Filterkriterien für Kantenbezeichner und -richtung können konfiguriert werden, durch die Einbettung in Java lassen sich beliebige Entscheidungslogiken implementieren. Das Prüfen der Erreichbarkeit ist folglich ebenfalls möglich. Neo4j bietet darüber hinaus integrierte Graphalgorithmen zur Suche kürzester Pfade in gewichteten und ungewichteten Graphen oder für das Finden aller Wege zwischen definierten Instanzen. Im Vergleich bieten die Algorithmen als einzige die Option, Filterkriterien zu definieren.\\
+Neben der Traversierung in Java kann alternativ die Anfragesprache Cypher für die Wegsuche genutzt werden. Kernelement der Sprache ist das Kombinieren mehrerer abstrakter Wegdefinition zu Mustergraphen. Der deklarative Charakter ermöglicht dabei ein intuitives Formulieren komplexer Strukturen entsprechend dem PGM. Mustergraphen lassen sich optional an die Datenbasis binden und ihre Elemente mit Variablen auszeichnen, welche sich wiederum durch Prädikate einschränken lassen.\\
+Eine topologische Summierung des Graphen wird von keinem der Systeme unterstützt. Die Aggregation von Nutzdaten und die damit verbundene Gruppierung sind in Neo4j möglich. Cypher bietet hierfür eine Vielzahl von Funktionen zur Berechnung von Aggregaten sowie zur Manipulation der Ergebnismenge.
 
-CRUD-Operationen:
-	- in allen GDBMS möglich
-	- dabei Einschränkung der Ergebnismenge durch Angabe von Schlüssel-Wert-Paaren
-	- wenn vom Modell unterstützt, stehen Methoden für Klassen- / Typ-Definitionen zur Verfügung
-	- HyperGraphDB: darüber hinaus ermöglicht das Modell keinen direkten Zugriff auf die Nachbarschaft eines Knotens.
-	
-Traversierung:
-	- Neo4j:
-		+ algorithmische Traversierung mittels Traversal Framework
-			- umfangreiche Möglichkeiten zur Beeinflussung (Richtung, mehrfache Betrachtung, Filter- und Abbruchkriterien, Heuristiken)
-			- Verwendung von Java für Entscheidungslogik -> mächtig
-		+ alternative Definition abstrakter Wege in Cypher inkl. Einschränkung
-		+ beide: Pfadinstanzen als Ergebnis möglich
-	- HyperGraphDB
-		+ algorithmische Traversierung mittels Traversal Framework -> Java
-		+ Prädikate erlauben die Definition von Filterkriterien	für besuchte Kanten / Knoten
-		- kein direkter Zugriff auf die Nachbarschaft eines Knotens (keine intuitive Verwendung)		
-		- hoher manueller Aufwand (z.B. keine Pfadinstanzen)
-	- OrientDB
-		- TRAVERSE-Operator in OrientDB-SQL unzureichend dokumentiert, nur triviale Beispiel, wenig intuitiv
-		- Einschränkungen beim Traversieren durch komplexes Verschachteln von Anfragen möglich		
-		+ Ausrichtung auf dokumentenorientierten Betrieb und mengenorientiertes Verarbeiten semi-strukurierter Daten
-	- OrientDB und Titan
-		+ algorithmische Traversierung durch knoten-zentrierte Anfragen		
-		- vorrangig Nutzung von Gremlin -> Programmiersprache, mächtig
-	- Titan
-		+ Gremlin für die intuitive Formulierung abstrakter Wege
-		- Gruppierungen / Aggregationen aufwendiger als mit einer deklarativen Sprache wie Cypher
-	
-Erreichbarkeit
-	- Neo4j:
-		- native API stellt Algorithmen zur Verfügung
-			- erlauben Einschränkungen von Kantenbezeichnern
-		- Unterstützung von Blueprints
-		- Cypher bietet shortestPath allShortestPath-Funktionen an
-		- Weg der Länge $k$ führt zu $\mathcal{O}(\left|N(v_1)\right| \times \left|N(v_2)\right| \times \cdots \times \left|N(v_k)\right|)$
-	- HyperGraphDB
-		- nur durch Traversierung / manuelle Implementierung umsetzbar
-		- wenig Algorithmen (Dijkstra-Implementierung)
-	- OrientDB und Titan
-		- durch Traversierung umsetzbar
-		- Blueprints Algorithmen
-			- keine Einschränkungen möglich
-	- OrientDB
-		- Bugs z.B. falsche Ergebnisse beim Traversieren, expand(shortestPath) und expand(dijkstra)  haben keinen Effekt
-		- Ergebnisse zwischen Tiefen- und Breitensuche unterscheiden sich durch Verhindern des wiederholten Zugriffs (link zur Mailing-Liste)
+%- Neo4j:
+%	+ algorithmische Traversierung mittels Traversal Framework
+%	- umfangreiche Möglichkeiten zur Beeinflussung (Richtung, mehrfache Betrachtung, Filter- und Abbruchkriterien, Heuristiken)
+%	- Verwendung von Java für Entscheidungslogik -> mächtig
+%	+ alternative Definition abstrakter Wege in Cypher inkl. Einschränkung
+%	+ beide: Pfadinstanzen als Ergebnis möglich
+%	- native API stellt Algorithmen zur Verfügung
+%	- erlauben Einschränkungen von Kantenbezeichnern
+%	- Unterstützung von Blueprints
+%	- Cypher bietet shortestPath allShortestPath-Funktionen an
+%	- Weg der Länge $k$ führt zu $\mathcal{O}(\left|N(v_1)\right| \times \left|N(v_2)\right| \times \cdots \times \left|N(v_k)\right|)$
+%	- Cypher ermöglicht durch die Kombination abstrakter Wege die Definition beliebiger Mustergraphen
+%	- Einschränkung der abstrakten Wege
+%	- deklarativ -> intuitives Formulieren möglich (nah am Datenmodell)
+%	- Wiederverwendung von Ergebnissen durch Verkettung von Operationen		
+%	- Neo4j:
+%	- Aggregation und Gruppierung
+%	- Gruppierung auf Basis von Attributwerten
+%	- großer Funktionsumfang zur Berechnung von Aggregaten und Manipulation der Ergebnismenge
 
-Mustersuche
-	- Neo4j:
-		- Cypher ermöglicht durch die Kombination abstrakter Wege die Definition beliebiger Mustergraphen
-		- Einschränkung der abstrakten Wege
-		- deklarativ -> intuitives Formulieren möglich (nah am Datenmodell)
-		- Wiederverwendung von Ergebnissen durch Verkettung von Operationen		
-	- HyperGraphDB
-	 	- keine native Unterstützung (keine Variablendefinition in Prädikaten)
-	- OrientDB
-		- keine native Unterstützung / keine Dokumentation
-		- evtl. durch Schachtelung von SELECT und TRAVERSE
-		- OrientDB-SQL eher für dokumentenzentierten, mengenorientierten Zugriff
-	- Titan
-		- Musterdefinition via Gremlin und table-Funktion
-		- weniger intuitiv als Cypher (= komplexer)
-		
-Aggregation und Summierung
+% HyperGraphDB
 
-- Summierung wird von keinem GDBMS unterstützt
+% Traversierung
+HyperGraphDB weist im Vergleich den geringsten Funktionsumfang hinsichtlich graphenspezifischer Operationen auf, bietet jedoch durch eine offene, erweiterbare Architektur die Möglichkeit zur Erweiterung des GDBMS an. Der Zugriff auf die Datenbasis erfolgt ausschließlich innerhalb einer Java-Anwendung. Analog zu Neo4j wird ein Framework für die Traversierung des Graphen bereitgestellt, dieses besitzt jedoch einen deutlich geringeren Funktionsumfang. Filterkriterien für Knoten- und Kanteninstanzen lassen sich durch Prädikate formulieren; alle weiteren Eigenschaften der Traversierung müssen via Java realisiert werden. Sollen Pfadinstanzen als Ergebnis zur Verfügung stehen, so liegt dies in der Verantwortung des Programmierers.\\
+Die Definition von Mustergraphen ist in HyperGraphDB nicht möglich, das integrierte Prädikat-basierte Anfragesystem ist ausschließlich mengenorientiert und erlaubt keine Definition von Variablen für die Extraktion von Teilgraphen. Das Aggregieren und Gruppieren von Nutzdaten muss ebenfalls durch anwendungsseitig implementierte Funktionen erfolgen.
 
-- Aggregation
-	- Neo4j:
-		- Aggregation und Gruppierung
-			- Gruppierung auf Basis von Attributwerten
-			- großer Funktionsumfang zur Berechnung von Aggregaten und Manipulation der Ergebnismenge
-	- HyperGraphDB
-		- Aggregation 
-			- muss innerhalb der Anwendung erfolgen -> (hg.apply)
-	- OrientDB
-		- Aggregation ja
-	- Titan
-		- Aggregation ja
-Metriken
-	- einfache Metriken wie Anzahl Knoten / Kanten
-	- Neo4j: Berechnung aller kürzesten Pfade als Grundlage für komplexere Metriken
+% OrientDB
+Der in OrientDB angebotene SQL-Dialekt eignet sich primär für die mengenorientierte Verarbeitung semi-strukturierter Daten in Form von Dokumenten. Die von SQL gewohnte Aggregation und Gruppierung von Nutzdaten wird in diesem Zusammenhang unterstützt. Wird OrientDB als GDBMS genutzt, müssen für die Datenmanipulation dedizierte Befehle verwendet werden. Das Traversieren erfolgt in OrientDB durch einen speziellen Operator, Filter- und Abbruchkriterien werden durch Selektion realisiert, was bei komplexeren Anfragen die Schachtelung von Anfragen erfordert. Insgesamt betrachtet sind die graphenspezifischen SQL-Erweiterungen wenig intuitiv, in Verbindung mit der unzureichenden, inkonsistenten Dokumentation gestaltete sich deren Verwendung im Vergleich zu Cypher und Gremlin als schwierig bis unmöglich. Im Rahmen der Analyse kam es darüber hinaus zu falschen Ergebnissen der integrierten Pfadsuchalgorithmen, ein entsprechender Eintrag auf der Mailingliste blieb bisher unbeantwortet.\footnote{Die Fehlerbeschreibung kann unter \url{https://groups.google.com/forum/?hl=de\#!topic/orient-database/gsw44qcXtMM} nachvollzogen werden.} Die Verwendung des SQL-Dialektes für die Realisierung einer Mustersuche innerhalb des Graphen ist nicht dokumentiert.\\
+Da OrientDB die Blueprints API implementiert, lässt sich Gremlin für graphenspezifische Operationen einsetzen. Die im Zusammenhang mit Titan beschriebene Traversierung und Mustersuche ist somit auch in OrientDB anwendbar. Darüber hinaus stehen für das Berechnen kürzester Pfaden die ebenfalls im TinkerPop-Projekt angebotenen Graphalgorithmen zur Verfügung.
 
-
+% Titan
+Titan ist eine native Implementierung der Blueprints API und bietet Gremlin als primäre Anfragesprache an. Diese kann sowohl für die Manipulation der Datenbasis als auch für die Traversierung und Mustersuche genutzt werden. Die Sprache eignet sich im besonderen Maße für die intuitive Beschreibung abstrakter Wege. Durch die Integration in Java, kann Entscheidungslogik in Form von Seiteneffekten während der Traversierung eingebunden und somit zum Beispiel das Berechnen von Aggregaten realisiert werden. Analog zu OrientDB lassen sich die im TinkerPop-Projekt angebotenen Graphalgorithmen verwenden.\\
+Die Definition eines Mustergraphen ist in Gremlin ebenfalls möglich, gestaltet sich im Vergleich zu Cypher jedoch aufwendiger, da eine Fragmentierung in mehrere abstrakte Wege nicht möglich ist. Es lässt sich auch hier eine beliebige Anzahl Konstanten und Variablen innerhalb des Musters festlegen.
 
 \paragraph*{Transaktions- und Indexverwaltung}
 
@@ -414,7 +366,7 @@ Indexverwaltung
 	- Traversierung: O(N\_v)
 	- schlechte Performance durch:	
 		- zusätzliche Indirektion durch Cluster-Datei beim Zugriff auf eigentliche Daten
-		- Deserialisierung erscheint ineffizient (evtl. Verweise auf ältere Benchmarks)	
+		- Deserialisierung erscheint ineffizient (evtl. Verweise auf ältere Benchmarks \cite{Ciglan:2012})	
 		- attributierte Kanten sind zusätzliche Indirektion\url{https://github.com/orientechnologies/orientdb/wiki/Performance-Tuning-Blueprints} -> können sich negativ auf die Performance beim Traversieren auswirken
 		- Fragmentierung der Stores	
 - Titan: nicht-nativ

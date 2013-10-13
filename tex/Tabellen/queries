@@ -1,22 +1,19 @@
-
-
-
 /*
+ * Query 1
+ *
  * Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben gruppiert nach
  * Produktname und sortiert nach Summe der Ratings
  */
 
 // Cypher
 
-START n=node(1337)  
+START n=node(42)  
 MATCH n-[:FRIEND_OF*1..2]-()<-[r:REVIEWED_BY]-p  
 RETURN p.title, count(p), sum(r.rating) as h  
 ORDER BY h DESC;
 
 // Gremlin
-r = [] // stores the edges
-m = [:] // stores the result
-v.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').aggregate(r) // store edges
+a.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').groupBy{it.outV.next()title}{it.rating}{it.sum()}.cap.orderMap(T.decr)
 
 
 /*

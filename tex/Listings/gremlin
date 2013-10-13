@@ -77,5 +77,7 @@ t = new Table('a','b','c','d')
 // mit bindung
 alice.as('a').out('WORKS_WITH').has('type','Employee').as('b').out('RESPONSIBLE_FOR').has('type','Project').as('d').back('b').out('WORKS_WITH').has('type','Employee').except('a').as('c').both.has('type','Employee').retain('a').table(t)
 
+// orientdb
+alice.as('a').out('WorksWith').has('@class','Employee').as('b').out('ResponsibleFor').has('@class','Project').as('d').back('b').out('WorksWith').has('@class','Employee').except('a').as('c').both.has('@class','Employee').retain('a').table(t)
 
 
