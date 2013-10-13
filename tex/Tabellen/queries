@@ -1,47 +1,46 @@
-/*
- * Query 1
- *
- * Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben gruppiert nach
- * Produktname und sortiert nach Summe der Ratings
- */
+# Query 0
+# Zufällige Auswahl von Produkten und Nutzern und laden ihrer Attribute.
 
-// Cypher
-
-START n=node(42)  
-MATCH n-[:FRIEND_OF*1..2]-()<-[r:REVIEWED_BY]-p  
-RETURN p.title, count(p), sum(r.rating) as h  
-ORDER BY h DESC;
-
-// Gremlin
-a.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').groupBy{it.outV.next()title}{it.rating}{it.sum()}.cap.orderMap(T.decr)
+# Cypher
 
 
-/*
- * Kürzester Pfad zwischen zwei Nutzern unter Verwendung der FRIEND_OF,
- * REVIEWED_BY und SIMILAR_TO-Beziehung
- */  
+# Gremlin
 
-// Cypher
+# Query 1
+# Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben gruppiert nach
+# Produktname und sortiert nach durchschnittlicher Bewertung
 
+# Cypher
+START n=node(42)   
+MATCH n-[:FRIEND_OF*1..2]-()<-[r:REVIEWED_BY]-p   
+RETURN p.title, (count(p) * 1.0 / sum(r.rating)) as weight   
+ORDER BY weight DESC;
+
+# Gremlin
+a.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').groupBy{it.outV.next()title}{it.rating}{it.sum() *1.0 / it.size()}.cap.orderMap(T.decr)
+
+
+# Query 2
+# Kürzester Pfad zwischen zwei Nutzern unter Verwendung der FRIEND_OF,
+# REVIEWED_BY und SIMILAR_TO-Beziehung
+
+# Cypher
 START a=node(42), b=node(20) 
 MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..5]-b)  
 RETURN EXTRACT(n in NODES(p): n.__type__), LENGTH(p); // 4
 
-START a=node(42), b=node(20) 
-MATCH p=shortestPath(a-[*..5]-b)  
-RETURN EXTRACT(n in NODES(p): n.__type__), LENGTH(p);
-
-// Gremlin
-(https://groups.google.com/forum/#!searchin/gremlin-users/shortest$20path/gremlin-users/yp_TMMcOVWo/i3zjFOI7bTQJ)
-
+# Gremlin
 a = g.v(42);
 b = g.v(20);
 visited=[a];
 a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).loop(3){it.object != b && it.loops < 6}.retain([b]).path
 
-/*
- * Helping stuff
- */
+# Query 3
+# 
+
+
+
+# Helping stuff
 
 g = TitanFactory.open('../../master_thesis/benchmark/out/titan-graph_100_4_2');
 a = g.V('__id__', 'A16MCCBGBZIZVR').next();
