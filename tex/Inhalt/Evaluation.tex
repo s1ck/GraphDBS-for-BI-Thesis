@@ -241,34 +241,11 @@ Die Manipulation der Datenbasis ist in allen Systemen möglich, wird darüber hina
 \renewcommand{\arraystretch}{1}
 
 % Neo4j
-% Traversierung
 Für die Traversierung des Graphen bietet Neo4j mit dem Traversal Framework ein unterstützendes Werkzeug an. Die Durchlaufreihenfolge, das mehrfache Betrachten von Instanzen und Filterkriterien für Kantenbezeichner und -richtung können konfiguriert werden, durch die Einbettung in Java lassen sich beliebige Entscheidungslogiken implementieren. Das Prüfen der Erreichbarkeit ist folglich ebenfalls möglich. Neo4j bietet darüber hinaus integrierte Graphalgorithmen zur Suche kürzester Pfade in gewichteten und ungewichteten Graphen oder für das Finden aller Wege zwischen definierten Instanzen an. Im Vergleich erlauben die Algorithmen als einzige die Angabe von Filterkriterien.\\
 Neben der Traversierung in Java kann alternativ die Anfragesprache Cypher für die Wegsuche genutzt werden. Kernelement der Sprache ist jedoch das Kombinieren mehrerer abstrakter Wegdefinition zu Mustergraphen. Der deklarative Charakter ermöglicht dabei ein intuitives Formulieren komplexer Strukturen entsprechend dem PGM. Mustergraphen lassen sich optional an die Datenbasis binden und ihre Elemente mit Variablen auszeichnen, deren Instanzmengen sich wiederum durch Prädikate einschränken lassen.\\
 Eine topologische Summierung des Graphen wird von keinem der Systeme unterstützt. Die Aggregation von Nutzdaten und die damit verbundene Gruppierung sind in Neo4j möglich. Cypher bietet hierfür eine Vielzahl von Funktionen zur Berechnung von Aggregaten sowie zur Manipulation der Ergebnismenge.
 
-%- Neo4j:
-%	+ algorithmische Traversierung mittels Traversal Framework
-%	- umfangreiche Möglichkeiten zur Beeinflussung (Richtung, mehrfache Betrachtung, Filter- und Abbruchkriterien, Heuristiken)
-%	- Verwendung von Java für Entscheidungslogik -> mächtig
-%	+ alternative Definition abstrakter Wege in Cypher inkl. Einschränkung
-%	+ beide: Pfadinstanzen als Ergebnis möglich
-%	- native API stellt Algorithmen zur Verfügung
-%	- erlauben Einschränkungen von Kantenbezeichnern
-%	- Unterstützung von Blueprints
-%	- Cypher bietet shortestPath allShortestPath-Funktionen an
-%	- Weg der Länge $k$ führt zu $\mathcal{O}(\left|N(v_1)\right| \times \left|N(v_2)\right| \times \cdots \times \left|N(v_k)\right|)$
-%	- Cypher ermöglicht durch die Kombination abstrakter Wege die Definition beliebiger Mustergraphen
-%	- Einschränkung der abstrakten Wege
-%	- deklarativ -> intuitives Formulieren möglich (nah am Datenmodell)
-%	- Wiederverwendung von Ergebnissen durch Verkettung von Operationen		
-%	- Neo4j:
-%	- Aggregation und Gruppierung
-%	- Gruppierung auf Basis von Attributwerten
-%	- großer Funktionsumfang zur Berechnung von Aggregaten und Manipulation der Ergebnismenge
-
 % HyperGraphDB
-
-% Traversierung
 HyperGraphDB weist im Vergleich den geringsten Funktionsumfang hinsichtlich graphenspezifischer Operationen auf, bietet jedoch durch eine offene, erweiterbare Architektur die Möglichkeit zur Erweiterung des GDBMS an. Der Zugriff auf die Datenbasis erfolgt ausschließlich innerhalb einer Java-Anwendung. Analog zu Neo4j wird ein Framework für die Traversierung des Graphen bereitgestellt, dieses besitzt jedoch einen deutlich geringeren Funktionsumfang. Filterkriterien für Knoten- und Kanteninstanzen lassen sich durch Prädikate formulieren; alle weiteren Eigenschaften der Traversierung müssen via Java realisiert werden. Sollen Pfadinstanzen als Ergebnis zur Verfügung stehen, so liegt dies in der Verantwortung des Programmierers.\\
 Die Definition von Mustergraphen ist in HyperGraphDB nicht möglich, das integrierte Prädikat-basierte Anfragesystem ist ausschließlich mengenorientiert und erlaubt keine Definition von Variablen für die Extraktion von Teilgraphen. Das Aggregieren und Gruppieren von Nutzdaten muss ebenfalls durch anwendungsseitig implementierte Funktionen erfolgen.
 

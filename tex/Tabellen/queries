@@ -6,18 +6,18 @@
 
 # Gremlin
 
-# Query 1
+# Query 1 (Traversierung, Gruppierung, Aggregation)
 # Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben gruppiert nach
 # Produktname und sortiert nach durchschnittlicher Bewertung
 
 # Cypher
-START n=node(42)   
+START n=node(42)
 MATCH n-[:FRIEND_OF*1..2]-()<-[r:REVIEWED_BY]-p   
-RETURN p.title, (count(p) * 1.0 / sum(r.rating)) as weight   
+RETURN p.title, (sum(r.rating) * 1.0 / count(p)) as weight   
 ORDER BY weight DESC;
 
 # Gremlin
-a.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').groupBy{it.outV.next()title}{it.rating}{it.sum() *1.0 / it.size()}.cap.orderMap(T.decr)
+a.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').groupBy{it.outV.next().title}{it.rating}{it.sum() * 1.0 / it.size()}.cap.orderMap(T.decr);
 
 
 # Query 2
@@ -35,8 +35,19 @@ b = g.v(20);
 visited=[a];
 a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).loop(3){it.object != b && it.loops < 6}.retain([b]).path
 
-# Query 3
-# 
+# Query 3 (Traviersierung unter Berücksichtigung von Attributen)
+# Produkte, die von Freunden anderen Geschlechts bewertet wurden und die ähnlich zu den eigenen,
+# bewerteten Produkten sind
+
+# Cypher
+
+START a=node(47041)
+
+MATCH a-[:FRIEND_OF*..2]-b<-[:REVIEWED_BY]-p-[:REVIEWED_BY]->a
+
+RETURN DISTINCT p.title;
+
+# Gremlin
 
 
 
@@ -68,6 +79,11 @@ v.both('FRIEND_OF').both('FRIEND_OF').in('REVIEWED_BY').dedup.count(); // 4
 v.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').as('r').outV.groupCount().cap()
 
 
-
+// top 5 degree
+START n=node(*)
+MATCH n-[r]-()
+RETURN n, count(r) as degree
+ORDER BY degree DESC
+LIMIT 10;
 
 
