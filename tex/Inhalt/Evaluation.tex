@@ -259,7 +259,7 @@ Die Definition eines Mustergraphen ist in Gremlin ebenfalls möglich, gestaltet s
 
 \paragraph*{Transaktionsverwaltung}
 
-Für die Speicherung von Geschäftsinformationen wird ein hoher Anspruch an die Einhaltung der Konsistenz und die fehlertolerante Speicherung der Datenbasis gestellt. Aus diesem Grund wurde die Einhaltung der ACID-Anforderungen analysiert, Tabelle \ref{tab:zusammenfassung_transaktion} fasst die Ergebnisse zusammen.
+Bei der Speicherung von Geschäftsinformationen wird ein hoher Anspruch an die Einhaltung der Konsistenz und die fehlertolerante Speicherung der Datenbasis gestellt. Aus diesem Grund wurde die Einhaltung der ACID-Anforderungen analysiert, Tabelle \ref{tab:zusammenfassung_transaktion} fasst die Ergebnisse zusammen.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -290,7 +290,7 @@ HyperGraphDB nutzt BerkeleyDB für die Einhaltung der ACID-Eigenschaften. Für ein
 Ein Systemausfall kann auch in OrientDB zum Verlust der Änderungen erfolgreich beendeter Transaktionen führen. Es besteht jedoch ebenfalls die Möglichkeit, Wiederherstellungsinformationen unter Inkaufnahme eines Geschwindigkeitsverlustes auf den Externspeicher zu forcieren. OrientDB garantiert im eingebetteten Betrieb die höchste Isolationsebene, dies gilt jedoch nicht für den entfernten Zugriff.\\
 Die ACID-Eigenschaften von Titan variieren je nach eingesetztem Speichersystemen: BerkeleyDB wird mit Standardeinstellungen verwendet und garantiert folglich auch die Dauerhaftigkeit erfolgreicher Transaktionen. Das GDBMS stellt die Einhaltung definierter Integritätsbedingungen durch das Setzen von Sperren sicher.
 
-Die Verwendung eines pessimistischen Synchronisationsverfahrens führt dazu, dass sich entsprechende Systeme vorrangig für kurze Änderungstransaktionen eignen, da ein Blockieren parallel ausgeführter Transaktionen möglich ist. Im Forschungsvorhaben sollen hauptsächlich Lesetransaktionen für die lokale Analyse des Graphen durchgeführt werden. Änderungen hingegen werden in Bulk-Load-Prozessen durchgeführt. Die Verwendung eines RX-Sperrverfahrens stellt somit im Vergleich kein Defizit dar. Zu beachten ist, dass alle GDBMS die Atomarität von Änderungen durch deren Zwischenspeicherung im Hauptspeicher sicherstellen, was bei langen Lese- oder Änderungstransaktionen zu Problemen führen kann.
+Die Verwendung eines pessimistischen Synchronisationsverfahrens führt dazu, dass sich entsprechende Systeme vorrangig für kurze Änderungstransaktionen eignen, da ein Blockieren parallel ausgeführter Transaktionen möglich ist. Im Forschungsvorhaben sollen hauptsächlich Lesetransaktionen für die lokale Analyse des Graphen durchgeführt werden, Änderungen hingegen erfolgen in periodischen Bulk-Load-Prozessen. Die Verwendung eines RX-Sperrverfahrens stellt somit im Vergleich kein Defizit dar. Zu beachten ist, dass alle GDBMS die Atomarität von Änderungen durch deren Zwischenspeicherung im Hauptspeicher sicherstellen, dies kann bei langen Lese- oder Änderungstransaktionen zu Problemen führen.
 
 \paragraph*{Persistenz-, Index- und Cacheverwaltung}
 
