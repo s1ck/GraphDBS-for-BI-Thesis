@@ -1,28 +1,126 @@
-# Query 0
-# Zufällige Auswahl von Produkten und Nutzern und laden ihrer Attribute.
+########################################################################
+# Query "Import" (import)
+#
+# Importieren der Datenbasis in das GDBMS unter Verwendung von Bulk-
+# Load-Mechanismen.
+#
+########################################################################
+
+########################################################################
+# Query "Random Nodes" (q_read)
+#
+# Selektion zufällig ausgewählter Produkte und Nutzer sowie Auslesen ihrer
+# Attribute.
+# 
+# Lokal, Einfache Leseanfrage
+#
+########################################################################
 
 # Cypher
-
+START a=node(42) RETURN *;
 
 # Gremlin
+g.v(42).map();
 
-# Query 1 (Traversierung, Gruppierung, Aggregation)
-# Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben gruppiert nach
-# Produktname und sortiert nach durchschnittlicher Bewertung
+########################################################################
+# Query "Similar Products" (q_sim_products)
+#
+# Selektion der Titel aller ähnlichen Produkte deren Abstand höchstens Zwei 
+# beträgt. Jedes Produkt soll einmalig in der Ergebnismenge sein.
+# 
+# Lokal, Traversierung
+#
+########################################################################
+
+# Cypher
+START n=node(22) MATCH n-[:SIMILAR_TO*..2]-s RETURN DISTINCT s.title;
+
+# Gremlin
+p.both('SIMILAR_TO').loop(1){it.loops <= 2}.dedup().title
+
+########################################################################
+# Query "FOAF-Products" (q_foaf_products)
+#
+# Selektion der Produkte, die von Freunden (anderen Geschlechts) bewertet 
+# wurden und die ähnlich zu den eigenen, bewerteten Produkten sind.
+#
+# 
+# Lokal, Traviersierung unter Berücksichtigung von Attributen
+#
+########################################################################
+
+# Cypher
+// trifft auf 4 (100_4_2) Nutzer zu:
+// {'A3QFLHQ6P91TX2', 'A1J1QS7I60O018', 'AFP8L7OE57R3K', 'A202FGBQHO5638'}
+// {40050, 43113, 97676, 128304}
+
+START a=node(40050)
+MATCH a-[:FRIEND_OF*..2]-b<-[:REVIEWED_BY]-p-[:REVIEWED_BY]->a
+WHERE b.gender <> a.gender
+RETURN DISTINCT a; 
+
+// trifft auf 18 (100_4_2) Nutzer zu:
+START a=node(40050)
+MATCH a-[:FRIEND_OF*..2]-b<-[:REVIEWED_BY]-p-[:REVIEWED_BY]->a
+RETURN DISTINCT a;
+
+# Gremlin
+a = g.v(160200);
+a.both('FRIEND_OF').loop(1){it.loops <=2}.in('REVIEWED_BY').out('REVIEWED_BY').retain([a]).dedup();
+
+
+########################################################################
+# Query "FOAF-Reviews" (q_foaf_reviews)
+#
+# Selektion der Produkte, für die Freunde oder deren Freunde ein Review
+# geschrieben haben gruppiert nach Produktname und sortiert nach 
+# durchschnittlicher Bewertung.
+# 
+# Lokal, Traversierung, Gruppierung, Aggregation
+#
+########################################################################
 
 # Cypher
 START n=node(42)
 MATCH n-[:FRIEND_OF*1..2]-()<-[r:REVIEWED_BY]-p   
-RETURN p.title, (sum(r.rating) * 1.0 / count(p)) as weight   
+RETURN p.title, avg(r.rating) as weight   
 ORDER BY weight DESC;
 
 # Gremlin
 a.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').groupBy{it.outV.next().title}{it.rating}{it.sum() * 1.0 / it.size()}.cap.orderMap(T.decr);
 
+########################################################################
+# Query "All Paths" (q_path_all)
+#
+# Berechnen aller Pfade der Länge Vier zwischen einem Nutzer und einem Produkt.
+#
+# Lokal, Erreichbarkeit
+#
+########################################################################
 
-# Query 2
-# Kürzester Pfad zwischen zwei Nutzern unter Verwendung der FRIEND_OF,
-# REVIEWED_BY und SIMILAR_TO-Beziehung
+# Cypher
+
+START a=node(42), b=node(22) 
+MATCH p=a-[:FRIEND_OF|SIMILAR_TO|REVIEWED_BY*..6]-b
+RETURN DISTINCT EXTRACT(n in NODES(p): n.__id__), LENGTH(p); // 4
+
+START a=node(42), b=node(22) 
+MATCH p=a-[r:REVIEWED_BY*..2]-b
+
+RETURN DISTINCT EXTRACT(n in NODES(p): n.__id__) as id_path, LENGTH(p) as length; // 4
+
+# Gremlin
+
+########################################################################
+# Query "Shortest Path" (q_path_short)
+#
+# Berechnung des kürzesten Pfades zwischen zwei Nutzern unter Verwendung
+# der Beziehungstypen FRIEND_OF, REVIEWED_BY und SIMILAR_TO. Die maximale
+# Pfadlänge beträgt Fünf.
+#
+# Lokal, Erreichbarkeit
+#
+########################################################################
 
 # Cypher
 START a=node(42), b=node(20) 
@@ -35,27 +133,77 @@ b = g.v(20);
 visited=[a];
 a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).loop(3){it.object != b && it.loops < 6}.retain([b]).path
 
-# Query 3 (Traviersierung unter Berücksichtigung von Attributen)
-# Produkte, die von Freunden anderen Geschlechts bewertet wurden und die ähnlich zu den eigenen,
-# bewerteten Produkten sind
+
+########################################################################
+# Query "Reading Regions" (q_top_regions)
+#
+# Berechnen der Anzahl Bücher mit Salesrank > 1000 gruppiert nach Region.
+#
+# Lokal, Traversierung, Aggregation / Gruppierung, Attributeinschränkung
+#
+########################################################################
 
 # Cypher
 
-START a=node(47041)
 
-MATCH a-[:FRIEND_OF*..2]-b<-[:REVIEWED_BY]-p-[:REVIEWED_BY]->a
+# Gremlin
 
-RETURN DISTINCT p.title;
+########################################################################
+# Query "Triangle Pattern" (q_triangle_pattern)
+#
+# Finden aller Dreicksbeziehungen folgender Art: Ein Produkt p besitzt 
+# eine Bewertung r die für mindestens 10 Personen hilfreich war. 
+# Der bewertende Nutzer u1 ist mit einem weiteren Nutzer u2 befreundet, 
+# der älter als 20 Jahre alt ist und ebenfalls das Produkt p bewertet 
+# hat. Es sollen p, u1, u2 und r bestimmt werden.
+#
+# Global, Mustersuche (Dreiecke) mit Bindung an Datenbasis und
+# Attributeinschränkung
+#
+########################################################################
+
+# Cypher
+
+# Gremlin
+
+#######################################################################
+# Query "Friendly Regions" (q_friendly_regions)
+#
+# Berechnen der Top 10 Regionen mit den meisten Freundschaftsbeziehungen.
+#
+# global, Traversierung, Metrik
+#
+########################################################################
+
+# Cypher
+
+# Gremlin
+
+#######################################################################
+# Query "Helpful Age" (q_helpful_age)
+#
+# Berechnen der durchschnittlichen hilfreichen Bewertungen nach Nutzeralter.
+#
+# global, Traversierung, Metrik
+#
+########################################################################
+
+# Cypher
 
 # Gremlin
 
 
-
+########################################################################
+########################################################################
+########################################################################
+########################################################################
 # Helping stuff
+########################################################################
 
 g = TitanFactory.open('../../master_thesis/benchmark/out/titan-graph_100_4_2');
-a = g.V('__id__', 'A16MCCBGBZIZVR').next();
-b = g.V('__id__', 'A29QUUI26CAZO3').next();
+a = g.V('__id__', 'A16MCCBGBZIZVR').next(); // user
+b = g.V('__id__', 'A29QUUI26CAZO3').next(); // user
+p = g.V('__id__', '0231096704').next(); // product
 
 // non-unique foaf
 START n=node(42) MATCH n-[:FRIEND_OF*..2]-p return count(p); // 496

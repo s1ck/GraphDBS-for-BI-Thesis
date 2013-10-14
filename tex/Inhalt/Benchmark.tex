@@ -1,13 +1,19 @@
 \chapter{Benchmark von Graphdatenbanksystemen}
 \label{cha:benchmark}
 
-\begin{itemize}
-	\item LFR-Benchmark Generator
-\end{itemize}
+\section{Ausführungsumgebung}
 
-\section{Testumgebung}
+- Skalenfreiheit
+- Skalierungsfaktor Produktanzahl
 
-\subsection{Datengrundlage und Anfragen}
+\subsection{Datengrundlage}
+
+- reale Daten
+	- Amazon Meta-Daten
+	- Pokec Social Network
+- Skalierungsfaktor ist Produktanzahl
+	- Algorithmus zur Extraktion der Teilgraphen im Anhang
+	- topologische Eingenschaften bleiben nicht zwingend erhalten
 
 \begin{figure}[h] 
 	\centering
@@ -16,50 +22,76 @@
 	\label{fig:test}
 \end{figure}
 
-\paragraph*{Anfragen}
+\subsection{Anfragen}
 
-Hinweis: keine globalen Anfragen
+- stellvertretend für analytische Anfragen
 
-\begin{itemize}
-	\item[\textbf{Import}] Der Datensatz soll zunächst in das GDBMS importiert werden. Dabei werden die vorhandenen Möglichkeiten zum Bulk Import verwendet.
-	\item[\textbf{Lesezugriff auf Attribute}] Es werden zufällig Produkte und Nutzer ausgewählt und deren Attribute ausgelesen. Dabei soll die Ausführungszeit je nach Datentyp des Attributwertes aufgeschlüsselt werden.
-	\item[\textbf{Teilgraph ähnlicher Produkte}] Ausgehend von zufällig ausgewählten Produkten werden jene Produkte ausgewählt die ebenfalls ähnlich zueinander sind. Dabei sollen nur die Produkte berücksichtigt werden, die sich in Bezug auf den \texttt{salesrank} innerhalb eines definierten Intervalls befinden.
-	\item[\textbf{ Friend-of-Friend}] Ausgehend von zufällig ausgewählten Nutzern soll das Durchschnittsalter der Nutzer berechnet werden die sich zwei Schritte vom Ausgangsknoten entfernt befinden. Das wiederholte Besuchen von Knoten soll dabei ausgeschlossen werden.
-	\item[\textbf{Kürzeste Pfade}] Zufällige Auswahl von zwei Nutzern und Berechnen des kürzesten Pfades unter Verwendung der Beziehungsarten \texttt{FRIEND\_OF}, \texttt{REVIEWED\_BY} und \texttt{SIMILAR\_TO}. Der maximale Abstand wird auf Fünf festgelegt.
-	\item[\textbf{Empfehlungen}] Ausgehend von zufällig ausgewählten Nutzern sollen alle Produkte ausgewählt werden, die von den Freunden des Nutzers bewertet wurden. Die Produkte sollen dabei nach dem Attribut \texttt{rating} der \texttt{REVIEWED\_BY}-Beziehung sortiert und die obersten und untersten fünf Produkte ausgegeben werden.
-	\item[\textbf{Mustersuche}] blubb
-	
-\end{itemize}
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[h]
+	\centering
+	\begin{footnotesize}
+   	\begin{tabular}{|m{3cm}|>{\arraybackslash}m{12.5cm}|}
+	\hline
+   	\textbf{Name} & \textbf{Beschreibung} \\
+	\hline
+	\textbf{\texttt{import}} & Importieren der Datenbasis in das GDBMS unter Verwendung von Bulk-Load-Mechanismen. \\
+		  
+	\textbf{\texttt{random\_read}} & Selektion zufällig ausgewählter Produkte und Nutzer sowie Auslesen ihrer Attribute. \\
 
+	\textbf{\texttt{sim\_products}} & Selektion aller ähnlichen Produkte deren Abstand höchstens Zwei beträgt. Jedes Produkt soll einmalig in der Ergebnismenge sein. \\
 
-\begin{itemize}
-	\item Verwendung von ERPNext Schema + Daten (multiplizieren)	
-\end{itemize}
+	\textbf{\texttt{foaf\_products}} & Selektion der Produkte, die von Freunden (anderen Geschlechts) bewertet wurden und die ähnlich zu den eigenen, bewerteten Produkten sind. \\
+
+	\textbf{\texttt{foaf\_reviews}} & Selektion der Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben gruppiert nach Produktname und sortiert nach durchschnittlicher Bewertung. \\
+
+	\textbf{\texttt{path\_all}} & Berechnen aller Pfade der Länge Vier zwischen einem Nutzer und einem Produkt. \\
+
+	\textbf{\texttt{path\_shortest}} & Berechnung des kürzesten Pfades zwischen zwei Nutzern unter Verwendung der Beziehungstypen \texttt{FRIEND\_OF}, \texttt{REVIEWED\_BY} und \texttt{SIMILAR\_TO}. Die maximale Pfadlänge beträgt Fünf. \\
+
+	\textbf{\texttt{top\_regions}} & Berechnen der Anzahl Bücher mit Salesrank > 1000 gruppiert nach Region. \\
+
+	\textbf{\texttt{triangle\_pattern}} & Finden aller Dreicksbeziehungen folgender Art: Ein Produkt \texttt{p} besitzt eine Bewertung \texttt{r} die für mindestens 10 Personen hilfreich war. Der bewertende Nutzer \texttt{u1} ist mit einem weiteren Nutzer \texttt{u2} befreundet, der älter als 20 Jahre alt ist und ebenfalls das Produkt p bewertet hat. Es sollen \texttt{p}, \texttt{u1}, \texttt{u2} und \texttt{r} bestimmt werden. \\
+
+	\textbf{\texttt{friendly\_regions}} & Berechnen der Top 10 Regionen mit den meisten Freundschaftsbeziehungen. \\
+	   	\hline
+  	\end{tabular} 
+	\end{footnotesize}
+	\setlength{\belowcaptionskip}{0.25cm}	
+	\caption[Benchmark: Beschreibung der einzelnen Anfragen]{Name und Beschreibung der durchzuführenden Anfragen.}
+	\label{tab:benchmark_queries}
+\end{table}
+\renewcommand{\arraystretch}{1}
+
+- lokale Anfragen
+- grundlegende Anfragen wie das Auslesen von Knoten und Kanten wurden bereits in ... durchgeführt
+- Ziel: Ausführung komplexer analytischer Anfragen
+- ausschließlich lesende Anfragen
 
 \subsection{Testsystem}
+
+\subsection{Systemkonfiguration}
+
+- Indexstrukturen
+- Typen / Klassen / Label
+
+\paragraph*{Neo4j}
+
+\paragraph*{OrientDB}
+
+\paragraph*{Titan}
 
 \subsection{Methodik}
 
 siehe \cite{Dominguez-Sal2011}
 
-\section{Messungen}
+- Aufwärmphase ja / nein
+- Ausführungsreihenfolge
+- Messen
 
-\subsection{Speicherverbrauch}
+\section{Durchführung}
 
-\subsection{Antwortzeiten}
 
-\begin{itemize}
-\item Vergleich Zeichenketten vs. Integer
-\end{itemize}
 
-\begin{itemize}
-	\item Formulieren verschiedener einfacher und komplexer Anfragen
-	\begin{itemize}
-		\item Auswahl zufälliger Knoten und Abfragen aller Nachbarn bis Tiefe n
-		\item Berechnung des Profits in bestimmten Zeiträumen / Regionen
-		\item Auswahl zwei zufälliger Knoten vom Typ User, Invoice + Berechnen aller Pfade
-		\item ...
-	\end{itemize}
-\end{itemize}
 
-\section{Ergebnisse}
+
+
