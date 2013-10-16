@@ -294,7 +294,7 @@ Die Verwendung eines pessimistischen Synchronisationsverfahrens führt dazu, dass
 
 \paragraph*{Persistenz-, Cache- und Indexverwaltung}
 
-Die Repräsentation des Graphen auf dem Externspeicher bzw. im verwendeten Speichersystem wurde ebenfalls betrachtet um davon ausgehend eine erste Einschätzung hinsichtlich der Performance graphenspezifischer Operationen treffen zu können. Darüber hinaus spielen Caches und Indexstrukturen beim Zugriff auf die hinterlegten Informationen eine wichtige Rolle, weswegen diese ebenfalls betrachtet wurden. Tabelle \ref{tab:zusammenfassung_persistenz} fasst die Ergebnisse der Analyse zusammen.
+Die Repräsentation des Graphen auf dem Externspeicher bzw. im verwendeten Speichersystem wurde ebenfalls betrachtet um davon ausgehend eine erste Abschätzung hinsichtlich der Performance graphenspezifischer Operationen treffen zu können. Darüber hinaus spielen Caches und Indexstrukturen beim Zugriff auf die hinterlegten Informationen eine wichtige Rolle, weswegen diese ebenfalls analysiert wurden. Tabelle \ref{tab:zusammenfassung_persistenz} fasst die Ergebnisse der Analyse zusammen.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -336,7 +336,7 @@ Die Repräsentation des Graphen auf dem Externspeicher bzw. im verwendeten Speich
 % Persistenzverwaltung
 
 % Neo4j
-Neo4j bietet im Vergleich als einziges GDBMS eine Speicherung an, die explizit für die Abbildung eines Property-Graphen entwickelt und optimiert ist. Die Trennung von Topologie und Nutzdaten wird durch eine Aufteilung in mehrere Stores weiter verfeinert. Die Verwendung fester Satzlängen ermöglicht bereits in der physischen Repräsentation ein effizientes Berechnen der Nachbarschaft eines Knotens unabhängig von der Größe des Graphen und ohne dabei einen zusätzlichen Index berücksichtigen zu müssen. Ein Nachteil, welcher jedoch auf alle untersuchten GDBMS zutrifft, ist die fehlende Abbildung einer logischen Adjazenz auf eine physische Adjazenz, Datensätze adjazenter Knoten sind nicht zwingend physisch benachbart.
+Neo4j bietet im Vergleich als einziges GDBMS eine Speicherung an, die explizit für die Abbildung eines Property-Graphen entwickelt und optimiert wurde. Die Trennung von Topologie und Nutzdaten wird durch eine Aufteilung in mehrere Stores weiter verfeinert. Die Verwendung fester Satzlängen und die Verwaltung doppelt verketteter Listen ermöglichen bereits in der physischen Repräsentation ein effizientes Berechnen der Nachbarschaft eines Knotens unabhängig von der Größe des Graphen und ohne dabei einen zusätzlichen Index berücksichtigen zu müssen. Ein Nachteil, welcher jedoch auf alle untersuchten GDBMS zutrifft, ist die fehlende Abbildung einer logischen Adjazenz auf eine physische Adjazenz.
 
 %- Neo4j: nativ
 %	+ Trennung von Topologie und Daten
@@ -347,7 +347,7 @@ Neo4j bietet im Vergleich als einziges GDBMS eine Speicherung an, die explizit f
 %	- logisch benachbarte Knoten sind nicht zwingend physisch benachbart
 
 % HyperGraphDB
-HyperGraphDB trennt ebenfalls Topologie und Nutzdaten, dabei ist jedoch zu beachten, dass das Typsystem ebenfalls Teil der Topologie ist. Die Abbildung auf mehrere Key-Value-Datenbanken in BerkeleyDB führt dazu, dass die Performanz des Traversieren von der Größe des Gesamten Graphen abhängig ist, da jeder Zugriff auf ein Graphelement eine Suche im B-Baum nach sich zieht. Dies gilt sowohl für das Bestimmen inzidenter Knoten einer Kante und für jeden primitiven Attributwert. Das sich dieses Abbildung negativ auf die Gesamtperformance des Systems auswirkt wurde bereits in \cite{Dominguez-Sal:2010:SGD:1927585.1927590} und \cite{Gehrels:2013} gezeigt.
+HyperGraphDB trennt ebenfalls Topologie und Nutzdaten, dabei ist jedoch zu beachten, dass das Typsystem Teil des Graphen ist. Die Abbildung auf mehrere Key-Value-Datenbanken in BerkeleyDB führt dazu, dass die Performanz des Traversierens von der Größe des gesamten Graphen abhängig ist, da jeder Zugriff auf ein Graphelement eine Suche im B-Baum nach sich zieht. Dies gilt sowohl für das Bestimmen inzidenter Atome eines Atoms als auch für das Auslesen der Nutzdaten. Das sich dieses Abbildung negativ auf die Gesamtperformance des Systems auswirkt wurde bereits in \cite{Dominguez-Sal:2010:SGD:1927585.1927590} und \cite{Gehrels:2013} gezeigt.
  
 %- HyperGraphDB: nicht-nativ
 %	+ Trennung von Topologie und Daten
@@ -356,7 +356,7 @@ HyperGraphDB trennt ebenfalls Topologie und Nutzdaten, dabei ist jedoch zu beach
 %	- Traversierung: O(logn)
 
 % OrientDB
-OrientDB bildet den Graphen auf ein Dokumentenmodell ab und speichert dabei Nutzdaten und Beziehungsinformationen innerhalb eines Dokumentes. Eine physische Partitionierung der Datenbasis in Cluster ermöglicht dabei eine Einschränkung der in Anfragen zu berücksichtigenden Datensätze. Durch die feste Satzlänge innerhalb eines Clusters ist der Zugriff auf die Nachbarschaft eines Knotens analog zu Neo4j in konstanter Zeit und ohne zusätzlichen Indexzugriff möglich. Ungeachtet dessen weist das Speichersystem von OrientDB mehrere Defizite auf: Die Cluster-Datei stellt eine zusätzliche Indirektion im Zugriff auf die hinterlegten Daten dar; durch die variable Satzlänge im Data Segement wird beim Zugriff auf einzelne Attribute oder Beziehungen zunächst das gesamte Dokument deserialisiert und anschließend die relevanten Informationen extrahiert; werden Kantenattribute verwendet, so werden diese in einem zusätzlichen Dokument abgelegt und stellen folglich eine weitere Indirektion im Zugriff dar. Die aufgeführten Defizite könnten eine Erklärung dafür sein, dass in \cite{Ciglan:2012} für OrientDB bei ausschließlich strukturbezogenen Benchmarks in attributierten Graphen trotz indexfreier Adjazenz das im Vergleich schlechteste Leistungsverhalten festgestellt wurde.
+OrientDB bildet den Graphen auf ein Dokumentenmodell ab und speichert dabei Nutzdaten und Beziehungsinformationen innerhalb eines Dokumentes. Eine physische Partitionierung der Datenbasis in Cluster ermöglicht dabei eine Einschränkung der in Anfragen zu berücksichtigenden Datensätze. Auf Grund der festen Satzlänge innerhalb eines Clusters ist der Zugriff auf die Nachbarschaft eines Knotens analog zu Neo4j in konstanter Zeit und ohne zusätzlichen Index möglich. Ungeachtet dessen weist das Speichersystem von OrientDB mehrere Defizite auf: Die Cluster-Datei stellt eine zusätzliche Indirektion im Zugriff auf die hinterlegten Daten dar; durch die variable Satzlänge im Data Segment wird beim Zugriff auf einzelne Attribute oder Beziehungen zunächst das gesamte Dokument vom Hintergrundspeicher geladen und anschließend die relevanten Informationen extrahiert; werden Kantenattribute verwendet, so sind diese in einem zusätzlichen Dokument abgelegt und stellen folglich eine weitere Indirektion im Zugriff auf die Nachbarschaft eines Knotens dar. Die aufgeführten Defizite könnten eine Erklärung dafür sein, dass in \cite{Ciglan:2012} für OrientDB bei ausschließlich strukturbezogenen Benchmarks in attributierten Graphen trotz indexfreier Adjazenz das im Vergleich schlechteste Leistungsverhalten festgestellt wurde.
 
 %- OrientDB: nicht-nativ
 %	- keine Trennung von Topologie und Daten (alles im Dokument)
@@ -369,43 +369,42 @@ OrientDB bildet den Graphen auf ein Dokumentenmodell ab und speichert dabei Nutz
 %		- Fragmentierung der Stores	
 
 % Titan
-Titan bildet den Graphen auf ein Key-Column-Value Modell ab, eine Trennung von Topologie und Nutzdaten erfolgt dabei nicht, da sowohl Knotenattribute als auch deren inzidente Kanten innerhalb eines Datensatzes abgelegt werden. Im Gegensatz zu OrientDB erlaubt das Datenmodell jedoch den direkten Zugriff einzelne Attribute unter Angabe eines Schlüssels und
+Titan bildet den Graphen auf ein Key-Column-Value-Modell ab, eine Trennung von Topologie und Nutzdaten erfolgt dabei nicht, da sowohl Knotenattribute als auch deren inzidente Kanten innerhalb eines Datensatzes abgelegt werden. Im Gegensatz zu OrientDB erlaubt das Datenmodell jedoch den direkten Zugriff auf einzelne Attributwerte unter Angabe eines Schlüssels und auf inzidente Kante anhand ihres Bezeichners. Letzteres kann durch die Definition eines Primärschlüssels für Kanten beschleunigt werden; ein redundantes Speichern der Kantenattribute an Start- und Zielknoten ermöglicht ein effizienteres Auslesen. Ein wesentlicher Nachteil des GDBMS ergibt sich aus der Abbildung des KCV-Modells auf das KV-Modell von BerkeleyDB. Der Aufwand, die Nachbarschaft eines Knotens abzufragen, steht hierbei in einem logarithmischen Verhältnis zur Menge aller Knoten, Kanten und Attribute innerhalb des Graphen. Diesem Problem kann jedoch durch die Verwendung von Apache Cassandra als Speichersystem begegnet werden.
 
-- Titan: nicht-nativ
-	- keine Trennung von Topologie und Daten
-	+ direkter Zugriff auf Attribute und inzidente Kanten
-	- hoher Aufwand bei Speicherung in KV-Store 
-	- redundante Speicherung von Kantenattributen
-	- Traversierung O(logn)
-	- Ein Vorteil gegenüber OrientDB und HyperGraphDB, ist die Möglichkeit des direkten Zugriffes auf Attribute und inzidente Kanten eines Knotens unter Angabe der Knoten-Identität und der geforderten 
-	Column.
+%- Titan: nicht-nativ
+%	- keine Trennung von Topologie und Daten
+%	+ direkter Zugriff auf Attribute und inzidente Kanten
+%	- hoher Aufwand bei Speicherung in KV-Store 
+%	- redundante Speicherung von Kantenattributen
+%	- Traversierung O(logn)
+%	- Ein Vorteil gegenüber OrientDB und HyperGraphDB, ist die Möglichkeit des direkten Zugriffes auf Attribute und inzidente Kanten eines Knotens unter Angabe der Knoten-Identität und der geforderten 
+%	Column.
 	
-% Indexverwaltung
-- Primär- und Sekundärindizes generell möglich
-- Indizes werden automatisch aktualisiert
-	- HyperGraphDB / Titan
-		- generell drei / zwei systemseitige Indexstrukturen, welche bei Schreiboperationen berücksichtigt werden müssen -> Auswirkung auf Performance
-- bis auf OrientDB wird eine Erweiterung um eigene Indexstrukturen dokumentiert
-- Neo4j und Titan mit Unterstützung komplexer Indizierungsmechanismen durch Apache Lucene bzw. Elastic Search
-- OrientDB
-	+ mehrdimensionale Indizes
-
 % Cacheverwaltung
-	
-- generell: Beschleunigung der Zugriffe auf häufig benötige Objekte via Caches
-	- Hashtabellen  O(1) (wenn da)
-	
-- OrientDB
-	- keine Cache-Synchronisation 
-	- Empfehlung zur Deaktivierung des Caches im parallelen Betrieb
-- HyperGraphDB / Titan
-	- profitieren von Caching-Mechanismen in den eingesetzten Speichersystemen
-- Titan
-	- Transaktionscache kann bei langen Lese- oder Änderungstransaktionen zu Speicherproblemen führen
+Zugriffe auf den Hintergrundspeicher werden in allen Systemen durch den Einsatz von Caching-Mechanismen verringert. Eingesetzt werden hierfür vorrangig Hashtabellen kombiniert mit verschiedenen Ersetzungsverfahren. Durch die fehlende Cache-Synchronisation in OrientDB wird vom Hersteller das Deaktivieren der Caches im Mehrbenutzerbetrieb empfohlen. In Verbindung mit den genannten Defiziten der Persistenzverwaltung stellt dies einen enormen Nachteil des Systems dar. Titan weist in der aktuellen Version den Nachteil auf, dass der Transaktionscache keine Verdrängung von Objekten vorsieht, was bei langen Lesetransaktionen zu Speicherproblemen führen kann. Generell profitieren HyperGraphDB und Titan von den in den verwendeten Speichersystemen.
 
+%- generell: Beschleunigung der Zugriffe auf häufig benötige Objekte via Caches
+%	- Hashtabellen  O(1) (wenn da)
+%	
+%- OrientDB
+%	- keine Cache-Synchronisation 
+%	- Empfehlung zur Deaktivierung des Caches im parallelen Betrieb
+%- HyperGraphDB / Titan
+%	- profitieren von Caching-Mechanismen in den eingesetzten Speichersystemen
+%- Titan
+%	- Transaktionscache kann bei langen Lese- oder Änderungstransaktionen zu Speicherproblemen führen	
+%	
+% Indexverwaltung
+Alle untersuchten Systeme unterstützen die Definition von Primär- und Sekundärindizes und erlauben somit den effizienten Zugriff auf Knoten- und Kanteninstanzen unter Angabe eines Schlüssel-Wert-Paares. Zu beachten ist, dass HyperGraphDB und Titan systemseitig stets drei bzw. zwei Indexstrukturen verwalten, was sich möglicherweise negativ auf die Performanz von Änderungsoperationen auswirken kann. Allein Neo4j und Titan bieten im Vergleich die Möglichkeit, Index-Frameworks wie Apache Lucene oder Elastic Search einzubinden und somit die Definition komplexerer Indexstrukturen zu erlauben.
 
-
-
+%- Primär- und Sekundärindizes generell möglich
+%- Indizes werden automatisch aktualisiert
+%	- HyperGraphDB / Titan
+%		- generell drei / zwei systemseitige Indexstrukturen, welche bei Schreiboperationen berücksichtigt werden müssen -> Auswirkung auf Performance
+%- bis auf OrientDB wird eine Erweiterung um eigene Indexstrukturen dokumentiert
+%- Neo4j und Titan mit Unterstützung komplexer Indizierungsmechanismen durch Apache Lucene bzw. Elastic Search
+%- OrientDB
+%	+ mehrdimensionale Indizes
 
 \paragraph*{Verteilung und Skalierbarkeit}
 
@@ -448,5 +447,9 @@ Titan bildet den Graphen auf ein Key-Column-Value Modell ab, eine Trennung von T
 \end{table}
 \renewcommand{\arraystretch}{1}
 
+
+- Ausschluss OrientDB: Geschäftsinformationsysteme -> viele Attribute an Knoten und Kanten
+
+- nativ vs. nicht-nativ
 
 Unter Berücksichtigung der vorgestellten Ergebnisse werden Neo4j und Titan im letzten Kapitel der Arbeit in einem Benchmark untersucht um die Leistungsfähigkeit der Systeme abschließend beurteilen zu können. Insbesondere soll dabei auch untersucht werden, inwieweit eine native Speicherung des Graphen vorteilhaft ist oder ob die Nutzung bestehender Systeme eine gleichwertige Alternative darstellt.
