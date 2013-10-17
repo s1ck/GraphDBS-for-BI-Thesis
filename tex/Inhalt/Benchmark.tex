@@ -38,19 +38,21 @@
 		  
 	\textbf{\texttt{random\_read}*} & Selektion zufällig ausgewählter Produkte und Nutzer sowie Auslesen ihrer Attribute. \\
 
-	\textbf{\texttt{sim\_products}} & Selektion aller ähnlichen Produkte mit Abstand $\leq 2$. Jedes Produkt soll einmalig in der Ergebnismenge sein. \\
+	\textbf{\texttt{sim\_products}} & Selektion der Titel aller ähnlichen Produkte mit Abstand $\leq 2$. Jeder Produkt soll einmalig in der Ergebnismenge sein. \\
 
 	%\textbf{\texttt{foaf\_products}} & Selektion der Produkte, die von Freunden (anderen Geschlechts) bewertet wurden und die ähnlich zu den eigenen, bewerteten Produkten sind. \\
 
-	\textbf{\texttt{foaf\_reviews}*} & Selektion der Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben gruppiert nach Produktname und sortiert nach durchschnittlicher Bewertung. \\
+	\textbf{\texttt{foaf\_reviews}*} & Selektion der Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben gruppiert nach Produkttitel und sortiert nach durchschnittlicher Bewertung. \\
 
-	\textbf{\texttt{path\_all}*} & Berechnen aller Pfade der Länge $\leq 4$ zwischen einem Nutzer und einem Produkt unter Verwendung der Beziehungstypen \texttt{FRIEND\_OF}, \texttt{REVIEWED\_BY} und \texttt{SIMILAR\_TO}.. \\
+	\textbf{\texttt{path\_all}*} & Berechnen aller Pfade der Länge $\leq 4$ zwischen einem Nutzer und einem Produkt unter Verwendung der Beziehungstypen \texttt{FRIEND\_OF}, \texttt{REVIEWED\_BY} und \texttt{SIMILAR\_TO}.\\
 
 	\textbf{\texttt{path\_shortest}*} & Berechnung des kürzesten Pfades zwischen zwei Nutzern unter Verwendung der Beziehungstypen \texttt{FRIEND\_OF}, \texttt{REVIEWED\_BY} und \texttt{SIMILAR\_TO}. Die maximale Pfadlänge beträgt $5$. \\
 
 	\textbf{\texttt{top\_regions}*} & Berechnen der Anzahl Bücher mit Salesrank $\leq 1000$ gruppiert nach Region.\\
 
 	\textbf{\texttt{triangle\_pattern}*} & Finden aller Dreicksbeziehungen folgender Art: Ein Produkt \texttt{p} besitzt eine Bewertung \texttt{r} die für $\geq 10$ Personen hilfreich war. Der bewertende Nutzer \texttt{u1} ist mit einem weiteren Nutzer \texttt{u2} befreundet, der älter als $20$ Jahre alt ist und ebenfalls das Produkt p bewertet hat. Es sollen \texttt{p}, \texttt{u1}, \texttt{u2} und \texttt{r} bestimmt werden. \\
+	
+	\textbf{\texttt{triangle\_pattern}*} & Freunde, die für mindestens $n$ übereinstimmende Produkte Reviews geschrieben haben -> Selektion des Teilgraphen.\\
 
 	%\textbf{\texttt{friendly\_regions}} & Berechnen der Top 10 Regionen mit den meisten Freundschaftsbeziehungen. \\
 	\hline

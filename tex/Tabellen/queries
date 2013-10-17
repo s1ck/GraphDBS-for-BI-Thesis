@@ -7,10 +7,10 @@
 ########################################################################
 
 ########################################################################
-# Query "Random Nodes" (q_read)
+# Query "Random Nodes" (random_read)
 #
-# Selektion zufällig ausgewählter Produkte und Nutzer sowie Auslesen ihrer
-# Attribute.
+# Selektion zufällig ausgewählter Produkte und Nutzer sowie Auslesen
+# ihrer Attribute.
 # 
 # Lokal, Einfache Leseanfrage
 #
@@ -23,10 +23,10 @@ START a=node(42) RETURN *;
 g.v(42).map();
 
 ########################################################################
-# Query "Similar Products" (q_sim_products)
+# Query "Similar Products" (sim_products)
 #
-# Selektion der Titel aller ähnlichen Produkte deren Abstand höchstens Zwei 
-# beträgt. Jedes Produkt soll einmalig in der Ergebnismenge sein.
+# Selektion der Titel aller ähnlichen Produkte mit Abstand <= 2. Jeder
+# Titel soll einmalig in der Ergebnismenge sein.
 # 
 # Lokal, Traversierung
 #
@@ -39,7 +39,7 @@ START n=node(22) MATCH n-[:SIMILAR_TO*..2]-s RETURN DISTINCT s.title;
 p.both('SIMILAR_TO').loop(1){it.loops <= 2}.dedup().title
 
 ########################################################################
-# Query "FOAF-Products" (q_foaf_products)
+# Query "FOAF-Products" (foaf_products)
 #
 # Selektion der Produkte, die von Freunden (anderen Geschlechts) bewertet 
 # wurden und die ähnlich zu den eigenen, bewerteten Produkten sind.
@@ -70,10 +70,10 @@ a.both('FRIEND_OF').loop(1){it.loops <=2}.in('REVIEWED_BY').out('REVIEWED_BY').r
 
 
 ########################################################################
-# Query "FOAF-Reviews" (q_foaf_reviews)
+# Query "FOAF-Reviews" (foaf_reviews)
 #
 # Selektion der Produkte, für die Freunde oder deren Freunde ein Review
-# geschrieben haben gruppiert nach Produktname und sortiert nach 
+# geschrieben haben gruppiert nach Titel und sortiert nach 
 # durchschnittlicher Bewertung.
 # 
 # Lokal, Traversierung, Gruppierung, Aggregation
@@ -90,9 +90,11 @@ ORDER BY weight DESC;
 a.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').groupBy{it.outV.next().title}{it.rating}{it.sum() * 1.0 / it.size()}.cap.orderMap(T.decr);
 
 ########################################################################
-# Query "All Paths" (q_path_all)
+# Query "All Paths" (path_all)
 #
-# Berechnen aller Pfade der Länge Vier zwischen einem Nutzer und einem Produkt.
+# Berechnen der Pfade der Länge <= 4 zwischen einem Nutzer und einem 
+# Produkt unter Verwendung der Beziehungstypen FRIEND_OF, REVIEWED_BY
+# und SIMILAR_TO.
 #
 # Lokal, Erreichbarkeit
 #
@@ -100,56 +102,81 @@ a.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').groupBy{it.outV.next().
 
 # Cypher
 
-START a=node(42), b=node(22) 
-MATCH p=a-[:FRIEND_OF|SIMILAR_TO|REVIEWED_BY*..6]-b
-RETURN DISTINCT EXTRACT(n in NODES(p): n.__id__), LENGTH(p); // 4
-
-START a=node(42), b=node(22) 
-MATCH p=a-[r:REVIEWED_BY*..2]-b
-
-RETURN DISTINCT EXTRACT(n in NODES(p): n.__id__) as id_path, LENGTH(p) as length; // 4
+START a=node(48089), b=node(22) 
+MATCH p=a-[:FRIEND_OF|SIMILAR_TO|REVIEWED_BY*..4]-b 
+RETURN length(p), count(p);
 
 # Gremlin
+a = g.V('__id__', 'A44FUIZX7CUVN').next();
+b = g.V('__id__', '0231096704').next();
+visited=[a];
+a.both('FRIEND_OF','REVIEWED_BY','SIMILAR_TO').loop(1){it.object != b && it.loops < 5}.retain([b]).path._().transform{it.size() - 1}.groupCount().cap();
 
 ########################################################################
-# Query "Shortest Path" (q_path_short)
+# Query "Shortest Path" (path_shortest)
 #
 # Berechnung des kürzesten Pfades zwischen zwei Nutzern unter Verwendung
 # der Beziehungstypen FRIEND_OF, REVIEWED_BY und SIMILAR_TO. Die maximale
-# Pfadlänge beträgt Fünf.
+# Pfadlänge beträgt 4.
 #
 # Lokal, Erreichbarkeit
 #
 ########################################################################
 
-# Cypher
-START a=node(42), b=node(20) 
-MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..5]-b)  
-RETURN EXTRACT(n in NODES(p): n.__type__), LENGTH(p); // 4
+# Cypher (3)
+START a=node(48089), b=node(22)
+MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..4]-b)
+RETURN EXTRACT(n in NODES(p): n.__id__);
+
+==>["A44FUIZX7CUVN","0679724699","0520078748","0231096704"]
 
 # Gremlin
-a = g.v(42);
-b = g.v(20);
+a = g.V('__id__', 'A44FUIZX7CUVN').next();
+b = g.V('__id__', '0231096704').next();
 visited=[a];
-a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).loop(3){it.object != b && it.loops < 6}.retain([b]).path
+a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).loop(3){it.object != b && it.loops < 5}.retain([b]).path{it.__id__};
 
+==>[A44FUIZX7CUVN, 0679724699, 0520078748, 0231096704]
 
 ########################################################################
-# Query "Reading Regions" (q_top_regions)
+# Query "Reading Regions" (top_regions)
 #
-# Berechnen der Anzahl Bücher mit Salesrank > 1000 gruppiert nach Region.
+# Berechnen der Anzahl Bücher mit Salesrank < 500000 gruppiert nach Region,
+# absteigend sortiert nach Anzahl und limitiert auf 10 Ergebnisse.
 #
 # Lokal, Traversierung, Aggregation / Gruppierung, Attributeinschränkung
 #
 ########################################################################
 
 # Cypher
+START g=node(2)
+MATCH g<-[:BELONGS_TO]-p-[r:REVIEWED_BY]->u
+WHERE p.salesrank < 500000
+RETURN u.region, count(u) as cnt
+ORDER BY cnt DESC
+LIMIT 10;
 
+# Gremlin
+group = g.V('__id__', 'g_0').next();
+group.in('BELONGS_TO').filter{it.salesrank < 500000}.out('REVIEWED_BY').groupCount{it.region}.cap().orderMap(T.decr)[0..9];
+
+########################################################################
+# Query "Similar Reviews Pattern" (sim_pattern)
+#
+# Selektion aller Subgraphen in denen ausgehend von einem Nutzer die 
+# Freunde 
+#
+# Global, Mustersuche (Dreiecke) mit Bindung an Datenbasis und
+# Attributeinschränkung
+#
+########################################################################
+
+# Cypher
 
 # Gremlin
 
 ########################################################################
-# Query "Triangle Pattern" (q_triangle_pattern)
+# Query "Triangle Pattern 2" (triangle_pattern_2)
 #
 # Finden aller Dreicksbeziehungen folgender Art: Ein Produkt p besitzt 
 # eine Bewertung r die für mindestens 10 Personen hilfreich war. 
@@ -203,7 +230,8 @@ a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).
 g = TitanFactory.open('../../master_thesis/benchmark/out/titan-graph_100_4_2');
 a = g.V('__id__', 'A16MCCBGBZIZVR').next(); // user
 b = g.V('__id__', 'A29QUUI26CAZO3').next(); // user
-p = g.V('__id__', '0231096704').next(); // product
+c = g.V('__id__', 'A44FUIZX7CUVN').next(); // user
+p = g.V('__id__', '0231096704').next(); // product (neo id: 22)
 
 // non-unique foaf
 START n=node(42) MATCH n-[:FRIEND_OF*..2]-p return count(p); // 496
