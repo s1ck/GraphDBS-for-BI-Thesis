@@ -14,8 +14,8 @@ import org.neo4j.unsafe.batchinsert.BatchInserterIndex;
 import org.neo4j.unsafe.batchinsert.BatchInserterIndexProvider;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
-import de.s1ckboy.thesis.benchmark.generic.AbstractImporter;
-import de.s1ckboy.thesis.generic.Constants;
+import de.s1ckboy.thesis.benchmark.AbstractImporter;
+import de.s1ckboy.thesis.benchmark.Constants;
 import de.s1ckboy.thesis.generic.EdgeDTO;
 import de.s1ckboy.thesis.generic.NodeDTO;
 

@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
-import de.s1ckboy.thesis.generic.Constants;
+import de.s1ckboy.thesis.benchmark.Constants;
 import de.s1ckboy.thesis.generic.EdgeDTO;
 import de.s1ckboy.thesis.generic.GraphElement;
 import de.s1ckboy.thesis.generic.NodeDTO;

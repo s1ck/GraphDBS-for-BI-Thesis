@@ -1,4 +1,4 @@
-package de.s1ckboy.thesis.benchmark.generic;
+package de.s1ckboy.thesis.benchmark;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +9,6 @@ import java.util.TreeMap;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 
-import de.s1ckboy.thesis.benchmark.Configs;
-import de.s1ckboy.thesis.generic.Constants;
-
 /**
  * This abstract base class must be extended by any benchmark in the suite. It
  * defines some simple methods which are used during benchmark processing.
@@ -19,7 +16,6 @@ import de.s1ckboy.thesis.generic.Constants;
  */
 public abstract class Benchmark {
     protected static Logger log = Logger.getLogger(Benchmark.class);
-
     /**
      * Configuration of that benchmark
      */

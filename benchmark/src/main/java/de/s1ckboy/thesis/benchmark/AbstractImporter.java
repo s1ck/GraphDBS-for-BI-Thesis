@@ -1,4 +1,4 @@
-package de.s1ckboy.thesis.benchmark.generic;
+package de.s1ckboy.thesis.benchmark;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -7,7 +7,6 @@ import java.io.FileReader;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 
-import de.s1ckboy.thesis.generic.Constants;
 import de.s1ckboy.thesis.generic.EdgeDTO;
 import de.s1ckboy.thesis.generic.GraphElement;
 import de.s1ckboy.thesis.generic.NodeDTO;

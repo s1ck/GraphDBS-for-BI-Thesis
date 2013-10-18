@@ -1,4 +1,4 @@
-package de.s1ckboy.thesis.benchmark.generic;
+package de.s1ckboy.thesis.benchmark;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,7 +12,6 @@ import java.util.Map.Entry;
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
 
-import de.s1ckboy.thesis.benchmark.Configs;
 
 /**
  * Abstract base class for all benchmark suites.

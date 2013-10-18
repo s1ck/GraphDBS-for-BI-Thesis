@@ -1,4 +1,4 @@
-package de.s1ckboy.thesis.generic;
+package de.s1ckboy.thesis.benchmark;
 
 public class Constants {
     /*
@@ -53,6 +53,14 @@ public class Constants {
      * Benchmark specific
      */
     public static final Integer DEFAULT_BENCHMARK_RUNS = 100;
+    
+    public static final String IMPORT = "import";
+    
+    public static final String NEO4J_Q1_CYPHER = "neo4j_q1_cypher";
+    public static final String NEO4J_Q2_CYPHER = "neo4j_q2_cypher";
+    
+    public static final String TITAN_Q1_GREMLIN = "titan_q1_gremlin";
+    public static final String TITAN_Q2_GREMLIN = "titan_q2_gremlin";
 
     /**
      * Import specific

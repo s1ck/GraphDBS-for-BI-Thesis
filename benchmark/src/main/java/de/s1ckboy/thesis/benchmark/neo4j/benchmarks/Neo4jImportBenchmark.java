@@ -1,8 +1,9 @@
 package de.s1ckboy.thesis.benchmark.neo4j.benchmarks;
 
-import de.s1ckboy.thesis.benchmark.generic.Importer;
-import de.s1ckboy.thesis.benchmark.generic.benchmarks.Import;
+import de.s1ckboy.thesis.benchmark.Constants;
+import de.s1ckboy.thesis.benchmark.Importer;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jBenchmark;
+import de.s1ckboy.thesis.benchmark.queries.Import;
 
 /**
  * Neo4j Importer uses a GraphElementIterator to insert nodes into the database.
@@ -17,7 +18,6 @@ import de.s1ckboy.thesis.benchmark.neo4j.Neo4jBenchmark;
  * 
  */
 public class Neo4jImportBenchmark extends Neo4jBenchmark implements Import {
-
     private Importer importer;
     
     public Neo4jImportBenchmark(Importer importer, int runs) {
@@ -34,11 +34,6 @@ public class Neo4jImportBenchmark extends Neo4jBenchmark implements Import {
     public void run() {
 	importer.run();
     }
-
-    @Override
-    public String getName() {
-	return "import";
-    }
     
     @Override
     public void tearDown() {
@@ -48,5 +43,10 @@ public class Neo4jImportBenchmark extends Neo4jBenchmark implements Import {
     @Override
     public void warmup() {
 	// no need to warmup
+    }
+
+    @Override
+    public String getName() {	
+	return Constants.IMPORT;
     }
 }

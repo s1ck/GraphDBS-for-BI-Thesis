@@ -8,9 +8,9 @@ import com.thinkaurelius.titan.graphdb.relations.RelationIdentifier;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 
+import de.s1ckboy.thesis.benchmark.Benchmark;
 import de.s1ckboy.thesis.benchmark.Configs;
-import de.s1ckboy.thesis.benchmark.generic.Benchmark;
-import de.s1ckboy.thesis.generic.Constants;
+import de.s1ckboy.thesis.benchmark.Constants;
 
 public abstract class TitanBenchmark extends Benchmark {
 

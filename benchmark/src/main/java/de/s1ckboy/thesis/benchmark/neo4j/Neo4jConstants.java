@@ -2,7 +2,7 @@ package de.s1ckboy.thesis.benchmark.neo4j;
 
 import org.neo4j.graphdb.Label;
 
-import de.s1ckboy.thesis.generic.Constants;
+import de.s1ckboy.thesis.benchmark.Constants;
 
 public class Neo4jConstants {
     /**

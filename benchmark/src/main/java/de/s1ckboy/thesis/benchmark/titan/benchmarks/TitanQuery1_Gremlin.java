@@ -2,11 +2,11 @@ package de.s1ckboy.thesis.benchmark.titan.benchmarks;
 
 import com.tinkerpop.blueprints.Vertex;
 
-import de.s1ckboy.thesis.benchmark.generic.benchmarks.Query1;
+import de.s1ckboy.thesis.benchmark.Constants;
+import de.s1ckboy.thesis.benchmark.queries.Query1;
 import de.s1ckboy.thesis.benchmark.titan.TitanBenchmark;
 
-public class TitanQuery1_CoreAPI extends TitanBenchmark implements Query1 {
-
+public class TitanQuery1_Gremlin extends TitanBenchmark implements Query1 {
     private Long nextID;
 
     private Vertex v;
@@ -37,6 +37,6 @@ public class TitanQuery1_CoreAPI extends TitanBenchmark implements Query1 {
 
     @Override
     public String getName() {
-	return "q1_coreapi";
+	return Constants.TITAN_Q1_GREMLIN;
     }
 }

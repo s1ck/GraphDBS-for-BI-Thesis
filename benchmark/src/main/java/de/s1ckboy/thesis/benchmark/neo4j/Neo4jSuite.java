@@ -5,12 +5,13 @@ import java.util.List;
 
 import org.apache.commons.configuration.Configuration;
 
+import de.s1ckboy.thesis.benchmark.Benchmark;
+import de.s1ckboy.thesis.benchmark.BenchmarkSuite;
 import de.s1ckboy.thesis.benchmark.Configs;
-import de.s1ckboy.thesis.benchmark.generic.Benchmark;
-import de.s1ckboy.thesis.benchmark.generic.BenchmarkSuite;
+import de.s1ckboy.thesis.benchmark.Constants;
 import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jImportBenchmark;
-import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jQuery1_CoreAPI;
-import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jQuery2_CoreAPI;
+import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jQuery1_Cypher;
+import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jQuery2_Cypher;
 
 public class Neo4jSuite extends BenchmarkSuite {
 
@@ -26,22 +27,22 @@ public class Neo4jSuite extends BenchmarkSuite {
 	/**
 	 * Import
 	 */
-	if (cfg.getBoolean("import")) {
+	if (cfg.getBoolean(Constants.IMPORT)) {
 	    benchmarks.add(new Neo4jImportBenchmark(new Neo4jImporter(cfg), 1));
 	}
 
 	/**
 	 * Benchmarks
 	 */
-	if (cfg.getBoolean("query1")) {
-	    Benchmark q1 = new Neo4jQuery1_CoreAPI();
-	    q1.setRuns(cfg.getInt("query1.runs"));
+	if (cfg.getBoolean(Constants.NEO4J_Q1_CYPHER)) {
+	    Benchmark q1 = new Neo4jQuery1_Cypher();
+	    q1.setRuns(cfg.getInt(Constants.NEO4J_Q1_CYPHER + ".runs"));
 	    benchmarks.add(q1);
 	}
 
-	if (cfg.getBoolean("query2")) {
-	    Benchmark q2 = new Neo4jQuery2_CoreAPI();
-	    q2.setRuns(cfg.getInt("query2.runs"));
+	if (cfg.getBoolean(Constants.NEO4J_Q2_CYPHER)) {
+	    Benchmark q2 = new Neo4jQuery2_Cypher();
+	    q2.setRuns(cfg.getInt(Constants.NEO4J_Q2_CYPHER + ".runs"));
 	    benchmarks.add(q2);
 	}
 

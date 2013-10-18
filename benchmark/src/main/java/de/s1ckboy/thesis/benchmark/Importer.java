@@ -1,4 +1,4 @@
-package de.s1ckboy.thesis.benchmark.generic;
+package de.s1ckboy.thesis.benchmark;
 
 public interface Importer {
     void setUp();

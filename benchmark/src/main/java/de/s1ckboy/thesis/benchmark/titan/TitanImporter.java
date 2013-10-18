@@ -12,8 +12,8 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.wrappers.batch.BatchGraph;
 import com.tinkerpop.blueprints.util.wrappers.batch.VertexIDType;
 
-import de.s1ckboy.thesis.benchmark.generic.AbstractImporter;
-import de.s1ckboy.thesis.generic.Constants;
+import de.s1ckboy.thesis.benchmark.AbstractImporter;
+import de.s1ckboy.thesis.benchmark.Constants;
 import de.s1ckboy.thesis.generic.EdgeDTO;
 import de.s1ckboy.thesis.generic.NodeDTO;
 

@@ -5,13 +5,12 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 
-import de.s1ckboy.thesis.benchmark.generic.benchmarks.Query2;
+import de.s1ckboy.thesis.benchmark.Constants;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jBenchmark;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jRelationshipTypes;
-import de.s1ckboy.thesis.generic.Constants;
+import de.s1ckboy.thesis.benchmark.queries.Query2;
 
-public class Neo4jQuery2_CoreAPI extends Neo4jBenchmark implements Query2 {
-
+public class Neo4jQuery2_Cypher extends Neo4jBenchmark implements Query2 {
     private Long nextID;
 
     @Override
@@ -48,6 +47,6 @@ public class Neo4jQuery2_CoreAPI extends Neo4jBenchmark implements Query2 {
 
     @Override
     public String getName() {
-	return "q2_coreapi";
+	return Constants.NEO4J_Q2_CYPHER;
     }
 }

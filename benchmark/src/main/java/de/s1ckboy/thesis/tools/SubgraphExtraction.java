@@ -1,11 +1,13 @@
-package de.s1ckboy.thesis.tooling;
+package de.s1ckboy.thesis.tools;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -26,10 +28,10 @@ import com.google.common.base.Stopwatch;
 import com.google.gson.Gson;
 
 import de.s1ckboy.thesis.benchmark.Configs;
+import de.s1ckboy.thesis.benchmark.Constants;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jConstants;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jHelper;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jRelationshipTypes;
-import de.s1ckboy.thesis.generic.Constants;
 
 /**
  * This class extract subgraphs from the full amazon-pokec-graph.
@@ -46,6 +48,7 @@ public class SubgraphExtraction {
 
     private Set<Node> groups;
     private Set<Node> users;
+    private List<Long> userIds;
     private Set<Node> products;
     private Set<Relationship> edges;
 
@@ -68,16 +71,16 @@ public class SubgraphExtraction {
     /*
      * Maximum number of products inside the graph
      */
-    private int nodeLimit = 1000;
+    private int productLimit = 100;
     /*
      * k-Products/Users means the k-neighborhood of a node. 2-neighborhood for
      * users is p.e. all friends and their friends
      */
-    private int k_Products = 2;
+    private int k_Products = 4;
     private int k_Users = 2;
 
     private Random r;
-    long seed = 1337L;
+    long seed = 611L;
 
     public SubgraphExtraction() {
 	cfg = Configs.get(Neo4jConstants.INSTANCE_NAME);
@@ -95,6 +98,7 @@ public class SubgraphExtraction {
 	groups = new HashSet<Node>();
 	users = new HashSet<Node>();
 	edges = new HashSet<Relationship>();
+	userIds = new ArrayList<Long>();
 	gson = new Gson();
     }
 
@@ -111,8 +115,8 @@ public class SubgraphExtraction {
 	    extractSubgraphs(getGroupCounts());
 	    sw.stop();
 	    // store stats in info file
-	    String graphInfo = String.format("graph_%d_%d_%d.info", nodeLimit,
-		    k_Products, k_Users);
+	    String graphInfo = String.format("graph_%d_%d_%d.info",
+		    productLimit, k_Products, k_Users);
 	    String stats = String
 		    .format("\n%d nodes\n%d edges\n---\n%d groups\n%d products\n%d users\n%d belongs_to\n%d similar_to\n%d reviewed_by\n%d friend_of\n---\n%d seconds",
 			    (users.size() + groups.size() + products.size()),
@@ -125,7 +129,7 @@ public class SubgraphExtraction {
 
 	    log.info(stats);
 	    // store graph
-	    // storeSubgraph();
+	    storeSubgraph();
 	    tx.success();
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
@@ -140,7 +144,7 @@ public class SubgraphExtraction {
 
 	// step 1: get products
 	log.info("Getting products");
-	while (productCnt < nodeLimit) {
+	while (productCnt < productLimit) {
 	    int n = r.nextInt(getSum(groupCounts) + 1);
 	    if (showLog) {
 		log.info("random number: " + n);
@@ -158,6 +162,7 @@ public class SubgraphExtraction {
 		log.info("---");
 	    }
 	}
+	log.info("Done ... got " + productCnt + " products");
 	// step 2: get the users who reviewed the products
 	log.info("Getting users");
 	Node endNode = null;
@@ -173,6 +178,7 @@ public class SubgraphExtraction {
 		    if (!users.contains(endNode)) {
 			// store neighbor
 			users.add(endNode);
+			userIds.add(endNode.getId());
 			userCnt++;
 			// build user subgraph
 			buildUserSubgraph(endNode, k_Users);
@@ -180,6 +186,8 @@ public class SubgraphExtraction {
 		}
 	    }
 	}
+	log.info("Done ... got " + userCnt + " users");
+
 	log.info("Getting missing similar_to relations");
 	// step 3: get similar relations between products
 	for (Node p1 : products) {
@@ -193,25 +201,6 @@ public class SubgraphExtraction {
 		}
 	    }
 	}
-	
-//	long l = 0L;
-//	log.info("Getting missing friends_of relations");
-//	// step 4: get similar relations between users
-//	for (Relationship e : GlobalGraphOperations.at(graphDb)
-//		.getAllRelationships()) {
-//	    if (++l % 100000 == 0) {
-//		log.info(l);
-//	    }
-//	    if (e.isType(Neo4jRelationshipTypes.FRIEND_OF)) {
-//		if (users.contains(e.getStartNode())
-//			&& users.contains(e.getEndNode())) {
-//		    if (!edges.contains(e)) {
-//			edges.add(e);
-//			friendCnt++;
-//		    }
-//		}
-//	    }
-//	}
     }
 
     private void extractSubgraph(int groupId, int nodeIdx) {
@@ -327,6 +316,7 @@ public class SubgraphExtraction {
 			    .getEndNode();
 		    if (!users.contains(node)) {
 			users.add(node);
+			userIds.add(node.getId());
 			userCnt++;
 			buildUserSubgraph(node, depth - 1);
 		    }
@@ -376,7 +366,7 @@ public class SubgraphExtraction {
     }
 
     private void storeSubgraph() throws IOException {
-	String graphName = String.format("graph_%d_%d_%d.geoff", nodeLimit,
+	String graphName = String.format("graph_%d_%d_%d.geoff", productLimit,
 		k_Products, k_Users);
 
 	log.info("Writing into " + graphName);

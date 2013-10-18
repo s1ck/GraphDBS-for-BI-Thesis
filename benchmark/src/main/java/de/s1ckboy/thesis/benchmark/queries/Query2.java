@@ -1,4 +1,4 @@
-package de.s1ckboy.thesis.benchmark.generic.benchmarks;
+package de.s1ckboy.thesis.benchmark.queries;
 
 /**
  * Similar products.

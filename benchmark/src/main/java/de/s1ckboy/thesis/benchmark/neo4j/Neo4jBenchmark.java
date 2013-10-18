@@ -11,9 +11,9 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.tooling.GlobalGraphOperations;
 
+import de.s1ckboy.thesis.benchmark.Benchmark;
 import de.s1ckboy.thesis.benchmark.Configs;
-import de.s1ckboy.thesis.benchmark.generic.Benchmark;
-import de.s1ckboy.thesis.generic.Constants;
+import de.s1ckboy.thesis.benchmark.Constants;
 
 public abstract class Neo4jBenchmark extends Benchmark {
     /**
@@ -32,6 +32,10 @@ public abstract class Neo4jBenchmark extends Benchmark {
      * Used during warmup and for random selection
      */
     protected List<Long> reviewIDs;
+    /**
+     * Used during runs
+     */
+    protected Transaction tx;
 
     @Override
     public void setUp() {
@@ -62,12 +66,12 @@ public abstract class Neo4jBenchmark extends Benchmark {
 
     @Override
     public void beforeRun() {
-	// TODO Auto-generated method stub
+	tx = graphDB.beginTx();
     }
 
     @Override
     public void afterRun() {
-	// TODO Auto-generated method stub
+	tx.finish();
     }
 
     @Override
