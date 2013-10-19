@@ -65,6 +65,15 @@ public abstract class Benchmark {
     }
 
     /**
+     * Returns true, if a warmup shall be performed.
+     * 
+     * @return true, if warmup
+     */
+    public boolean doWarmup() {
+	return cfg.getBoolean("warmup", true);
+    }
+
+    /**
      * Returns the measurement unit for that benchmark.
      * 
      * @return Unit (milli- or nanosecond)

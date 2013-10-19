@@ -39,8 +39,9 @@ public class TitanImporter extends AbstractImporter {
 		VertexIDType.STRING, cfg.getInt("import.tx.batchsize"));
 	graphDB.setVertexIdKey(Constants.KEY_NODE_EDGE_ID);
 	graphDB.setEdgeIdKey(Constants.KEY_NODE_EDGE_ID);
-
-	createTypes();
+	if (cfg.getBoolean("import.use.types")) {
+	    createTypes();
+	}
     }
 
     @Override

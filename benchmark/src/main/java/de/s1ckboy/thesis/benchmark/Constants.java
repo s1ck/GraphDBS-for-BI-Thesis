@@ -53,14 +53,15 @@ public class Constants {
      * Benchmark specific
      */
     public static final Integer DEFAULT_BENCHMARK_RUNS = 100;
-    
+
     public static final String IMPORT = "import";
-    
-    public static final String NEO4J_Q1_CYPHER = "neo4j_q1_cypher";
-    public static final String NEO4J_Q2_CYPHER = "neo4j_q2_cypher";
-    
-    public static final String TITAN_Q1_GREMLIN = "titan_q1_gremlin";
-    public static final String TITAN_Q2_GREMLIN = "titan_q2_gremlin";
+
+    public static final String NEO4J_RANDOM_READ_CYPHER = "neo4j_random_read_cypher";
+    public static final String NEO4J_RANDOM_READ_GREMLIN = "neo4j_random_read_gremlin";
+    public static final String NEO4J_SIM_PRODUCTS_CYPHER = "neo4j_sim_products_cypher";
+
+    public static final String TITAN_RANDOM_READ_GREMLIN = "titan_random_read_gremlin";
+    public static final String TITAN_SIM_PROUCTS_GREMLIN = "titan_sim_products_gremlin";
 
     /**
      * Import specific

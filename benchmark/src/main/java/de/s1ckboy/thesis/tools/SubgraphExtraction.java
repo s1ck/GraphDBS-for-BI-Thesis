@@ -71,7 +71,7 @@ public class SubgraphExtraction {
     /*
      * Maximum number of products inside the graph
      */
-    private int productLimit = 100;
+    private int productLimit = 10000;
     /*
      * k-Products/Users means the k-neighborhood of a node. 2-neighborhood for
      * users is p.e. all friends and their friends
@@ -115,10 +115,11 @@ public class SubgraphExtraction {
 	    extractSubgraphs(getGroupCounts());
 	    sw.stop();
 	    // store stats in info file
-	    String graphInfo = String.format("graph_%d_%d_%d.info",
+	    String graphInfo = String.format("graph_%d_%d_%d_%d.info", seed,
 		    productLimit, k_Products, k_Users);
 	    String stats = String
-		    .format("\n%d nodes\n%d edges\n---\n%d groups\n%d products\n%d users\n%d belongs_to\n%d similar_to\n%d reviewed_by\n%d friend_of\n---\n%d seconds",
+		    .format("\nseed %d\n%d nodes\n%d edges\n---\n%d groups\n%d products\n%d users\n%d belongs_to\n%d similar_to\n%d reviewed_by\n%d friend_of\n---\n%d seconds",
+			    seed,
 			    (users.size() + groups.size() + products.size()),
 			    edges.size(), groupCnt, productCnt, userCnt,
 			    belongsCnt, similarCnt, reviewCnt, friendCnt,
@@ -366,8 +367,8 @@ public class SubgraphExtraction {
     }
 
     private void storeSubgraph() throws IOException {
-	String graphName = String.format("graph_%d_%d_%d.geoff", productLimit,
-		k_Products, k_Users);
+	String graphName = String.format("graph_%d_%d_%d_%d.geoff", seed,
+		productLimit, k_Products, k_Users);
 
 	log.info("Writing into " + graphName);
 

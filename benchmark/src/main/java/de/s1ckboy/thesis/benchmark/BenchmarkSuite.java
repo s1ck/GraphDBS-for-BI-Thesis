@@ -6,12 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.log4j.Logger;
-
 
 /**
  * Abstract base class for all benchmark suites.
@@ -139,17 +139,29 @@ public abstract class BenchmarkSuite {
 
 	File dir = new File(dirString);
 	if (dir.mkdirs()) {
+	    // store results
 	    String fileString = dirString + "/"
 		    + benchmark.getClass().getSimpleName();
-	    try {
-		BufferedWriter writer = new BufferedWriter(new FileWriter(
-			new File(fileString)));
+	    try (BufferedWriter writer = new BufferedWriter(new FileWriter(
+		    new File(fileString)))) {
 
 		for (int i = 0; i < results.length; i++) {
 		    writer.write(String.format("%d\n", results[i]));
 		}
-		writer.close();
-
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
+	    // store config
+	    fileString = dirString + "/benchmark.properties";
+	    try (BufferedWriter writer = new BufferedWriter(new FileWriter(
+		    new File(fileString)))) {
+		Iterator<String> it = cfg.getKeys();
+		String key;
+		while (it.hasNext()) {
+		    key = it.next();
+		    writer.write(String.format("%s=%s\n", key,
+			    cfg.getProperty(key)));
+		}
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }
@@ -165,6 +177,6 @@ public abstract class BenchmarkSuite {
     }
 
     private static String getDatabaseName(String cfgName) {
-	return cfgName.substring(cfgName.lastIndexOf('/'));		
+	return cfgName.substring(cfgName.lastIndexOf('/'));
     }
 }

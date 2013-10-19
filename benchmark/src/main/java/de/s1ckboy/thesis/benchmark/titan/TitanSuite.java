@@ -10,7 +10,8 @@ import de.s1ckboy.thesis.benchmark.BenchmarkSuite;
 import de.s1ckboy.thesis.benchmark.Configs;
 import de.s1ckboy.thesis.benchmark.Constants;
 import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanImportBenchmark;
-import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanQuery1_Gremlin;
+import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanRandomReadGremlin;
+import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanSimProductsGremlin;
 
 public class TitanSuite extends BenchmarkSuite {
     private Configuration cfg = Configs.get(TitanConstants.INSTANCE_NAME);
@@ -34,10 +35,16 @@ public class TitanSuite extends BenchmarkSuite {
 	/**
 	 * Benchmarks
 	 */
-	if (cfg.getBoolean(Constants.TITAN_Q1_GREMLIN)) {
-	    Benchmark q1 = new TitanQuery1_Gremlin();
-	    q1.setRuns(cfg.getInt(Constants.TITAN_Q1_GREMLIN + ".runs"));
-	    benchmarks.add(q1);
+	if (cfg.getBoolean(Constants.TITAN_RANDOM_READ_GREMLIN)) {
+	    Benchmark q = new TitanRandomReadGremlin();
+	    q.setRuns(cfg.getInt(Constants.TITAN_RANDOM_READ_GREMLIN + ".runs"));
+	    benchmarks.add(q);
+	}
+
+	if (cfg.getBoolean(Constants.TITAN_SIM_PROUCTS_GREMLIN)) {
+	    Benchmark q = new TitanSimProductsGremlin();
+	    q.setRuns(cfg.getInt(Constants.TITAN_SIM_PROUCTS_GREMLIN + ".runs"));
+	    benchmarks.add(q);
 	}
 
 	runBenchmarks(benchmarks, logToFile, doWarmup);

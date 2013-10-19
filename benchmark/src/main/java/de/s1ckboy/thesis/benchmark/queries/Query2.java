@@ -1,11 +1,12 @@
 package de.s1ckboy.thesis.benchmark.queries;
 
 /**
- * Similar products.
+ * Query "Similar Products" (sim_products)
  * 
- * Pick a random product p and select:
+ * Selektion der Titel aller ähnlichen Produkte mit Abstand <= 2. Jeder Titel
+ * soll einmalig in der Ergebnismenge sein.
  * 
- * p-[SIMILAR_TO]->()-[SIMILAR_TO]->p.title
+ * Lokal, Traversierung
  * 
  * @author Martin Junghanns
  * 

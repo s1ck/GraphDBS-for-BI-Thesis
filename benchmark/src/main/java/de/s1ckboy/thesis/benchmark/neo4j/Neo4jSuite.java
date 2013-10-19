@@ -10,8 +10,8 @@ import de.s1ckboy.thesis.benchmark.BenchmarkSuite;
 import de.s1ckboy.thesis.benchmark.Configs;
 import de.s1ckboy.thesis.benchmark.Constants;
 import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jImportBenchmark;
-import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jQuery1_Cypher;
-import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jQuery2_Cypher;
+import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jRandomReadCypher;
+import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jSimProductsCypher;
 
 public class Neo4jSuite extends BenchmarkSuite {
 
@@ -34,16 +34,19 @@ public class Neo4jSuite extends BenchmarkSuite {
 	/**
 	 * Benchmarks
 	 */
-	if (cfg.getBoolean(Constants.NEO4J_Q1_CYPHER)) {
-	    Benchmark q1 = new Neo4jQuery1_Cypher();
-	    q1.setRuns(cfg.getInt(Constants.NEO4J_Q1_CYPHER + ".runs"));
-	    benchmarks.add(q1);
+
+	// q1 cypher
+	if (cfg.getBoolean(Constants.NEO4J_RANDOM_READ_CYPHER)) {
+	    Benchmark q = new Neo4jRandomReadCypher();
+	    q.setRuns(cfg.getInt(Constants.NEO4J_RANDOM_READ_CYPHER + ".runs"));
+	    benchmarks.add(q);
 	}
 
-	if (cfg.getBoolean(Constants.NEO4J_Q2_CYPHER)) {
-	    Benchmark q2 = new Neo4jQuery2_Cypher();
-	    q2.setRuns(cfg.getInt(Constants.NEO4J_Q2_CYPHER + ".runs"));
-	    benchmarks.add(q2);
+	// q2_cypher
+	if (cfg.getBoolean(Constants.NEO4J_SIM_PRODUCTS_CYPHER)) {
+	    Benchmark q = new Neo4jSimProductsCypher();
+	    q.setRuns(cfg.getInt(Constants.NEO4J_SIM_PRODUCTS_CYPHER + ".runs"));
+	    benchmarks.add(q);
 	}
 
 	runBenchmarks(benchmarks, logToFile, doWarmup);

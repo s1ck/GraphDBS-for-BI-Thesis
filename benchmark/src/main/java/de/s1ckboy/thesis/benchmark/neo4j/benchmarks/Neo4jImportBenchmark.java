@@ -29,6 +29,16 @@ public class Neo4jImportBenchmark extends Neo4jBenchmark implements Import {
     public void setUp() {
 	importer.setUp();
     }
+    
+    @Override
+    public void beforeRun() {
+	// no transaction needed
+    }
+    
+    @Override
+    public void afterRun() {
+	// no transaction needed
+    }
 
     @Override
     public void run() {
