@@ -73,7 +73,7 @@ Im Zusammenhang mit ACID hat die Möglichkeit zur Definition von Integritätsbedin
 	\hline
 	\multicolumn{6}{|c|}{\textbf{Datenverwaltung und Datenmodellierung}} \\
 	\hline
-   	GDBMS & Datenmodell & Mehrere\newline~Datenbanken* & Schema* & ACID* & Integritäts-\newline bedingungen* \\   
+   	GDBMS & Datenmodell & Mehrere\newline~Datenbanken* & Schema* & ACID & Integritäts-\newline bedingungen* \\   
    	\hline
    	Affinity		& Gerichteter, knotenattributierter Multigraph	& - & -	& \checkmark & \checkmark \\
    	ArangoDB		& PGM	& \checkmark & - & \checkmark & \checkmark \\
@@ -84,7 +84,7 @@ Im Zusammenhang mit ACID hat die Möglichkeit zur Definition von Integritätsbedin
    	Neo4j			& PGM	& -	& (\checkmark)	& \checkmark	& \checkmark \\
    	OQGRAPH			& Gerichteter, gewichteter Multigraph	& -	& -	& -	& \checkmark \\
    	OrientDB		& PGM	& \checkmark	& \checkmark	& \checkmark	& \checkmark \\
-   	Titan			& PGM	& -	& \checkmark	& \checkmark	& \checkmark \\
+   	Titan			& PGM	& -	& (\checkmark)	& \checkmark	& \checkmark \\
    	\hline
    	\end{tabular} 
 	\end{footnotesize}
@@ -146,9 +146,9 @@ Cu unum perfecto usu, sed an natum prompta aliquid, no pri meis illum integre. C
    	GDBMS & Persistenz & Native Speicherung*  & Hauptspeicher-\newline~zentriert* & Index-\newline unterstützung \\
    	\hline   
    	Bitsy			& \checkmark	& -				& \checkmark	& \checkmark 	\\
-   	HypergraphDB	& \checkmark	& \checkmark	& - 			& \checkmark 	\\
+   	HypergraphDB	& \checkmark	& -				& - 			& \checkmark 	\\
    	Neo4j			& \checkmark	& \checkmark	& -				& \checkmark	\\
-   	OrientDB		& \checkmark	& \checkmark	& -				& \checkmark	\\
+   	OrientDB		& \checkmark	& -				& -				& \checkmark	\\
    	Titan			& \checkmark	& -				& -				& \checkmark	\\
    	\hline
 	\end{tabular} 
