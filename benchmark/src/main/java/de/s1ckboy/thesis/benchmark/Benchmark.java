@@ -44,6 +44,11 @@ public abstract class Benchmark {
     protected List<Long> productIDs;
 
     protected List<Long> userIDs;
+    
+    /**
+     * Can be used for a single benchmark run.
+     */
+    protected Long nextID;
 
     /**
      * Sets the number of benchmarks to run

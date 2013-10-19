@@ -7,11 +7,10 @@ import org.neo4j.helpers.collection.IteratorUtil;
 
 import de.s1ckboy.thesis.benchmark.Constants;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jCypherBenchmark;
-import de.s1ckboy.thesis.benchmark.queries.Query1;
+import de.s1ckboy.thesis.benchmark.queries.RandomRead;
 
-public class Neo4jRandomReadCypher extends Neo4jCypherBenchmark implements Query1 {
-    private long nextID;
-
+public class Neo4jRandomReadCypher extends Neo4jCypherBenchmark implements
+	RandomRead {
     @Override
     public void beforeRun() {
 	super.beforeRun();

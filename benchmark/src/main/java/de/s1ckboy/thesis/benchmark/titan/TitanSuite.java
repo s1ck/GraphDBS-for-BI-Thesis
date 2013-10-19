@@ -9,7 +9,9 @@ import de.s1ckboy.thesis.benchmark.Benchmark;
 import de.s1ckboy.thesis.benchmark.BenchmarkSuite;
 import de.s1ckboy.thesis.benchmark.Configs;
 import de.s1ckboy.thesis.benchmark.Constants;
+import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanFoafReviewsGremlin;
 import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanImportBenchmark;
+import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanPathAllGremlin;
 import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanRandomReadGremlin;
 import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanSimProductsGremlin;
 
@@ -44,6 +46,20 @@ public class TitanSuite extends BenchmarkSuite {
 	if (cfg.getBoolean(Constants.TITAN_SIM_PROUCTS_GREMLIN)) {
 	    Benchmark q = new TitanSimProductsGremlin();
 	    q.setRuns(cfg.getInt(Constants.TITAN_SIM_PROUCTS_GREMLIN + ".runs"));
+	    benchmarks.add(q);
+	}
+
+	if (cfg.getBoolean(Constants.TITAN_FOAF_REVIEWS_GREMLIN)) {
+	    Benchmark q = new TitanFoafReviewsGremlin();
+	    q.setRuns(cfg
+		    .getInt(Constants.TITAN_FOAF_REVIEWS_GREMLIN + ".runs"));
+	    benchmarks.add(q);
+	}
+	
+	if (cfg.getBoolean(Constants.TITAN_PATH_ALL_GREMLIN)) {
+	    Benchmark q = new TitanPathAllGremlin();
+	    q.setRuns(cfg
+		    .getInt(Constants.TITAN_PATH_ALL_GREMLIN + ".runs"));
 	    benchmarks.add(q);
 	}
 

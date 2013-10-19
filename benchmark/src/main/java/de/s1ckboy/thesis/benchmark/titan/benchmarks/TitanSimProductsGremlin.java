@@ -1,16 +1,11 @@
 package de.s1ckboy.thesis.benchmark.titan.benchmarks;
 
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.pipes.util.iterators.SingleIterator;
-
 import de.s1ckboy.thesis.benchmark.Constants;
-import de.s1ckboy.thesis.benchmark.queries.Query2;
+import de.s1ckboy.thesis.benchmark.queries.SimProducts;
 import de.s1ckboy.thesis.benchmark.titan.TitanGremlinBenchmark;
 
 public class TitanSimProductsGremlin extends TitanGremlinBenchmark implements
-	Query2 {
-    private Long nextID;
-
+	SimProducts {
     @Override
     public void beforeRun() {
 	GREMLIN_QUERY = String.format(
@@ -22,15 +17,6 @@ public class TitanSimProductsGremlin extends TitanGremlinBenchmark implements
 	    nextID = getRandomProduct();
 	} else {
 	    // TODO
-	}
-    }
-
-    @SuppressWarnings({ "unchecked", "unused" })
-    @Override
-    public void run() {
-	pipe.setStarts(new SingleIterator<Vertex>(graphDB.getVertex(nextID)));
-	// just iterate the resulting pipe
-	for (Object o : pipe) {
 	}
     }
 

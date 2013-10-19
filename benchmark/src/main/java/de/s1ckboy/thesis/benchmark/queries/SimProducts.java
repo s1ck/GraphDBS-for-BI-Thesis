@@ -11,6 +11,6 @@ package de.s1ckboy.thesis.benchmark.queries;
  * @author Martin Junghanns
  * 
  */
-public interface Query2 {
+public interface SimProducts {
 
 }

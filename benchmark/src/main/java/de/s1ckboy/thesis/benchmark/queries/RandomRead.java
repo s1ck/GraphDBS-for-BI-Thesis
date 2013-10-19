@@ -1,7 +1,7 @@
 package de.s1ckboy.thesis.benchmark.queries;
 
 /**
- * Query "Random Nodes" (random_read)
+ * Query "Random Read" (random_read)
  * 
  * Selektion zufällig ausgewählter Produkte und Nutzer sowie Auslesen ihrer
  * Attribute.
@@ -11,6 +11,6 @@ package de.s1ckboy.thesis.benchmark.queries;
  * @author Martin Junghanns
  * 
  */
-public interface Query1 {
+public interface RandomRead {
 
 }

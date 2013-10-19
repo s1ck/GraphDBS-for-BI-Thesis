@@ -6,11 +6,11 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.pipes.util.iterators.SingleIterator;
 
 import de.s1ckboy.thesis.benchmark.Constants;
-import de.s1ckboy.thesis.benchmark.queries.Query1;
+import de.s1ckboy.thesis.benchmark.queries.RandomRead;
 import de.s1ckboy.thesis.benchmark.titan.TitanGremlinBenchmark;
 
 public class TitanRandomReadGremlin extends TitanGremlinBenchmark implements
-	Query1 {
+	RandomRead {
     private Long nextID;
 
     @Override

@@ -6,12 +6,10 @@ import org.neo4j.helpers.collection.IteratorUtil;
 
 import de.s1ckboy.thesis.benchmark.Constants;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jCypherBenchmark;
-import de.s1ckboy.thesis.benchmark.queries.Query2;
+import de.s1ckboy.thesis.benchmark.queries.SimProducts;
 
 public class Neo4jSimProductsCypher extends Neo4jCypherBenchmark implements
-	Query2 {
-    private Long nextID;
-
+	SimProducts {
     @Override
     public void beforeRun() {
 	super.beforeRun();
