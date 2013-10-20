@@ -33,7 +33,7 @@ g.v(42).map();
 */
 
 // Cypher
-START n=node(22) MATCH n-[:SIMILAR_TO*..2]-s RETURN DISTINCT s.title;
+START n=node(22) MATCH n-[:SIMILAR_TO*..2]-s RETURN DISTINCT s.title AS title;
 
 // Gremlin
 p.both('SIMILAR_TO').loop(1){it.loops <= 2}.dedup().title
@@ -83,7 +83,7 @@ a.both('FRIEND_OF').loop(1){it.loops <=2}.in('REVIEWED_BY').out('REVIEWED_BY').r
 * Cypher
 START n=node(42)
 MATCH n-[:FRIEND_OF*1..2]-()<-[r:REVIEWED_BY]-p   
-RETURN p.title, avg(r.rating) as weight   
+RETURN p.title AS title, avg(r.rating) AS weight  
 ORDER BY weight DESC;
 
 * Gremlin
@@ -94,7 +94,7 @@ a.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').groupBy{it.outV.next().
 *
 * Berechnen der Pfade der Länge <= 4 zwischen einem Nutzer und einem 
 * Produkt unter Verwendung der Beziehungstypen FRIEND_OF, REVIEWED_BY
-* und SIMILAR_TO.
+* und SIMILAR_TO. Es wird die Anzahl der Pfade gruppiert nach Länge ausgegeben.
 *
 * Lokal, Erreichbarkeit
 *
@@ -104,7 +104,7 @@ a.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').groupBy{it.outV.next().
 
 START a=node(48089), b=node(22) 
 MATCH p=a-[:FRIEND_OF|SIMILAR_TO|REVIEWED_BY*..4]-b 
-RETURN length(p), count(p);
+RETURN length(p) AS length, count(p) AS cnt;
 
 * Gremlin
 a = g.V('__id__', 'A44FUIZX7CUVN').next();
@@ -117,7 +117,8 @@ a.both('FRIEND_OF','REVIEWED_BY','SIMILAR_TO').loop(1){it.object != b && it.loop
 *
 * Berechnung des kürzesten Pfades zwischen zwei Nutzern unter Verwendung
 * der Beziehungstypen FRIEND_OF, REVIEWED_BY und SIMILAR_TO. Die maximale
-* Pfadlänge beträgt 4.
+* Pfadlänge beträgt 5. Es werden die __id__ Attribute der Knoten innerhalb der
+* Pfadinstanzen ausgegeben.
 *
 * Lokal, Erreichbarkeit
 *
@@ -125,7 +126,7 @@ a.both('FRIEND_OF','REVIEWED_BY','SIMILAR_TO').loop(1){it.object != b && it.loop
 
 * Cypher (3)
 START a=node(48089), b=node(22)
-MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..4]-b)
+MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..5]-b)
 RETURN EXTRACT(n in NODES(p): n.__id__);
 
 ==>["A44FUIZX7CUVN","0679724699","0520078748","0231096704"]
@@ -134,7 +135,7 @@ RETURN EXTRACT(n in NODES(p): n.__id__);
 a = g.V('__id__', 'A44FUIZX7CUVN').next();
 b = g.V('__id__', '0231096704').next();
 visited=[a];
-a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).loop(3){it.object != b && it.loops < 5}.retain([b]).path{it.__id__};
+a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).loop(3){it.object != b && it.loops < 6}.retain([b]).path{it.__id__};
 
 ==>[A44FUIZX7CUVN, 0679724699, 0520078748, 0231096704]
 
@@ -223,7 +224,7 @@ group.in('BELONGS_TO').filter{it.salesrank < 500000}.out('REVIEWED_BY').groupCou
 * Helping stuff
 */
 
-g = TitanFactory.open('../../master_thesis/benchmark/out/titan-graph_100_4_2');
+g = TitanFactory.open('../../master_thesis/benchmark/out/titan-graph_611_50_4_2');
 a = g.V('__id__', 'A16MCCBGBZIZVR').next(); // user
 b = g.V('__id__', 'A29QUUI26CAZO3').next(); // user
 c = g.V('__id__', 'A44FUIZX7CUVN').next(); // user
