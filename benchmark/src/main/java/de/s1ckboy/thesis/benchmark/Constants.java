@@ -61,6 +61,7 @@ public class Constants {
     public static final String NEO4J_SIM_PRODUCTS_CYPHER = "neo4j_sim_products_cypher";
     public static final String NEO4J_FOAF_REVIEWS_CYPHER = "neo4j_foaf_reviews_cyper";
     public static final String NEO4J_PATH_ALL_CYPHER = "neo4j_path_all_cypher";
+    public static final String NEO4J_PATH_SHORTEST_CYPHER = "neo4j_path_shortest_cypher";
 
     public static final String TITAN_RANDOM_READ_GREMLIN = "titan_random_read_gremlin";
     public static final String TITAN_SIM_PROUCTS_GREMLIN = "titan_sim_products_gremlin";
