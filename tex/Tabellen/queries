@@ -127,7 +127,7 @@ a.both('FRIEND_OF','REVIEWED_BY','SIMILAR_TO').loop(1){it.object != b && it.loop
 * Cypher (3)
 START a=node(48089), b=node(22)
 MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..5]-b)
-RETURN EXTRACT(n in NODES(p): n.__id__);
+RETURN EXTRACT(n in NODES(p): n.__id__) AS path;
 
 ==>["A44FUIZX7CUVN","0679724699","0520078748","0231096704"]
 
