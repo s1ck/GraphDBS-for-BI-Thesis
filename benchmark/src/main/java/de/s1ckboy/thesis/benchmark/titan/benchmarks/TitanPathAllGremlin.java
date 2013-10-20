@@ -4,12 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.script.Bindings;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-
 import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.gremlin.groovy.jsr223.GremlinGroovyScriptEngineFactory;
 
 import de.s1ckboy.thesis.benchmark.Constants;
 import de.s1ckboy.thesis.benchmark.queries.PathAll;
@@ -18,14 +13,18 @@ import de.s1ckboy.thesis.benchmark.titan.TitanGremlinBenchmark;
 public class TitanPathAllGremlin extends TitanGremlinBenchmark implements
 	PathAll {
 
-    private ScriptEngine engine;
-
-    private Bindings bindings;
+    /*
+     * start node in paths
+     */
+    private Long userID;
+    /*
+     * end node in paths
+     */
+    private Long productID;
 
     @Override
     public void setUp() {
 	super.setUp();
-	engine = new GremlinGroovyScriptEngineFactory().getScriptEngine();
 	GREMLIN_QUERY = String
 		.format("a.both('%s','%s','%s').loop(1){it.object != b && it.loops < 5}.retain([b]).path._().transform{it.size() - 1}.groupCount().cap();",
 			Constants.LABEL_EDGE_FRIEND_OF,
@@ -35,32 +34,36 @@ public class TitanPathAllGremlin extends TitanGremlinBenchmark implements
 
     @Override
     public void beforeRun() {
-	bindings = engine.createBindings();
+	super.beforeRun();
+	if (doWarmup()) {
+	    userID = getRandomUser();
+	    productID = getRandomProduct();
+	} else {
+	    // TODO
+	}
     }
 
-    @SuppressWarnings({ "unused", "unchecked" })
+    @SuppressWarnings({ "unchecked" })
     @Override
     public void run() {
-	// this has to happen inside the run methode because in cypher loading
-	// the start and end node is part of the query
-	Vertex a = graphDB.getVertex(getRandomUser());
+	// fetch start and end vertex inside the run method (cypher does the
+	// same)
+	Vertex a = graphDB.getVertex(userID);
 	List<Vertex> visited = new ArrayList<>();
 	visited.add(a);
-	// bindings.put("g", graphDB);
 	bindings.put("a", a);
-	bindings.put("b", graphDB.getVertex(getRandomProduct()));
+	bindings.put("b", graphDB.getVertex(productID));
 	bindings.put("visited", visited);
 
-	try {
-	    for (Map<Integer, Integer> o : (Iterable<Map<Integer, Integer>>) engine
-		    .eval(GREMLIN_QUERY, bindings)) {
-		for (Map.Entry<Integer, Integer> e : o.entrySet()) {
-		    e.getKey();
-		    e.getValue();
-		}
+	// execute the query
+	super.run();
+
+	for (Map<Integer, Integer> o : (Iterable<Map<Integer, Integer>>) result) {
+	    for (Map.Entry<Integer, Integer> e : o.entrySet()) {
+		e.getKey();
+		e.getValue();
+		System.out.println(e.getKey() + " => " + e.getValue());
 	    }
-	} catch (ScriptException e) {
-	    e.printStackTrace();
 	}
     }
 

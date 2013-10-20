@@ -6,11 +6,17 @@ import de.s1ckboy.thesis.benchmark.titan.TitanGremlinBenchmark;
 
 public class TitanSimProductsGremlin extends TitanGremlinBenchmark implements
 	SimProducts {
+
+    @Override
+    public void setUp() {
+	super.setUp();
+	GREMLIN_QUERY = String.format(
+		"a.both('%s').loop(1){it.loops <= 2}.dedup().title",
+		Constants.LABEL_EDGE_SIMILAR_TO);
+    }
+
     @Override
     public void beforeRun() {
-	GREMLIN_QUERY = String.format(
-		"_().both('%s').loop(1){it.loops <= 2}.dedup().title",
-		Constants.LABEL_EDGE_SIMILAR_TO);
 	super.beforeRun();
 
 	if (doWarmup()) {
@@ -20,23 +26,20 @@ public class TitanSimProductsGremlin extends TitanGremlinBenchmark implements
 	}
     }
 
+    @SuppressWarnings({ "unchecked", "unused" })
+    @Override
+    public void run() {
+	bindings.put("a", graphDB.getVertex(nextID));
+
+	// execute the query
+	super.run();
+
+	for (String title : (Iterable<String>) result) {
+	}
+    }
+
     @Override
     public String getName() {
 	return Constants.TITAN_SIM_PROUCTS_GREMLIN;
     }
-
-    // @Override
-    // public void tearDown() {
-    // int min = Integer.MAX_VALUE;
-    // int max = Integer.MIN_VALUE;
-    // int sum = 0;
-    // for (int e : resultSetSizes) {
-    // if (e < min) min = e;
-    // if (e > max) max = e;
-    // sum += e;
-    // }
-    // System.out.println(min);
-    // System.out.println(max);
-    // System.out.println(sum * 1. / resultSetSizes.size());
-    // }
 }

@@ -1,27 +1,48 @@
 package de.s1ckboy.thesis.benchmark.titan;
 
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.gremlin.groovy.Gremlin;
-import com.tinkerpop.pipes.Pipe;
-import com.tinkerpop.pipes.util.iterators.SingleIterator;
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 
+import com.tinkerpop.gremlin.groovy.jsr223.GremlinGroovyScriptEngineFactory;
+
+/**
+ * 
+ * Base class for gremlin scripts. This is using the GremlinGroovyScriptEngine
+ * with bindings for better performance.
+ * 
+ * @see https://groups.google.com/forum/#!searchin/gremlin-users/gremlin$20java/
+ *      gremlin-users/d3Jem-PfrMo/c7xcb_XZRVMJ
+ * 
+ * @author Martin Junghanns
+ * 
+ */
 public abstract class TitanGremlinBenchmark extends TitanBenchmark {
     protected static String GREMLIN_QUERY;
 
-    @SuppressWarnings("rawtypes")
-    protected Pipe pipe;
+    // needed to execute the Gremlin query
+    protected ScriptEngine engine;
+    // used for parametrized queries
+    protected Bindings bindings;
+
+    protected Object result;
+
+    @Override
+    public void setUp() {
+	super.setUp();
+	engine = new GremlinGroovyScriptEngineFactory().getScriptEngine();
+    }
+
+    public void run() {
+	try {
+	    result = engine.eval(GREMLIN_QUERY, bindings);
+	} catch (ScriptException e) {
+	    e.printStackTrace();
+	}
+    }
 
     @Override
     public void beforeRun() {
-	pipe = Gremlin.compile(GREMLIN_QUERY);	
-    }
-
-    @SuppressWarnings({ "unchecked", "unused" })
-    @Override
-    public void run() {
-	pipe.setStarts(new SingleIterator<Vertex>(graphDB.getVertex(nextID)));
-	// just iterate the resulting pipe
-	for (Object o : pipe) {
-	}
+	bindings = engine.createBindings();
     }
 }

@@ -2,9 +2,6 @@ package de.s1ckboy.thesis.benchmark.titan.benchmarks;
 
 import java.util.Map;
 
-import com.tinkerpop.blueprints.Vertex;
-import com.tinkerpop.pipes.util.iterators.SingleIterator;
-
 import de.s1ckboy.thesis.benchmark.Constants;
 import de.s1ckboy.thesis.benchmark.queries.RandomRead;
 import de.s1ckboy.thesis.benchmark.titan.TitanGremlinBenchmark;
@@ -14,10 +11,14 @@ public class TitanRandomReadGremlin extends TitanGremlinBenchmark implements
     private Long nextID;
 
     @Override
-    public void beforeRun() {
-	GREMLIN_QUERY = "_().map()";
-	super.beforeRun();
+    public void setUp() {
+	super.setUp();
+	GREMLIN_QUERY = "a.map()";
+    }
 
+    @Override
+    public void beforeRun() {
+	super.beforeRun();
 	if (doWarmup()) {
 	    if (r.nextBoolean()) {
 		nextID = getRandomProduct();
@@ -32,13 +33,15 @@ public class TitanRandomReadGremlin extends TitanGremlinBenchmark implements
     @SuppressWarnings("unchecked")
     @Override
     public void run() {
-	pipe.setStarts(new SingleIterator<Vertex>(graphDB.getVertex(nextID)));
-	for (Object o : pipe) {
-	    for (Map.Entry<String, Object> e : ((Map<String, Object>) o)
-		    .entrySet()) {
-		e.getKey();
-		e.getValue();
-	    }
+	bindings.put("a", graphDB.getVertex(nextID));
+
+	// execute
+	super.run();
+
+	for (Map.Entry<String, Object> e : ((Map<String, Object>) result)
+		.entrySet()) {
+	    e.getKey();
+	    e.getValue();
 	}
     }
 
