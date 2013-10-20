@@ -66,6 +66,7 @@ public class Constants {
     public static final String TITAN_SIM_PROUCTS_GREMLIN = "titan_sim_products_gremlin";
     public static final String TITAN_FOAF_REVIEWS_GREMLIN = "titan_foaf_reviews_gremlin";
     public static final String TITAN_PATH_ALL_GREMLIN = "titan_path_all_gremlin";
+    public static final String TITAN_PATH_SHORTEST_GREMLIN = "titan_path_shortest_gremlin";
 
     /**
      * Import specific
