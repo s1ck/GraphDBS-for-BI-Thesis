@@ -53,7 +53,7 @@
 
 	\textbf{\texttt{triangle\_pattern}*} & Finden aller Dreicksbeziehungen folgender Art: Ein Produkt \texttt{p} besitzt eine Bewertung \texttt{r} die für $\geq 10$ Personen hilfreich war. Der bewertende Nutzer \texttt{u1} ist mit einem weiteren Nutzer \texttt{u2} befreundet, der älter als $20$ Jahre alt ist und ebenfalls das Produkt p bewertet hat. Es sollen \texttt{p}, \texttt{u1}, \texttt{u2} und \texttt{r} bestimmt werden. \\
 	
-	\textbf{\texttt{triangle\_pattern}*} & Freunde, die für mindestens $n$ übereinstimmende Produkte Reviews geschrieben haben -> Selektion des Teilgraphen.\\
+	\textbf{\texttt{sim\_pattern}*} & Selektion alle Subgraphen in denen ausgehend von einem Nutzer die Freunde für $n$ übereinstimmende Produkte Reviews geschrieben haben.\\
 
 	%\textbf{\texttt{friendly\_regions}} & Berechnen der Top 10 Regionen mit den meisten Freundschaftsbeziehungen. \\
 	\hline
@@ -79,11 +79,13 @@
 
 \paragraph*{Neo4j}
 
+- Lucene Index für id
 - eingebettet
 - Gremlin + Cypher
 
 \paragraph*{Titan}
 
+- Index für id
 - eingebettet
 - Gremlin
 - mit und ohne Typen

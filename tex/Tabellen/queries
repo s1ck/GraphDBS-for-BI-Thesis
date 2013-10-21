@@ -153,7 +153,7 @@ a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).
 START g=node(2)
 MATCH g<-[:BELONGS_TO]-p-[r:REVIEWED_BY]->u
 WHERE p.salesrank < 500000
-RETURN u.region, count(u) as cnt
+RETURN u.region AS region, count(u) AS cnt
 ORDER BY cnt DESC
 LIMIT 10;
 
@@ -164,8 +164,8 @@ group.in('BELONGS_TO').filter{it.salesrank < 500000}.out('REVIEWED_BY').groupCou
 /**
 * Query "Similar Reviews Pattern" (sim_pattern)
 *
-* Selektion aller Subgraphen in denen ausgehend von einem Nutzer die 
-* Freunde 
+* Selektion alle Subgraphen in denen ausgehend von einem Nutzer die Freunde für n > 0
+* übereinstimmende Produkte Reviews geschrieben haben.
 *
 * Global, Mustersuche (Dreiecke) mit Bindung an Datenbasis und
 * Attributeinschränkung
@@ -174,7 +174,19 @@ group.in('BELONGS_TO').filter{it.salesrank < 500000}.out('REVIEWED_BY').groupCou
 
 // Cypher
 
+START user=node(*)
+MATCH user:User-[:FRIEND_OF]-friends1:User<-[:REVIEWED_BY]-products:Product,
+products:Product-[:REVIEWED_BY]->friends2:User
+WITH user, products, collect(distinct id(friends1)) as f1, collect(distinct id(friends2)) as f2
+WITH user, products, filter(x in f1 : x in f2) as intersect
+WITH user, products, count(products) as n, intersect, length(intersect) as intersect_cnt
+WHERE intersect_cnt > 1 and n > 0
+RETURN id(user) as user_id, n, id(products) as product_id, intersect as friends, intersect_cnt
+ORDER BY n DESC, intersect_cnt DESC, product_id
+LIMIT 25;
+
 // Gremlin
+
 
 /**
 * Query "Triangle Pattern 2" (triangle_pattern_2)
@@ -187,32 +199,6 @@ group.in('BELONGS_TO').filter{it.salesrank < 500000}.out('REVIEWED_BY').groupCou
 *
 * Global, Mustersuche (Dreiecke) mit Bindung an Datenbasis und
 * Attributeinschränkung
-*
-*/
-
-// Cypher
-
-// Gremlin
-
-/**
-* Query "Friendly Regions" (q_friendly_regions)
-*
-* Berechnen der Top 10 Regionen mit den meisten Freundschaftsbeziehungen.
-*
-* global, Traversierung, Metrik
-*
-*/
-
-// Cypher
-
-// Gremlin
-
-/**
-* Query "Helpful Age" (q_helpful_age)
-*
-* Berechnen der durchschnittlichen hilfreichen Bewertungen nach Nutzeralter.
-*
-* global, Traversierung, Metrik
 *
 */
 
