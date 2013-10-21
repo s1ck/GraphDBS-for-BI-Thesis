@@ -74,8 +74,8 @@ public class Neo4jImporter extends AbstractImporter {
 	// setup node cache for
 	nodeCache = new HashMap<String, Long>();
 	// setup batch inserter
-	inserter = BatchInserters
-		.inserter(cfg.getString("storage.directory"), importCfg);
+	inserter = BatchInserters.inserter(cfg.getString("storage.directory"),
+		importCfg);
 	// setup batch inserter index provider
 	indexProvider = new LuceneBatchInserterIndexProvider(inserter);
 	// setup index to store the original node ids
@@ -88,6 +88,8 @@ public class Neo4jImporter extends AbstractImporter {
     public void tearDown() {
 	// flush the index to make changes visible for reads
 	nodeIdx.flush();
+	
+	indexProvider.shutdown();
 	inserter.shutdown();
 	super.tearDown();
     }
@@ -131,7 +133,6 @@ public class Neo4jImporter extends AbstractImporter {
 	nodeIdx.add(nodeId,
 		MapUtil.map(Constants.KEY_NODE_EDGE_ID, node.getId()));
 	nodeCnt++;
-
     }
 
     /**

@@ -62,12 +62,14 @@ public class Constants {
     public static final String NEO4J_FOAF_REVIEWS_CYPHER = "neo4j_foaf_reviews_cyper";
     public static final String NEO4J_PATH_ALL_CYPHER = "neo4j_path_all_cypher";
     public static final String NEO4J_PATH_SHORTEST_CYPHER = "neo4j_path_shortest_cypher";
+    public static final String NEO4J_TOP_REGIONS_CYPHER = "neo4j_top_regions_cypher";
 
     public static final String TITAN_RANDOM_READ_GREMLIN = "titan_random_read_gremlin";
     public static final String TITAN_SIM_PROUCTS_GREMLIN = "titan_sim_products_gremlin";
     public static final String TITAN_FOAF_REVIEWS_GREMLIN = "titan_foaf_reviews_gremlin";
     public static final String TITAN_PATH_ALL_GREMLIN = "titan_path_all_gremlin";
     public static final String TITAN_PATH_SHORTEST_GREMLIN = "titan_path_shortest_gremlin";
+    public static final String TITAN_TOP_REGIONS_GREMLIN = "titan_top_regions_gremlin";
 
     /**
      * Import specific

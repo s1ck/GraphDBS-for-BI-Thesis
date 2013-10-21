@@ -15,6 +15,7 @@ import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanPathAllGremlin;
 import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanPathShortestGremlin;
 import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanRandomReadGremlin;
 import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanSimProductsGremlin;
+import de.s1ckboy.thesis.benchmark.titan.benchmarks.TitanTopRegionsGremlin;
 
 public class TitanSuite extends BenchmarkSuite {
     private Configuration cfg = Configs.get(TitanConstants.INSTANCE_NAME);
@@ -67,6 +68,12 @@ public class TitanSuite extends BenchmarkSuite {
 	    Benchmark q = new TitanPathShortestGremlin();
 	    q.setRuns(cfg.getInt(Constants.TITAN_PATH_SHORTEST_GREMLIN
 		    + ".runs"));
+	    benchmarks.add(q);
+	}
+
+	if (cfg.getBoolean(Constants.TITAN_TOP_REGIONS_GREMLIN)) {
+	    Benchmark q = new TitanTopRegionsGremlin();
+	    q.setRuns(cfg.getInt(Constants.TITAN_TOP_REGIONS_GREMLIN + ".runs"));
 	    benchmarks.add(q);
 	}
 

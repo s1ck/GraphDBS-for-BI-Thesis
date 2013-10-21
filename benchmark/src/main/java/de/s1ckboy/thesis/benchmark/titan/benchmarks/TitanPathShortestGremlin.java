@@ -3,8 +3,6 @@ package de.s1ckboy.thesis.benchmark.titan.benchmarks;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.tinkerpop.blueprints.Vertex;
 
 import de.s1ckboy.thesis.benchmark.Constants;
@@ -44,7 +42,7 @@ public class TitanPathShortestGremlin extends TitanGremlinBenchmark implements
 	}
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "unused" })
     @Override
     public void run() {
 	Vertex a = graphDB.getVertex(fromUserID);
@@ -58,7 +56,7 @@ public class TitanPathShortestGremlin extends TitanGremlinBenchmark implements
 	super.run();
 
 	for (List<String> path : (Iterable<List<String>>) result) {
-	    System.out.println(StringUtils.join(path, ","));
+//	    System.out.println(StringUtils.join(path, ","));
 	}
     }
 
