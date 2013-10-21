@@ -174,6 +174,7 @@ group.in('BELONGS_TO').filter{it.salesrank < 500000}.out('REVIEWED_BY').groupCou
 
 // Cypher
 
+// with neo4j ids
 START user=node(*)
 MATCH user:User-[:FRIEND_OF]-friends1:User<-[:REVIEWED_BY]-products:Product,
 products:Product-[:REVIEWED_BY]->friends2:User
@@ -185,8 +186,24 @@ RETURN id(user) as user_id, n, id(products) as product_id, intersect as friends,
 ORDER BY n DESC, intersect_cnt DESC, product_id
 LIMIT 25;
 
+// with original ids
+START user=node(*)
+MATCH user:User-[:FRIEND_OF]-friends1:User<-[:REVIEWED_BY]-products:Product,
+products:Product-[:REVIEWED_BY]->friends2:User
+WITH user, products, collect(distinct friends1.__id__) as f1, collect(distinct friends2.__id__) as f2
+WITH user, products, filter(x in f1 : x in f2) as intersect
+WITH user, products, count(products) as n, intersect, length(intersect) as intersect_cnt
+WHERE intersect_cnt > 1 and n > 0
+RETURN user.__id__ as user_id, n, products.__id__ as product_id, intersect as friends, intersect_cnt
+ORDER BY n DESC, intersect_cnt DESC, product_id
+LIMIT 25;
+
 // Gremlin
 
+g = TitanFactory.open('../../master_thesis/benchmark/out/titan-graph_611_50_4_2');
+u=g.V('__id__', 'A3B4D5T8N1Q33Y').next();
+
+u.both('FRIEND_OF').dedup().inE('REVIEWED_BY').groupCount{it.outV.next().__id__}.cap
 
 /**
 * Query "Triangle Pattern 2" (triangle_pattern_2)
