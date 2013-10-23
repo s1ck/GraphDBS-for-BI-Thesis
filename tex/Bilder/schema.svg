@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="728.90625"
-   height="414.09375"
+   width="764.9375"
+   height="446"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="schema.svg">
+   sodipodi:docname="schema.pdf">
   <defs
      id="defs4">
     <marker
@@ -82,8 +82,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="447.29319"
-     inkscape:cy="129.88331"
+     inkscape:cx="349.49926"
+     inkscape:cy="254.58718"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -106,7 +106,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -114,9 +114,27 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0.25,-174)">
+     transform="translate(16.46875,-158.84375)">
     <rect
-       style="fill:#000000;fill-opacity:0.14925376;stroke:#000000;stroke-width:0.99999994;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:0;stroke:#000000;stroke-width:0.99999994;stroke-linejoin:miter;stroke-miterlimit:1;stroke-opacity:1;stroke-dasharray:2.99999999, 2.99999999;stroke-dashoffset:0"
+       id="rect3110"
+       width="495.61652"
+       height="445"
+       x="-15.964285"
+       y="159.34375"
+       rx="19.285715"
+       ry="19.285715" />
+    <rect
+       style="fill:#000000;fill-opacity:0;stroke:#000000;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:1;stroke-opacity:1;stroke-dasharray:2.99999999, 2.99999999;stroke-dashoffset:0"
+       id="rect3110-3"
+       width="261.65411"
+       height="445"
+       x="486.31012"
+       y="159.34375"
+       rx="19.285715"
+       ry="19.285715" />
+    <rect
+       style="fill:#f0f0f0;fill-opacity:1;stroke:#000000;stroke-width:0.99999994;stroke-opacity:1"
        id="rect2985"
        width="201.78571"
        height="104.64286"
@@ -173,129 +191,122 @@
            height="33.57143"
            x="92.85714"
            y="245.93361" /></flowRegion><flowPara
-         id="flowPara3777" /></flowRoot>    <g
-       id="g3120">
-      <rect
-         rx="19.285715"
-         ry="19.285715"
-         y="403.43359"
-         x="61.494892"
-         height="143.21428"
-         width="201.78571"
-         id="rect2985-7"
-         style="fill:#000000;fill-opacity:0.14925376;stroke:#000000;stroke-width:0.99999994;stroke-opacity:1" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path3757-7"
-         d="m 61.005115,438.07647 202.050975,0"
-         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-      <text
-         sodipodi:linespacing="125%"
-         id="text3759-8"
-         y="424.50504"
+         id="flowPara3777" /></flowRoot>    <rect
+       style="fill:#f0f0f0;fill-opacity:1;stroke:#000000;stroke-width:0.99999994;stroke-opacity:1"
+       id="rect2985-7"
+       width="201.78571"
+       height="143.21428"
+       x="61.494892"
+       y="403.43359"
+       ry="19.285715"
+       rx="19.285715" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 61.005115,438.07647 202.050975,0"
+       id="path3757-7"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="132.92143"
+       y="424.50504"
+       id="text3759-8"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3761-7"
          x="132.92143"
-         style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-           y="424.50504"
-           x="132.92143"
-           id="tspan3761-7"
-           sodipodi:role="line">Product</tspan></text>
-      <text
-         sodipodi:linespacing="125%"
-         id="text3763-0"
-         y="458.07648"
+         y="424.50504"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace">Product</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="75.537155"
+       y="458.07648"
+       id="text3763-0"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3765-6"
          x="75.537155"
-         style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-           y="458.07648"
-           x="75.537155"
-           id="tspan3765-6"
-           sodipodi:role="line">__id__     : String</tspan><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-           id="tspan3767-0"
-           y="475.57648"
-           x="75.537155"
-           sodipodi:role="line">__type__   : String</tspan><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-           id="tspan3769-3"
-           y="493.07648"
-           x="75.537155"
-           sodipodi:role="line">title      : String</tspan><tspan
-           id="tspan3041"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-           y="510.57648"
-           x="75.537155"
-           sodipodi:role="line">salesrank  : Integer</tspan><tspan
-           id="tspan3043"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-           y="528.07648"
-           x="75.537155"
-           sodipodi:role="line">categories : String[]</tspan></text>
-    </g>
-    <g
-       id="g3108"
-       transform="translate(28,0.89282227)">
-      <rect
-         rx="19.285715"
-         ry="19.285715"
-         y="402.54077"
-         x="436.85205"
-         height="143.21428"
-         width="201.78571"
-         id="rect2985-7-2"
-         style="fill:#000000;fill-opacity:0.14925376;stroke:#000000;stroke-width:0.99999994;stroke-opacity:1" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path3757-7-1"
-         d="m 436.36226,437.18363 202.05097,0"
-         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-      <text
-         sodipodi:linespacing="125%"
-         id="text3759-8-2"
-         y="423.61221"
-         x="520.66187"
-         style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-           y="423.61221"
-           x="520.66187"
-           id="tspan3761-7-5"
-           sodipodi:role="line">User</tspan></text>
-      <text
-         sodipodi:linespacing="125%"
-         id="text3763-0-6"
-         y="457.18365"
-         x="462.21121"
-         style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-           y="457.18365"
-           x="462.21121"
-           id="tspan3765-6-4"
-           sodipodi:role="line">__id__   : String</tspan><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-           id="tspan3767-0-3"
-           y="474.68365"
-           x="462.21121"
-           sodipodi:role="line">__type__ : String</tspan><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-           id="tspan3769-3-3"
-           y="492.18365"
-           x="462.21121"
-           sodipodi:role="line">age      : Integer</tspan><tspan
-           id="tspan3041-9"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-           y="509.68365"
-           x="462.21121"
-           sodipodi:role="line">gender   : Boolean</tspan><tspan
-           id="tspan3043-4"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-           y="527.18365"
-           x="462.21121"
-           sodipodi:role="line">region   : String</tspan></text>
-    </g>
+         y="458.07648"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace">__id__     : String</tspan><tspan
+         sodipodi:role="line"
+         x="75.537155"
+         y="475.57648"
+         id="tspan3767-0"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace">__type__   : String</tspan><tspan
+         sodipodi:role="line"
+         x="75.537155"
+         y="493.07648"
+         id="tspan3769-3"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace">title      : String</tspan><tspan
+         sodipodi:role="line"
+         x="75.537155"
+         y="510.57648"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
+         id="tspan3041">salesrank  : Integer</tspan><tspan
+         sodipodi:role="line"
+         x="75.537155"
+         y="528.07648"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
+         id="tspan3043">categories : String[]</tspan></text>
+    <rect
+       style="fill:#f0f0f0;fill-opacity:1;stroke:#000000;stroke-width:0.99999994;stroke-opacity:1"
+       id="rect2985-7-2"
+       width="201.78571"
+       height="143.21428"
+       x="464.85205"
+       y="403.43359"
+       ry="19.285715"
+       rx="19.285715" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 464.36226,438.07645 202.05097,0"
+       id="path3757-7-1"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="548.66187"
+       y="424.50504"
+       id="text3759-8-2"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3761-7-5"
+         x="548.66187"
+         y="424.50504"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace">User</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="490.21121"
+       y="458.07648"
+       id="text3763-0-6"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3765-6-4"
+         x="490.21121"
+         y="458.07648"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace">__id__   : String</tspan><tspan
+         sodipodi:role="line"
+         x="490.21121"
+         y="475.57648"
+         id="tspan3767-0-3"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace">__type__ : String</tspan><tspan
+         sodipodi:role="line"
+         x="490.21121"
+         y="493.07648"
+         id="tspan3769-3-3"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace">age      : Integer</tspan><tspan
+         sodipodi:role="line"
+         x="490.21121"
+         y="510.57648"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
+         id="tspan3041-9">gender   : Boolean</tspan><tspan
+         sodipodi:role="line"
+         x="490.21121"
+         y="528.07648"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
+         id="tspan3043-4">region   : String</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL)"
        d="m 162.14286,403.07647 0,-117.82958"
@@ -360,6 +371,15 @@
          id="tspan5490"
          x="312.5"
          y="492.18362" /></text>
+    <rect
+       style="fill:#f0f0f0;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:1;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect5502"
+       width="159.09903"
+       height="74.498749"
+       x="284.05713"
+       y="475.04465"
+       rx="19.285715"
+       ry="0" />
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Monospace;-inkscape-font-specification:Monospace"
@@ -383,15 +403,6 @@
          x="291.94211"
          y="542.71228"
          id="tspan5500">date    : String</tspan></text>
-    <rect
-       style="fill:#000000;fill-opacity:0.14925376;stroke:#000000;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:1;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       id="rect5502"
-       width="159.09903"
-       height="74.498749"
-       x="284.05713"
-       y="475.04465"
-       rx="19.285715"
-       ry="0" />
     <path
        style="fill:none;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL)"
        d="m 667.04478,477.71993 61.11423,0 0,109.88293 -166.67517,0 0,-34.84425"
@@ -410,5 +421,34 @@
          x="643.7049"
          y="580.08466"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace">FRIEND_OF</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 464.32653,438.00447 202.05098,0"
+       id="path3757-7-1-6"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Monospace;-inkscape-font-specification:Monospace"
+       x="341.81696"
+       y="184.74197"
+       id="text3924"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3926"
+         x="341.81696"
+         y="184.74197"
+         style="font-size:18px">amazon-meta</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Monospace;-inkscape-font-specification:Monospace"
+       x="633.38562"
+       y="184.74197"
+       id="text3924-1"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3926-1"
+         x="633.38562"
+         y="184.74197"
+         style="font-size:18px">soc-Pokec</tspan></text>
   </g>
 </svg>

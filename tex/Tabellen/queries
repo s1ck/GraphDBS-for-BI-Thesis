@@ -186,10 +186,14 @@ RETURN id(user) as user_id, n, id(products) as product_id, intersect as friends,
 ORDER BY n DESC, intersect_cnt DESC, product_id
 LIMIT 25;
 
+! see https://groups.google.com/forum/?hl=de#!topic/neo4j/GmGaX5xKld0
+
 // with original ids
 START user=node(*)
-MATCH user:User-[:FRIEND_OF]-friends1:User<-[:REVIEWED_BY]-products:Product,
-products:Product-[:REVIEWED_BY]->friends2:User
+
+START user=node(141518)
+MATCH user-[:FRIEND_OF]-friends1<-[:REVIEWED_BY]-products,
+products-[:REVIEWED_BY]->friends2
 WITH user, products, collect(distinct friends1.__id__) as f1, collect(distinct friends2.__id__) as f2
 WITH user, products, filter(x in f1 : x in f2) as intersect
 WITH user, products, count(products) as n, intersect, length(intersect) as intersect_cnt
@@ -202,8 +206,23 @@ LIMIT 25;
 
 g = TitanFactory.open('../../master_thesis/benchmark/out/titan-graph_611_50_4_2');
 u=g.V('__id__', 'A3B4D5T8N1Q33Y').next();
+m = [:]; common_products = [] as Set;
 
-u.both('FRIEND_OF').dedup().inE('REVIEWED_BY').groupCount{it.outV.next().__id__}.cap
+// get common products
+u.both("FRIEND_OF").transform({ it.in("REVIEWED_BY").dedup() }).scatter().groupCount(m).filter({ m[it] >= 2 }).fill(common_products);
+
+// get the friends
+u.both("FRIEND_OF").as("friend").filter({ it.in("REVIEWED_BY").retain(common_products).count() >= 2 })
+
+// table
+common_products._().as("product").transform({ it.out("REVIEWED_BY").as("friend").both("FRIEND_OF").retain([u]).back("friend").toSet() }).as("friends").table().cap().next()
+
+// table without adam
+common_products._().as("product").transform({
+	it.out("REVIEWED_BY").filter({
+		it.in("REVIEWED_BY").retain(common_products)[0..<2].count() == 2
+	}).as("friend").both("FRIEND_OF").retain([u]).back("friend").toSet()
+}).as("friends").table().cap().next();
 
 /**
 * Query "Triangle Pattern 2" (triangle_pattern_2)
