@@ -21,11 +21,11 @@ Da reale Daten aus Geschäftsinformationssystemen nicht frei zur Verfügung stehen
 	\label{fig:testdata}
 \end{figure}
 
-Beide Datensätze verfügen über eine Klasse \texttt{User}. Deren Instanzen werden innerhalb von \texttt{amazon-meta} durch eine eindeutige Identität repräsentiert und besitzen keine Beziehungen zueinander. In \texttt{soc-Pokec} hingegen weisen die Instanzen eine Vielzahl von Attributen auf und sind durch gerichtete \texttt{FRIEND\_OF}-Beziehungen miteinander verbunden. Die Anzahl der Nutzer stimmt in beiden Netzwerken annähernd überein, \texttt{amazon-meta} weist ca. 1.5 Mio., \texttt{soc-Pokec} etwa 1.6 Mio. Nutzer auf. Im Rahmen der Vorverarbeitung der Datensätze wurden zunächst Pokec-Nutzer per Zufall auf Amazon-Nutzer abgebildet, anschließend wurde der durch die ausgewählten Knoten induzierte Teilgraph aus \texttt{soc-Pokec} extrahiert und mit den Amazon-Daten zu einem integrierten Graph zusammengeführt.\\
-Die Netzwerke enthalten neben den topologischen Informationen auch Nutzdaten, diese wurden bei Amazon vollständig aus den Rohdaten übernommen, bei Pokec hingegen wurde eine Auswahl von Attributen unterschiedlichen Datentyps getroffen. Die Rohdaten beider Netzwerke wurden in das Geoff-Format\footnote{\url{http://nigelsmall.com/geoff}} überführt, ein von Neo4j konzipiertes Format zur textuellen Repräsentation von Property-Graphen.
+Beide Datensätze verfügen über eine Klasse \texttt{User}. Deren Instanzen werden innerhalb von \texttt{amazon-meta} durch eine eindeutige Identität repräsentiert und besitzen keine Beziehungen zueinander. In \texttt{soc-Pokec} hingegen weisen die Instanzen eine Vielzahl von Attributen auf und sind durch gerichtete \texttt{FRIEND\_OF}-Beziehungen miteinander verbunden. Die Anzahl der Nutzer stimmt in beiden Datensätzen annähernd überein, \texttt{amazon-meta} weist ca. 1.5 Mio., \texttt{soc-Pokec} etwa 1.6 Mio. Nutzer auf. Im Rahmen der Vorverarbeitung wurden zunächst Pokec-Nutzer zufallsbasiert auf Amazon-Nutzer abgebildet, anschließend wurde der durch die ausgewählten Knoten induzierte Teilgraph aus \texttt{soc-Pokec} extrahiert und mit \texttt{amazon-meta} zu einem integrierten Graph zusammengeführt.\\
+Die Netzwerke enthalten neben den topologischen Informationen auch Nutzdaten, diese wurden für Gruppen, Produkte und Bewertungen vollständig aus den Rohdaten übernommen, für die Nutzer hingegen wurde eine Auswahl von Attributen unterschiedlichen Datentyps getroffen. Die Rohdaten beider Netzwerke wurden für die weitere Verwendung in das von Neo4j entwickelte textbasierte Geoff-Format\footnote{\url{http://nigelsmall.com/geoff}} überführt.
 
-Ein wichtiges Kriterium bei der Durchführung eines Benchmarks ist das Leistungsverhalten einer Anfrage auf Datensätzen unterschiedlicher Größe. Ein Defizit bei der Verwendung realer Datensätze ist hingegen deren festgelegte Größe. Mit dem Ziel, die Skalierbarkeit von Anfragen dennoch testen zu können, wurden zusammenhängende Teilgraphen aus dem integrierten Datensatz extrahiert. Die Teilgraphen sind bezüglich der Knoten aus \texttt{amazon-meta} induziert, in Bezug auf die enthaltenen Nutzerbeziehungen handelt es sich um einen einfachen Teilgraphen aus \texttt{soc-Pokec}. Der für die Extraktion entwickelte Algorithmus wird in Anhang \ref{anh:extraction} beschrieben.\\
-Dominguez-Sal et al. empfehlen die Angabe eines Skalierungsfaktors bei der Unterscheidung der Testgraphen, hierfür wurde die Anzahl der Produkte innerhalb des Teilgraphen gewählt.  Die Tabellen \ref{tab:datasets_nodes} und \ref{tab:datasets_edges} stellen den integrierten Graph (\texttt{orig}) und die extrahierten Teilgraphen hinsichtlich der Anzahl Knoten und Kanten gruppiert nach ihrer jeweiligen Klasse gegenüber. Zusätzlich wird für jeden Wert der Skalierungsfaktor in Bezug auf den Wert im nächstkleineren Graphen angeben. Ein Nachteil des gewählten Ansatzes ist, dass sich die topologischen Eigenschaften zwischen den verschiedenen, extrahierten Teilgraphen unterscheiden können, dies wird bei der nachfolgenden Bewertung berücksichtigt.
+Ein wichtiges Kriterium bei der Durchführung eines Benchmarks ist das Leistungsverhalten einer Anfrage bei steigendem Datenvolumen. Synthetische Datensätze lassen sich entsprechend erzeugen, reale Datensätze hingegen besitzen eine festgelegte Größe. Mit dem Ziel, die Skalierbarkeit von Anfragen dennoch untersuchen zu können, wurden zusammenhängende Teilgraphen aus dem integrierten Datensatz extrahiert. Die Teilgraphen sind bezüglich der Knoten aus \texttt{amazon-meta} induziert, dies gilt nicht für den Teilgraph bestehend aus Nutzerknoten. Der Algorithmus wird in Anhang \ref{anh:extraction} beschrieben.\\
+Dominguez-Sal et al. empfehlen die Angabe eines einzelnen Skalierungsfaktors, von welchem die Anzahl der erzeugten Knoten und Kanten abhängig ist, dies lässt sich jedoch bei der Verwendung realer Datensätze nicht umsetzen. Durch die Parameterwahl des Extraktionsalgorithmus wurde daher versucht, möglichst konstante Wachstumsfaktoren zu erreichen. Die Tabellen \ref{tab:datasets_nodes} und \ref{tab:datasets_edges} stellen den integrierten Graph (\texttt{orig}) und die extrahierten Teilgraphen hinsichtlich der Anzahl Knoten und Kanten gruppiert nach ihrer jeweiligen Klasse gegenüber. Zusätzlich wird für jeden Wert der Wachstumsfaktor in Bezug auf den Wert im nächstkleineren Graphen angeben. Ein Nachteil des gewählten Ansatzes ist, dass sich die topologischen Eigenschaften zwischen den verschiedenen, extrahierten Teilgraphen unterscheiden können, dies wird bei der nachfolgenden Bewertung berücksichtigt.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -83,60 +83,44 @@ Dominguez-Sal et al. empfehlen die Angabe eines Skalierungsfaktors bei der Unter
 \end{table}
 \renewcommand{\arraystretch}{1}
 
+\subsection{Operationen}
 
-% \textbf{\texttt{BELONGS\_TO}} & \textbf{\texttt{SIMILAR\_TO}} & \textbf{\texttt{REVIEWED\_BY}} & \textbf{\texttt{FRIEND\_OF}}
-
-\subsection{Anfragen}
-
-- Verweis auf Informationssysteme
-- rein topologische Anfragen sind nicht aussagekräftig 
-- stellvertretend für analytische, lesende Anfragen, die für das Forschungsvorhaben relevant sind
-	- lesende Anfragen
-	- lokaler Bezug
-- Syntax im Anhang \ref{anh:queries}
+Stellvertretend für Anfragen, die für die Analyse von Unternehmensdaten im Forschungsvorhaben relevant sind, wurden auf Grundlage des vorgestellten Schemas mehrere Anfragen definiert. Diese beinhalten jeweils einzelne oder mehrere der in Abschnitt \ref{subsec:graph_operations} vorgestellten graphenspezifischen Operationen. Es handelt sich um lokale Anfragen, die ausgehend von einem Knoten oder einer Knotenmenge einen Teil des Graphen analysieren. Dabei werden sowohl Topologie als auch Nutzdaten in die Operationen einbezogen. Auf rein topologische und globale Anfragen, wie zum Beispiel das Berechnen der k-Nachbarschaft ohne Berücksichtigung von Kantenbezeichnern oder das Auslesen aller Kanten, wurde bewusst verzichtet, da sie für das Forschungsvorhaben nicht relevant sind. In Tabelle \ref{tab:benchmark_queries} werden die Anfragen beschrieben und entsprechend der verwendeten Operationen kategorisiert.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
 	\centering
 	\begin{footnotesize}
-   	\begin{tabular}{|m{3cm}|>{\arraybackslash}m{12.5cm}|}
+   	\begin{tabular}{|m{2.3cm}|>{\arraybackslash}m{13.45cm}|}
 	\hline
-   	\textbf{Name} & \textbf{Beschreibung} \\
+   	\multicolumn{1}{|c|}{\textbf{Name}} & \multicolumn{1}{c|}{\textbf{Beschreibung (Kategorisierung der Operationen)}} \\
 	\hline
-	\textbf{\texttt{import}*} & Importieren der Datenbasis in das GDBMS unter Verwendung von Bulk-Load-Mechanismen. \\
-		  
-	\textbf{\texttt{random\_read}*} & Selektion zufällig ausgewählter Produkte und Nutzer sowie Auslesen ihrer Attribute. \\
-
-	\textbf{\texttt{sim\_products}} & Selektion der Titel aller ähnlichen Produkte mit Abstand $\leq 2$. Jeder Produkt soll einmalig in der Ergebnismenge sein. \\
-
-	%\textbf{\texttt{foaf\_products}} & Selektion der Produkte, die von Freunden (anderen Geschlechts) bewertet wurden und die ähnlich zu den eigenen, bewerteten Produkten sind. \\
-
-	\textbf{\texttt{foaf\_reviews}*} & Selektion der Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben gruppiert nach Produkttitel und sortiert nach durchschnittlicher Bewertung. \\
-
-	\textbf{\texttt{path\_all}*} & Berechnen aller Pfade der Länge $\leq 4$ zwischen einem Nutzer und einem Produkt unter Verwendung der Beziehungstypen \texttt{FRIEND\_OF}, \texttt{REVIEWED\_BY} und \texttt{SIMILAR\_TO}.\\
-
-	\textbf{\texttt{path\_shortest}*} & Berechnung des kürzesten Pfades zwischen zwei Nutzern unter Verwendung der Beziehungstypen \texttt{FRIEND\_OF}, \texttt{REVIEWED\_BY} und \texttt{SIMILAR\_TO}. Die maximale Pfadlänge beträgt $5$. \\
-
-	\textbf{\texttt{top\_regions}*} & Berechnen der Anzahl Bücher mit Salesrank $\leq 1000$ gruppiert nach Region.\\
-
-	\textbf{\texttt{triangle\_pattern}*} & Finden aller Dreicksbeziehungen folgender Art: Ein Produkt \texttt{p} besitzt eine Bewertung \texttt{r} die für $\geq 10$ Personen hilfreich war. Der bewertende Nutzer \texttt{u1} ist mit einem weiteren Nutzer \texttt{u2} befreundet, der älter als $20$ Jahre alt ist und ebenfalls das Produkt p bewertet hat. Es sollen \texttt{p}, \texttt{u1}, \texttt{u2} und \texttt{r} bestimmt werden. \\
-	
-	\textbf{\texttt{sim\_pattern}*} & Selektion alle Subgraphen in denen ausgehend von einem Nutzer die Freunde für $n$ übereinstimmende Produkte Reviews geschrieben haben.\\
-
-	%\textbf{\texttt{friendly\_regions}} & Berechnen der Top 10 Regionen mit den meisten Freundschaftsbeziehungen. \\
+	\hline
+	\textbf{\texttt{import}} & Importieren der Testgraphen in das jeweilige GDBMS unter Verwendung von Bulk-Load-Mechanismen. (Schreibperformance beim Bulk-Load)\\
+	\hline
+	\textbf{\texttt{random\_read}} & Zufällige Auswahl einzelner Produkte und Nutzer sowie vollständiges Auslesen ihrer Attribute. (Leseperformance beim Attributzugriff) \\
+	\hline
+	\textbf{\texttt{sim\_products}} & Zufällige Auswahl eines Produktes und anschließendes Traversieren  ähnlicher Produkte bis Abstand $\leq$ 2. Die Produkttitel sollen ausgegeben werden, jeder Titel soll einmalig in der Ergebnismenge sein. (Lokale Traversierung, Einschränkung) \\
+	\hline
+	\textbf{\texttt{foaf\_reviews}} & Zufällige Auswahl eines Nutzers und anschließende Selektion der Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben. Das Ergebnis soll nach Produkttitel gruppiert und nach durchschnittlicher Bewertung sortiert werden. (Lokale Traversierung, Einschränkung, Gruppierung, Aggregation)\\
+	\hline
+	\textbf{\texttt{path\_all}} & Zufällige Auswahl eines Nutzers und eines Produktes und anschließendes Berechnen aller Pfade der Länge $\leq 4$ zwischen beiden Knoten. Dabei sollen nur die Kantenbezeichner \texttt{FRIEND\_OF}, \texttt{REVIEWED\_BY} und \texttt{SIMILAR\_TO} berücksichtigt werden, die Kantenrichtung ist nicht relevant. Im Ergebnis sollen die Pfade gruppiert nach Länge und der jeweiligen Anzahl ausgegeben werden. (Erreichbarkeit, Einschränkung, Gruppierung, Aggregation) \\
+	\hline
+	\textbf{\texttt{path\_shortest}} & Zufällige Auswahl zweier Nutzer und anschließende Berechnung des kürzesten Pfades zwischen ihnen unter Berücksichtigung der Kantenbezeichner \texttt{FRIEND\_OF}, \texttt{REVIEWED\_BY} und \texttt{SIMILAR\_TO}. Die maximale Pfadlänge beträgt 5, Kantenrichtungen werden nicht berücksichtigt. Das Ergebnis soll das Attribut \texttt{\_\_id\_\_} der Knoten innerhalb des Pfades beinhalten. (Erreichbarkeit, Einschränkung) \\
+	\hline
+	\textbf{\texttt{top\_regions}} & Auswahl aller Produkte, welche der Gruppe \texttt{'Books'} angehören und das Prädikat \texttt{salesrank} $\leq$ 500\,000 erfüllen. Das Ergebnis soll nach dem Attribut \texttt{region} jener Nutzer gruppiert werden, welche die Produkte mit einem \texttt{rating} $\geq$ 3 bewertet haben und dies für $\geq$ 5 Nutzer hilfreich war. Darüber hinaus soll das Ergebnis nach der Anzahl der Produkte pro Region sortiert und die oberen 10 Regionen ausgegeben werden. (Lokale Traversierung, Aggregation, Gruppierung, Selektion) \\
+	\hline
+	\textbf{\texttt{sim\_pattern}} & Zufällige Auswahl eines Nutzers und anschließendes Bestimmen seiner Freunde, die für 2 übereinstimmende Produkte Reviews geschrieben haben. Das Ergebnis soll den Nutzer selbst, die Freunde des Nutzers, die Reviews und die übereinstimmende Produktmenge beinhalten. (Lokale exakte Mustersuche) \\
 	\hline
   	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption[Benchmark: Beschreibung der einzelnen Anfragen]{Name und Beschreibung der durchzuführenden Anfragen.}
+	\caption[Benchmark: Beschreibung der einzelnen Anfragen]{Namen und Beschreibungen der durchzuführenden Anfragen.}
 	\label{tab:benchmark_queries}
 \end{table}
 \renewcommand{\arraystretch}{1}
 
-- lokale Anfragen
-- grundlegende Anfragen wie das Auslesen von Knoten und Kanten wurden bereits in ... durchgeführt
-- Ziel: Ausführung komplexer analytischer Anfragen
-- ausschließlich lesende Anfragen
+Alle Anfragen wurden mittels Cypher und Gremlin realisiert und sind in Anhang \ref{anh:queries} aufgeführt. Eine Implementierung unter Verwendung der vorhandenen Java APIs wurde nicht durchgeführt, da zum Einen die Verwendung aktueller graphenspezifischer Anfragesprachen für die Formulierung komplexerer analytischer Anfragen in dieser Arbeit vordergründig ist und zum Anderen bereits in \cite{Ciglan:2012}, \cite{Gehrels:2013} und \cite{Holzschuher:2013:PGQ:2457317.2457351} gezeigt wurde, dass sich der Verzicht auf eine zusätzliche Anfrageverarbeitung positiv auf das Leistungsverhalten auswirkt. Eine Eignung der APIs für die Implementierung beliebiger analytischer Algorithmen und Operationen wurde den Systemen bereits im vorhergehenden Kapitel zugesprochen.
 
 \subsection{Testsystem}
 
@@ -164,6 +148,7 @@ siehe \cite{Dominguez-Sal2011}
 
 - Aufwärmphase ja / nein
 - Ausführungsreihenfolge
+- Ergebnismengen werden komplett ausgelesen (keine
 - Messen
 
 \section{Ergebnisse}

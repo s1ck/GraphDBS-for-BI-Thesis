@@ -1,15 +1,14 @@
 /**
 * Query "Import" (import)
 *
-* Importieren der Datenbasis in das GDBMS unter Verwendung von Bulk-
-* Load-Mechanismen.
+* Importieren der Testgraphen in das jeweilige GDBMS unter Verwendung von Bulk-* Load-Mechanismen.
 *
 */
 
 /**
 * Query "Random Nodes" (random_read)
 *
-* Selektion zufällig ausgewählter Produkte und Nutzer sowie Auslesen
+* Zufällige Auswahl einzelner Produkte und Nutzer sowie vollständiges Auslesen 
 * ihrer Attribute.
 * 
 * Lokal, Einfache Leseanfrage
@@ -25,8 +24,9 @@ g.v(42).map();
 /**
 * Query "Similar Products" (sim_products)
 *
-* Selektion der Titel aller ähnlichen Produkte mit Abstand <= 2. Jeder
-* Titel soll einmalig in der Ergebnismenge sein.
+* Zufällige Auswahl eines Produktes und anschließendes Traversieren  ähnlicher 
+* Produkte bis Abstand <= 2. Die Produkttitel sollen ausgegeben werden, 
+* jeder Titel soll einmalig in der Ergebnismenge sein.
 * 
 * Lokal, Traversierung
 *
@@ -39,42 +39,12 @@ START n=node(22) MATCH n-[:SIMILAR_TO*..2]-s RETURN DISTINCT s.title AS title;
 p.both('SIMILAR_TO').loop(1){it.loops <= 2}.dedup().title
 
 /**
-* Query "FOAF-Products" (foaf_products)
-*
-* Selektion der Produkte, die von Freunden (anderen Geschlechts) bewertet 
-* wurden und die ähnlich zu den eigenen, bewerteten Produkten sind.
-*
-* 
-* Lokal, Traviersierung unter Berücksichtigung von Attributen
-*
-*/
-
-// Cypher
-// trifft auf 4 (100_4_2) Nutzer zu:
-// {'A3QFLHQ6P91TX2', 'A1J1QS7I60O018', 'AFP8L7OE57R3K', 'A202FGBQHO5638'}
-// {40050, 43113, 97676, 128304}
-
-START a=node(40050)
-MATCH a-[:FRIEND_OF*..2]-b<-[:REVIEWED_BY]-p-[:REVIEWED_BY]->a
-WHERE b.gender <> a.gender
-RETURN DISTINCT a; 
-
-// trifft auf 18 (100_4_2) Nutzer zu:
-START a=node(40050)
-MATCH a-[:FRIEND_OF*..2]-b<-[:REVIEWED_BY]-p-[:REVIEWED_BY]->a
-RETURN DISTINCT a;
-
-* Gremlin
-a = g.v(160200);
-a.both('FRIEND_OF').loop(1){it.loops <=2}.in('REVIEWED_BY').out('REVIEWED_BY').retain([a]).dedup();
-
-
-/**
 * Query "FOAF-Reviews" (foaf_reviews)
 *
-* Selektion der Produkte, für die Freunde oder deren Freunde ein Review
-* geschrieben haben gruppiert nach Titel und sortiert nach 
-* durchschnittlicher Bewertung.
+* Zufällige Auswahl eines Nutzers und anschließende Selektion der Produkte, 
+* für die Freunde oder deren Freunde ein Review geschrieben haben. Das 
+* Ergebnis soll nach Produkttitel gruppiert und nach durchschnittlicher 
+* Bewertung sortiert werden.
 * 
 * Lokal, Traversierung, Gruppierung, Aggregation
 *
@@ -92,9 +62,12 @@ a.both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY').groupBy{it.outV.next().
 /**
 * Query "All Paths" (path_all)
 *
-* Berechnen der Pfade der Länge <= 4 zwischen einem Nutzer und einem 
-* Produkt unter Verwendung der Beziehungstypen FRIEND_OF, REVIEWED_BY
-* und SIMILAR_TO. Es wird die Anzahl der Pfade gruppiert nach Länge ausgegeben.
+* Zufällige Auswahl eines Nutzers und eines Produktes und anschließendes 
+* Berechnen aller Pfade der Länge <= 4 zwischen beiden Knoten. Dabei 
+* sollen nur die Kantenbezeichner FRIEND_OF, REVIEWED_BY 
+* und SIMILAR_TO berücksichtigt werden, die Kantenrichtung ist nicht 
+* relevant. Im Ergebnis sollen die Pfade gruppiert nach Länge und der 
+* jeweiligen Anzahl ausgegeben werden.
 *
 * Lokal, Erreichbarkeit
 *
@@ -115,10 +88,12 @@ a.both('FRIEND_OF','REVIEWED_BY','SIMILAR_TO').loop(1){it.object != b && it.loop
 /**
 * Query "Shortest Path" (path_shortest)
 *
-* Berechnung des kürzesten Pfades zwischen zwei Nutzern unter Verwendung
-* der Beziehungstypen FRIEND_OF, REVIEWED_BY und SIMILAR_TO. Die maximale
-* Pfadlänge beträgt 5. Es werden die __id__ Attribute der Knoten innerhalb der
-* Pfadinstanzen ausgegeben.
+* Zufällige Auswahl zweier Nutzer und anschließende Berechnung des kürzesten 
+* Pfades zwischen ihnen unter Berücksichtigung der Kantenbezeichner 
+* FRIEND_OF, REVIEWED_BY und SIMILAR_TO. Die 
+* maximale Pfadlänge beträgt 5, Kantenrichtungen werden nicht berücksichtigt. 
+* Das Ergebnis soll das Attribut __id__ der Knoten innerhalb des 
+* Pfades beinhalten.
 *
 * Lokal, Erreichbarkeit
 *
@@ -142,8 +117,13 @@ a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).
 /**
 * Query "Reading Regions" (top_regions)
 *
-* Berechnen der Anzahl Bücher mit Salesrank < 500000 gruppiert nach Region,
-* absteigend sortiert nach Anzahl und limitiert auf 10 Ergebnisse.
+* Auswahl aller Produkte, welche der Gruppe 'Books' angehören und das 
+* Prädikat salesrank <= 500000 erfüllen. Das Ergebnis soll nach 
+* dem Attribut region jener Nutzer gruppiert werden, welche die 
+* Produkte mit einem rating >= 3 bewertet haben und dies für 
+* >= 5 Nutzer hilfreich war. Darüber hinaus soll das Ergebnis nach der 
+* Anzahl der Produkte pro Region sortiert und die oberen 10 Regionen 
+* ausgegeben werden.
 *
 * Lokal, Traversierung, Aggregation / Gruppierung, Attributeinschränkung
 *
@@ -164,8 +144,10 @@ group.in('BELONGS_TO').filter{it.salesrank < 500000}.out('REVIEWED_BY').groupCou
 /**
 * Query "Similar Reviews Pattern" (sim_pattern)
 *
-* Selektion alle Subgraphen in denen ausgehend von einem Nutzer die Freunde für n > 0
-* übereinstimmende Produkte Reviews geschrieben haben.
+* Zufällige Auswahl eines Nutzers und anschließendes Bestimmen seiner Freunde, 
+* die für 2 übereinstimmende Produkte Reviews geschrieben haben. Das Ergebnis 
+* soll den Nutzer selbst, die Freunde des Nutzers, die Reviews und die 
+* übereinstimmende Produktmenge beinhalten.
 *
 * Global, Mustersuche (Dreiecke) mit Bindung an Datenbasis und
 * Attributeinschränkung
