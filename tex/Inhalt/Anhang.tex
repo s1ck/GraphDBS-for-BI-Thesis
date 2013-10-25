@@ -49,27 +49,6 @@
 \subsubsection{CRUD-Operationen via Core API}
 \label{anh:neo4j_native_api}
 
-\lstset{language=Java, caption={Erzeugen eines Graphen unter Verwendung der nativen API.}, label=list:neo4j_native_api, escapeinside={(*@}{@*)}}
-\begin{lstlisting}
-// queue for the upload logs
-channel.queue_declare(queue="upload_logs",
-        durable=True)
-
-// queue for the critical logs
-channel.queue_declare(queue="critical_logs",
-        durable=True)
- 
-// binding for all messages related to the p_upload component
-channel.queue_bind(exchange="logging",
-        queue="upload_logs",
-        routing_key='*.p_upload')(*@ \label{src:bind1} @*)
-
-// binding for all critical log messages
-channel.queue_bind(exchange="logging",
-        queue="critical_logs",
-        routing_key='critical.*')(*@ \label{src:bind2} @*)
-\end{lstlisting}
-
 \subsubsection{Traversal Framework}
 \label{anh:neo4j_traversal_framework}
 

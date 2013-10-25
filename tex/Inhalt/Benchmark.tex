@@ -128,32 +128,20 @@ Die verwendete Testumgebung setzt sich wie folgt zusammen:
 
 \begin{itemize}
 	\item Intel i7-2620M
-	\item 8 GB DDR-3
+	\item 8 GB DDR-3 RAM
 	\item Crucial M4 SSD
 	\item Xubuntu 13.10 64-Bit (Kernel 3.11.0-12-generic)
-	\item Java(TM) SE Runtime Environment (build 1.7.0\_45-b18) 
+	\item Java(TM) SE Runtime Environment (build 1.7.0\_45-b18)
 \end{itemize}
 
 \paragraph*{Neo4j}
 
-- eingebettet, zentral
-- Cypher und Gremlin
-- Verwendung von zwei Versionen: 1.9.4 (Gremlin) und 2.0.0-M06 (Cypher)
-- Gremlin für die bessere Vergleichbarkeit mit Titan
+Das GDBMS wird in einer zentralen, eingebetteten Konfiguration verwendet, Anfragen werden sowohl in Cypher als auch in Gremlin ausgeführt. Für Cypher-Anfragen wird die im vorhergehenden Kapitel betrachtete Version 2.0.0-M04 eingesetzt. Die Berücksichtigung von Gremlin ermöglicht eine bessere Vergleichbarkeit mit Titan, macht es jedoch erforderlich, für die Durchführung auf Version 1.9.4 des GDBMS zurückzugreifen, da Blueprints 2.4.0 und somit auch Gremlin bisher nicht kompatibel zu den Neuerungen in Neo4j 2.0 sind.  Die Ausführung von Cypher erfolgt unter Verwendung der \texttt{ExecutionEngine}\footnote{\url{http://docs.neo4j.org/chunked/2.0.0-M04/tutorials-cypher-java.html}}, für Gremlin wird die in der Dokumentation\footnote{\url{https://github.com/tinkerpop/gremlin/wiki/Using-Gremlin-through-Java\#using-jsr-223-gremlingroovyscriptengine}} beschriebene \texttt{GremlinGroovyScriptEngine}  genutzt.
 
-- Indexstrukturen
-	- Primärschlüsselindex auf \texttt{\_\_id\_\_}
+Für den Bulk-Load der Testgraphen wird im \texttt{import}-Benchmark der von Neo4j zur Verfügung gestellte \texttt{BatchInserter} entsprechend der Dokumentation\footnote{\url{http://docs.neo4j.org/chunked/2.0.0-M04/batchinsert.html}} eingesetzt. Während des Import erfolgt das Aktualisieren eines zusätzlichen Lucene-Index auf dem Knotenattribut \texttt{\_\_id\_\_}. Bei der Verwendung von Neo4j 2.0.0-M04 werden darüber hinaus Knotenbezeichner entsprechend der Knotenklasse gesetzt, diese können folglich nur in Cypher-Anfragen berücksichtigt werden.
 
-- Verwendung von Knotenbezeichnern in Version 2.0.0-M06
-
-- Bulk-Load-Einstellungen
-	
-
-- Caching-Einstellungen
-- Kernel-Einstellungen
-- JVM Einstellungen
-	- Für die Durchführung der Benchmarks wurde die JVM-Heap-Größe auf 6 GB eingestellt.
-
+Die Kernel-Einstellungen\footnote{\url{http://docs.neo4j.org/chunked/milestone/kernel-configuration.html}} des GDBMS werden unverändert übernommen. Die Größe des Heap-Speichers der JVM wird entsprechend den Empfehlungen\footnote{\url{http://docs.neo4j.org/chunked/2.0.0-M04/configuration-jvm.html}} auf 4 GB festgelegt, eine Änderung des Stack-Speichers erfolgt nicht. Darüber hinaus wird der Concurrent Mark and Sweep Compactor Garbage Collector\footnote{\url{http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html\#BehavioralOptions}} verwendet.\\
+Die Einstellungen des Object-Cache bleiben unverändert, es wird demnach die in Abschnitt \ref{subsec:neo4j_persistency} beschriebene Standard-Implementierung genutzt. Der Filesystem-Cache wurde entsprechend der Größe der Stores angepasst. Um deren Speicherbedarf zu ermitteln, wurde der größte Testgraph (\texttt{p\_10K}) importiert und die Größe der Stores im Dateisystem bestimmt. Für den Knoten-Store sind dies 20 MB, für den Kanten-Store 150 MB.\footnote{Dieser Wert lässt sich ebenfalls aus der Datensatzgröße von 14 bzw. 33 Byte und der Anzahl Knoten bzw. Kanten in Tabelle \ref{tab:datasets_nodes} bzw. \ref{tab:datasets_edges} berechnen.} Interessant ist, dass trotz der Verwendung von String- und Array-Properties der Property-Store für primitive Datentypen den größten Speicherbedarf aufweist.\footnote{Für primitive Datentypen werden 150 MB, für Strings 50 MB und für Arrays 10 MB beansprucht.} Neo4j verwendet für Strings und Arrays zusätzliche Kompressionsmethoden\footnote{\url{http://docs.neo4j.org/chunked/2.0.0-M04/short-strings.html} und \url{http://docs.neo4j.org/chunked/2.0.0-M04/short-arrays.html}} und fügt, wenn möglich, die entsprechenden Werte in den Property-Store für primitive Datentypen ein und vermeidet damit eine zusätzliche Indirektion beim Lese- und Schreibzugriff. Die Anpassung des Filesystem-Cache ermöglicht es dem GDBMS die komplette Datenbasis im Hauptspeicher vorhalten zu können.
 
 \paragraph*{Titan}
 
@@ -164,14 +152,17 @@ Die verwendete Testumgebung setzt sich wie folgt zusammen:
 
 \subsection{Methodik}
 
-- Übereinstimmung der Ergebnismengen wurde manuell überprüft
+
 
 siehe \cite{Dominguez-Sal2011}
 
+- sequentielle Ausführung der Anfragen
+- Übereinstimmung der Ergebnismengen wurde manuell überprüft
 - Aufwärmphase ja / nein
 - Ausführungsreihenfolge
 - random seed statisch
-- Ergebnismengen werden komplett ausgelesen (keine
+- Caching von Anfragen -> erste 10 Messungen werden nicht berücksichtigt
+- Ergebnismengen werden komplett ausgelesen
 - Messen
 
 \section{Ergebnisse}
