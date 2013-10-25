@@ -122,18 +122,38 @@ Stellvertretend für Anfragen, die für die Analyse von Unternehmensdaten im Forsc
 
 Alle Anfragen wurden mittels Cypher und Gremlin realisiert und sind in Anhang \ref{anh:queries} aufgeführt. Eine Implementierung unter Verwendung der vorhandenen Java APIs wurde nicht durchgeführt, da zum Einen die Verwendung aktueller graphenspezifischer Anfragesprachen für die Formulierung komplexerer analytischer Anfragen in dieser Arbeit vordergründig ist und zum Anderen bereits in \cite{Ciglan:2012}, \cite{Gehrels:2013} und \cite{Holzschuher:2013:PGQ:2457317.2457351} gezeigt wurde, dass sich der Verzicht auf eine zusätzliche Anfrageverarbeitung positiv auf das Leistungsverhalten auswirkt. Eine Eignung der APIs für die Implementierung beliebiger analytischer Algorithmen und Operationen wurde den Systemen bereits im vorhergehenden Kapitel zugesprochen.
 
-\subsection{Testsystem}
-
 \subsection{Systemkonfiguration}
 
-- Indexstrukturen
-- Typen / Klassen / Label
+Die verwendete Testumgebung setzt sich wie folgt zusammen:
+
+\begin{itemize}
+	\item Intel i7-2620M
+	\item 8 GB DDR-3
+	\item Crucial M4 SSD
+	\item Xubuntu 13.10 64-Bit (Kernel 3.11.0-12-generic)
+	\item Java(TM) SE Runtime Environment (build 1.7.0\_45-b18) 
+\end{itemize}
 
 \paragraph*{Neo4j}
 
-- Lucene Index für id
-- eingebettet
-- Gremlin + Cypher
+- eingebettet, zentral
+- Cypher und Gremlin
+- Verwendung von zwei Versionen: 1.9.4 (Gremlin) und 2.0.0-M06 (Cypher)
+- Gremlin für die bessere Vergleichbarkeit mit Titan
+
+- Indexstrukturen
+	- Primärschlüsselindex auf \texttt{\_\_id\_\_}
+
+- Verwendung von Knotenbezeichnern in Version 2.0.0-M06
+
+- Bulk-Load-Einstellungen
+	
+
+- Caching-Einstellungen
+- Kernel-Einstellungen
+- JVM Einstellungen
+	- Für die Durchführung der Benchmarks wurde die JVM-Heap-Größe auf 6 GB eingestellt.
+
 
 \paragraph*{Titan}
 
@@ -144,10 +164,13 @@ Alle Anfragen wurden mittels Cypher und Gremlin realisiert und sind in Anhang \r
 
 \subsection{Methodik}
 
+- Übereinstimmung der Ergebnismengen wurde manuell überprüft
+
 siehe \cite{Dominguez-Sal2011}
 
 - Aufwärmphase ja / nein
 - Ausführungsreihenfolge
+- random seed statisch
 - Ergebnismengen werden komplett ausgelesen (keine
 - Messen
 

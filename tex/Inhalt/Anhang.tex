@@ -97,6 +97,148 @@ channel.queue_bind(exchange="logging",
 \subsection{Extraktion}
 \label{anh:extraction}
 
-\subsection{Anfragen}
+\subsection{Operationen}
 \label{anh:queries}
+
+% random read
+\subsubsection*{\texttt{random\_read}}
+
+\lstset{language=Java, caption={Operation \texttt{random\_read} in Cypher}, label=list:random_read_cypher}
+\begin{lstlisting}
+START a=node(42) RETURN *;
+\end{lstlisting}
+
+\lstset{language=Java, caption={Operation \texttt{random\_read} in Gremlin}, label=list:random_read_gremlin}
+\begin{lstlisting}
+g.v(42).map();
+\end{lstlisting}
+
+% sim products
+\subsubsection*{\texttt{sim\_products}}
+
+\lstset{language=Java, caption={Operation \texttt{sim\_products} in Cypher}, label=list:sim_products_cypher}
+\begin{lstlisting}
+START n=node(42) 
+MATCH n-[:SIMILAR_TO*..2]-s 
+RETURN DISTINCT s.title AS title;
+\end{lstlisting}
+
+\lstset{language=Java, caption={Operation \texttt{sim\_products} in Gremlin}, label=list:sim_products_gremlin}
+\begin{lstlisting}
+g.v(42).both('SIMILAR_TO').loop(1){it.loops <= 2}.dedup().title;
+\end{lstlisting}
+
+% foaf reviews
+\subsubsection*{\texttt{foaf\_reviews}}
+
+\lstset{language=Java, caption={Operation \texttt{foaf\_reviews} in Cypher}, label=list:foaf_reviews_cypher}
+\begin{lstlisting}
+START n=node(42)
+MATCH n-[:FRIEND_OF*1..2]-()<-[r:REVIEWED_BY]-p
+RETURN p.title AS title, avg(r.rating) AS weight
+ORDER BY weight DESC;
+\end{lstlisting}
+
+\lstset{language=Java, caption={Operation \texttt{foaf\_reviews} in Gremlin}, label=list:foaf_reviews_gremlin}
+\begin{lstlisting}
+g.v(42).both('FRIEND_OF').both('FRIEND_OF').inE('REVIEWED_BY')
+	.groupBy{it.outV.next().title}{it.rating}{it.sum() * 1.0 / it.size()}
+	.cap.orderMap(T.decr);
+\end{lstlisting}
+
+% path all
+\subsubsection*{\texttt{path\_all}}
+
+\lstset{language=Java, caption={Operation \texttt{path\_all} in Cypher}, label=list:path_all_cypher}
+\begin{lstlisting}
+START a=node(42), b=node(23) 
+MATCH p=a-[:FRIEND_OF|SIMILAR_TO|REVIEWED_BY*..4]-b 
+RETURN length(p) AS length, count(p) AS cnt;
+\end{lstlisting}
+
+\lstset{language=Java, caption={Operation \texttt{path\_all} in Gremlin}, label=list:path_all_gremlin}
+\begin{lstlisting}
+a = g.v(42);
+b = g.v(23);
+visited=[a];
+a.both('FRIEND_OF','REVIEWED_BY','SIMILAR_TO')
+	.loop(1){it.object != b && it.loops < 5}.retain([b])
+	.path._().transform{it.size() - 1}.groupCount().cap();
+\end{lstlisting}
+
+% path shortest
+\subsubsection*{\texttt{path\_shortest}}
+
+\lstset{language=Java, caption={Operation \texttt{path\_shortest} in Cypher}, label=list:path_shortest_cypher}
+\begin{lstlisting}
+START a=node(42), b=node(23)
+MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..5]-b)
+RETURN EXTRACT(n in NODES(p): n.__id__) AS path;
+\end{lstlisting}
+
+\lstset{language=Java, caption={Operation \texttt{path\_shortest} in Gremlin}, label=list:path_shortest_gremlin}
+\begin{lstlisting}
+a = g.v(42);
+b = g.v(23);
+visited=[a];
+a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO')
+	.except(visited).store(visited)
+	.loop(3){it.object != b && it.loops < 6}.retain([b])
+	.path{it.__id__};
+\end{lstlisting}
+
+% top regions
+\subsubsection*{\texttt{top\_regions}}
+
+\lstset{language=Java, caption={Operation \texttt{top\_region} in Cypher}, label=list:top_region_cypher}
+\begin{lstlisting}
+START g=node:nodes('__id__':'g_0')
+MATCH g<-[:BELONGS_TO]-p-[r:REVIEWED_BY]->u
+WHERE p.salesrank < 500000
+RETURN u.region AS region, count(u) AS cnt
+ORDER BY cnt DESC
+LIMIT 10;
+\end{lstlisting}
+
+\lstset{language=Java, caption={Operation \texttt{top\_region} in Gremlin}, label=list:top_region_gremlin}
+\begin{lstlisting}
+group = g.V('__id__', 'g_0').next();
+group.in('BELONGS_TO').filter{it.salesrank < 500000}
+	.out('REVIEWED_BY').groupCount{it.region}.cap()
+	.orderMap(T.decr)[0..9];
+\end{lstlisting}
+
+% sim pattern
+\subsubsection*{\texttt{sim\_pattern}}
+
+\lstset{language=Java, caption={Operation \texttt{sim\_pattern} in Cypher}, label=list:sim_pattern_cypher}
+\begin{lstlisting}
+START user=node(42)
+MATCH user:User-[:FRIEND_OF]-friends1:User<-[:REVIEWED_BY]-products:Product,
+products:Product-[:REVIEWED_BY]->friends2:User
+WITH user, products, collect(distinct id(friends1)) as f1, collect(distinct id(friends2)) as f2
+WITH user, products, filter(x in f1 : x in f2) as intersect
+WITH user, products, count(products) as n, intersect, length(intersect) as intersect_cnt
+WHERE intersect_cnt > 1 and n > 0
+RETURN id(user) as user_id, n, id(products) as product_id, intersect as friends, intersect_cnt
+ORDER BY n DESC, intersect_cnt DESC, product_id
+LIMIT 25;
+\end{lstlisting}
+
+\lstset{language=Java, caption={Operation \texttt{sim\_pattern} in Gremlin}, label=list:sim_pattern_gremlin}
+\begin{lstlisting}
+u = g.v(42);
+m = [:]; common_products = [] as Set;
+u.both("FRIEND_OF").transform({ it.in("REVIEWED_BY").dedup() })
+	.scatter().groupCount(m).filter({ m[it] >= 2 }).fill(common_products);
+u.both("FRIEND_OF").as("friend")
+	.filter({ it.in("REVIEWED_BY").retain(common_products).count() >= 2 })
+common_products._().as("product").transform({
+	it.out("REVIEWED_BY").filter({
+		it.in("REVIEWED_BY").retain(common_products)[0..<2].count() == 2
+	}).as("friend").both("FRIEND_OF").retain([u]).back("friend").toSet()
+}).as("friends").table().cap().next();
+\end{lstlisting}
+
+
 
