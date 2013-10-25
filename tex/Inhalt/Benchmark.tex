@@ -145,10 +145,12 @@ Die Einstellungen des Object-Cache bleiben unverändert, es wird demnach die in A
 
 \paragraph*{Titan}
 
-- Index für id
-- eingebettet
-- Gremlin
-- mit und ohne Typen
+Das GDBMS wird ebenfalls in einer zentralen, eingebetteten Konfiguration verwendet. Anfragen werden ausschließlich in Gremlin ausgeführt, dies erfolgt wie bei Neo4j unter Verwendung der \texttt{GremlinGroovyScriptEngine}. Das verwendete Speichersystem ist BerkeleyDB Java Edition, die Konfiguration erfolgt ausschließlich mit den von Titan zur Verfügung gestellten Parametern.
+
+Für den Import der Testgraphen wird der im TinkerPop-Projekt verfügbare \texttt{BatchGraph} verwendet, eine Wrapper-Klasse, die Bulk-Load-Funktionalität für blueprints-kompatible GDBMS zur Verfügung stellt.\footnote{\url{https://github.com/tinkerpop/blueprints/wiki/Batch-Implementation}} Die Verwendung von \texttt{BatchGraph} wird von Aurelius für Graphen mit bis zu 100 Mio. Kanten empfohlen. Darüber hinaus wurde der Konfigurationsparameter \texttt{storage.batch-loading} auf \texttt{true} gesetzt, was die internen Konsistenzmechanismen von Titan deaktiviert und den Import beschleunigen soll.\\
+Vor dem Datenimport werden Instanzen von \texttt{TitanKey} bzw. \texttt{TitanLabel} erzeugt. Für Instanzen von \texttt{TitanKey} werden Attributschlüssel, Datentyp des Attributwertes und Eindeutigkeit an der Knoteninstanz festgelegt, dem \texttt{\_\_id\_\_}-Attribut wird wie bei Neo4j ein Index zugeordnet. Die Instanzen von \texttt{TitanLabel} werden entsprechend den vier Beziehungsarten bezeichnet, \texttt{BELONGS\_TO}-Kanten werden darüber hinaus als $n:1$-Beziehung zwischen Produkt und Gruppe deklariert. Die Durchführung erfolgt sowohl mit manueller als auch mit systemseitiger Typdefinition. Damit soll untersucht werden, inwieweit sich die Festlegung der Datentypen auf die Leistungsfähigkeit des GDBMS auswirkt.
+
+Entsprechend der Empfehlung von Aurelius werden BerkeleyDB 80\% des zur Verfügung stehenden Heap-Speichers zur Verfügung gestellt.\footnote{\url{https://github.com/thinkaurelius/titan/wiki/Using-BerkeleyDB}} Dieser wird wie bei Neo4j auf insgesamt 4 GB festgelegt. Oracle empfiehlt für BerkeleyDB ebenfalls die Verwendung des Concurrent Mark and Sweep Compactor Garbage Collector, welcher folglich bei der Durchführung aktiviert ist.\footnote{\url{http://www.oracle.com/technetwork/database/berkeleydb/je-faq-096044.html\#WhatJVMparametersshouldIconsiderwhentuninganapplicationwithalargecachesize}}
 
 \subsection{Methodik}
 
