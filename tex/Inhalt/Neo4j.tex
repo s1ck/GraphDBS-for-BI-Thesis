@@ -12,11 +12,11 @@ Neo4j implementiert das Property-Graph-Modell, dieses wird in der aktuellen Vers
 
 Beziehungen zwischen Knoten werden durch Kanten beschrieben. In Neo4j sind diese grundsätzlich gerichtet, besitzen also immer Start- und Zielknoten, Schleifen\footnote{Eine Kante ist eine Schleife, wenn Start- und Endknoten identisch sind\cite{DBLP:books/daglib/0030488}.} sind ebenfalls zulässig. Kanten lassen sich in beiden Richtungen traversieren, d.h. eine bidirektionale Beziehung erfordert nicht zwingend die Definition von zwei Kanten unterschiedlicher Richtung. Eine Kante besitzt immer ein Label, welches zusammen mit der Richtung der Kante deren Semantik festlegt. Genau wie Knoten besitzen auch Kanten eine eindeutige Identität in Form einer 64-Bit-Ganzzahl, die vom GDBMS verwaltet wird und nicht durch die Anwendung geändert werden kann. Die Identität einer Kante ermöglicht die Definition paralleler Kanten mit identischem Label.
 
-Knoten und Kanten lassen sich in Neo4j mit optionalen Attributen in Form von Schlüssel-Wert-Paaren versehen, diese werden in Neo4j als Properties bezeichnet. Property-Schlüssel sind vom Typ \texttt{String}, zulässige  Property-Werte müssen Instanzen eines primitiven Java-Datentypen, zum Beispiel \texttt{int} oder \texttt{float}, sein. Arrays von primitiven Datentypen sind ebenfalls zulässige Werte. Weist eine Instanz keinen Wert auf, so wird dies durch das Weglassen des entsprechenden Schlüssel-Wert-Paares definiert und nicht durch die Verwendung von \texttt{null} als Wert.
+Knoten und Kanten lassen sich in Neo4j mit optionalen Attributen in Form von Schlüssel-Wert-Paaren versehen, diese werden in Neo4j als Properties bezeichnet. Property-Schlüssel sind vom Typ \texttt{String}, zulässige  Property-Werte müssen Instanzen eines primitiven Java-Datentypen, zum Beispiel \texttt{int} oder \texttt{float}, sein. Arrays von primitiven Datentypen sind ebenfalls zulässige Werte. Weist eine Instanz keinen Wert auf, so wird dies durch das Weglassen des entsprechenden Schlüssel-Wert-Paares definiert und nicht durch die Verwendung von \texttt{null} als Wert. Property-Schlüssel können nicht mehrfach an einer Knoten- bzw. Kanteninstanz vergeben werden.
 
 Zur Gewährleistung der Datenintegrität hält das Modell verschiedene Mechanismen vor: Eine Kante kann allein zwischen existierenden Knoten erzeugt werden, das Löschen eines Knotens erfordert das vorherige Löschen aller inzidenten Kanten des Knotens. Diese Einschränkung kann als Analogie zur referentiellen Integrität\cite{vossen2008datenmodelle} in relationalen Datenbanksystemen verstanden werden. Neo4j unterstützt darüber hinaus auch attributbezogene Integritätsbedingungen. Die Festlegung einer eindeutigen Identität durch das GDBMS entspricht einer Primärschlüssel-Definition,
 %, die Definition eines Datentyps für Attributwerte stellt eine Wertebereichs-Einschränkung dar
-darüber hinaus unterstützt Neo4j die Definition einer \texttt{UNIQUE}-Bedingung für Knotenattribute. Letztere legt fest, dass ein Wert in der Menge aller Werte eines Schlüssels einzigartig sein muss. Diese Bedingung lässt sich nur in Verbindung mit Knoten-Labels definieren.
+darüber hinaus unterstützt Neo4j die Definition einer \texttt{UNIQUE}-Bedingung für Knotenattribute. Letztere legt fest, dass ein Wert in der Menge aller Werte eines Schlüssels einzigartig sein muss. Diese Bedingung lässt sich nur in Verbindung mit Knoten-Labels definieren und wird durch einen zusätzlichen Index realisiert.
 
 Neo4j verwaltet exakt eine Graphdatenbank, alle Knoten und Kanten sind dieser Datenbank zugeordnet. Eine logische Partitionierung der Knotenmenge ist durch Labels oder dedizierte Attribute möglich, für den Fall, dass auch die Kantenmenge partitioniert werden soll, ist dies ausschließlich über Attribute möglich. 
 
@@ -82,7 +82,7 @@ In der optionalen \texttt{START}-Klausel werden Bezeichner festgelegt und an Kno
 
 \texttt{START a=node:Employees(name=\string"Alice\string")} 
 
-zur Suche nach einem Knoten mit der Eigenschaft \texttt{name=\string"Alice\string"} innerhalb des Index\linebreak \texttt{Employees}. Existiert eine entsprechende Instanz, erfolgt die Bindung an den Bezeichner \texttt{a}. Trifft die Bedingung auf mehrere Instanzen zu, so verweist \texttt{a} auf die entsprechende Menge. Alle gebundenen Bezeichner können in den nachfolgenden Teilen der Anfrage verwendet werden. Zulässige Datentypen für Bezeichner und Variablen sind generell Knoten, Kanten, Pfade und Literale bzw. deren Mengen.
+zur Suche nach einem Knoten mit der Eigenschaft \texttt{name=\string"Alice\string"} innerhalb des Index\linebreak \texttt{Employees}, die Ergebnismenge wird an den Bezeichner \texttt{a} gebunden. Alle Bezeichner können in den nachfolgenden Teilen der Anfrage verwendet werden. Zulässige Datentypen für Bezeichner und Variablen sind generell Knoten, Kanten, Pfade und Literale bzw. deren Mengen.
 
 \begin{figure}[h] 
 	\centering
@@ -106,9 +106,7 @@ Steht die \texttt{MATCH}-Klausel am Beginn der Anfrage, dann ist in diesem Absch
 	 
 Die \texttt{WHERE}-Klausel entspricht der Selektion in der relationalen Algebra. Sie ist optional und ermöglicht die Filterung von Ergebnistupeln mittels Prädikaten. Cypher bietet eine Vielzahl mathematischer, vergleichender und boolescher Operatoren für die Definition und Verknüpfung von Prädikaten an. Soll zum Beispiel im Mustergraphen das Attribut \texttt{age} der an die Variable \texttt{b} gebundenen Instanzen eingeschränkt werden, so ist dies mit folgender Anweisung möglich:
 
-\texttt{WHERE b.age? > 23 AND b.age? < 42}
-
-Da Properties keinem Schema unterliegen, kann mittels \texttt{?}-Operator geprüft werden, ob die entsprechende Instanz diesen Attributschlüssel besitzt. Ist dies nicht der Fall, wird \texttt{True} zurückgegeben.
+\texttt{WHERE b.age > 23 AND b.age < 42}
 
 Die ebenfalls optionale \texttt{WITH}-Klausel besitzt kein Pendant in der relationalen Algebra, sondern entspricht der Funktionsweise des Pipe-Operators der Linux-Shell. Mit dessen Hilfe lassen sich Operationen verketten: Die Ausgabe einer Operation kann als Eingabe der Folgeoperation verwendet werden. Dies ist in Cypher genau dann erforderlich, wenn Aggregate innerhalb einer \texttt{WHERE}-Bedingung verwendet werden sollen oder wenn lesende und schreibende Anfragen verkettet ausgeführt und die Sichtbarkeit der Variablen in Folgeoperationen gegeben sein muss.
 
