@@ -9,10 +9,10 @@ Bei der Analyse verwandter Arbeiten wurde festgestellt, dass aktuell - Stand Okt
 
 \subsection{Datengrundlage}
 
-Bei der Vorbereitung des Benchmarks wurde sich dafür entschieden, reale Datensätze als Datengrundlage zu verwenden. Das in Abschnitt \ref{sec:anforderungen} beschriebene Forschungsvorhaben sieht vor, Informationsnetzwerke aus unterschiedlichen Geschäftsinformationssystemen zu integrieren und den daraus resultierenden Graphen anschließend zu analysieren. Die Netzwerke in den Quellsystemen können dabei verschiedene topologische Eigenschaften aufweisen und die in ihnen gespeicherten Informationen unterschiedlichen Klassen zugeordnet sein. Ein ERP-System verwaltet zum Beispiel Rechnungen, während ein CRM-System vorrangig Kundenaktivitäten speichert. Durch die unterschiedlichen Wechselwirkungen zwischen den Entitäten innerhalb der einzelnen Quellsysteme entstehen verschiedenartige Beziehungsstrukturen. Der integrierte Graph ist folglich hinsichtlich Topologie und Nutzdaten heterogen.\\
-Die in den verwandten Arbeiten eingesetzten Algorithmen zur Erzeugung von Zufallsgraphen bilden ausschließlich homogene Netzwerke ab, in denen alle Knoten einer Klasse zugeordnet sind. In \cite{Holzschuher:2013:PGQ:2457317.2457351} sind es zum Beispiel Nutzer innerhalb eines sozialen Netzwerkes, in \cite{Ciglan:2012} und \cite{Gehrels:2013} wird generell auf eine Klassifizierung der Informationen verzichtet. Das Erzeugen synthetischer, heterogener Graphen hingegen ist sehr aufwändig, da jeder Klasse und jeder Beziehungsart eine eigene Logik hinsichtlich ihrer Erzeugung zugeordnet werden muss.
+Bei der Vorbereitung des Benchmarks wurde sich dafür entschieden, reale Datensätze als Datengrundlage zu verwenden. Das in Abschnitt \ref{sec:anforderungen} beschriebene Forschungsvorhaben sieht vor, Informationsnetzwerke aus unterschiedlichen Geschäftsinformationssystemen zu integrieren und den daraus resultierenden Graphen zu analysieren. Die Netzwerke in den Quellsystemen können dabei verschiedene topologische Eigenschaften aufweisen und die in ihnen gespeicherten Informationen unterschiedlichen Klassen zugeordnet sein. Ein ERP-System verwaltet zum Beispiel Rechnungen, während ein CRM-System vorrangig Kundenaktivitäten speichert. Durch die unterschiedlichen Wechselwirkungen zwischen den Entitäten innerhalb der einzelnen Quellsysteme entstehen verschiedenartige Beziehungsstrukturen. Der integrierte Graph ist folglich hinsichtlich Topologie und Nutzdaten heterogen.\\
+Die in den verwandten Arbeiten eingesetzten Algorithmen zur Erzeugung von Zufallsgraphen bilden ausschließlich homogene Netzwerke ab, in denen alle Knoten einer Klasse zugeordnet sind. In \cite{Vicknair:2010:CGD:1900008.1900067} sind es zum Beispiel Schritte innerhalb eines Herstellungsprozesses, in \cite{Ciglan:2012}, \cite{Dominguez-Sal:2010:SGD:1927585.1927590} und \cite{Gehrels:2013} wird generell auf eine Klassifizierung der Informationen verzichtet. Das Erzeugen synthetischer, heterogener Graphen hingegen ist sehr aufwändig, da jeder Klasse und jeder Beziehungsart eine eigene Logik hinsichtlich ihrer Erzeugung zugeordnet werden muss.
 
-Da reale Daten aus Geschäftsinformationssystemen nicht frei zur Verfügung stehen, werden stellvertretend für heterogene Netzwerke \texttt{amazon-meta}\cite{snap_amazon:2013} und \texttt{sec-Pokec}\cite{snap_pokec:2013} verwendet, beides Datensätze des Stanford Network Analysis Project\footnote{\url{https://snap.stanford.edu/}}. \texttt{amazon-meta} beinhaltet Produktinformationen des Onlinehändlers Amazon\footnote{\url{http://www.amazon.com}}, dazu zählen u.a. deren Bewertungen und Beziehungen zu anderen Produkten\footnote{Es handelt sich dabei um ähnliche Produkte, die laut Amazon oft zusammen gekauft werden.}. Pokec\footnote{\url{http://pokec.azet.sk/}} ist ein slowakisches, soziales Online-Netzwerk. Abbildung \ref{fig:testdata} zeigt das integrierte Schema beider Netzwerke als Property-Graph.
+Da reale Daten aus Geschäftsinformationssystemen nicht frei zur Verfügung stehen, werden stellvertretend für heterogene Netzwerke \texttt{amazon-meta}\cite{snap_amazon:2013} und \texttt{sec-Pokec}\cite{snap_pokec:2013} verwendet, beides Datensätze des Stanford Network Analysis Project\footnote{\url{https://snap.stanford.edu/}}. \texttt{amazon-meta} beinhaltet Produktinformationen des Onlinehändlers Amazon\footnote{\url{http://www.amazon.com}}, dazu zählen u.a. Produktbewertungen und Beziehungen zwischen Produkten\footnote{Es handelt sich dabei um ähnliche Produkte, die laut Amazon oft zusammen gekauft werden.}. Pokec\footnote{\url{http://pokec.azet.sk/}} hingegen ist ein slowakisches, soziales Online-Netzwerk in dem Nutzer durch gerichtete Freundschaftsbeziehungen miteinander verbunden sind. Abbildung \ref{fig:testdata} zeigt das integrierte Schema beider Netzwerke als Property-Graph.
 
 \begin{figure}[h] 
 	\centering
@@ -21,11 +21,8 @@ Da reale Daten aus Geschäftsinformationssystemen nicht frei zur Verfügung stehen
 	\label{fig:testdata}
 \end{figure}
 
-Beide Datensätze verfügen über eine Klasse \texttt{User}. Deren Instanzen werden innerhalb von \texttt{amazon-meta} durch eine eindeutige Identität repräsentiert und besitzen keine Beziehungen zueinander. In \texttt{soc-Pokec} hingegen weisen die Instanzen eine Vielzahl von Attributen auf und sind durch gerichtete \texttt{FRIEND\_OF}-Beziehungen miteinander verbunden. Die Anzahl der Nutzer stimmt in beiden Datensätzen annähernd überein, \texttt{amazon-meta} weist ca. 1.5 Mio., \texttt{soc-Pokec} etwa 1.6 Mio. Nutzer auf. Im Rahmen der Vorverarbeitung wurden zunächst Pokec-Nutzer zufallsbasiert auf Amazon-Nutzer abgebildet, anschließend wurde der durch die ausgewählten Knoten induzierte Teilgraph aus \texttt{soc-Pokec} extrahiert und mit \texttt{amazon-meta} zu einem integrierten Graph zusammengeführt.\\
+Beide Datensätze verfügen über eine Klasse \texttt{User}. Deren Instanzen werden innerhalb von \texttt{amazon-meta} durch eine eindeutige Identität repräsentiert und besitzen keine Beziehungen zueinander. In \texttt{soc-Pokec} hingegen weisen die Instanzen eine Vielzahl von Attributen auf und sind durch gerichtete \texttt{FRIEND\_OF}-Beziehungen miteinander verbunden. Die Anzahl der Nutzer stimmt in beiden Datensätzen annähernd überein, \texttt{amazon-meta} weist ca. 1.5 Mio., \texttt{soc-Pokec} etwa 1.6 Mio. Nutzer auf. Im Rahmen der Vorverarbeitung wurden zunächst Pokec-Nutzer pseudozufällig auf Amazon-Nutzer abgebildet, anschließend wurde der durch die ausgewählten Knoten induzierte Teilgraph aus \texttt{soc-Pokec} extrahiert und mit \texttt{amazon-meta} zu einem integrierten Graph zusammengeführt.\\
 Die Netzwerke enthalten neben den topologischen Informationen auch Nutzdaten, diese wurden für Gruppen, Produkte und Bewertungen vollständig aus den Rohdaten übernommen, für die Nutzer hingegen wurde eine Auswahl von Attributen unterschiedlichen Datentyps getroffen. Die Rohdaten beider Netzwerke wurden für die weitere Verwendung in das von Neo4j entwickelte textbasierte Geoff-Format\footnote{\url{http://nigelsmall.com/geoff}} überführt.
-
-Ein wichtiges Kriterium bei der Durchführung eines Benchmarks ist das Leistungsverhalten einer Anfrage bei steigendem Datenvolumen. Synthetische Datensätze lassen sich entsprechend erzeugen, reale Datensätze hingegen besitzen eine festgelegte Größe. Mit dem Ziel, die Skalierbarkeit von Anfragen dennoch untersuchen zu können, wurden zusammenhängende Teilgraphen aus dem integrierten Datensatz extrahiert. Die Teilgraphen sind bezüglich der Knoten aus \texttt{amazon-meta} induziert, dies gilt nicht für den Teilgraph bestehend aus Nutzerknoten. Der Algorithmus wird in Anhang \ref{anh:extraction} beschrieben.\\
-Dominguez-Sal et al. empfehlen die Angabe eines einzelnen Skalierungsfaktors, von welchem die Anzahl der erzeugten Knoten und Kanten abhängig ist, dies lässt sich jedoch bei der Verwendung realer Datensätze nicht umsetzen. Durch die Parameterwahl des Extraktionsalgorithmus wurde daher versucht, möglichst konstante Wachstumsfaktoren zu erreichen. Die Tabellen \ref{tab:datasets_nodes} und \ref{tab:datasets_edges} stellen den integrierten Graph (\texttt{orig}) und die extrahierten Teilgraphen hinsichtlich der Anzahl Knoten und Kanten gruppiert nach ihrer jeweiligen Klasse gegenüber. Zusätzlich wird für jeden Wert der Wachstumsfaktor in Bezug auf den Wert im nächstkleineren Graphen angeben. Ein Nachteil des gewählten Ansatzes ist, dass sich die topologischen Eigenschaften zwischen den verschiedenen, extrahierten Teilgraphen unterscheiden können, dies wird bei der nachfolgenden Bewertung berücksichtigt.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -50,8 +47,7 @@ Dominguez-Sal et al. empfehlen die Angabe eines einzelnen Skalierungsfaktors, vo
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
 	\caption[Benchmark: Anzahl Knoten und Attribute]{Anzahl Instanzen der verschiedenen Knotenklassen und Gesamtanzahl der Knoten- und Kantenattribute.}
-	
-	\label{tab:datasets_nodes}
+		\label{tab:datasets_nodes}
 \end{table}
 \renewcommand{\arraystretch}{1}
 
@@ -83,9 +79,14 @@ Dominguez-Sal et al. empfehlen die Angabe eines einzelnen Skalierungsfaktors, vo
 \end{table}
 \renewcommand{\arraystretch}{1}
 
+Ein wichtiges Kriterium bei der Durchführung eines Benchmarks ist das Leistungsverhalten einer Anfrage bei steigendem Datenvolumen. Synthetische Datensätze lassen sich entsprechend erzeugen, reale Datensätze hingegen besitzen eine festgelegte Größe. Mit dem Ziel, die Skalierbarkeit von Anfragen dennoch untersuchen zu können, wurden zusammenhängende Teilgraphen aus dem integrierten Datensatz extrahiert. Die Teilgraphen sind bezüglich der Knoten aus \texttt{amazon-meta} induziert, dies gilt nicht für den Teilgraph, der ausschließlich aus Nutzerknoten besteht. Der Algorithmus wird in Anhang \ref{anh:extraction} beschrieben.
+
+
+Dominguez-Sal et al. empfehlen die Angabe eines einzelnen Skalierungsfaktors, von welchem die Anzahl der erzeugten Knoten und Kanten abhängig ist, dies lässt sich jedoch bei der Verwendung realer Datensätze nicht umsetzen. Durch die Parameterwahl des Extraktionsalgorithmus wurde daher versucht, möglichst konstante Wachstumsfaktoren zu erreichen. Die Tabellen \ref{tab:datasets_nodes} und \ref{tab:datasets_edges} stellen den integrierten Graph (\texttt{orig}) und die extrahierten Teilgraphen hinsichtlich der Anzahl Knoten und Kanten gruppiert nach ihrer jeweiligen Klasse gegenüber. Zusätzlich wird für jeden Wert der Wachstumsfaktor in Bezug auf den Wert im nächstkleineren Graphen angeben. Ein Nachteil des gewählten Ansatzes ist, dass sich die topologischen Eigenschaften zwischen den verschiedenen, extrahierten Teilgraphen unterscheiden können, dies wird bei der nachfolgenden Bewertung berücksichtigt.
+
 \subsection{Operationen}
 
-Stellvertretend für Anfragen, die für die Analyse von Unternehmensdaten im Forschungsvorhaben relevant sind, wurden auf Grundlage des vorgestellten Schemas mehrere Anfragen definiert. Diese beinhalten jeweils einzelne oder mehrere der in Abschnitt \ref{subsec:graph_operations} vorgestellten graphenspezifischen Operationen. Es handelt sich um lokale Anfragen, die ausgehend von einem Knoten oder einer Knotenmenge einen Teil des Graphen analysieren. Dabei werden sowohl Topologie als auch Nutzdaten in die Operationen einbezogen. Auf rein topologische und globale Anfragen, wie zum Beispiel das Berechnen der k-Nachbarschaft ohne Berücksichtigung von Kantenbezeichnern oder das Auslesen aller Kanten, wurde bewusst verzichtet, da sie für das Forschungsvorhaben nicht relevant sind. In Tabelle \ref{tab:benchmark_queries} werden die Anfragen beschrieben und entsprechend der verwendeten Operationen kategorisiert.
+Stellvertretend für Anfragen, die für die Analyse von Unternehmensdaten im Forschungsvorhaben relevant sind, wurden auf Grundlage des vorgestellten Schemas mehrere Anfragen definiert. Diese beinhalten jeweils einzelne oder mehrere der in Abschnitt \ref{subsec:graph_operations} vorgestellten graphenspezifischen Operationen. Es handelt sich um lokale Anfragen, die ausgehend von einem Knoten oder einer Knotenmenge einen Teil des Graphen analysieren. Dabei werden sowohl Topologie als auch Nutzdaten in die Operationen einbezogen. Auf rein topologische und globale Anfragen, wie zum Beispiel das Berechnen der k-Nachbarschaft ohne Berücksichtigung von Kantenbezeichnern oder das Auslesen aller Kanten, wurde bewusst verzichtet, da sie für das Forschungsvorhaben nicht relevant sind. Gleiches gilt auch für Schreibzugriffe, hier ist lediglich die Performance der Bulk-Load-Mechanismen von Interesse. 
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -100,7 +101,7 @@ Stellvertretend für Anfragen, die für die Analyse von Unternehmensdaten im Forsc
 	\hline
 	\textbf{\texttt{random\_read}} & Zufällige Auswahl einzelner Produkte und Nutzer sowie vollständiges Auslesen ihrer Attribute. (Leseperformance beim Attributzugriff) \\
 	\hline
-	\textbf{\texttt{sim\_products}} & Zufällige Auswahl eines Produktes und anschließendes Traversieren  ähnlicher Produkte bis Abstand $\leq$ 2. Die Produkttitel sollen ausgegeben werden, jeder Titel soll einmalig in der Ergebnismenge sein. (Lokale Traversierung, Einschränkung) \\
+	\textbf{\texttt{sim\_products}} & Zufällige Auswahl eines Produktes und anschließendes Traversieren  ähnlicher Produkte bis Abstand $\leq$ 2, die Kantenrichtung ist nicht relevant. Die Produkttitel sollen ausgegeben werden, jeder Titel soll einmalig in der Ergebnismenge sein. (Lokale Traversierung, Einschränkung) \\
 	\hline
 	\textbf{\texttt{foaf\_reviews}} & Zufällige Auswahl eines Nutzers und anschließende Selektion der Produkte, für die Freunde oder deren Freunde ein Review geschrieben haben. Das Ergebnis soll nach Produkttitel gruppiert und nach durchschnittlicher Bewertung sortiert werden. (Lokale Traversierung, Einschränkung, Gruppierung, Aggregation)\\
 	\hline
@@ -120,27 +121,28 @@ Stellvertretend für Anfragen, die für die Analyse von Unternehmensdaten im Forsc
 \end{table}
 \renewcommand{\arraystretch}{1}
 
-Alle Anfragen wurden mittels Cypher und Gremlin realisiert und sind in Anhang \ref{anh:queries} aufgeführt. Eine Implementierung unter Verwendung der vorhandenen Java APIs wurde nicht durchgeführt, da zum Einen die Verwendung aktueller graphenspezifischer Anfragesprachen für die Formulierung komplexerer analytischer Anfragen in dieser Arbeit vordergründig ist und zum Anderen bereits in \cite{Ciglan:2012}, \cite{Gehrels:2013} und \cite{Holzschuher:2013:PGQ:2457317.2457351} gezeigt wurde, dass sich der Verzicht auf eine zusätzliche Anfrageverarbeitung positiv auf das Leistungsverhalten auswirkt. Eine Eignung der APIs für die Implementierung beliebiger analytischer Algorithmen und Operationen wurde den Systemen bereits im vorhergehenden Kapitel zugesprochen.
+In Tabelle \ref{tab:benchmark_queries} werden die Anfragen beschrieben und entsprechend der verwendeten Operationen kategorisiert. Alle Anfragen wurden mittels Cypher und Gremlin realisiert und sind in Anhang \ref{anh:queries} aufgeführt. Eine Implementierung unter Verwendung der vorhandenen Java APIs wurde nicht durchgeführt, da zum Einen die Verwendung aktueller graphenspezifischer Anfragesprachen für die Formulierung komplexerer analytischer Anfragen in dieser Arbeit vordergründig ist und zum Anderen bereits in \cite{Ciglan:2012}, \cite{Gehrels:2013} und \cite{Holzschuher:2013:PGQ:2457317.2457351} gezeigt wurde, dass sich der Verzicht auf eine zusätzliche Anfrageverarbeitung positiv auf das Leistungsverhalten auswirkt. Eine Eignung der APIs für die Implementierung beliebiger analytischer Algorithmen und Operationen wurde den Systemen bereits im vorhergehenden Kapitel zugesprochen.
 
 \subsection{Systemkonfiguration}
 
 Die verwendete Testumgebung setzt sich wie folgt zusammen:
 
 \begin{itemize}
-	\item Intel i7-2620M
-	\item 8 GB DDR-3 RAM
-	\item Crucial M4 SSD
-	\item Xubuntu 13.10 64-Bit (Kernel 3.11.0-12-generic)
+	\setlength{\parskip}{1pt}
+	\item Intel i7-2620M (2x3.4 Ghz)
+	\item 8 GB DDR-3 RAM (1333 Mhz)
+	\item Crucial M4 SSD (128 GB)
+	\item Xubuntu 13.10 64-Bit (Kernel 3.11.0-12-generic, ext4)
 	\item Java(TM) SE Runtime Environment (build 1.7.0\_45-b18)
 \end{itemize}
 
 \paragraph*{Neo4j}
 
-Das GDBMS wird in einer zentralen, eingebetteten Konfiguration verwendet, Anfragen werden sowohl in Cypher als auch in Gremlin ausgeführt. Für Cypher-Anfragen wird die im vorhergehenden Kapitel betrachtete Version 2.0.0-M04 eingesetzt. Die Berücksichtigung von Gremlin ermöglicht eine bessere Vergleichbarkeit mit Titan, macht es jedoch erforderlich, für die Durchführung auf Version 1.9.4 des GDBMS zurückzugreifen, da Blueprints 2.4.0 und somit auch Gremlin bisher nicht kompatibel zu den Neuerungen in Neo4j 2.0 sind.  Die Ausführung von Cypher erfolgt unter Verwendung der \texttt{ExecutionEngine}\footnote{\url{http://docs.neo4j.org/chunked/2.0.0-M04/tutorials-cypher-java.html}}, für Gremlin wird die in der Dokumentation\footnote{\url{https://github.com/tinkerpop/gremlin/wiki/Using-Gremlin-through-Java\#using-jsr-223-gremlingroovyscriptengine}} beschriebene \texttt{GremlinGroovyScriptEngine}  genutzt.
+Das GDBMS wird in einer zentralen, eingebetteten Konfiguration verwendet, Anfragen werden sowohl in Cypher als auch in Gremlin ausgeführt. Für Cypher-Anfragen wird die im vorhergehenden Kapitel betrachtete Version 2.0.0-M04 eingesetzt. Die Berücksichtigung von Gremlin ermöglicht eine bessere Vergleichbarkeit mit Titan, macht es jedoch erforderlich, für die Durchführung auf Version 1.9.4 des GDBMS zurückzugreifen, da Blueprints 2.4.0 und somit auch Gremlin bisher nicht kompatibel zu den Neuerungen in Neo4j 2.0 sind.  Die Ausführung von Cypher erfolgt unter Verwendung der \texttt{ExecutionEngine}\footnote{\url{http://docs.neo4j.org/chunked/2.0.0-M04/tutorials-cypher-java.html}}, für Gremlin wird die in der Dokumentation beschriebene \texttt{GremlinGroovyScriptEngine} \footnote{\url{https://github.com/tinkerpop/gremlin/wiki/Using-Gremlin-through-Java\#using-jsr-223-gremlingroovyscriptengine}} genutzt.
 
 Für den Bulk-Load der Testgraphen wird im \texttt{import}-Benchmark der von Neo4j zur Verfügung gestellte \texttt{BatchInserter} entsprechend der Dokumentation\footnote{\url{http://docs.neo4j.org/chunked/2.0.0-M04/batchinsert.html}} eingesetzt. Während des Import erfolgt das Aktualisieren eines zusätzlichen Lucene-Index auf dem Knotenattribut \texttt{\_\_id\_\_}. Bei der Verwendung von Neo4j 2.0.0-M04 werden darüber hinaus Knotenbezeichner entsprechend der Knotenklasse gesetzt, diese können folglich nur in Cypher-Anfragen berücksichtigt werden.
 
-Die Kernel-Einstellungen\footnote{\url{http://docs.neo4j.org/chunked/milestone/kernel-configuration.html}} des GDBMS werden unverändert übernommen. Die Größe des Heap-Speichers der JVM wird entsprechend den Empfehlungen\footnote{\url{http://docs.neo4j.org/chunked/2.0.0-M04/configuration-jvm.html}} auf 4 GB festgelegt, eine Änderung des Stack-Speichers erfolgt nicht. Darüber hinaus wird der Concurrent Mark and Sweep Compactor Garbage Collector\footnote{\url{http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html\#BehavioralOptions}} verwendet.\\
+Die Kernel-Einstellungen\footnote{\url{http://docs.neo4j.org/chunked/2.0.0-M04/kernel-configuration.html}} des GDBMS werden unverändert übernommen. Die Größe des Heap-Speichers der JVM wird entsprechend den Empfehlungen\footnote{\url{http://docs.neo4j.org/chunked/2.0.0-M04/configuration-jvm.html}} auf 4 GB festgelegt, eine Änderung des Stack-Speichers erfolgt nicht. Darüber hinaus wird der Concurrent Mark and Sweep Compactor Garbage Collector\footnote{\url{http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html\#BehavioralOptions}} verwendet.\\
 Die Einstellungen des Object-Cache bleiben unverändert, es wird demnach die in Abschnitt \ref{subsec:neo4j_persistency} beschriebene Standard-Implementierung genutzt. Der Filesystem-Cache wurde entsprechend der Größe der Stores angepasst. Um deren Speicherbedarf zu ermitteln, wurde der größte Testgraph (\texttt{p\_10K}) importiert und die Größe der Stores im Dateisystem bestimmt. Für den Knoten-Store sind dies 20 MB, für den Kanten-Store 150 MB.\footnote{Dieser Wert lässt sich ebenfalls aus der Datensatzgröße von 14 bzw. 33 Byte und der Anzahl Knoten bzw. Kanten in Tabelle \ref{tab:datasets_nodes} bzw. \ref{tab:datasets_edges} berechnen.} Interessant ist, dass trotz der Verwendung von String- und Array-Properties der Property-Store für primitive Datentypen den größten Speicherbedarf aufweist.\footnote{Für primitive Datentypen werden 150 MB, für Strings 50 MB und für Arrays 10 MB beansprucht.} Neo4j verwendet für Strings und Arrays zusätzliche Kompressionsmethoden\footnote{\url{http://docs.neo4j.org/chunked/2.0.0-M04/short-strings.html} und \url{http://docs.neo4j.org/chunked/2.0.0-M04/short-arrays.html}} und fügt, wenn möglich, die entsprechenden Werte in den Property-Store für primitive Datentypen ein und vermeidet damit eine zusätzliche Indirektion beim Lese- und Schreibzugriff. Die Anpassung des Filesystem-Cache ermöglicht es dem GDBMS die komplette Datenbasis im Hauptspeicher vorhalten zu können.
 
 \paragraph*{Titan}
@@ -148,24 +150,43 @@ Die Einstellungen des Object-Cache bleiben unverändert, es wird demnach die in A
 Das GDBMS wird ebenfalls in einer zentralen, eingebetteten Konfiguration verwendet. Anfragen werden ausschließlich in Gremlin ausgeführt, dies erfolgt wie bei Neo4j unter Verwendung der \texttt{GremlinGroovyScriptEngine}. Das verwendete Speichersystem ist BerkeleyDB Java Edition, die Konfiguration erfolgt ausschließlich mit den von Titan zur Verfügung gestellten Parametern.
 
 Für den Import der Testgraphen wird der im TinkerPop-Projekt verfügbare \texttt{BatchGraph} verwendet, eine Wrapper-Klasse, die Bulk-Load-Funktionalität für blueprints-kompatible GDBMS zur Verfügung stellt.\footnote{\url{https://github.com/tinkerpop/blueprints/wiki/Batch-Implementation}} Die Verwendung von \texttt{BatchGraph} wird von Aurelius für Graphen mit bis zu 100 Mio. Kanten empfohlen. Darüber hinaus wurde der Konfigurationsparameter \texttt{storage.batch-loading} auf \texttt{true} gesetzt, was die internen Konsistenzmechanismen von Titan deaktiviert und den Import beschleunigen soll.\\
-Vor dem Datenimport werden Instanzen von \texttt{TitanKey} bzw. \texttt{TitanLabel} erzeugt. Für Instanzen von \texttt{TitanKey} werden Attributschlüssel, Datentyp des Attributwertes und Eindeutigkeit an der Knoteninstanz festgelegt, dem \texttt{\_\_id\_\_}-Attribut wird wie bei Neo4j ein Index zugeordnet. Die Instanzen von \texttt{TitanLabel} werden entsprechend den vier Beziehungsarten bezeichnet, \texttt{BELONGS\_TO}-Kanten werden darüber hinaus als $n:1$-Beziehung zwischen Produkt und Gruppe deklariert. Die Durchführung erfolgt sowohl mit manueller als auch mit systemseitiger Typdefinition. Damit soll untersucht werden, inwieweit sich die Festlegung der Datentypen auf die Leistungsfähigkeit des GDBMS auswirkt.
+Vor dem Datenimport werden Instanzen von \texttt{TitanKey} bzw. \texttt{TitanLabel} erzeugt. Für Instanzen von \texttt{TitanKey} werden Attributschlüssel, Datentyp des Attributwertes und Eindeutigkeit an der Instanz festgelegt, dem Knotenattribut \texttt{\_\_id\_\_} wird wie bei Neo4j ein Index zugeordnet. Die Instanzen von \texttt{TitanLabel} werden entsprechend den vier Beziehungsarten bezeichnet, \texttt{BELONGS\_TO}-Kanten werden darüber hinaus als $n:1$-Beziehung zwischen Produkt und Gruppe deklariert. Die Durchführung erfolgt sowohl mit manueller als auch mit systemseitiger Typdefinition, damit soll untersucht werden, inwieweit sich die Festlegung der Datentypen auf die Leistungsfähigkeit des GDBMS auswirkt.
 
 Entsprechend der Empfehlung von Aurelius werden BerkeleyDB 80\% des zur Verfügung stehenden Heap-Speichers zur Verfügung gestellt.\footnote{\url{https://github.com/thinkaurelius/titan/wiki/Using-BerkeleyDB}} Dieser wird wie bei Neo4j auf insgesamt 4 GB festgelegt. Oracle empfiehlt für BerkeleyDB ebenfalls die Verwendung des Concurrent Mark and Sweep Compactor Garbage Collector, welcher folglich bei der Durchführung aktiviert ist.\footnote{\url{http://www.oracle.com/technetwork/database/berkeleydb/je-faq-096044.html\#WhatJVMparametersshouldIconsiderwhentuninganapplicationwithalargecachesize}}
 
 \subsection{Methodik}
 
+% Verweis auf Framework
+Für die Durchführung der Messungen wurde ein Java-Framework\footnote{\url{https://github.com/s1ck/master_thesis/tree/master/benchmark}} entwickelt, mit dem sich individuell konfigurierbare Benchmarks nach einem definierten Protokoll ausführen lassen. Jede der zu messenden Anfragen kann einzeln aktiviert und konfiguriert werden. Dabei lässt sich die Ausführungsreihenfolge beliebig variieren, bei der Durchführung wird die Reihenfolge entsprechend Tabelle \ref{tab:benchmark_queries} beibehalten.
 
+% Import
+Die Testgraphen liegen im Geoff-Format vor und werden unter Verwendung eines Iterators eingelesen. Dieser Ansatz ermöglicht es, auch umfangreiche Datensätze ohne zusätzliche Inanspruchnahme des Hauptspeichers zu verarbeiten und gleichzeitig die unmittelbare Schreibperformance des GDBMS in Abhängigkeit vom Externspeicher zu messen.
 
-siehe \cite{Dominguez-Sal2011}
+% Warmup Caches
+Für die Simulation eines realistischen Antwortzeitverhaltens empfehlen Dominguez-Sal et al. ein sog. \textit{warmup} der Caches. Eine Zielstellung des Forschungsvorhabens ist die Verwendung des GDBMS im Rahmen einer Analyseplattform. Dabei wird angenommen, dass diese nicht nur bei Bedarf gestartet wird, sondern permanent in Betrieb ist. Folglich ist davon auszugehen, dass sich entweder der gesamte Graph oder Teilgraphen zum Zeitpunkt der Anfrage in den Caches befinden und somit eine effizientere Ausführung möglich ist.\\ % Darüber hinaus verdeutlichen aktuelle Entwicklungen, wie zum Beispiel SAP HANA\cite{plattner2011memory}, dass die Verwendung mehrerer hundert Gigabyte Hauptspeicher in aktuellen Server-Systemen kosteneffizient ist und auf lange Sicht die Bedeutung der im Vergleich langsamen Externspeichern sinken lässt.\\
+Mit dem Ziel, eine vergleichbare Situation zu schaffen, wurde vor der Ausführung einer Messung eine Iteration sowohl über die gesamte Knotenmenge als auch über die gesamte Kantenmenge durchgeführt.\footnote{In Titan erfolgt in der warmup-Prozedur nach 20\,000 gelesenen Objekten ein Commit um potentielle Speicherprobleme durch den Transaktionscache zu verhindern.} Zusätzlich wurde das Knotenattribut \texttt{\_\_type\_\_} ausgelesen und die jeweilige Identität nach Typ gruppiert gespeichert, diese Informationen werden für die pseudozufällige Auswahl der Startknoten einer Anfrage genutzt.
 
-- sequentielle Ausführung der Anfragen
-- Übereinstimmung der Ergebnismengen wurde manuell überprüft
-- Aufwärmphase ja / nein
-- Ausführungsreihenfolge
-- random seed statisch
-- Caching von Anfragen -> erste 10 Messungen werden nicht berücksichtigt
-- Ergebnismengen werden komplett ausgelesen
-- Messen
+% Zeitmessung
+Ein Benchmark zu jeder Anfrage wird nach folgendem Protokoll durchgeführt:
+\begin{enumerate}
+	\setlength{\parskip}{1pt}
+	\item Vorbereitung des Benchmarks (GDBMS initialisieren)
+	\item Warmup-Prozedur ausführen (außer beim Importieren)
+	\item Für $n$ Wiederholungen
+		\begin{enumerate}
+			\item Vorbereitung der Messung (Auswahl der Startknoten, Anfrage parametrisieren)
+			\item Beginn der Zeitmessung
+			\item Ausführen der Operation und ggf. vollständiges Auslesen der Ergebnismenge
+			\item Ende der Zeitmessung		
+		\end{enumerate}
+	\item Nachbereitung des Benchmarks (Ressourcen freigeben)
+	\item Speichern der Messergebnisse sowie GDBMS- und Benchmark-Konfiguration
+\end{enumerate}
+
+% Random Seed
+Mit dem Ziel, eine Benachteiligung eines GDBMS zu vermeiden, wird für den Pseudozufallsgenerator ein \texttt{seed}-Wert festgelegt. Dies führt dazu, dass für alle Anfragen in jedem GDBMS die gleichen Knoten ausgewählt werden und darüber hinaus die Benchmarks reproduzierbar sind. Die Übereinstimmung der Ergebnismengen wurde für jede Anfrage validiert.
+
+Für den Erhalt signifikanter Ergebnisse wird die Anzahl der Wiederholungen für alle Anfragen auf $n=1000$ festgelegt, die \texttt{import}-Operation hingegen wird einmalig ausgeführt. Die Zeitmessung erfolgt unter Verwendung der statischen Methode \texttt{System.nanoTime()}. Da sowohl die \texttt{ExecutionEngine} als auch die \texttt{GremlinGroovyScriptEngine} einen Cache für die jeweils generierten Ausführungspläne besitzen, ist die erste Anfrage typischerweise deutlich langsamer als alle nachfolgenden Anfragen, infolgedessen wird der Messwert der ersten Iterationen nicht berücksichtigt. Alle Anfragen werden sequentiell ausgeführt, es findet kein konkurrierender Zugriff auf die Datenbasis statt. Die Messgrößen sind für \texttt{import} die Importdauer und der Speicherverbrauch der Datenbank inklusive aller Indexstrukturen auf dem Hintergrundspeicher, für alle anderen Operationen wird die Ausführungszeit gemessen. Die erhaltenen Messwerte werden gespeichert und mittels R und LibreOffice Calc weiterverarbeitet.
 
 \section{Ergebnisse}
 
