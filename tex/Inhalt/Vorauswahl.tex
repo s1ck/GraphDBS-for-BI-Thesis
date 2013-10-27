@@ -9,7 +9,7 @@ Innerhalb jeder Kategorie werden obligatorische und optionale bzw. rein informat
 
 Eine der wichtigsten Anforderungen in dieser ersten Kategorie (Tabelle \ref{tab:nutzung}) ist die Quelloffenheit des GDBMS. Quellcode ist eine Dokumentationsart von Software, welche das Studium der exakten Funktionsweise ermöglicht. Widersprüchen und Ungenauigkeiten innerhalb textueller Dokumentation kann durch die Untersuchung des Quellcodes begegnet werden. Darüber hinaus soll das ausgewählte GDBMS als technologische Grundlage für Weiterentwicklungen innerhalb des beschriebenen Projektes dienen. Dies setzt ebenfalls Quelloffenheit und ein für die Nutzung geeignetes Lizenzmodell voraus. Ungeachtet dessen ist eine grundlegende textuelle Dokumentation des Datenbanksystems ebenfalls eine Pflichtanforderung. Sie sollte wenigstens einen Überblick über die Architektur des GDBMS, eine Beschreibung der Zugriffsmechanismen und Installationsanweisungen beinhalten.
 
-Mit dem Ziel, eine möglichst stabile Software als Ausgangssituation nutzen zu können, wurde bei der Diskussion der Anforderungen festgelegt, dass es sich um ein Produktivsystem handeln muss, welches eine nachvollziehbar aktive Entwicklung erkennen lässt. Ein Produktivsystem definiert sich dadurch, dass es mindestens einen stabilen Release aufweist, die Aktivität kann anhand der Quelloffenheit der Systeme leicht nachvollzogen werden: Um als aktiv zu gelten, wurde ein Zeitraum von sechs Monaten festgelegt, in dem die Software Aktualisierungen erfahren haben muss.
+Mit dem Ziel, eine möglichst stabile Software als Ausgangssituation nutzen zu können, wurde bei der Diskussion der Anforderungen festgelegt, dass es sich um ein Produktivsystem handeln muss, welches eine nachvollziehbar aktive Entwicklung erkennen lässt. Ein Produktivsystem definiert sich dadurch, dass es mindestens einen stabilen Release aufweist, die Aktivität kann aufgrund der Quelloffenheit der Systeme leicht nachvollzogen werden: Um als aktiv zu gelten, wurde ein Zeitraum von sechs Monaten festgelegt, in dem die Software Aktualisierungen erfahren haben muss.
 
 Ein rein informatives Kriterium ist die Programmiersprache, in der das System entwickelt wird. Auffällig ist dabei, dass ein Großteil der GDBMS in Java implementiert ist. Generell ist Java aufgrund der persönlichen Erfahrung der Projektteilnehmer die bevorzugte Sprache, dies bedeutet jedoch nicht, dass objektiv bessere Systeme aufgrund ihrer Programmiersprache ausgeschlossen werden. Eine optionale Anforderung innerhalb dieser Kategorie ist die Unterstützung von Linux-basierten Betriebssystemen. Sollte das Projekt erfolgreich sein, ist eine Ausgründung vorgesehen. Aus diesem Grund soll vermieden werden, potentielle Kunden an eine proprietäre Plattform, wie zum Beispiel Microsoft Windows, zu binden.
 
@@ -96,7 +96,13 @@ Im Zusammenhang mit ACID hat die Möglichkeit zur Definition von Integritätsbedin
 
 \paragraph*{Zugriffsmechanismen}
 
-Tabelle \ref{tab:zugriff} vergleicht die verbliebenen acht Systeme hinsichtlich ihrer Zugriffsmechanismen.
+Bei der Diskussion der Anforderungen wurde hinsichtlich der Zugriffsmechanismen festgelegt, dass ein geeignetes GDBMS die Einbettung in eine bestehende Anwendung unterstützen und hierfür eine entsprechende API anbieten muss. Dies ermöglicht es, das System um eigene Graphalgorithmen bzw. graphenspezifische Operationen zu erweitern. Das Fehlen einer entfernten API wird nicht als Defizit gewertet, da sich diese unter Verwendung der eingebetteten API implementieren lässt.\\
+Aus der Quelloffenheit folgt nicht zwingend eine einfache Erweiterbarkeit der Systeme. Einige Anbieter beschreiben innerhalb ihrer Dokumentationen spezielle Plugin APIs, welche zum Beispiel das Hinzufügen eigener Indexstrukturen, Speichersysteme oder Operatoren erlauben. Generell lässt sich jedoch jedes quelloffene Systeme erweitern, weswegen diese Eigenschaft optional ist.
+
+Hinsichtlich vorhandener graphenspezifischer Operationen wurde festgelegt, dass grundlegende Operationen wie CRUD und Traversierung eine Mindestvoraussetzung darstellen. CRUD-Operationen ermöglichen die Manipulation und das Auslesen der Datenbasis, während die Traversierung die grundlegende Operation für komplexere Graphalgorithmen darstellt.\\
+Eines der Ziele des Forschungsvorhabens ist das Entwickeln einer Softwareplattform, die u.a. von Analysten genutzt werden soll. Da in diesem Zusammenhang nicht zwingend Programmierkenntnisse vorauszusetzen sind, ist das Vorhandensein einer graphenspezifischen Anfragesprache vorteilhaft. Da in der GDBMS-Domäne bisher keine standardisierte Anfragesprache existiert, wurde diese Anforderung als optional deklariert.
+
+Eine wesentliche Eigenschaft analytischer Systeme ist vorrangig lesende Zugriff auf die Datenbasis. Im beschriebenen Forschungsprojekt werden periodisch Daten aus Quellsystemen in einen zentralen Graphen integriert und analysiert. Das Importieren der Daten soll dabei möglichst effizient durchgeführt werden, weswegen entsprechende Bulk-Load-Mechanismen wünschenswert, jedoch nicht obligatorisch sind.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -106,11 +112,11 @@ Tabelle \ref{tab:zugriff} vergleicht die verbliebenen acht Systeme hinsichtlich 
 	\hline
 	\multicolumn{8}{|c|}{\textbf{Zugriffsmechanismen}} \\
 	\hline
-   	GDBMS & Embedded\newline API & Remote \newline API* & Plugin \newline API* & CRUD & Traversierung & Anfrage-\newline sprache* & Bulk\newline Load \\   
+   	GDBMS & Embedded\newline API & Remote \newline API* & Plugin \newline API* & CRUD & Traversierung & Anfrage-\newline sprache* & Bulk\newline Load* \\   
    	\hline   
    	ArangoDB		& -				& \checkmark 	& - 			& \checkmark	& \checkmark & \checkmark	& \checkmark	\\
    	Bitsy			& \checkmark	& \checkmark	& -				& \checkmark 	& \checkmark & \checkmark	& -				\\
-   	HypergraphDB	& \checkmark	& -				& - 			& \checkmark 	& \checkmark & - 			& -				\\
+   	HypergraphDB	& \checkmark	& -				& \ceckmark		& \checkmark 	& \checkmark & - 			& -				\\
    	Neo4j			& \checkmark	& \checkmark	& \checkmark	& \checkmark	& \checkmark & \checkmark	& \checkmark	\\
    	OrientDB		& \checkmark	& \checkmark	& -				& \checkmark	& \checkmark & \checkmark	& \checkmark	\\
    	Titan			& \checkmark	& \checkmark	& \checkmark	& \checkmark	& \checkmark & \checkmark	& \checkmark	\\
@@ -123,17 +129,11 @@ Tabelle \ref{tab:zugriff} vergleicht die verbliebenen acht Systeme hinsichtlich 
 \end{table}
 \renewcommand{\arraystretch}{1}
 
+In Tabelle \ref{tab:zugriff} werden die verbliebenen sechs Systeme hinsichtlich der Erfüllung der vorgestellten Anforderungen gegenübergestellt. ArangoDB bietet ausschließlich die Verwendung mittels entfernter API an und wird somit von der weiteren Betrachtung ausgeschlossen. Neo4j und Titan hingegen erfüllen als einzige alle obligatorischen und optionalen Anforderungen. Hervorzuheben ist, dass alle Systeme bis auf HyperGraphDB eine proprietäre Anfragesprache aufweisen.
+
 \paragraph*{Speicherung}
 
-Lorem ipsum dolor sit amet, ex mei tale aliquip. Dolore labitur legimus est et, mea commune nominati ei. Tantas molestiae conclusionemque ad vix, nec cu meliore admodum intellegam. Qui facer facete imperdiet ut. Ea sit feugait referrentur.
-
-Id scripta fastidii vix. Id pri case dicunt definitiones. Quo lorem mediocrem moderatius et, ut his sapientem dignissim, alterum albucius delicata eos id. Nec id doctus fastidii pertinacia, nam no veniam petentium definitionem, iusto mnesarchum has ne. Per eu ubique aliquid voluptatum. Id cum deserunt convenire, quando abhorreant duo ut, ius ad molestiae dignissim hendrerit.
-
-Pro eu justo tantas dolores. Albucius salutatus cum ea. Et delicata omittantur per, in cum wisi definitionem, vis in nulla nihil graecis. Vix habeo praesent torquatos ei, te vel indoctum deterruisset. Ei qui erat ipsum neglegentur.
-
-Est cu modus partem persius. Usu no doctus utroque, eu eam clita ubique, ut possit epicurei explicari vix. In vim error scribentur. Sea iracundia intellegam te, summo dolor delectus ne has, per in atomorum democritum. Ex ullum utinam habemus qui, eam nulla inciderint no. Cu ferri maiorum quo.
-
-Cu unum perfecto usu, sed an natum prompta aliquid, no pri meis illum integre. Cu audire feugiat fastidii sit, te mea salutandi consulatu consetetur. Duo dicat verterem no. Vel an atqui forensibus, vix et eros maluisset scripserit.
+Ein wichtiges Kriterium eines geeigneten GDBMS ist die dauerhafte Speicherung der Datenbasis, eine native Speicherung des Graphen ist dabei nicht zwingend erforderlich. Insbesondere für analytische Systeme kann eine rein hauptspeicher-zentrierte Verarbeitung des Graphen vorteilhaft sein, welche den Externspeicher als Backup-Medium verwendet.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
