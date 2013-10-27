@@ -168,6 +168,8 @@ public abstract class TitanBenchmark extends Benchmark {
     public void warmup() {
 	log.info("Warming up the caches ...");
 	String type;
+	int commitSize = cfg.getInt("warmup.commit-size");
+	int logSize = cfg.getInt("warmup.log-size");
 	long cnt = 0L;
 	for (Vertex v : graphDB.getVertices()) {
 	    type = v.getProperty(Constants.KEY_NODE_EDGE_TYPE);
@@ -178,8 +180,12 @@ public abstract class TitanBenchmark extends Benchmark {
 	    } else if (type.equals(Constants.VALUE_TYPE_USER)) {
 		userIDs.add((Long) v.getId());
 	    }
-	    if (++cnt % 100000 == 0) {
+
+	    if (++cnt % logSize == 0) {
 		log.info("touched " + cnt + " nodes");
+	    }
+	    if (cnt % commitSize == 0) {
+		graphDB.commit();
 	    }
 	}
 	cnt = 0L;
@@ -190,8 +196,12 @@ public abstract class TitanBenchmark extends Benchmark {
 	    if (type.equals(Constants.LABEL_EDGE_REVIEWED_BY)) {
 		reviewIDs.add((RelationIdentifier) e.getId());
 	    }
-	    if (++cnt % 100000 == 0) {
+	    if (++cnt % logSize == 0) {
 		log.info("touched " + cnt + " edges");
+		graphDB.commit();
+	    }
+	    if (cnt % commitSize == 0) {
+		graphDB.commit();
 	    }
 	}
 	log.info("Products: " + productIDs.size());

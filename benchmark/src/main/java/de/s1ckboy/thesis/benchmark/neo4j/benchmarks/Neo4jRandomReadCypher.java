@@ -35,6 +35,8 @@ public class Neo4jRandomReadCypher extends Neo4jCypherBenchmark implements
 	for (Node n : IteratorUtil.asIterable(n_column)) {
 	    for (String key : n.getPropertyKeys()) {
 		n.getProperty(key);
+		// validation
+		// System.out.println(key + " => " + n.getProperty(key));
 	    }
 	}
     }

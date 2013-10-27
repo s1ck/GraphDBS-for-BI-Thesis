@@ -29,7 +29,9 @@ public class Neo4jSimProductsCypher extends Neo4jCypherBenchmark implements
 	super.run();
 	Iterator<String> title_column = result.columnAs("title");
 	for (String title : IteratorUtil.asIterable(title_column)) {
-	    // silence is golden
+	    // validation
+	    // System.out.println(title);
+
 	}
     }
 

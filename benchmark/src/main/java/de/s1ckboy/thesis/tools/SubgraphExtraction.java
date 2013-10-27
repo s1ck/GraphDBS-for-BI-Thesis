@@ -63,6 +63,8 @@ public class SubgraphExtraction {
     private int friendCnt = 0;
     private int belongsCnt = 0;
 
+    private int propertyCnt = 0;
+
     private boolean showLog = false;
 
     /**
@@ -76,11 +78,11 @@ public class SubgraphExtraction {
      * k-Products/Users means the k-neighborhood of a node. 2-neighborhood for
      * users is p.e. all friends and their friends
      */
-    private int k_Products = 4;
+    private int k_Products = 3;
     private int k_Users = 2;
 
     private Random r;
-    long seed = 611L;
+    long seed = 42L;
 
     public SubgraphExtraction() {
 	cfg = Configs.get(Neo4jConstants.INSTANCE_NAME);
@@ -114,23 +116,48 @@ public class SubgraphExtraction {
 	    sw.start();
 	    extractSubgraphs(getGroupCounts());
 	    sw.stop();
+
+	    // int friendOfCount = 0;
+	    // int belongsToCount = 0;
+	    // int reviewedByCount = 0;
+	    // int similarToCount = 0;
+	    // for (Relationship e : GlobalGraphOperations.at(graphDb)
+	    // .getAllRelationships()) {
+	    //
+	    // if (e.isType(Neo4jRelationshipTypes.FRIEND_OF)) {
+	    // friendOfCount++;
+	    // } else if (e.isType(Neo4jRelationshipTypes.BELONGS_TO)) {
+	    // belongsToCount++;
+	    // } else if (e.isType(Neo4jRelationshipTypes.REVIEWED_BY)) {
+	    // reviewedByCount++;
+	    // } else if (e.isType(Neo4jRelationshipTypes.SIMILAR_TO)) {
+	    // similarToCount++;
+	    // }
+	    // }
+
+	    // System.out.println("f: " + friendOfCount);
+	    // System.out.println("b: " + belongsToCount);
+	    // System.out.println("r: " + reviewedByCount);
+	    // System.out.println("s: " + similarToCount);
+
+	    // store graph
+	    storeSubgraph();
+
 	    // store stats in info file
 	    String graphInfo = String.format("graph_%d_%d_%d_%d.info", seed,
 		    productLimit, k_Products, k_Users);
 	    String stats = String
-		    .format("\nseed %d\n%d nodes\n%d edges\n---\n%d groups\n%d products\n%d users\n%d belongs_to\n%d similar_to\n%d reviewed_by\n%d friend_of\n---\n%d seconds",
+		    .format("\nseed %d\n%d nodes\n%d edges\n%d properties\n---\n%d groups\n%d products\n%d users\n%d belongs_to\n%d similar_to\n%d reviewed_by\n%d friend_of\n---\n%d seconds",
 			    seed,
 			    (users.size() + groups.size() + products.size()),
-			    edges.size(), groupCnt, productCnt, userCnt,
-			    belongsCnt, similarCnt, reviewCnt, friendCnt,
-			    sw.elapsedTime(TimeUnit.SECONDS));
+			    edges.size(), propertyCnt, groupCnt, productCnt,
+			    userCnt, belongsCnt, similarCnt, reviewCnt,
+			    friendCnt, sw.elapsedTime(TimeUnit.SECONDS));
 	    FileWriter fw = new FileWriter(new File(graphInfo));
 	    fw.write(stats);
 	    fw.close();
 
 	    log.info(stats);
-	    // store graph
-	    storeSubgraph();
 	    tx.success();
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
@@ -422,6 +449,7 @@ public class SubgraphExtraction {
 
 	for (String key : e.getPropertyKeys()) {
 	    props.put(key, e.getProperty(key));
+	    propertyCnt++;
 	}
 	return gson.toJson(props);
     }
