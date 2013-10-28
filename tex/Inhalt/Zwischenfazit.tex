@@ -1,0 +1,426 @@
+\section{Zusammenfassung, Vergleich und Auswahl}
+
+In diesem Abschnitt werden die Ergebnisse der vorangegangenen funktionalen Analyse zusammengefasst. Die tabellarische, kategorisierte Gegenüberstellung der Eigenschaften betrachteter Graphdatenbanksysteme dient als Bewertungsgrundlage für die Eignung im beschriebenen Forschungsvorhaben. Ziel ist es, die Menge der Systeme anhand ihrer funktionalen Eigenschaften weiter einzugrenzen und die ausgewählten GDBMS in der sich anschließenden technischen Analyse hinsichtlich ihrer Leistungsfähigkeit final einander gegenüberzustellen.
+
+\paragraph*{Kategorisierung und Dokumentation}
+
+In Tabelle \ref{tab:zusammenfassung_dokumenation} werden allgemeine Informationen zusammengefasst und die Systeme in die in Abschnitt \ref{subsec:gdbms} vorgestellten Kategorien eingeteilt.
+
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[h]
+	\centering
+	\begin{footnotesize}
+   	\begin{tabular}{|m{3.1cm}|>{\centering}m{2.8cm}|>{\centering}m{2.8cm}|>{\centering}m{3.1cm}|>{\centering\arraybackslash}m{3cm}|}
+	\hline
+	\textbf{GDBMS} & \textbf{Neo4j} & \textbf{HyperGraphDB\linebreak~(BerkeleyDB)} & \textbf{OrientDB} & \textbf{Titan\linebreak~(BerkeleyDB)} \\   
+   	\hline
+   	\multicolumn{5}{|c|}{\textbf{Allgemeines}} \\
+	\hline
+   	\textbf{Hersteller} & Neo Technology & Kobrix Software & Orient Technologies & Aurelius \\
+    \textbf{Lizenz} & GPLv3 & LGPL & Apache 2.0 & Apache 2.0 \\
+    \textbf{Version (Jahr)} & 2.0.0-M04 (2013) & 1.2 (2012) & 1.5.1 (2013) & 0.3.2 (2013) \\
+    \textbf{Sprache} & Java, Scala & Java & Java & Java \\
+    \textbf{Dokumentation} & +++ & ++ & + & ++ \\
+    \textbf{Besonderheiten} & - & offene Architektur & mehrere Datenbanken, Rechteverwaltung & - \\
+    \hline
+    \multicolumn{5}{|c|}{\textbf{Kategorisierung}} \\
+    \hline
+    \textbf{Verarbeitung} & nativ & nicht-nativ & nativ & nativ \\
+    \textbf{Speicherung} & nativ & nicht-nativ & nicht-nativ & nicht-nativ \\
+    \textbf{Eingebettet} & \checkmark & \checkmark & \checkmark & \checkmark \\
+    \textbf{Client-Server} & \checkmark & - & \checkmark & \checkmark \\
+    \textbf{Disk-zentriert} & \checkmark & je nach Speichersystem & \checkmark & je nach Speichersystem \\
+    \textbf{Hauptspeicher-zentriert} & - & - & - & - \\ 
+   % \textbf{Datenbanken} & eine & eine & mehrere & eine \\
+   \hline
+   	\end{tabular} 
+	\end{footnotesize}
+	\setlength{\belowcaptionskip}{0.25cm}	
+	\caption[Zusammenfassung: Allgemeines und Kategorisierung]{Allgemeine Informationen zu den verglichenen Graphdatenbanksystemen und deren Kategorisierung.}
+	\label{tab:zusammenfassung_dokumenation}
+\end{table}
+\renewcommand{\arraystretch}{1} 
+
+Zur Analyse eines Systems ist die offizielle Dokumentation erster Anlaufpunkt. Neo4j verfügt über eine umfassende, detaillierte und vor allem aktuelle Dokumentation, welche ausführlich auf Zugriffsmechanismen eingeht und auch Implementierungstechniken kurz beschreibt. Im Gegensatz dazu ist die Dokumentation zu OrientDB in Teilen unvollständig und mit dem aktuellen Entwicklungsstand des GDBMS nicht konsistent. Insbesondere bei der Analyse der für Datenbanksysteme wichtigen Transaktionsverwaltung musste auf den Quelltext zurückgegriffen werden. Generell konzentriert sich die Dokumentation von OrientDB auf die Verwendung als Dokumentendatenbank, die graphenorientierten Erweiterungen von SQL werden nur anhand minimalistischer Beispiele beschrieben.\\
+Die Dokumentationen zu HyperGraphDB und Titan bieten gut strukturierte, aktuelle Informationen; HyperGraphDB geht dabei auch auf Implementierungsdetails ein und Titan profitiert von den sehr guten Dokumentationen des TinkerPop-Projektes. Eine Quelltextrecherche war jedoch auch bei diesen Systemen im Zusammenhang mit Transaktions- und Persistenzverwaltung notwendig. Neben den Dokumentationen bieten alle Hersteller offizielle Mailinglisten an, dabei sind die Listen von Neo4j, OrientDB und Titan im Vergleich zu HyperGraphDB deutlich aktiver. Insbesondere bei Neo4j entsteht der Eindruck, dass sich zahlreiche Entwickler und Nutzer einbringen, neben der offiziellen Dokumentation finden sich viele Präsentationen, Blog-Artikel, Twitter-Nachrichten oder Forenbeiträge mit Bezug zum GDBMS und dessen Anwendungen.
+
+Die Kategorisierung verdeutlicht, dass nur Neo4j als vollständig natives GDBMS eingeordnet werden kann, da es als einziges das PGM auf ein explizit dafür entwickeltes Speichersystem abbildet. Die Einbettung in Java-Anwendungen ist in allen Systemen möglich. HyperGraphDB bietet keine Unterstützung für den entfernten Zugriff und muss bei Bedarf erweitert werden. Ein hauptspeicher-zentriertes Speichersystem wird von keinem der Systeme unterstützt.
+
+%Neo4j
+%	+ sehr gute, aktuelle Dokumentation	
+%	+ Support auf Mailingliste
+%	+ aktive Community (Stackoverflow, Mailing List. viele Präsentationen)
+%	+ im Entwicklungsstand am weitesten fortgeschritten
+%	+ nur wenig Quelltextrecherche erforderlich
+%
+%HyperGraphDB
+%	+ gute Dokumentation
+%	- wird hauptsächlich von einer Person entwickelt
+%		Vorteil: gut strukturierter Quelltext
+%		Nachteil: langsame Weiterentwicklung im Gegensatz zu den verglichenen Systemen
+%	+ Support auf Mailingliste (diese ist jedoch nur schwach frequentiert)
+%	- kaum zusätzliches Material
+%	+ an vielen Stellen auf Erweiterung ausgelegt
+%	- Quelltextrecherche war notwendig (Transaktionsverwaltung / Caching)
+%
+%OrientDB
+%	- Dokumentation wirkt umfangreich ist jedoch teilweise unvollständig und inkonsistent mit aktuellem Entwicklungsstand
+%	- Zugriffsmechanismen im Graphenmodell: widersprüchliche Dokumentation, wenig Beispiele
+%	- viel Quelltextrecherche (Transaktionsverwaltung, Persistenz- und Cacheverwaltung)
+%	+ Aktivität und Support auf Mailingliste	
+%
+%Titan
+%	+ gute Doku für junges Projekt (fehlende Dokumentation der Persistenzverwaltung)
+%	+ gute Integration in TinkerPop-Projekt als Quasi-Standard
+%	- Quelltextrecherche für Persistenz
+%	+ durch Wiederverwendung existierender Lösungen -> Konzentration auf graphenorientierte Verarbeitung
+%	+ verteilte Graphen
+%	+ bei Fragen Support auf Mailingliste
+
+\paragraph*{Datenmodell}
+
+Bei der Analyse des jeweiligen Datenmodells wurde festgestellt, dass eine Modellierung entsprechend dem PGM in allen Systemen möglich ist. Eine sich daraus ergebende weitere Gemeinsamkeit ist die hohe Flexibilität bezüglich Schemaänderungen, ohne dass bestehende Nutzdaten beeinflusst werden. Hierdurch eignen sich die Systeme in besonderem Maße für die Datenintegration heterogener Geschäftsinformationssysteme. In Tabelle \ref{tab:zusammenfassung_datenmodell} sind die wichtigsten Merkmale gegenüberstellt.
+
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[h]
+	\centering
+	\begin{footnotesize}
+   	\begin{tabular}{|m{3.1cm}|>{\centering}m{2.8cm}|>{\centering}m{2.8cm}|>{\centering}m{3.1cm}|>{\centering\arraybackslash}m{3cm}|}
+	\hline
+	\textbf{GDBMS} & \textbf{Neo4j} & \textbf{HyperGraphDB} & \textbf{OrientDB} & \textbf{Titan} \\   
+%    \hline
+%    \multicolumn{5}{|c|}{\textbf{Datenmodell}} \\
+    \hline
+    \textbf{Datenmodell} & PGM & PHGM & PGM & PGM \\
+    \textbf{Typsystem} & - & \checkmark (Klassen) & \checkmark (Klassen) & \checkmark (Attributschlüssel, Kantenbezeichner) \\
+    \textbf{Vererbung} & - & mehrfach & einfach & - \\
+	\textbf{Knotenbezeichner} & \checkmark  (optional) & \checkmark & \checkmark & - \\
+	\textbf{Kantenbezeichner} & \checkmark & \checkmark  (optional) & \checkmark & \checkmark \\
+	\textbf{Attributschema} & - & \checkmark & \checkmark (optional) & - \\
+	\textbf{dynamische Schemaänderung} & - & \checkmark (Werteaustausch) & \checkmark & - \\
+	\textbf{attributbezogene Integritätsbedingungen} & \texttt{UNIQUE} & Datentyp, \texttt{UNIQUE} & Datentyp, Wertebereich (explizit), \texttt{UNIQUE}, \texttt{NOT NULL} & Datentyp, \texttt{UNIQUE} \\
+	\textbf{referentielle Integrität} & \checkmark & \checkmark & \checkmark & \checkmark \\
+	\textbf{Besonderheiten} & mehrere Knotenbezeichner & n-äre Relationen höherer Ordnung & Multi-Datenmodell & Kardinalitäten, unidirektionale Kanten \\
+   	\hline
+   	\end{tabular} 
+	\end{footnotesize}
+	\setlength{\belowcaptionskip}{0.25cm}	
+	\caption[Zusammenfassung: Datenmodell und Schemaverwaltung]{Gegenüberstellung der wesentlichen Eigenschaften des jeweiligen Datenmodells.}
+	\label{tab:zusammenfassung_datenmodell}
+\end{table}
+\renewcommand{\arraystretch}{1}
+
+Neo4j bietet nur wenig Funktionalität für die Einflussnahme auf das Schema der hinterlegten Daten und übergibt einen Großteil der Verantwortung hinsichtlich Schemaverwaltung und Konsistenzerhaltung an die Anwendung. Eine Erweiterung des PGM stellen die Knotenbezeichner dar, mit ihnen lassen sich Knoteninstanzen beliebig vielen Gruppen zuordnen, was zum Beispiel für die Unterteilung in Stammdaten und transaktionale Daten genutzt werden kann. Die Einbettung geschachtelter Objekte als Attributwerte ist in Neo4j nicht möglich und muss bei Bedarf durch dedizierte Knoten realisiert werden.\\
+HyperGraphDB hingegen stellt mit dem Atom-Modell einen generischen Ansatz für die Abbildung komplexer Strukturen mit n-ären und höherwertigen Beziehungen zur Verfügung. Eine Folge der hohen Ausdrucksstärke ist die stellenweise wenig intuitive Verwendung, so muss der Ordnung innerhalb der Zielmenge grundsätzlich eine Semantik zugewiesen werden. Da es sich bei den beschriebenen Informationsnetzwerken vorrangig um binäre Beziehungen handelt und n-äre Relationen auch durch mehrfache binäre Relationen ausgedrückt werden können, ist die Implementierung des PHGM kein wesentlicher Vorteil gegenüber den anderen Systemen. Ungeachtet dessen erlaubt HyperGraphDB die Definition komplexer Typsysteme und eine Verwendung beliebiger Objektkompositionen zur Beschreibung der Nutzdaten.
+
+Im Gegensatz zu Neo4j und Titan kann in OrientDB unter Verwendung von Dokumentenklassen eine Schemadefinition realisiert werden, dabei ist insbesondere die Vielzahl attributbezogener Integritätsbedingungen hervorzuheben. Die Möglichkeit, Attribute als obligatorisch zu deklarieren, stellt dabei einen Kompromiss zwischen selbstbeschreibender und strukturierter Datenhaltung dar. Durch die Unterstützung eingebetteter Beziehungen sind beliebige Objektkompositionen an Knoten- und Kanteninstanzen möglich.\\
+Die Implementierung des PGM in Titan ist der Umsetzung in Neo4j ähnlich, eine Definition von Knotenbezeichnern wird jedoch nicht unterstützt. Das GDBMS erlaubt als einziges im Vergleich die mehrfache Verwendung von Attributschlüsseln an Knoten und Kanten sowie die Einschränkung der Kardinalität der an einer Beziehung beteiligten Instanzen. Infolge der Definition von Attributschlüsseln lässt sich darüber hinaus der Datentyp und somit der Wertebereich der Attributwerte einschränken. Titan unterstützt im Gegensatz zu Neo4j auch assoziative Arrays als Datentyp und erlaubt somit das Abbilden verschachtelter Objekte. Das Konzept der knoten-zentrierten Indizes ist ein weiteres Alleinstellungsmerkmal und kann insbesondere in umfangreichen Informationsnetzwerken mit einer Vielzahl verschiedener, attributierter Beziehungen vorteilhaft sein.
+
+%- generell
+%	- alle Systeme sind flexibel hinsichtlich Schemaänderungen
+%% Tabelle
+%- Neo4j: PGM
+%	+ Knotenlabel (mehrere)
+%	+ flexible Schemaänderung
+%	- keine Objekteinbettung
+%	- keine Schemadefinition für Attribute	
+%	- viel Verantwortung wird an die Anwendung übergeben
+
+%- HyperGraphDB: 
+%	+ Atom-Modell sehr generisch -> für den Anwendungsfall jedoch nicht zwingend erforderlich	
+%	+ mächtiges Typsystem, Vererbungshierarchien, Schema durch Klassendefinition
+%	+ flexible Schemaänderung
+%	+ umfangreiches Typsystem
+%	- keine Updates, Änderungen durch Werteaustausch
+%	- kein direkter Zugriff auf Nachbarschaft
+%	- komplizierte Definition der Semantik der Position in Zielmenge
+
+%- OrientDB:
+%	+ Multi-Modell-Ansatz (Dokumentenmodell als Basis) 
+%	+ Schema durch Klassendefinition (+ einfache Vererbung)
+%	+ umfangreiche attributbezogene Integritätsbedingungen
+%	+ Rechteverwaltung
+%	- bietet zwar vielfältige Einsatzmöglichkeiten, der Fokus scheint jedoch auf der dokumentenorientierten Verwendung und weniger auf vernetzten Informationen zu liegen	
+%	- Dokumentmodell als Basis
+%	- PGM auf Dokumente abgebildet
+	
+%- Titan:
+%	+ Definition von TitanKey und TitanLabel zur Optimierung der Speicherung (Performance)
+%	+ erlaubt mehrfache Verwendung von Attributschlüsseln an Knoten / Kante
+%	+ Einschränkung der Kardinalität von Beziehungen
+%	- keine Schemadefinition an Knoten und Kanten
+%	+ Einschränkung der Attribute
+%	+ Einschränkung Datentypen
+%	+ verschachtelte Attributwerte (Maps)
+%	+ Erweiterungen des PGM
+%		+ Vertex-centric Indices
+%		+ unidirektionale Kanten
+%		+ Einschränkung der Kardinalität
+%		+ als einziges System mehrfache Verwendung eines Attributschlüssels an der Instanz
+
+
+\paragraph*{Zugriffsmechanismen}
+
+Die Systeme wurden hinsichtlich ihrer Eignung für die in Abschnitt \ref{subsec:graph_operations} beschriebenen graphenspezifischen Operationen untersucht, Tabelle \ref{tab:zusammenfassung_zugriffsmechanismen} fasst die Ergebnisse zusammen.
+
+% CRUD alle
+Die Manipulation der Datenbasis ist in allen Systemen möglich, wird zusätzlich ein Typsystem angeboten, stehen entsprechende Methoden für dessen Definition bereit. Beim Auslesen der Daten kann die Selektion von Teilmengen durch die Angabe von Prädikaten realisiert werden. Ausgehend von Knoten- und Kanteninstanzen erlauben die Systeme den Zugriff auf die jeweiligen inzidenten Mengen und das Auslesen ihrer Attribute. Folglich eignen sich die imperativen Java APIs in allen Systemen für die Implementierung eigener Graphalgorithmen.
+
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[h]
+	\centering
+	\begin{footnotesize}
+   	\begin{tabular}{|m{3cm}|>{\centering}m{2.9cm}|>{\centering}m{2.9cm}|>{\centering}m{2.9cm}|>{\centering\arraybackslash}m{2.9cm}|}
+	\hline	
+   	 \textbf{GDBMS} & \textbf{Neo4j} & \textbf{HyperGraphDB} & \textbf{OrientDB} & \textbf{Titan} \\   
+   	\hline
+   	\multicolumn{5}{|c|}{\textbf{Zugriffsmechanismen}} \\
+	\hline
+   	\textbf{Java API} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Traversal API} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Anfragesprachen} & Cypher, Gremlin & Prädikate\newline~(Java API) & OrientDB-SQL, Gremlin & Gremlin \\
+   	\hline
+	\multicolumn{5}{|c|}{\textbf{Operationen}} \\
+   	\hline
+   	\textbf{CRUD} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Mengenorientiert} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Traversierung} & \checkmark & \checkmark & \checkmark & \checkmark \\
+   	\textbf{Mustersuche} & \checkmark & - & \checkmark & \checkmark \\
+   	\textbf{Aggregation} & \checkmark & - & \checkmark & \checkmark \\
+   	\textbf{Gruppierung} & \checkmark & - & \checkmark & \checkmark \\
+   	\textbf{Summierung} & - & - & - & - \\
+   	\textbf{Metriken} & - & - & - & - \\
+   	\hline
+	\multicolumn{5}{|c|}{\textbf{Verfügbare Algorithmen}} \\   	
+   	\hline
+   	\textbf{Algorithmen\newline~(nativ)} & Dijkstra, A*, BFS, DFS & Dijkstra & - & - \\
+   	\textbf{Algorithmen\newline~(TinkerPop)} & Bellman-Ford & - & Dijkstra, Bellman-Ford, A*, BFS, DFS & Dijkstra, Bellman-Ford, A*, BFS, DFS \\
+   	\hline
+   	\end{tabular} 
+	\end{footnotesize}
+	\setlength{\belowcaptionskip}{0.25cm}	
+	\caption[Zusammenfassung: Zugriffsmechanismen]{Gegenüberstellung der Zugriffsmechanismen und unterstützter Operationen in den betrachteten GDBMS.}
+	\label{tab:zusammenfassung_zugriffsmechanismen}
+\end{table}
+\renewcommand{\arraystretch}{1}
+
+% Neo4j
+Neo4j bietet im Vergleich den größten Funktionsumfang für die Verarbeitung der hinterlegten Daten an. Für die algorithmische Traversierung steht das Traversal Framework zur Verfügung: Die Durchlaufreihenfolge, das mehrfache Betrachten von Instanzen sowie Filterkriterien für Kantenbezeichner und -richtung können konfiguriert werden; durch die Einbettung in Java lassen sich beliebige Entscheidungslogiken implementieren. Das Prüfen der Erreichbarkeit ist folglich ebenfalls möglich. Das GDBMS implementiert darüber hinaus eigene Graphalgorithmen zur Suche kürzester Pfade in gewichteten und ungewichteten Graphen und für das Finden aller Wege zwischen definierten Instanzen, es unterstützt dabei als einziges die Definition von Filterkriterien.\\
+Neben dem Traversal Framework können alternativ die Anfragesprachen Gremlin und Cypher für die Traversierung genutzt werden. Kernelement von Cypher ist das Kombinieren mehrerer abstrakter Wegdefinitionen zu Mustergraphen. Der deklarative Charakter ermöglicht dabei ein dem PGM entsprechendes intuitives Formulieren komplexer Strukturen. Mustergraphen lassen sich optional an die Datenbasis binden und ihren Elementen Variablen zuweisen, deren Instanzmengen können wiederum durch Prädikate eingeschränkt werden.\\
+Eine topologische Summierung des Graphen wird von keinem der Systeme unterstützt. Die Aggregation von Nutzdaten und die damit verbundene Gruppierung sind in Neo4j möglich. Hierfür bietet Cypher eine Vielzahl von Funktionen zur Berechnung von Aggregaten sowie zur Manipulation der Ergebnismenge.
+
+% HyperGraphDB
+HyperGraphDB weist im Vergleich den geringsten Funktionsumfang graphenspezifischer Operationen auf, bietet jedoch durch eine offene Architektur die Möglichkeit eigener Implementierungen. Der Zugriff auf die Datenbasis erfolgt ausschließlich in Java. Wie auch bei Neo4j wird ein Framework für die Traversierung des Graphen bereitgestellt, dieses ist jedoch weniger mächtig. Filterkriterien für Knoten- und Kanteninstanzen lassen sich durch Prädikate formulieren, alle weiteren Eigenschaften der Traversierung müssen via Java realisiert werden. Sollen Pfadinstanzen als Ergebnis zur Verfügung stehen, so liegt dies in der Verantwortung des Programmierers.\\
+Die Definition von Mustergraphen ist in HyperGraphDB nicht möglich, das integrierte, prädikat-basierte Anfragesystem ist ausschließlich mengenorientiert und erlaubt keine Definition von Variablen zur Extraktion von Teilgraphen. Das Aggregieren und Gruppieren von Nutzdaten muss ebenfalls durch anwendungsseitig implementierte Funktionen erfolgen.
+
+% OrientDB
+Der in OrientDB verwendete SQL-Dialekt eignet sich primär für die mengenorientierte Verarbeitung semi-strukturierter Daten in Form von Dokumenten. Die von SQL gewohnte Aggregation und Gruppierung von Nutzdaten wird in diesem Zusammenhang unterstützt. Wird OrientDB als GDBMS genutzt, müssen für die Datenmanipulation dedizierte Befehle verwendet werden. Das Traversieren erfolgt durch einen speziellen SQL-Operator, Filter- und Abbruchkriterien werden durch Selektion realisiert, was bei einer komplexen Traversierung die Schachtelung von Anfragen erfordert. Insgesamt betrachtet sind die graphenspezifischen SQL-Erweiterungen wenig intuitiv, in Verbindung mit der unzureichenden, inkonsistenten Dokumentation gestaltete sich ihre Verwendung im Vergleich zu Cypher und Gremlin als schwierig bis unmöglich. Im Rahmen der Analyse kam es darüber hinaus zu falschen Ergebnissen der integrierten Pfadsuchalgorithmen, ein entsprechender Eintrag auf der Mailingliste blieb bisher unbeantwortet.\footnote{Die Fehlerbeschreibung kann unter \url{https://groups.google.com/forum/?hl=de\#!topic/orient-database/gsw44qcXtMM} nachvollzogen werden.} Die Verwendung des SQL-Dialektes für die Realisierung einer Mustersuche innerhalb des Graphen ist nicht dokumentiert.\\
+Da OrientDB die Blueprints API implementiert, lässt sich Gremlin für graphenspezifische Operationen einsetzen. Die im Zusammenhang mit Titan beschriebene Traversierung und Mustersuche ist somit auch in OrientDB anwendbar. Weiterhin stehen für das Berechnen kürzester Pfade die im TinkerPop-Projekt angebotenen Graphalgorithmen zur Verfügung.
+
+% Titan
+Titan ist eine native Implementierung der Blueprints API und bietet Gremlin als primäre Anfragesprache an. Diese kann sowohl für die Manipulation der Datenbasis als auch für Traversierung und Mustersuche genutzt werden. Die Sprache wurde speziell für das PGM entwickelt und eignet sich in besonderem Maße für die intuitive Beschreibung abstrakter Wege. Durch die Integration in Groovy bzw. Java kann Programmlogik in Form von Seiteneffekten während der Traversierung ausgeführt werden, somit lassen sich zum Beispiel das Berechnen von Aggregaten oder eine Abbruchbedingung für Pfadsuchen realisieren. Analog zu OrientDB können die im TinkerPop-Projekt angebotenen Graphalgorithmen in Titan verwendet werden.\\
+Die Definition eines Mustergraphen ist in Gremlin ebenfalls möglich, sie gestaltet sich im Vergleich zu Cypher jedoch aufwendiger, da eine Fragmentierung des Musters nur durch mehrere Anweisungen und das Zwischenspeichern von Ergebnismengen möglich ist. Alternativ kann das Konzept des Backtracking eingesetzt werden, dies führt jedoch zu komplexen, möglicherweise unübersichtlichen Anfragen. Auch hier lässt sich eine beliebige Anzahl von Konstanten und Variablen innerhalb des Musters festlegen und Instanzen gefundener Teilgraphen können als Ergebnis zurückgegeben werden.
+
+\paragraph*{Transaktionsverwaltung}
+
+Bei der Speicherung von Unternehmensdaten besteht ein hoher Anspruch an die Einhaltung der Datenkonsistenz und die Toleranz gegenüber Systemfehlern. Aus diesem Grund wurde die Einhaltung der ACID-Anforderungen analysiert, Tabelle \ref{tab:zusammenfassung_transaktion} fasst die Ergebnisse zusammen.
+
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[h]
+	\centering
+	\begin{footnotesize}
+   	\begin{tabular}{|m{3cm}|>{\centering}m{2.9cm}|>{\centering}m{2.9cm}|>{\centering}m{2.9cm}|>{\centering\arraybackslash}m{2.9cm}|}
+	\hline	
+   	 \textbf{GDBMS} & \textbf{Neo4j} & \textbf{HyperGraphDB (BerkeleyDB)} & \textbf{OrientDB} & \textbf{Titan (BerkeleyDB)} \\   
+   	\hline
+%	\multicolumn{5}{|c|}{\textbf{Transaktionen}} \\   	
+%	\hline
+	\textbf{ACID-Eigenschaften} & ACID & ACI(D) & ACI(D) & ACID \\
+   	\textbf{Isolationsebene} & \texttt{READ COMMITTED} & \texttt{SERIALIZABLE} & \texttt{SERIALIZABLE} (embedded) & \texttt{REPEATABLE READ} \\
+   	\textbf{Synchronisation\newline~(GDBMS)} & RX-Sperrverfahren & MVCC & MVCC & RX-Sperrverfahren \\
+   	\textbf{Synchronisation\newline~(Storage)} & - & RX-Sperrverfahren & - & RX-Sperrverfahren \\
+   	\textbf{Schachtelung} & \checkmark (kein isoliertes Rücksetzen) & \checkmark (isoliertes Rücksetzen) & - & \checkmark (keine Isolation) \\
+   	\hline
+	\end{tabular} 
+	\end{footnotesize}
+	\setlength{\belowcaptionskip}{0.25cm}	
+	\caption[Zusammenfassung: Transaktionsverwaltung]{Gegenüberstellung von ACID-Eigenschaften und Transaktionsmechanismen der betrachteten GDBMS.}
+	\label{tab:zusammenfassung_transaktion}
+\end{table}
+\renewcommand{\arraystretch}{1}
+
+Es zeigt sich, dass Neo4j die ACID-Eigenschaften erfüllt, jedoch die im Vergleich geringste Isolationsebene aufweist. Sollen im parallelen Betrieb entsprechende Mehrbenutzeranomalien vermieden werden, so liegt dies analog zu Schemaverwaltung und Konsistenzerhaltung in der Verantwortung der Anwendung. Da jedoch das Forschungsvorhaben auf den analytischen und somit vorrangig lesenden Betrieb ausgerichtet ist, kann die geringe Isolationsebene toleriert werden.\\
+HyperGraphDB nutzt BerkeleyDB für die Einhaltung der ACID-Eigenschaften. Für eine bessere Performanz wird dabei auf eine garantierte Dauerhaftigkeit von Änderungen verzichtet, diese lässt sich jedoch manuell aktivieren. Für den isolierten Zugriff auf den Cache implementiert das GDBMS ein MVCC-Verfahren, welches die höchste Isolationsebene garantiert. HyperGraphDB bietet als einziges der betrachteten Systeme das isolierte Rücksetzen geschachtelter Transaktionen an und eignet sich somit speziell für langlaufende Änderungstransaktionen, die auf mehrere untergeordnete Transaktionen aufgeteilt werden.\\
+Ein Systemausfall kann auch in OrientDB zum Verlust der Änderungen erfolgreich beendeter Transaktionen führen. Um diesem Szenario zu begegnen, besteht die Möglichkeit, Wiederherstellungsinformationen unter Inkaufnahme eines Geschwindigkeitsverlustes auf den Externspeicher zu forcieren. OrientDB garantiert im eingebetteten Betrieb die höchste Isolationsebene, dies gilt jedoch nicht für den entfernten Zugriff.\\
+Die ACID-Eigenschaften von Titan variieren je nach eingesetztem Speichersystem, die Verwendung von BerkeleyDB erfolgt mit Standardeinstellungen, was folglich die Dauerhaftigkeit von Transaktionen garantiert. Das GDBMS selbst stellt die Einhaltung definierter Integritätsbedingungen, wie zum Beispiel \texttt{UNIQUE}-Bedingungen, durch das Setzen von Sperren sicher.
+
+Die Verwendung eines pessimistischen Synchronisationsverfahrens führt dazu, dass sich entsprechende Systeme vorrangig für kurze Änderungstransaktionen eignen, da parallel ausgeführte Transaktionen blockiert werden können. Im Forschungsvorhaben sollen hauptsächlich Lesetransaktionen für die lokale Analyse des Graphen durchgeführt werden, Änderungen hingegen erfolgen in periodischen Bulk-Load-Prozessen. Die Verwendung eines RX-Sperrverfahrens stellt somit im Vergleich kein Defizit dar. Zu beachten ist, dass alle GDBMS die Atomarität von Änderungen durch deren Zwischenspeicherung im Hauptspeicher sicherstellen, was bei langen Lese- oder Änderungstransaktionen zu Problemen führen kann.
+
+\paragraph*{Persistenz-, Cache- und Indexverwaltung}
+
+Die Repräsentation des Graphen auf dem Externspeicher bzw. im verwendeten Speichersystem wurde ebenfalls betrachtet, um auf dieser Grundlage die Performance graphenspezifischer Operationen theoretisch einschätzen zu können. Darüber hinaus spielen Caches und Indexstrukturen beim Zugriff auf die hinterlegten Informationen eine wichtige Rolle, weswegen diese ebenfalls untersucht wurden. Tabelle \ref{tab:zusammenfassung_persistenz} fasst die Ergebnisse der Analyse zusammen.
+
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[h]
+	\centering
+	\begin{footnotesize}
+   	\begin{tabular}{|m{3cm}|>{\centering}m{2.9cm}|>{\centering}m{2.9cm}|>{\centering}m{2.9cm}|>{\centering\arraybackslash}m{2.9cm}|}
+	\hline
+   	 \textbf{GDBMS} & \textbf{Neo4j} & \textbf{HyperGraphDB\linebreak~(BerkeleyDB)} & \textbf{OrientDB} & \textbf{Titan} \\   
+ 	\hline
+ 	\multicolumn{5}{|c|}{\textbf{Persistenzverwaltung}} \\
+	\hline
+	\textbf{Realisierung} & Store-Konzept & Key-Value-Modell & Dokument-Modell & Key-Column-Value-Modell \\
+	\textbf{Trennung Topologie, Nutzdaten} & \checkmark & \checkmark & - & - \\
+	\textbf{Satzlänge} & fest & variabel & variabel & variabel \\
+	\textbf{Zeitkomplexität Zugriff Nachbarschaft} & konstant & logarithmisch & konstant & logarithmisch (BerkeleyDB), konstant (Cassandra)\\
+	\textbf{Indexfreie Adjazenz} & \checkmark & - & \checkmark & - (BerkeleyDB), \checkmark (Cassandra) \\
+	\hline	
+	\multicolumn{5}{|c|}{\textbf{Cacheverwaltung}} \\
+	\hline
+	\textbf{Caches} & MMF, Filesystem-Cache (LFU), Objekt-Cache (Schwache Referenzen) & Atomcache (LRU), Inzidenzcache (LRU) & MMF, L2 Cache (FIFO), L1 Cache (Schwache Referenzen) & Transaktionscache \\
+	\hline
+	\multicolumn{5}{|c|}{\textbf{Indexverwaltung}} \\   	
+   	\hline
+	\textbf{Primärindex} & \checkmark & \checkmark & \checkmark & \checkmark \\
+	\textbf{Sekundärindex} & \checkmark & \checkmark & \checkmark & \checkmark \\
+	\textbf{mehrdimensional} & - & - & \checkmark & - \\
+	\textbf{Aktualisierung} & automatisch & automatisch & automatisch & automatisch \\
+	\textbf{Externe Indexstrukturen} & Apache Lucene, Neo4j Spatial & - & - & Elastic Search, Apache Lucene \\
+	%\textbf{Besonderheiten} & - & - & - & Knoten-zentrierte Indizes \\
+   	\hline
+	\end{tabular} 
+	\end{footnotesize}
+	\setlength{\belowcaptionskip}{0.25cm}	
+	\caption[Zusammenfassung: Persistenz-, Cache- und Indexverwaltung]{Gegenüberstellung der Persistenz-, Cache- und Indexverwaltung in den untersuchten GDBMS.}
+	\label{tab:zusammenfassung_persistenz}
+\end{table}
+\renewcommand{\arraystretch}{1}
+
+% Persistenzverwaltung
+
+% Neo4j
+Im Vergleich bietet Neo4j als einziges GDBMS eine Speicherung an, die explizit für die Abbildung eines Property-Graphen entwickelt und optimiert wurde. Die Differenzierung in Topologie und Nutzdaten wird durch eine Aufteilung in mehrere Stores weiter verfeinert. Die Verwendung fester Satzlängen und die Verwaltung doppelt verketteter Listen ermöglichen es, bereits in der physischen Repräsentation die Nachbarschaft eines Knotens unabhängig von der Größe des Graphen effizient zu berechnen, ohne dass dabei ein zusätzlicher Index berücksichtigt werden muss. Ein Nachteil, welchen jedoch alle untersuchten GDBMS aufweisen, ist die fehlende Abbildung einer logischen auf eine physische Adjazenz.
+
+%- Neo4j: nativ
+%	+ Trennung von Topologie und Daten
+%	+ physische Trennung feingranular durch Store-Konzept
+%	+ effiziente Berechnung physischer Positionen in Folge der festen Satzlänge von Knoten und  Kanten versprechen hohe Performance beim Traversieren des Graphen	
+%	+ indexfreie Adjazenz wird erreicht
+%	- Fragmentierung der Stores durch Löschen einzelner Einträge
+%	- logisch benachbarte Knoten sind nicht zwingend physisch benachbart
+
+% HyperGraphDB
+HyperGraphDB trennt ebenfalls Topologie und Nutzdaten, dabei ist jedoch zu beachten, dass das Typsystem Teil des Graphen ist. Die Abbildung auf mehrere Key-Value-Datenbanken in BerkeleyDB führt dazu, dass die Performanz der Traversierung von der Größe des gesamten Graphen abhängt, da jeder Zugriff auf ein Graphelement eine Suche im B-Baum zur Folge hat. Dies gilt sowohl für das Bestimmen der Inzidenzliste eines Atoms, als auch für das Auslesen der Nutzdaten. Dass sich diese Abbildung negativ auf die Gesamtperformance des Systems auswirkt, wurde bereits in \cite{Dominguez-Sal:2010:SGD:1927585.1927590} und \cite{Gehrels:2013} gezeigt.
+ 
+%- HyperGraphDB: nicht-nativ
+%	+ Trennung von Topologie und Daten
+%	- zu beachten: Typsystem ebenfalls Teil der topologischen Daten
+%	- keine indexfreie Adjazenz mit BerkeleyDB
+%	- Traversierung: O(logn)
+
+% OrientDB
+OrientDB bildet den Graphen auf ein Dokumentenmodell ab und speichert dabei Nutzdaten und Beziehungsinformationen innerhalb eines Dokumentes. Eine physische Partitionierung der Datenbasis in Cluster ermöglicht es dabei, die in einer Anfrage zu berücksichtigenden Datensätze einzuschränken. Aufgrund der festen Satzlänge innerhalb eines Clusters ist der Zugriff auf die Nachbarschaft eines Knotens analog zu Neo4j in konstanter Zeit und ohne zusätzlichen Index möglich. Ungeachtet dessen weist das Speichersystem von OrientDB mehrere Defizite auf: Die Cluster-Datei stellt eine zusätzliche Indirektion im Zugriff auf die hinterlegten Daten dar, durch die variable Satzlänge im Data Segment wird beim Zugriff auf einzelne Attribute oder Beziehungen zunächst das gesamte Dokument vom Hintergrundspeicher geladen und anschließend die relevanten Informationen extrahiert. Werden darüber hinaus Kantenattribute verwendet, so sind diese in einem zusätzlichen Dokument abgelegt und stellen folglich eine weitere Indirektion im Zugriff auf die Nachbarschaft eines Knotens dar. Insbesondere das notwendige Laden des vollständigen Dokumentes stellt im Kontext des Forschungsvorhabens einen entscheidenden Nachteil dar, da Knoten und Kanten in Geschäftsinformationssystemen typischerweise eine hohe Anzahl von Attributen aufweisen. Die aufgeführten Defizite könnten eine Erklärung dafür sein, dass in \cite{Ciglan:2012} für OrientDB bei ausschließlich strukturbezogenen Benchmarks in attributierten Graphen trotz indexfreier Adjazenz das im Vergleich schlechteste Leistungsverhalten festgestellt wurde. 
+
+%- OrientDB: nicht-nativ
+%	- keine Trennung von Topologie und Daten (alles im Dokument)
+%	+ physisches Clustering semantischer Gruppierungen
+%	- Traversierung: O(N\_v)
+%	- schlechte Performance durch:	
+%		- zusätzliche Indirektion durch Cluster-Datei beim Zugriff auf eigentliche Daten
+%		- Deserialisierung erscheint ineffizient (evtl. Verweise auf ältere Benchmarks \cite{Ciglan:2012})	
+%		- attributierte Kanten sind zusätzliche Indirektion\url{https://github.com/orientechnologies/orientdb/wiki/Performance-Tuning-Blueprints} -> können sich negativ auf die Performance beim Traversieren auswirken
+%		- Fragmentierung der Stores	
+
+% Titan
+Titan bildet den Graphen auf ein Key-Column-Value-Modell ab, eine Trennung von Topologie und Nutzdaten erfolgt dabei nicht, da sowohl Knotenattribute als auch deren inzidente Kanten innerhalb eines Datensatzes abgelegt werden. Im Gegensatz zu OrientDB erlaubt Titan jedoch den direkten physischen Zugriff auf einzelne Attributwerte unter Angabe eines Attributschlüssels sowie den Zugriff auf inzidente Kanten anhand ihres Bezeichners. Zusätzlich kann durch die Definition eines Primärschlüssels der Zugriff auf Kanten beschleunigt werden, ein redundantes Speichern der Kantenattribute an Start- und Zielknoten ermöglicht deren effizientes Auslesen, erfordert bei Attributänderungen jedoch das Sperren beider Datensätze. Ein wesentlicher Nachteil des GDBMS ergibt sich aus der Abbildung des KCV-Modells auf das KV-Modell von BerkeleyDB. Der Aufwand, die Nachbarschaft eines Knotens abzufragen, steht hierbei in einem logarithmischem Verhältnis zur Anzahl aller Knoten, Kanten und Attribute innerhalb des Graphen. Durch die Verwendung von zum Beispiel Apache Cassandra  kann diesem Problem begegnet werden.
+
+%- Titan: nicht-nativ
+%	- keine Trennung von Topologie und Daten
+%	+ direkter Zugriff auf Attribute und inzidente Kanten
+%	- hoher Aufwand bei Speicherung in KV-Store 
+%	- redundante Speicherung von Kantenattributen
+%	- Traversierung O(logn)
+%	- Ein Vorteil gegenüber OrientDB und HyperGraphDB, ist die Möglichkeit des direkten Zugriffes auf Attribute und inzidente Kanten eines Knotens unter Angabe der Knoten-Identität und der geforderten 
+%	Column.
+	
+% Cacheverwaltung
+Die Anzahl der Zugriffe auf den Hintergrundspeicher wird in allen Systemen durch den Einsatz von Caching-Mechanismen verringert. Hierfür werden vorrangig Hashtabellen in Kombination mit verschiedenen Ersetzungsverfahren eingesetzt. Aufgrund der fehlenden Cache-Synchronisation in OrientDB empfiehlt der Hersteller das Deaktivieren der Caches im Mehrbenutzerbetrieb. In Verbindung mit den genannten Defiziten der Persistenzverwaltung ist dies ein enormer Nachteil des Systems.\\
+Titan weist in der aktuellen Version das Problem auf, dass der Transaktionscache keine Verdrängung von Objekten vorsieht, was bei langen Lese- und Änderungstransaktionen zu Speicherproblemen führen kann. Generell profitieren HyperGraphDB und auch Titan von den Caching-Mechanismen der verwendeten Speichersysteme.
+
+%- generell: Beschleunigung der Zugriffe auf häufig benötige Objekte via Caches
+%	- Hashtabellen  O(1) (wenn da)
+%	
+%- OrientDB
+%	- keine Cache-Synchronisation 
+%	- Empfehlung zur Deaktivierung des Caches im parallelen Betrieb
+%- HyperGraphDB / Titan
+%	- profitieren von Caching-Mechanismen in den eingesetzten Speichersystemen
+%- Titan
+%	- Transaktionscache kann bei langen Lese- oder Änderungstransaktionen zu Speicherproblemen führen	
+%	
+% Indexverwaltung
+Alle untersuchten Systeme unterstützen die Definition von Primär- und Sekundärindizes und ermöglichen somit den effizienten Zugriff auf Knoten- und Kanteninstanzen unter Angabe eines Schlüssel-Wert-Paares. Zu beachten ist, dass HyperGraphDB und Titan systemseitig stets drei bzw. zwei Indexstrukturen verwalten, die bei Änderungsoperationen aktualisiert werden müssen und was sich möglicherweise negativ auf deren Schreibperformance auswirkt. Allein Neo4j und Titan bieten im Vergleich die Möglichkeit, Index-Frameworks wie Apache Lucene oder Elastic Search einzubinden und erlauben damit die Definition komplexerer Indexstrukturen, was insbesondere für die Analyse von Unternehmensdaten nutzbringend sein kann.
+
+%- Primär- und Sekundärindizes generell möglich
+%- Indizes werden automatisch aktualisiert
+%	- HyperGraphDB / Titan
+%		- generell drei / zwei systemseitige Indexstrukturen, welche bei Schreiboperationen berücksichtigt werden müssen -> Auswirkung auf Performance
+%- bis auf OrientDB wird eine Erweiterung um eigene Indexstrukturen dokumentiert
+%- Neo4j und Titan mit Unterstützung komplexer Indizierungsmechanismen durch Apache Lucene bzw. Elastic Search
+%- OrientDB
+%	+ mehrdimensionale Indizes
+
+\paragraph*{Verteilung und Skalierbarkeit}
+
+Für die Bewertung der Systeme im Rahmen des Forschungsvorhabens sind die redundante Speicherung zur Erhöhung der Ausfallsicherheit und die horizontale Skalierbarkeit von Zugriffen ebenfalls wichtige Faktoren. Die verwalteten Unternehmensdaten können von Beginn an sehr umfangreich sein bzw. durch stetiges Wachstum einen Umfang erreichen, der ihre Partitionierung erforderlich macht. Im Rahmen der Analyse wurden die Verteilungsmechanismen der einzelnen Systeme kurz betrachtet, Tabelle \ref{tab:skalierbarkeit} fasst dies zusammen.
+
+\renewcommand{\arraystretch}{1.25}
+\begin{table}[h]
+	\centering
+	\begin{footnotesize}
+   	\begin{tabular}{|m{2.6cm}|>{\centering}m{3cm}|>{\centering}m{3cm}|>{\centering}m{3cm}|>{\centering\arraybackslash}m{3cm}|}
+	\hline
+   	 \textbf{GDBMS} & \textbf{Neo4j} & \textbf{HyperGraphDB} & \textbf{OrientDB} & \textbf{Titan\linebreak~(Cassandra)} \\   
+ 	%\hline
+	%\multicolumn{5}{|c|}{\textbf{Verteilung}} \\
+	\hline
+	\textbf{Architektur} & Master-Slave (nur Enterprise Edition) & Peer-To-Peer Nachrichten Framework & Master-Master & Peer-To-Peer \\
+	\textbf{Replikation} & \checkmark & - & \checkmark & \checkmark \\
+	\textbf{Partitionierung} & - & - & - & \checkmark \\
+	%\textbf{Strong Consistency} & \checkmark & - & \checkmark & \checkmark \\
+	%\textbf{Eventual Consistency} & \checkmark & - & \checkmark & \checkmark \\
+	\textbf{Skalierbarkeit Lesen} & horizontal & - & horizontal & horizontal \\
+	\textbf{Skalierbarkeit Schreiben} & vertikal & - & vertikal & horizontal \\
+	\textbf{Skalierbarkeit Datenvolumen} & vertikal & - & vertikal & horizontal \\
+   	\hline
+  	\end{tabular} 
+	\end{footnotesize}
+	\setlength{\belowcaptionskip}{0.25cm}	
+	\caption[Zusammenfassung: Verteilung und Skalierbarkeit]{Datenverteilung und Skalierbarkeit der untersuchten GDBMS}
+	\label{tab:zusammenfassung_persistenz}
+\end{table}
+\renewcommand{\arraystretch}{1}
+
+Das redundante Speichern der Datenbasis und die daraus resultierende horizontale Skalierbarkeit von Lesezugriffen sind in Neo4j, OrientDB und Titan möglich. HyperGraphDB bietet zwar ein Framework für die verteilte Verwendung an, die damit verbundene Umsetzung einer Replikation ist jedoch nicht dokumentiert. Die Partitionierung der Datenbasis ist ausschließlich mit Titan möglich, welches hierfür die Verteilungsmechanismen von Apache Cassandra bzw. Apache HBase nutzt. Folglich ist ausschließlich in diesem GDBMS die horizontale Skalierbarkeit von Schreib- und Lesezugriffen sowie des Datenvolumens umsetzbar. Anzumerken sei, dass bei der physischen Verteilung des Graphen keine logische Nachbarschaft berücksichtigt wird und somit bei einer einfachen Traversierung mehrere Rechner involviert sein können.
+
+% Verteilung
+%- alle außer HyperGraphDB bieten die Möglichkeit zur Replikation 
+%	-> Ausfallsicherheit, Skalierbarkeit Lesezugriffe
+%	-> Single-Master, Multi-Master schränken Skalierbarkeit von Schreibzugriffen ein
+%	- Cassandra ermöglicht besseren, flexibleren Kompromiss aus Performance und Ausfallsicherheit
+%- Partitionierung nur in Titan möglich
+%	- bisherige Nutzung der zufälligen Zuordnung -> Weiterentwicklung bereits angekündgt
+%- Titan
+%	+ bietet als einziges GDBMS Replikation und Partitionierung und somit eine horizontale Skalierbarkeit von Zugriffen und Datenvolumen
+%	+ Fehlertoleranz
+%	- logische Nachbarschaft wird bei der Partitionierung nicht berücksichtigt
+
+\paragraph*{Auswahl}
+
+Die Ergebnisse der funktionalen Analyse zeigen, dass vor allem Neo4j und Titan aufgrund ihres hohen Funktionsumfangs an graphenspezifischen Operationen und auch durch ihre effizienten Speicher- und Verteilungstechniken für den Einsatz innerhalb des Forschungsprojektes in Frage kommen. Von diesen beiden eignet sich Neo4j in besonderem Maße, da es die im Vergleich längste und aktivste Entwicklung aufweist und alle gestellten Anforderungen erfüllt. Einziger Nachteil dieses GDBMS ist sein geringes Angebot an systemseitigen Konsistenzmechanismen und der damit verbundenen starken Bindung an die Anwendung.\\
+Zwar ist Titan das im Vergleich jüngste System, es bietet jedoch ebenfalls interessante Funktionalitäten für das Forschungsvorhaben an. Neben dem verwendeten Typsystem, der möglichen Einschränkung von Kardinalitäten und der Indexierung von Kanten ist vor allem die Unterstützung verschiedener Speichersysteme und die daraus resultierende Flexibilität für das Forschungsprojekt von Interesse. Darüber hinaus bietet es als einziges GDBMS eine Partitionierung an und schränkt damit die Größe des Graphen theoretisch nicht ein, was insbesondere für die Analyse umfangreicher Unternehmensdaten nützlich ist.\\
+OrientDB bietet einen vergleichbaren Funktionsumfang wie Neo4j und Titan, einzigartig sind die datenbankseitige Schema- und Rechteverwaltung. Ein Defizit des Systems ist der für die graphenorientierte Verarbeitung als unzureichend eingeschätzte SQL-Dialekt, dieser Nachteil wird jedoch durch die Unterstützung von Gremlin kompensiert. Das aktuelle Speichersystem von OrientDB wird dennoch für das Forschungsvorhaben als ungeeignet betrachtet, da es sich ausgehend von den theoretischen Erkenntnissen nicht für das effiziente Verwalten vernetzter, attributierter Unternehmensdaten anbietet.\\
+HyperGraphDB weist hinsichtlich graphenspezifischer Operationen einen deutlich geringeren Funktionsumfang auf, erst umfangreiche manuelle Erweiterungen würden dem System eine, den anderen GDBMS vergleichbare, Mächtigkeit verleihen und es so für das Forschungsprojekt nutzbar machen. Das verwendete Datenmodell bietet in den entsprechenden Zieldomänen interessante Möglichkeiten, für das im Rahmen dieser Arbeit betrachtete Projekt stellt es jedoch keinen unmittelbaren Mehrwert dar.
+
+Zur abschließenden Beurteilung der Leistungsfähigkeit werden Neo4j und Titan in einem Benchmark gegenübergestellt. Insbesondere soll in der technischen Analyse auch untersucht werden, inwieweit eine native Speicherung des Graphen vorteilhaft ist oder ob die Nutzung bestehender Systeme eine gleichwertige Alternative darstellt.
