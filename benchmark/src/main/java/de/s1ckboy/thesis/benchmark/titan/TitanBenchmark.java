@@ -168,7 +168,6 @@ public abstract class TitanBenchmark extends Benchmark {
     public void warmup() {
 	log.info("Warming up the caches ...");
 	String type;
-	int commitSize = cfg.getInt("warmup.commit-size");
 	int logSize = cfg.getInt("warmup.log-size");
 	long cnt = 0L;
 	for (Vertex v : graphDB.getVertices()) {
@@ -184,9 +183,6 @@ public abstract class TitanBenchmark extends Benchmark {
 	    if (++cnt % logSize == 0) {
 		log.info("touched " + cnt + " nodes");
 	    }
-	    if (cnt % commitSize == 0) {
-		graphDB.commit();
-	    }
 	}
 	cnt = 0L;
 	graphDB.commit();
@@ -198,10 +194,6 @@ public abstract class TitanBenchmark extends Benchmark {
 	    }
 	    if (++cnt % logSize == 0) {
 		log.info("touched " + cnt + " edges");
-		graphDB.commit();
-	    }
-	    if (cnt % commitSize == 0) {
-		graphDB.commit();
 	    }
 	}
 	log.info("Products: " + productIDs.size());

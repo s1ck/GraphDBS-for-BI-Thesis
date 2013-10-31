@@ -13,6 +13,7 @@ public class Neo4jPathShortestCypher extends Neo4jCypherBenchmark implements
 	PathShortest {
     private Long fromUserID;
     private Long toUserID;
+    private Integer pathLength = 4;
 
     @Override
     public void beforeRun() {
@@ -24,10 +25,11 @@ public class Neo4jPathShortestCypher extends Neo4jCypherBenchmark implements
 	    // TODO
 	}
 	CYPHER_QUERY = String
-		.format("START a=node(%d), b=node(%d) MATCH p=shortestPath(a-[:%s|:%s|:%s*..5]-b) RETURN EXTRACT(n in NODES(p): n.__id__) AS path;",
+		.format("START a=node(%d), b=node(%d) MATCH p=shortestPath(a-[:%s|:%s|:%s*..%d]-b) RETURN EXTRACT(n in NODES(p): n.__id__) AS path;",
 			fromUserID, toUserID, Constants.LABEL_EDGE_FRIEND_OF,
 			Constants.LABEL_EDGE_SIMILAR_TO,
-			Constants.LABEL_EDGE_REVIEWED_BY);
+			Constants.LABEL_EDGE_REVIEWED_BY,
+			pathLength);
     }
     
     @SuppressWarnings("unused")

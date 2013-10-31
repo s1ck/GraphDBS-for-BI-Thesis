@@ -61,7 +61,7 @@ public class TitanPathAllGremlin extends TitanGremlinBenchmark implements
 	    for (Map.Entry<Integer, Integer> e : o.entrySet()) {
 		e.getKey();
 		e.getValue();
-		System.out.println(e.getKey() + " => " + e.getValue());
+//		System.out.println(e.getKey() + " => " + e.getValue());
 	    }
 	}
     }

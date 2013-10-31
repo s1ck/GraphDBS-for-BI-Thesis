@@ -14,6 +14,7 @@ import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jImportBenchmark;
 import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jPathAllCypher;
 import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jPathShortestCypher;
 import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jRandomReadCypher;
+import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jSimPatternsCypher;
 import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jSimProductsCypher;
 import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jTopRegionsCypher;
 
@@ -73,6 +74,12 @@ public class Neo4jSuite extends BenchmarkSuite {
 	if (cfg.getBoolean(Constants.NEO4J_TOP_REGIONS_CYPHER)) {
 	    Benchmark q = new Neo4jTopRegionsCypher();
 	    q.setRuns(cfg.getInt(Constants.NEO4J_TOP_REGIONS_CYPHER + ".runs"));
+	    benchmarks.add(q);
+	}
+	
+	if (cfg.getBoolean(Constants.NEO4J_SIM_PATTERNS_CYPHER)) {
+	    Benchmark q = new Neo4jSimPatternsCypher();
+	    q.setRuns(cfg.getInt(Constants.NEO4J_SIM_PATTERNS_CYPHER + ".runs"));
 	    benchmarks.add(q);
 	}
 

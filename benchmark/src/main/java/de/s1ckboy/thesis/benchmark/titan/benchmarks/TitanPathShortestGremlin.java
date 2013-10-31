@@ -25,7 +25,7 @@ public class TitanPathShortestGremlin extends TitanGremlinBenchmark implements
     public void setUp() {
 	super.setUp();
 	GREMLIN_QUERY = String
-		.format("a.both('%s', '%s', '%s').except(visited).store(visited).loop(3){it.object != b && it.loops < 6}.retain([b]).path{it.__id__}",
+		.format("a.both('%s', '%s', '%s').except(visited).store(visited).loop(3){it.object != b && it.loops < 5}.retain([b]).path{it.__id__}",
 			Constants.LABEL_EDGE_FRIEND_OF,
 			Constants.LABEL_EDGE_REVIEWED_BY,
 			Constants.LABEL_EDGE_SIMILAR_TO);
