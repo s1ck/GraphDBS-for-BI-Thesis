@@ -3,8 +3,6 @@ package de.s1ckboy.thesis.benchmark.neo4j.benchmarks;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.tinkerpop.blueprints.Vertex;
 
 import de.s1ckboy.thesis.benchmark.Constants;

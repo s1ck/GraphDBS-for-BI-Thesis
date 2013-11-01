@@ -18,10 +18,12 @@ import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jPathShortestCypher;
 import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jPathShortestGremlin;
 import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jRandomReadCypher;
 import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jRandomReadGremlin;
-import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jSimPatternsCypher;
+import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jSimPatternGremlin;
+import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jSimPatternCypher;
 import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jSimProductsCypher;
 import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jSimProductsGremlin;
 import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jTopRegionsCypher;
+import de.s1ckboy.thesis.benchmark.neo4j.benchmarks.Neo4jTopRegionsGremlin;
 
 public class Neo4jSuite extends BenchmarkSuite {
 
@@ -121,10 +123,23 @@ public class Neo4jSuite extends BenchmarkSuite {
 	    benchmarks.add(q);
 	}
 
+	if (cfg.getBoolean(Constants.NEO4J_TOP_REGIONS_GREMLIN)) {
+	    Benchmark q = new Neo4jTopRegionsGremlin();
+	    q.setRuns(cfg.getInt(Constants.NEO4J_TOP_REGIONS_GREMLIN + ".runs"));
+	    benchmarks.add(q);
+	}
+
 	// sim_patterns
 	if (cfg.getBoolean(Constants.NEO4J_SIM_PATTERNS_CYPHER)) {
-	    Benchmark q = new Neo4jSimPatternsCypher();
+	    Benchmark q = new Neo4jSimPatternCypher();
 	    q.setRuns(cfg.getInt(Constants.NEO4J_SIM_PATTERNS_CYPHER + ".runs"));
+	    benchmarks.add(q);
+	}
+
+	if (cfg.getBoolean(Constants.NEO4J_SIM_PATTERNS_GREMLIN)) {
+	    Benchmark q = new Neo4jSimPatternGremlin();
+	    q.setRuns(cfg
+		    .getInt(Constants.NEO4J_SIM_PATTERNS_GREMLIN + ".runs"));
 	    benchmarks.add(q);
 	}
 

@@ -6,7 +6,7 @@ import de.s1ckboy.thesis.benchmark.Constants;
 import de.s1ckboy.thesis.benchmark.neo4j.Neo4jCypherBenchmark;
 import de.s1ckboy.thesis.benchmark.queries.SimPattern;
 
-public class Neo4jSimPatternsCypher extends Neo4jCypherBenchmark implements
+public class Neo4jSimPatternCypher extends Neo4jCypherBenchmark implements
 	SimPattern {
 
     private Long userID;
