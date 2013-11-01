@@ -102,7 +102,7 @@ Aus der Quelloffenheit folgt nicht zwingend eine einfache Erweiterbarkeit der Sy
 Hinsichtlich vorhandener graphenspezifischer Operationen wurde festgelegt, dass grundlegende Operationen wie CRUD und Traversierung eine Mindestvoraussetzung darstellen. CRUD-Operationen ermöglichen die Manipulation und das Auslesen der Datenbasis, während die Traversierung die grundlegende Operation für komplexere Graphalgorithmen darstellt.\\
 Eines der Ziele des Forschungsvorhabens ist das Entwickeln einer Softwareplattform, die u.a. von Analysten genutzt werden soll. Da in diesem Zusammenhang nicht zwingend Programmierkenntnisse vorauszusetzen sind, ist das Vorhandensein einer graphenspezifischen Anfragesprache vorteilhaft. Da in der GDBMS-Domäne bisher keine standardisierte Anfragesprache existiert, wurde diese Anforderung als optional deklariert.
 
-Eine wesentliche Eigenschaft analytischer Systeme ist vorrangig lesende Zugriff auf die Datenbasis. Im beschriebenen Forschungsprojekt werden periodisch Daten aus Quellsystemen in einen zentralen Graphen integriert und analysiert. Das Importieren der Daten soll dabei möglichst effizient durchgeführt werden, weswegen entsprechende Bulk-Load-Mechanismen wünschenswert, jedoch nicht obligatorisch sind.
+Eine wesentliche Eigenschaft analytischer Systeme ist der vorrangig lesende Zugriff auf die Datenbasis. Im beschriebenen Forschungsprojekt werden periodisch Daten aus Quellsystemen in einen zentralen Graphen integriert und analysiert. Das Importieren der Daten soll dabei möglichst effizient durchgeführt werden, weswegen entsprechende Bulk-Load-Mechanismen wünschenswert, jedoch nicht obligatorisch sind.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -133,7 +133,7 @@ In Tabelle \ref{tab:zugriff} werden die verbliebenen sechs Systeme hinsichtlich 
 
 \paragraph*{Speicherung}
 
-Ein wichtiges Kriterium eines geeigneten GDBMS ist die dauerhafte Speicherung der Datenbasis, eine native Speicherung des Graphen ist dabei nicht zwingend erforderlich. Insbesondere für analytische Systeme kann eine rein hauptspeicher-zentrierte Verarbeitung des Graphen vorteilhaft sein, welche den Externspeicher als Backup-Medium verwendet.
+Ein wichtiges Kriterium für das Forschungsprojekt ist die dauerhafte Speicherung der Datenbasis, eine native Speicherung des Graphen ist dabei nicht zwingend erforderlich. Eine rein hauptspeicher-zentrierte Verarbeitung und die damit verbundene höhere Performance beim wahlfreien Zugriff innerhalb des Graphen kann insbesondere für analytische Systeme vorteilhaft sein, wird jedoch bisher nur von wenigen Systemen angeboten und ist daher optional. Indexstrukturen hingegen werden als obligatorisch deklariert, da sie auch in umfangreichen Graphen den effizienten Zugriff auf Knoten- und Kantenmengen anhand deren Attribute ermöglichen.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -158,6 +158,8 @@ Ein wichtiges Kriterium eines geeigneten GDBMS ist die dauerhafte Speicherung de
 	\label{tab:speicherung}
 \end{table}
 \renewcommand{\arraystretch}{1}
+
+Aus Tabelle \ref{tab:speicherung} geht hervor, dass alle Systeme das Persistieren der Datenbasis unterstützen, wobei jedoch ausschließlich Neo4j einen graphenorientierten Speichermechanismus einsetzt. Von den verbliebenen Systemen bietet nur Bitsy eine hauptspeicher-zentrierte Verarbeitung des Graphen an wohingegen der Einsatz zusätzlicher Indizes in allen Systemen möglich ist. In dieser Kategorie kann folglich keines der Systeme ausgeschlossen werden.
 
 \paragraph*{Skalierbarkeit und Verfügbarkeit}
 

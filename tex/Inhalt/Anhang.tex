@@ -193,25 +193,21 @@ group.in('BELONGS_TO').filter{it.salesrank < 500000}
 \lstset{language=Java, caption={Operation \texttt{sim\_pattern} in Cypher}, label=list:sim_pattern_cypher}
 \begin{lstlisting}
 START user=node(42)
-MATCH user:User-[:FRIEND_OF]-friends1:User<-[:REVIEWED_BY]-products:Product,
-products:Product-[:REVIEWED_BY]->friends2:User
-WITH user, products, collect(distinct id(friends1)) as f1, collect(distinct id(friends2)) as f2
+MATCH user-[:FRIEND_OF]-friends1<-[:REVIEWED_BY]-products,
+products-[:REVIEWED_BY]->friends2
+WITH user, products, collect(distinct friends1.__id__) as f1, collect(distinct friends2.__id__) as f2
 WITH user, products, filter(x in f1 : x in f2) as intersect
 WITH user, products, count(products) as n, intersect, length(intersect) as intersect_cnt
 WHERE intersect_cnt > 1 and n > 0
-RETURN id(user) as user_id, n, id(products) as product_id, intersect as friends, intersect_cnt
-ORDER BY n DESC, intersect_cnt DESC, product_id
-LIMIT 25;
+RETURN user.__id__ as user_id, n, products.__id__ as product_id, intersect as friends, intersect_cnt;
 \end{lstlisting}
 
 \lstset{language=Java, caption={Operation \texttt{sim\_pattern} in Gremlin}, label=list:sim_pattern_gremlin}
 \begin{lstlisting}
 u = g.v(42);
 m = [:]; common_products = [] as Set;
-u.both("FRIEND_OF").transform({ it.in("REVIEWED_BY").dedup() })
+u.both("FRIEND_OF").dedup().transform({ it.in("REVIEWED_BY").dedup() })
 	.scatter().groupCount(m).filter({ m[it] >= 2 }).fill(common_products);
-u.both("FRIEND_OF").as("friend")
-	.filter({ it.in("REVIEWED_BY").retain(common_products).count() >= 2 })
 common_products._().as("product").transform({
 	it.out("REVIEWED_BY").filter({
 		it.in("REVIEWED_BY").retain(common_products)[0..<2].count() == 2

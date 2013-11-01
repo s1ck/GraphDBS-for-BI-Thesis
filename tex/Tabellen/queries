@@ -28,7 +28,7 @@ g.v(42).map();
 * Produkte bis Abstand <= 2. Die Produkttitel sollen ausgegeben werden, 
 * jeder Titel soll einmalig in der Ergebnismenge sein.
 * 
-* Lokal, Traversierung
+* Lokale Traversierung, UNIQUE-Bedingung
 *
 */
 
@@ -91,7 +91,7 @@ a.both('FRIEND_OF','REVIEWED_BY','SIMILAR_TO').loop(1){it.object != b && it.loop
 * Zufällige Auswahl zweier Nutzer und anschließende Berechnung des kürzesten 
 * Pfades zwischen ihnen unter Berücksichtigung der Kantenbezeichner 
 * FRIEND_OF, REVIEWED_BY und SIMILAR_TO. Die 
-* maximale Pfadlänge beträgt 5, Kantenrichtungen werden nicht berücksichtigt. 
+* maximale Pfadlänge beträgt 4, Kantenrichtungen werden nicht berücksichtigt. 
 * Das Ergebnis soll das Attribut __id__ der Knoten innerhalb des 
 * Pfades beinhalten.
 *
@@ -101,7 +101,7 @@ a.both('FRIEND_OF','REVIEWED_BY','SIMILAR_TO').loop(1){it.object != b && it.loop
 
 * Cypher (3)
 START a=node(48089), b=node(22)
-MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..5]-b)
+MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..4]-b)
 RETURN EXTRACT(n in NODES(p): n.__id__) AS path;
 
 ==>["A44FUIZX7CUVN","0679724699","0520078748","0231096704"]
@@ -110,7 +110,7 @@ RETURN EXTRACT(n in NODES(p): n.__id__) AS path;
 a = g.V('__id__', 'A44FUIZX7CUVN').next();
 b = g.V('__id__', '0231096704').next();
 visited=[a];
-a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).loop(3){it.object != b && it.loops < 6}.retain([b]).path{it.__id__};
+a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).loop(3){it.object != b && it.loops < 5}.retain([b]).path{it.__id__};
 
 ==>[A44FUIZX7CUVN, 0679724699, 0520078748, 0231096704]
 
@@ -145,9 +145,9 @@ group.in('BELONGS_TO').filter{it.salesrank < 500000}.out('REVIEWED_BY').groupCou
 * Query "Similar Reviews Pattern" (sim_pattern)
 *
 * Zufällige Auswahl eines Nutzers und anschließendes Bestimmen seiner Freunde, 
-* die für 2 übereinstimmende Produkte Reviews geschrieben haben. Das Ergebnis 
-* soll den Nutzer selbst, die Freunde des Nutzers, die Reviews und die 
-* übereinstimmende Produktmenge beinhalten.
+* die für mindestes ein übereinstimmendes Produkt Reviews geschrieben haben. 
+* Das Ergebnis soll den Nutzer selbst, die Freunde des Nutzers, die Reviews
+* und die übereinstimmende Produktmenge beinhalten.
 *
 * Global, Mustersuche (Dreiecke) mit Bindung an Datenbasis und
 * Attributeinschränkung
@@ -157,7 +157,7 @@ group.in('BELONGS_TO').filter{it.salesrank < 500000}.out('REVIEWED_BY').groupCou
 // Cypher
 
 // with neo4j ids
-START user=node(*)
+START user=node:nodes(__id__ = 'AOTMWB4YJKX3Z')
 MATCH user:User-[:FRIEND_OF]-friends1:User<-[:REVIEWED_BY]-products:Product,
 products:Product-[:REVIEWED_BY]->friends2:User
 WITH user, products, collect(distinct id(friends1)) as f1, collect(distinct id(friends2)) as f2
@@ -170,41 +170,41 @@ LIMIT 25;
 
 ! see https://groups.google.com/forum/?hl=de#!topic/neo4j/GmGaX5xKld0
 
-// with original ids
-START user=node(*)
+// with original ids (this one is used in the benchmarks)
 
-START user=node(141518)
+START user=node(81632)
 MATCH user-[:FRIEND_OF]-friends1<-[:REVIEWED_BY]-products,
 products-[:REVIEWED_BY]->friends2
 WITH user, products, collect(distinct friends1.__id__) as f1, collect(distinct friends2.__id__) as f2
 WITH user, products, filter(x in f1 : x in f2) as intersect
 WITH user, products, count(products) as n, intersect, length(intersect) as intersect_cnt
 WHERE intersect_cnt > 1 and n > 0
-RETURN user.__id__ as user_id, n, products.__id__ as product_id, intersect as friends, intersect_cnt
-ORDER BY n DESC, intersect_cnt DESC, product_id
-LIMIT 25;
+RETURN user.__id__ as user_id, n, products.__id__ as product_id, intersect as friends, intersect_cnt;
+
 
 // Gremlin
 
-g = TitanFactory.open('../../master_thesis/benchmark/out/titan-graph_611_50_4_2');
-u=g.V('__id__', 'A3B4D5T8N1Q33Y').next();
+g = TitanFactory.open('../../master_thesis/benchmark/out/titan-graph_42_100_3_2');
+u=g.V('__id__', 'AOTMWB4YJKX3Z').next();
+u=g.v(326528);
+u=g.v(977260);
 m = [:]; common_products = [] as Set;
 
 // get common products
-u.both("FRIEND_OF").transform({ it.in("REVIEWED_BY").dedup() }).scatter().groupCount(m).filter({ m[it] >= 2 }).fill(common_products);
+u.both('FRIEND_OF').transform({ it.in('REVIEWED_BY').dedup() }).scatter().groupCount(m).filter({ m[it] > 1 }).fill(common_products);
 
-// get the friends
-u.both("FRIEND_OF").as("friend").filter({ it.in("REVIEWED_BY").retain(common_products).count() >= 2 })
+// get the friends (not necessary for the result)
+u.both('FRIEND_OF').as('friend').filter({ it.in('REVIEWED_BY').retain(common_products).count() >= 1 })
 
 // table
-common_products._().as("product").transform({ it.out("REVIEWED_BY").as("friend").both("FRIEND_OF").retain([u]).back("friend").toSet() }).as("friends").table().cap().next()
+common_products._().as('product').transform({ it.out('REVIEWED_BY').as('friend').both('FRIEND_OF').retain([u]).back('friend').toSet() }).as('friends').table().cap().next()
 
 // table without adam
-common_products._().as("product").transform({
-	it.out("REVIEWED_BY").filter({
-		it.in("REVIEWED_BY").retain(common_products)[0..<2].count() == 2
-	}).as("friend").both("FRIEND_OF").retain([u]).back("friend").toSet()
-}).as("friends").table().cap().next();
+common_products._().as('product').transform({
+	it.out('REVIEWED_BY').filter({
+		it.in('REVIEWED_BY').retain(common_products)[0..<2].count() >= 1
+	}).as('friend').both('FRIEND_OF').retain([u]).back('friend').toSet()
+}).as('friends').table().cap().next();
 
 /**
 * Query "Triangle Pattern 2" (triangle_pattern_2)
