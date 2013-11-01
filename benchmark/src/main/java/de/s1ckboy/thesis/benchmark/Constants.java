@@ -56,14 +56,21 @@ public class Constants {
 
     public static final String IMPORT = "import";
 
-    public static final String NEO4J_RANDOM_READ_CYPHER = "neo4j_random_read_cypher";
-    public static final String NEO4J_RANDOM_READ_GREMLIN = "neo4j_random_read_gremlin";
+    public static final String NEO4J_RANDOM_READ_CYPHER = "neo4j_random_read_cypher";    
     public static final String NEO4J_SIM_PRODUCTS_CYPHER = "neo4j_sim_products_cypher";
-    public static final String NEO4J_FOAF_REVIEWS_CYPHER = "neo4j_foaf_reviews_cyper";
+    public static final String NEO4J_FOAF_REVIEWS_CYPHER = "neo4j_foaf_reviews_cypher";
     public static final String NEO4J_PATH_ALL_CYPHER = "neo4j_path_all_cypher";
     public static final String NEO4J_PATH_SHORTEST_CYPHER = "neo4j_path_shortest_cypher";
     public static final String NEO4J_TOP_REGIONS_CYPHER = "neo4j_top_regions_cypher";
     public static final String NEO4J_SIM_PATTERNS_CYPHER = "neo4j_sim_patterns_cypher";
+    
+    public static final String NEO4J_RANDOM_READ_GREMLIN = "neo4j_random_read_gremlin";
+    public static final String NEO4J_SIM_PRODUCTS_GREMLIN = "neo4j_sim_products_gremlin";
+    public static final String NEO4J_FOAF_REVIEWS_GREMLIN = "neo4j_foaf_reviews_gremlin";
+    public static final String NEO4J_PATH_ALL_GREMLIN = "neo4j_path_all_gremlin";
+    public static final String NEO4J_PATH_SHORTEST_GREMLIN = "neo4j_path_shortest_gremlin";
+    public static final String NEO4J_TOP_REGIONS_GREMLIN = "neo4j_top_regions_gremlin";
+    public static final String NEO4J_SIM_PATTERNS_GREMLIN = "neo4j_sim_patterns_gremlin";
 
     public static final String TITAN_RANDOM_READ_GREMLIN = "titan_random_read_gremlin";
     public static final String TITAN_SIM_PROUCTS_GREMLIN = "titan_sim_products_gremlin";

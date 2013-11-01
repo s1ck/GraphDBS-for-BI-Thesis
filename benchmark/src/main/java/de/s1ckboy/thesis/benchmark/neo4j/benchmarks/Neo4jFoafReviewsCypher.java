@@ -27,8 +27,10 @@ public class Neo4jFoafReviewsCypher extends Neo4jCypherBenchmark implements
     public void run() {
 	super.run();
 	for (Map<String, Object> e : result) {
-	    e.get("weight");
-	    e.get("title");
+	    // e.get("weight");
+	    // e.get("title");
+	    System.out.println(e.get("weight"));
+	    System.out.println(e.get("title"));
 	}
     }
 

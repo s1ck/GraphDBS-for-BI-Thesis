@@ -40,15 +40,15 @@ public class Neo4jSimPatternsCypher extends Neo4jCypherBenchmark implements
     public void run() {
 	super.run();
 	for (Map<String, Object> e : result) {
-//	    System.out.println(e.get("user_id"));
-//	    System.out.println(e.get("product_id"));
-//	    System.out.println(e.get("friends"));
-//	    System.out.println(e.get("intersect_cnt"));
+	    System.out.println(e.get("user_id"));
+	    System.out.println(e.get("product_id"));
+	    System.out.println(e.get("friends"));
+	    System.out.println(e.get("intersect_cnt"));
 
-	    e.get("user_id");
-	    e.get("product_id");
-	    e.get("friends");
-	    e.get("intersect_cnt");
+	    // e.get("user_id");
+	    // e.get("product_id");
+	    // e.get("friends");
+	    // e.get("intersect_cnt");
 	}
     }
 
