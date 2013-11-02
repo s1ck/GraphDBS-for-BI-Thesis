@@ -51,18 +51,18 @@ Es kann nicht festgestellt werden, dass einzelne Anforderungen besonders häufig 
    	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption[Anforderungen: Nutzbarkeit und Produktreife]{Anforderungen an die Nutzbarkeit und Produktreife verschiedener GDBMS-Implementierungen. Die mit * gekennzeichnete Anforderungen sind optional bzw. besitzen nur informativen Charakter.}
+	\caption[Anforderungen: Nutzbarkeit und Produktreife]{Anforderungen an die Nutzbarkeit und Produktreife verschiedener GDBMS-Implementierungen. (*optional/informativ)}
 	\label{tab:nutzung}
 \end{table}
 \renewcommand{\arraystretch}{1}
 
 \paragraph*{Datenverwaltung und Datenmodellierung}
 
-Die einzige obligatorische Anforderung in dieser Kategorie (Tabelle \ref{tab:verwaltung}) bezieht sich auf das Datenmodell: Die Eigenschaften des Property-Graph-Modell werden als Mindestvoraussetzung festgelegt, das Property-Hyper-\linebreak~graph-Modell ist ebenfalls zulässig, da es das PGM um n-äre Beziehungen erweitert. Annähernd die Hälfte der aufgeführten GDBMS verzichtet auf Kantenattribute, Kantenbezeichner oder parallele Kanten, dies sind jedoch relevante Werkzeuge für die Modellierung innerhalb des Projektes.
+Die einzige obligatorische Anforderung in dieser Kategorie (Tabelle \ref{tab:verwaltung}) bezieht sich auf das Datenmodell: Die Eigenschaften des Property-Graph-Modell werden als Mindestvoraussetzung festgelegt, das Property-Hyper-\linebreak~graph-Modell ist ebenfalls zulässig, da es das PGM um n-äre Beziehungen erweitert. Annähernd die Hälfte der aufgeführten GDBMS verzichtet auf Kantenattribute, Kantenbezeichner oder parallele Kanten, dies sind jedoch relevante Werkzeuge für die Modellierung innerhalb des Forschungsvorhabens.
 
 Einige der durchzuführenden Analysen basieren auf der Extraktion von Geschäftsprozessen in Form von Subgraphen. In diesem Zusammenhang ist es von Vorteil, wenn sich diese Subgraphen systemseitig logisch getrennt in mehreren Datenbanken verwalten lassen. Diese optionale Anforderung wird jedoch nur von drei Systemen erfüllt.\\
 Die Möglichkeit zur Definition eines Schemas ist ein rein informatives Kriterium. Es wird deutlich, dass viele der Systeme auf die anwendungsseitige Umsetzung eines Schemas ausgerichtet sind und keine bzw. nur wenige Werkzeuge für die systemseitige Schemaverwaltung anbieten.\\
-Die Erfüllung der ACID-Eigenschaften bei der Transaktionsausführung spielt in Unternehmensdaten eine wichtige Rolle, deren systemseitige Unterstützung wird daher als obligatorisch angesehen. Die im Rahmen von ACID wichtige Konsistenzerhaltung und die damit verbundene Möglichkeit zur Definition von Integritätsbedingungen ist ebenfalls von Bedeutung: Modellinhärente Bedingungen, wie zum Beispiel die referentielle Integrität, bei der eine Kante mindestens einen Start- und einen Zielknoten besitzen muss, werden von allen Systemen implementiert. Die Möglichkeit zur Definition weiterer, beispielsweise attributbezogener, Integritätsbedingungen wird als optionale Anforderung gewertet.
+Die Erfüllung der ACID-Eigenschaften bei der Transaktionsausführung spielt in Unternehmensdaten eine wichtige Rolle, deren systemseitige Unterstützung wird daher als obligatorisch angesehen. Die im Rahmen von ACID wichtige Konsistenzerhaltung und die damit verbundene Möglichkeit zur Definition von Integritätsbedingungen ist ebenfalls von Bedeutung: Modellinhärente Bedingungen, wie zum Beispiel die referentielle Integrität, bei der eine Kante mindestens einen Start- und einen Zielknoten besitzen muss, werden von allen Systemen sichergestellt. Die Möglichkeit zur Definition weiterer, beispielsweise attributbezogener, Integritätsbedingungen wird als optionale Anforderung gewertet.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -96,7 +96,7 @@ Die Erfüllung der ACID-Eigenschaften bei der Transaktionsausführung spielt in Un
 \paragraph*{Zugriffsmechanismen}
 
 Bei der Diskussion der Anforderungen wurde hinsichtlich der Zugriffsmechanismen festgelegt, dass ein geeignetes GDBMS die Einbettung in eine bestehende Anwendung unterstützen und hierfür eine entsprechende API anbieten muss. Dies ermöglicht es, das System um eigene Graphalgorithmen bzw. graphenspezifische Operationen zu erweitern. Das Fehlen einer entfernten API wird nicht als Defizit gewertet, da sich diese unter Verwendung der eingebetteten API implementieren lässt.\\
-Aus der Quelloffenheit folgt nicht zwingend eine einfache Erweiterbarkeit der Systeme. Einige Anbieter beschreiben innerhalb ihrer Dokumentationen spezielle Plugin APIs, welche zum Beispiel das Hinzufügen eigener Indexstrukturen, Speichersysteme oder Operatoren erlauben. Generell lässt sich jedoch jedes quelloffene Systeme erweitern, weswegen diese Eigenschaft optional ist.
+Aus der Quelloffenheit folgt nicht zwingend eine einfache Erweiterbarkeit der Systeme. Einige Anbieter beschreiben innerhalb ihrer Dokumentationen spezielle Plugin APIs, welche zum Beispiel das Hinzufügen eigener Indexstrukturen, Speichersysteme oder Operatoren erlauben. Generell lässt sich jedoch jedes quelloffene System erweitern, weswegen diese Eigenschaft optional ist.
 
 Hinsichtlich vorhandener graphenspezifischer Operationen wurde festgelegt, dass grundlegende Operationen wie CRUD und Traversierung eine Mindestvoraussetzung darstellen. CRUD-Operationen ermöglichen die Manipulation und das Auslesen der Datenbasis, während die Traversierung die grundlegende Operation für komplexere Graphalgorithmen darstellt.\\
 Eines der Ziele des Forschungsvorhabens ist das Entwickeln einer Softwareplattform, die u.a. von Analysten genutzt werden soll. Da in diesem Zusammenhang nicht zwingend Programmierkenntnisse vorauszusetzen sind, ist das Vorhandensein einer graphenspezifischen Anfragesprache vorteilhaft. Da in der GDBMS-Domäne bisher keine standardisierte Anfragesprache existiert, wurde diese Anforderung als optional deklariert.
@@ -162,7 +162,7 @@ Aus Tabelle \ref{tab:speicherung} geht hervor, dass alle Systeme das Persistiere
 
 \paragraph*{Verteilung und Skalierbarkeit}
 
-In der letzten Kategorie werden die verbliebenen fünf Systeme hinsichtlich ihrer Fähigkeit zur Datenverteilung gegenübergestellt. Das fehlertolerante Speichern ist insbesondere in Verbindung mit Unternehmensdaten wünschenswert, eine hingegen für die Analyse wichtigere Anforderung ist die Skalierbarkeit von Lesezugriffen. Beides kann durch eine Replikation der Datenbasis erreicht werden, deren Unterstützung durch das entsprechende GDBMS gewährleistet sein soll. Darüber hinaus können Unternehmensdaten entweder von Beginn an sehr umfangreich sein bzw. durch stetiges Wachstum einen Umfang erreichen, der ihre Partitionierung erfordert. Da nur sehr wenige der Systeme eine Partitionierung der Datenbasis unterstützen, wird diese Anforderung als optional deklariert.
+In der letzten Kategorie werden die verbliebenen fünf Systeme hinsichtlich ihrer Fähigkeit zur Datenverteilung gegenübergestellt. Das fehlertolerante Speichern ist insbesondere in Verbindung mit Unternehmensdaten wünschenswert, eine für die Analyse wichtigere Anforderung ist die Skalierbarkeit von Lesezugriffen. Beides kann durch eine Replikation der Datenbasis erreicht werden, deren Unterstützung durch das entsprechende GDBMS gewährleistet sein soll. Darüber hinaus können Unternehmensdaten entweder von Beginn an sehr umfangreich sein bzw. durch stetiges Wachstum einen Umfang erreichen, der ihre Partitionierung erfordert. Da nur sehr wenige der Systeme eine Partitionierung der Datenbasis unterstützen, wird diese Anforderung als optional deklariert.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -188,7 +188,7 @@ In der letzten Kategorie werden die verbliebenen fünf Systeme hinsichtlich ihrer
 \end{table}
 \renewcommand{\arraystretch}{1}
 
-Aus Tabelle \ref{tab:skalierbarkeit} geht hervor, dass HyperGraphDB, Neo4j, OrientDB und Titan die in der Vorauswahl gestellten Anforderungen erfüllen und daher anschließend im Detail untersucht werden. Hervorzuheben ist, dass die Systeme sehr unterschiedliche Eigenschaften aufweisen. Neo4j ist das im Vergleich einzige vollständig native GDBMS, allein HyperGraphDB unterstützt das PHGM, OrientDB basiert auf einem Dokumentenmodell und Titan bietet als eines der wenigen GDBMS eine Partitionierung der Datenbasis an.
+Aus Tabelle \ref{tab:skalierbarkeit} geht hervor, dass HyperGraphDB, Neo4j, OrientDB und Titan die in der Vorauswahl gestellten Anforderungen erfüllen und daher anschließend im Detail untersucht werden. Hervorzuheben ist, dass die Systeme sehr unterschiedliche Eigenschaften aufweisen: Neo4j ist das im Vergleich einzige vollständig native GDBMS, allein HyperGraphDB unterstützt das PHGM, OrientDB basiert auf einem Dokumentenmodell und Titan bietet als eines der wenigen GDBMS eine Partitionierung der Datenbasis an.
 
 Der Schwerpunkt der nachfolgenden Evaluation liegt auf dem jeweiligen Datenmodell und den angebotenen Zugriffsmechanismen. Es soll gezeigt werden, wie das PGM umgesetzt wurde und welche Erweiterungen die einzelnen Systeme diesbezüglich aufweisen. Weiter soll untersucht werden, welche der im vorhergehenden Kapitel vorgestellten graphenspezifischen Operationen unterstützt werden und wie sie in den jeweiligen Systemen anzuwenden sind.\\
 Die Untersuchung der Transaktionsmechanismen soll zeigen, inwieweit die ACID-Eigenschaften von den einzelnen Systemen umgesetzt werden und welche Mehrbenutzeranomalien gegebenenfalls zu erwarten sind.
