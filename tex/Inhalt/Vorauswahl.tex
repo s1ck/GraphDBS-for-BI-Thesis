@@ -88,7 +88,7 @@ Die Erfüllung der ACID-Eigenschaften bei der Transaktionsausführung spielt in Un
    	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption[Anforderungen: Datenverwaltung und Datenmodellierung]{Anforderungen hinsichtlich der Datenverwaltung und -modellierung innerhalb von GDBMS. Die mit * gekennzeichnete Anforderungen sind optional bzw. besitzen nur informativen Charakter.}
+	\caption[Anforderungen: Datenverwaltung und Datenmodellierung]{Anforderungen hinsichtlich der Datenverwaltung und -modellierung innerhalb von GDBMS. (*optional)}
 	\label{tab:verwaltung}
 \end{table}
 \renewcommand{\arraystretch}{1}
@@ -123,7 +123,7 @@ Eine wesentliche Eigenschaft analytischer Systeme ist der vorrangig lesende Zugr
    	\end{tabular} 
 	\end{footnotesize}
 	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption[Anforderungen: Zugriffsmechanismen]{Anforderungen an die Zugriffsmechanismen von GDBMS. (*optional/informativ)}
+	\caption[Anforderungen: Zugriffsmechanismen]{Anforderungen an die Zugriffsmechanismen von GDBMS. (*optional)}
 	\label{tab:zugriff}
 \end{table}
 \renewcommand{\arraystretch}{1}
@@ -162,7 +162,7 @@ Aus Tabelle \ref{tab:speicherung} geht hervor, dass alle Systeme das Persistiere
 
 \paragraph*{Verteilung und Skalierbarkeit}
 
-In der letzten Kategorie werden die verbliebenen fünf Systeme hinsichtlich ihrer Fähigkeit zur Datenverteilung gegenübergestellt. Das fehlertolerante Speichern ist insbesondere in Verbindung mit Unternehmensdaten wünschenswert, eine hingegen für die Analyse wichtigere Anforderung ist die Skalierbarkeit von Lesezugriffen. Beides kann durch eine Replikation erreicht werden, deren Unterstützung durch das entsprechende GDBMS gewährleistet sein soll. Darüber hinaus können Unternehmensdaten entweder von Beginn an sehr umfangreich sein bzw. durch stetiges Wachstum einen Umfang erreichen, der ihre Partitionierung erfordert. Da nur sehr wenige der Systeme eine Partitionierung der Datenbasis unterstützen, wird diese Anforderung als optional deklariert.
+In der letzten Kategorie werden die verbliebenen fünf Systeme hinsichtlich ihrer Fähigkeit zur Datenverteilung gegenübergestellt. Das fehlertolerante Speichern ist insbesondere in Verbindung mit Unternehmensdaten wünschenswert, eine hingegen für die Analyse wichtigere Anforderung ist die Skalierbarkeit von Lesezugriffen. Beides kann durch eine Replikation der Datenbasis erreicht werden, deren Unterstützung durch das entsprechende GDBMS gewährleistet sein soll. Darüber hinaus können Unternehmensdaten entweder von Beginn an sehr umfangreich sein bzw. durch stetiges Wachstum einen Umfang erreichen, der ihre Partitionierung erfordert. Da nur sehr wenige der Systeme eine Partitionierung der Datenbasis unterstützen, wird diese Anforderung als optional deklariert.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -188,9 +188,9 @@ In der letzten Kategorie werden die verbliebenen fünf Systeme hinsichtlich ihrer
 \end{table}
 \renewcommand{\arraystretch}{1}
 
-Aus Tabelle \ref{tab:skalierbarkeit} geht hervor, dass HyperGraphDB, Neo4j, OrientDB und Titan die in der Vorauswahl gestellten Anforderungen erfüllen und daher anschließend im Detail untersucht werden. Hervorzuheben ist, dass die Systeme sehr unterschiedliche Eigenschaften aufweisen. Neo4j ist das im Vergleich einzig vollständig native GDBMS, allein HyperGraphDB unterstützt das PHGM, OrientDB basiert auf einem Dokumentenmodell und Titan bietet als eines der wenigen GDBMS eine Partitionierung der Datenbasis an.
+Aus Tabelle \ref{tab:skalierbarkeit} geht hervor, dass HyperGraphDB, Neo4j, OrientDB und Titan die in der Vorauswahl gestellten Anforderungen erfüllen und daher anschließend im Detail untersucht werden. Hervorzuheben ist, dass die Systeme sehr unterschiedliche Eigenschaften aufweisen. Neo4j ist das im Vergleich einzige vollständig native GDBMS, allein HyperGraphDB unterstützt das PHGM, OrientDB basiert auf einem Dokumentenmodell und Titan bietet als eines der wenigen GDBMS eine Partitionierung der Datenbasis an.
 
-Der Schwerpunkt der Betrachtung liegt dabei auf dem jeweiligen Datenmodell und den vom GDBMS angebotenen Zugriffsmechanismen. Es soll gezeigt werden, wie das PGM umgesetzt wurde und welche Erweiterungen die einzelnen Systeme diesbezüglich aufweisen. Weiter soll untersucht werden, welche der im vorhergehenden Kapitel vorgestellten graphenspezifischen Operationen unterstützt werden und wie sie in den jeweiligen Systemen anzuwenden sind.\\
-Die Untersuchung der Transaktionsmechanismen soll zeigen, inwieweit die ACID-Eigenschaften von den einzelnen Systemen umgesetzt werden und mit welchen Mehrbenutzeranomalien ggf. gerechnet werden muss.
+Der Schwerpunkt der nachfolgenden Evaluation liegt auf dem jeweiligen Datenmodell und den angebotenen Zugriffsmechanismen. Es soll gezeigt werden, wie das PGM umgesetzt wurde und welche Erweiterungen die einzelnen Systeme diesbezüglich aufweisen. Weiter soll untersucht werden, welche der im vorhergehenden Kapitel vorgestellten graphenspezifischen Operationen unterstützt werden und wie sie in den jeweiligen Systemen anzuwenden sind.\\
+Die Untersuchung der Transaktionsmechanismen soll zeigen, inwieweit die ACID-Eigenschaften von den einzelnen Systemen umgesetzt werden und welche Mehrbenutzeranomalien gegebenenfalls zu erwarten sind.
 Eine nähere Untersuchung der Speichermechanismen soll darüber hinaus zeigen, wie der Graph auf den Externspeicher abgebildet wird und ob diese Abbildung ein indexfreies Traversieren des Graphen ermöglicht. Eng damit verbunden sind die Caching- und Indexmechanismen, welche ebenfalls betrachtet werden.\\
 Zusätzlich wird genauer auf die Verteilungsmechanismen der einzelnen Systeme eingegangen. Dieser Teil der Evaluation hat jedoch eher informativen Charakter und wird daher nur kurz behandelt.
