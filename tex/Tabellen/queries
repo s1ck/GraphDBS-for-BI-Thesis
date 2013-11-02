@@ -101,7 +101,7 @@ a.both('FRIEND_OF','REVIEWED_BY','SIMILAR_TO').loop(1){it.object != b && it.loop
 
 * Cypher (3)
 START a=node(48089), b=node(22)
-MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..4]-b)
+MATCH p=shortestPath(a-[:FRIEND_OF|:REVIEWED_BY|:SIMILAR_TO*..3]-b)
 RETURN EXTRACT(n in NODES(p): n.__id__) AS path;
 
 ==>["A44FUIZX7CUVN","0679724699","0520078748","0231096704"]
@@ -110,7 +110,7 @@ RETURN EXTRACT(n in NODES(p): n.__id__) AS path;
 a = g.V('__id__', 'A44FUIZX7CUVN').next();
 b = g.V('__id__', '0231096704').next();
 visited=[a];
-a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).loop(3){it.object != b && it.loops < 5}.retain([b]).path{it.__id__};
+a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).loop(3){it.object != b && it.loops < 4}.retain([b]).path{it.__id__};
 
 ==>[A44FUIZX7CUVN, 0679724699, 0520078748, 0231096704]
 
@@ -157,14 +157,14 @@ group.in('BELONGS_TO').filter{it.salesrank < 500000}.out('REVIEWED_BY').groupCou
 // Cypher
 
 // with neo4j ids
-START user=node:nodes(__id__ = 'AOTMWB4YJKX3Z')
+START user=node(*)
 MATCH user:User-[:FRIEND_OF]-friends1:User<-[:REVIEWED_BY]-products:Product,
 products:Product-[:REVIEWED_BY]->friends2:User
 WITH user, products, collect(distinct id(friends1)) as f1, collect(distinct id(friends2)) as f2
 WITH user, products, filter(x in f1 : x in f2) as intersect
 WITH user, products, count(products) as n, intersect, length(intersect) as intersect_cnt
 WHERE intersect_cnt > 1 and n > 0
-RETURN id(user) as user_id, n, id(products) as product_id, intersect as friends, intersect_cnt
+RETURN user.__id__ as user_id, n, id(products) as product_id, intersect as friends, intersect_cnt
 ORDER BY n DESC, intersect_cnt DESC, product_id
 LIMIT 25;
 
@@ -179,7 +179,8 @@ WITH user, products, collect(distinct friends1.__id__) as f1, collect(distinct f
 WITH user, products, filter(x in f1 : x in f2) as intersect
 WITH user, products, count(products) as n, intersect, length(intersect) as intersect_cnt
 WHERE intersect_cnt > 1 and n > 0
-RETURN user.__id__ as user_id, n, products.__id__ as product_id, intersect as friends, intersect_cnt;
+RETURN id(user) as user_id, n, products.__id__ as product_id, intersect as friends, intersect_cnt;
+
 
 
 // Gremlin
@@ -187,11 +188,11 @@ RETURN user.__id__ as user_id, n, products.__id__ as product_id, intersect as fr
 g = TitanFactory.open('../../master_thesis/benchmark/out/titan-graph_42_100_3_2');
 u=g.V('__id__', 'AOTMWB4YJKX3Z').next();
 u=g.v(326528);
-u=g.v(977260);
+u=g.v(11435);
 m = [:]; common_products = [] as Set;
 
 // get common products
-u.both('FRIEND_OF').transform({ it.in('REVIEWED_BY').dedup() }).scatter().groupCount(m).filter({ m[it] > 1 }).fill(common_products);
+u.both('FRIEND_OF').dedup().transform({ it.in('REVIEWED_BY').dedup() }).scatter().groupCount(m).filter({ m[it] > 1 }).fill(common_products);
 
 // get the friends (not necessary for the result)
 u.both('FRIEND_OF').as('friend').filter({ it.in('REVIEWED_BY').retain(common_products).count() >= 1 })
