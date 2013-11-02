@@ -1,9 +1,9 @@
 \section{Vorauswahl von Graphdatenbanksystemen}
 \label{sec:vorauswahl}
 
-Nachfolgend werden die Anforderungen an ein GDBMS für den Einsatz innerhalb des beschriebenen Projektes kategorisiert vorgestellt und vorhandene Implementierungen hinsichtlich der Erfüllung jener Anforderungen bewertet. Die Auswahl der Systeme erfolgte auf Grundlage von Literatur- und Webrecherche. Die Informationen zu den einzelnen GDBMS stammen von den Webseiten der Hersteller oder den primären Publikationen zu den jeweiligen Systemen. Eine Liste der Webseiten befindet sich in Anhang \ref{anh:vendor_list}.
+Nachfolgend werden grundlegende Anforderungen an ein GDBMS für den Einsatz innerhalb des beschriebenen Projektes kategorisiert vorgestellt und vorhandene Implementierungen hinsichtlich der Erfüllung jener Anforderungen bewertet. Die Auswahl der Systeme erfolgte auf Grundlage von Literatur- und Webrecherche. Die Informationen zu den einzelnen GDBMS stammen von den Webseiten der Hersteller oder den primären Publikationen zu den jeweiligen Systemen. Eine Liste der Webseiten befindet sich in Anhang \ref{anh:vendor_list}.
 
-Innerhalb jeder Kategorie werden obligatorische und optionale bzw. rein informative Anforderungen definiert. Ein GDBMS, welches eine obligatorische Anforderung erfüllt, wird in der nachfolgenden Kategorie weiter betrachtet. Sollte nach der Betrachtung aller Kategorien die Kandidatenmenge zu groß sein, um im Rahmen dieser Arbeit evaluiert werden zu können, werden die optionalen Anforderungen in den Entscheidungsprozess einbezogen. Ziel ist die Auswahl von vier GDBMS, welche die obligatorischen Anforderungen erfüllen, eine möglichst breite Verteilung innerhalb der vorgestellten GDBMS-Kategorien ist wünschenswert.
+Innerhalb jeder Kategorie werden obligatorische und optionale Anforderungen definiert. Ein GDBMS, welches alle obligatorischen Anforderungen erfüllt, wird in der nachfolgenden Kategorie berücksichtigt. Sollte nach der Betrachtung aller Kategorien die Kandidatenmenge zu groß sein, um im Rahmen dieser Arbeit evaluiert werden zu können, werden die optionalen Anforderungen in den Entscheidungsprozess einbezogen. Ziel ist die Auswahl von vier GDBMS, welche die obligatorischen Anforderungen erfüllen, eine möglichst breite Verteilung innerhalb der vorgestellten GDBMS-Kategorien ist wünschenswert.
 
 \paragraph*{Nutzbarkeit und Produktreife}
 
@@ -62,7 +62,7 @@ Die einzige obligatorische Anforderung in dieser Kategorie (Tabelle \ref{tab:ver
 
 Einige der durchzuführenden Analysen basieren auf der Extraktion von Geschäftsprozessen in Form von Subgraphen. In diesem Zusammenhang ist es von Vorteil, wenn sich diese Subgraphen systemseitig logisch getrennt in mehreren Datenbanken verwalten lassen. Diese optionale Anforderung wird jedoch nur von drei Systemen erfüllt.\\
 Die Möglichkeit zur Definition eines Schemas ist ein rein informatives Kriterium. Es wird deutlich, dass viele der Systeme auf die anwendungsseitige Umsetzung eines Schemas ausgerichtet sind und keine bzw. nur wenige Werkzeuge für die systemseitige Schemaverwaltung anbieten.\\
-Die Erfüllung der ACID-Eigenschaften bei der Transaktionsausführung spielt in Unternehmensdaten eine wichtige Rolle, deren systemseitige Unterstützung wird daher als obligatorisch angesehen. Die im Rahmen von ACID wichtige Konsistenzerhaltung und die damit verbundene Möglichkeit zur Definition von Integritätsbedingungen ist ebenfalls von Bedeutung: Modellinhärente Bedingungen, wie zum Beispiel die referentielle Integrität, bei der eine Kante mindestens einen Start- und einen Zielknoten besitzen muss, werden von allen Systemen sichergestellt. Die Möglichkeit zur Definition weiterer, beispielsweise attributbezogener, Integritätsbedingungen wird als optionale Anforderung gewertet.
+Die Erfüllung der ACID-Eigenschaften bei der Transaktionsausführung spielt in Unternehmensdaten eine wichtige Rolle, deren Unterstützung wird daher als obligatorisch angesehen. Die mit der Konsistenzerhaltung verbundene Möglichkeit zur Definition von Integritätsbedingungen ist ebenfalls von Bedeutung: Modellinhärente Bedingungen, wie zum Beispiel die referentielle Integrität, bei der eine Kante mindestens einen Start- und einen Zielknoten besitzen muss, werden von allen Systemen sichergestellt. Die Möglichkeit zur Definition weiterer, beispielsweise attributbezogener, Integritätsbedingungen wird als optionale Anforderung gewertet.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -83,7 +83,7 @@ Die Erfüllung der ACID-Eigenschaften bei der Transaktionsausführung spielt in Un
    	Neo4j			& PGM	& -	& (\checkmark)	& \checkmark	& \checkmark \\
    	OQGRAPH			& Gerichteter, gewichteter Multigraph	& -	& -	& -	& \checkmark \\
    	OrientDB		& PGM	& \checkmark	& \checkmark	& \checkmark	& \checkmark \\
-   	Titan			& PGM	& -	& (\checkmark)	& \checkmark	& \checkmark \\
+   	Titan			& PGM	& -	& -	& \checkmark & \checkmark \\
    	\hline
    	\end{tabular} 
 	\end{footnotesize}
@@ -99,7 +99,7 @@ Bei der Diskussion der Anforderungen wurde hinsichtlich der Zugriffsmechanismen 
 Aus der Quelloffenheit folgt nicht zwingend eine einfache Erweiterbarkeit der Systeme. Einige Anbieter beschreiben innerhalb ihrer Dokumentationen spezielle Plugin APIs, welche zum Beispiel das Hinzufügen eigener Indexstrukturen, Speichersysteme oder Operatoren erlauben. Generell lässt sich jedoch jedes quelloffene System erweitern, weswegen diese Eigenschaft optional ist.
 
 Hinsichtlich vorhandener graphenspezifischer Operationen wurde festgelegt, dass grundlegende Operationen wie CRUD und Traversierung eine Mindestvoraussetzung darstellen. CRUD-Operationen ermöglichen die Manipulation und das Auslesen der Datenbasis, während die Traversierung die grundlegende Operation für komplexere Graphalgorithmen darstellt.\\
-Eines der Ziele des Forschungsvorhabens ist das Entwickeln einer Softwareplattform, die u.a. von Analysten genutzt werden soll. Da in diesem Zusammenhang nicht zwingend Programmierkenntnisse vorauszusetzen sind, ist das Vorhandensein einer graphenspezifischen Anfragesprache vorteilhaft. Da in der GDBMS-Domäne bisher keine standardisierte Anfragesprache existiert, wurde diese Anforderung als optional deklariert.
+Eines der Ziele des Forschungsvorhabens ist das Entwickeln einer Softwareplattform, die u.a. von Analysten genutzt werden soll. Da in diesem Zusammenhang nicht zwingend Programmierkenntnisse vorauszusetzen sind, ist das Vorhandensein einer graphenspezifischen Anfragesprache wünschenswert. Da in der GDBMS-Domäne bisher keine standardisierte Anfragesprache existiert und da sich proprietäre Sprachen in ihrer Mächtigkeit stark unterscheiden können, wurde diese Anforderung als optional deklariert.
 
 Eine wesentliche Eigenschaft analytischer Systeme ist der vorrangig lesende Zugriff auf die Datenbasis. Im beschriebenen Forschungsprojekt werden periodisch Daten aus Quellsystemen in einen zentralen Graphen integriert und analysiert. Das Importieren der Daten soll dabei möglichst effizient durchgeführt werden, weswegen entsprechende Bulk-Load-Mechanismen wünschenswert, jedoch nicht obligatorisch sind.
 
@@ -132,23 +132,24 @@ In Tabelle \ref{tab:zugriff} werden die verbliebenen sechs Systeme hinsichtlich 
 
 \paragraph*{Speicherung}
 
-Ein wichtiges Kriterium für das Forschungsprojekt ist die dauerhafte Speicherung der Datenbasis, eine native Speicherung des Graphen ist dabei nicht zwingend erforderlich. Eine rein hauptspeicher-zentrierte Verarbeitung und die damit verbundene höhere Performance beim wahlfreien Zugriff innerhalb des Graphen kann insbesondere für analytische Systeme vorteilhaft sein, wird jedoch bisher nur von wenigen Systemen angeboten und ist daher optional. Indexstrukturen hingegen werden als obligatorisch deklariert, da sie auch in umfangreichen Graphen den effizienten Zugriff auf Knoten- und Kantenmengen anhand ihrer Attribute ermöglichen.
+Ein wichtiges Kriterium für das Forschungsprojekt ist die dauerhafte Speicherung der Datenbasis, welche in Bulk-Load-Vorgängen inkrementell aktualisiert wird. Ein vollständiges Integrieren der Datenquellen nach jedem Systemstart soll vermieden werden, weswegen diese Eigenschaft als obligatorisch deklariert wird. Eine native Speicherung des Graphen ist dabei nicht zwingend erforderlich.\\
+Die mit einer rein hauptspeicher-zentrierten Verarbeitung des Graphen verbundene höhere Performance beim wahlfreien Zugriff kann insbesondere für analytische Systeme vorteilhaft sein, wird jedoch bisher nur von wenigen GDBMS angeboten und ist daher optional. Indexstrukturen hingegen werden als obligatorisch deklariert, da sie den effizienten Zugriff auf Knoten- und Kantenmengen als Ausgangsbasis einer Traversierung anhand ihrer Attribute ermöglichen.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
 	\centering
 	\begin{footnotesize}
-   	\begin{tabular}{|m{2.25cm}|>{\centering}m{2.5cm}|>{\centering}m{2.5cm}|>{\centering}m{2.5cm}|>{\centering\arraybackslash}m{2.5cm}|}
+   	\begin{tabular}{|m{2.25cm}|>{\centering}m{2cm}|>{\centering}m{2.25cm}|>{\centering}m{2.5cm}|>{\centering\arraybackslash}m{2cm}|}
 	\hline
 	\multicolumn{5}{|c|}{\textbf{Speicherung}} \\
 	\hline
    	GDBMS & Persistenz & Native Speicherung*  & Hauptspeicher-\newline~zentriert* & Index-\newline unterstützung \\
    	\hline   
-   	Bitsy			& \checkmark	& -				& \checkmark	& \checkmark 	\\
-   	HypergraphDB	& \checkmark	& -				& - 			& \checkmark 	\\
-   	Neo4j			& \checkmark	& \checkmark	& -				& \checkmark	\\
-   	OrientDB		& \checkmark	& -				& -				& \checkmark	\\
-   	Titan			& \checkmark	& -				& -				& \checkmark	\\
+   	Bitsy			& \checkmark	& \checkmark	& \checkmark	& \checkmark \\
+   	HypergraphDB	& \checkmark	& -				& - 			& \checkmark \\
+   	Neo4j			& \checkmark	& \checkmark	& -				& \checkmark \\
+   	OrientDB		& \checkmark	& \checkmark	& -				& \checkmark \\
+   	Titan			& \checkmark	& -				& -				& \checkmark \\
    	\hline
 	\end{tabular} 
 	\end{footnotesize}
@@ -158,11 +159,11 @@ Ein wichtiges Kriterium für das Forschungsprojekt ist die dauerhafte Speicherung
 \end{table}
 \renewcommand{\arraystretch}{1}
 
-Aus Tabelle \ref{tab:speicherung} geht hervor, dass alle Systeme das Persistieren der Datenbasis unterstützen, wobei jedoch ausschließlich Neo4j einen graphenorientierten Speichermechanismus einsetzt. Von den verbliebenen Systemen bietet nur Bitsy eine hauptspeicher-zentrierte Verarbeitung des Graphen an wohingegen der Einsatz zusätzlicher Indizes in allen Systemen möglich ist. In dieser Kategorie kann folglich keines der Systeme ausgeschlossen werden.
+Aus Tabelle \ref{tab:speicherung} geht hervor, dass alle Systeme das Persistieren der Datenbasis unterstützen, HyperGraphDB und Titan setzen hierfür bestehende Datenbanksysteme ein während die übrigen Systeme eigene, graphenorientierte Speichermechanismen anbieten. Von den verbliebenen Systemen bietet nur Bitsy eine hauptspeicher-zentrierte Verwaltung des Graphen an wohingegen der Einsatz zusätzlicher Indizes in allen Systemen möglich ist. In dieser Kategorie kann folglich keines der Systeme ausgeschlossen werden.
 
 \paragraph*{Verteilung und Skalierbarkeit}
 
-In der letzten Kategorie werden die verbliebenen fünf Systeme hinsichtlich ihrer Fähigkeit zur Datenverteilung gegenübergestellt. Das fehlertolerante Speichern ist insbesondere in Verbindung mit Unternehmensdaten wünschenswert, eine für die Analyse wichtigere Anforderung ist die Skalierbarkeit von Lesezugriffen. Beides kann durch eine Replikation der Datenbasis erreicht werden, deren Unterstützung durch das entsprechende GDBMS gewährleistet sein soll. Darüber hinaus können Unternehmensdaten entweder von Beginn an sehr umfangreich sein bzw. durch stetiges Wachstum einen Umfang erreichen, der ihre Partitionierung erfordert. Da nur sehr wenige der Systeme eine Partitionierung der Datenbasis unterstützen, wird diese Anforderung als optional deklariert.
+In der letzten Kategorie werden die verbliebenen fünf Systeme hinsichtlich ihrer Fähigkeit zur Datenverteilung gegenübergestellt. Das fehlertolerante Speichern ist insbesondere in Verbindung mit Unternehmensdaten wünschenswert, eine hingegen für die Analyse umfangreicher Daten wichtige Anforderung ist die Skalierbarkeit von Lesezugriffen. Beides kann durch eine Replikation der Datenbasis erreicht werden, deren Unterstützung durch das entsprechende GDBMS gewährleistet sein soll. Darüber hinaus können Unternehmensdaten entweder von Beginn an sehr umfangreich sein bzw. durch stetiges Wachstum einen Umfang erreichen, der ihre Partitionierung erforderlich macht. Da nur sehr wenige der Systeme eine Partitionierung der Datenbasis unterstützen, wird diese Eigenschaft als optional deklariert.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -188,9 +189,9 @@ In der letzten Kategorie werden die verbliebenen fünf Systeme hinsichtlich ihrer
 \end{table}
 \renewcommand{\arraystretch}{1}
 
-Aus Tabelle \ref{tab:skalierbarkeit} geht hervor, dass HyperGraphDB, Neo4j, OrientDB und Titan die in der Vorauswahl gestellten Anforderungen erfüllen und daher anschließend im Detail untersucht werden. Hervorzuheben ist, dass die Systeme sehr unterschiedliche Eigenschaften aufweisen: Neo4j ist das im Vergleich einzige vollständig native GDBMS, allein HyperGraphDB unterstützt das PHGM, OrientDB basiert auf einem Dokumentenmodell und Titan bietet als eines der wenigen GDBMS eine Partitionierung der Datenbasis an.
+Aus Tabelle \ref{tab:skalierbarkeit} geht hervor, dass HyperGraphDB, Neo4j, OrientDB und Titan die in der Vorauswahl gestellten, grundlegenden Anforderungen erfüllen und daher im Anschluss detailliert betrachtet werden. Bis auf hauptspeicher-zentrierte GDBMS werden somit alle der vorgestellten Kategorien abgedeckt.
 
-Der Schwerpunkt der nachfolgenden Evaluation liegt auf dem jeweiligen Datenmodell und den angebotenen Zugriffsmechanismen. Es soll gezeigt werden, wie das PGM umgesetzt wurde und welche Erweiterungen die einzelnen Systeme diesbezüglich aufweisen. Weiter soll untersucht werden, welche der im vorhergehenden Kapitel vorgestellten graphenspezifischen Operationen unterstützt werden und wie sie in den jeweiligen Systemen anzuwenden sind.\\
-Die Untersuchung der Transaktionsmechanismen soll zeigen, inwieweit die ACID-Eigenschaften von den einzelnen Systemen umgesetzt werden und welche Mehrbenutzeranomalien gegebenenfalls zu erwarten sind.
-Eine nähere Untersuchung der Speichermechanismen soll darüber hinaus zeigen, wie der Graph auf den Externspeicher abgebildet wird und ob diese Abbildung ein indexfreies Traversieren des Graphen ermöglicht. Eng damit verbunden sind die Caching- und Indexmechanismen, welche ebenfalls betrachtet werden.\\
+Der Fokus der nachfolgenden Evaluation liegt auf dem jeweiligen Datenmodell und den angebotenen Zugriffsmechanismen. Es soll gezeigt werden, wie das PGM umgesetzt wurde und welche Besonderheiten die einzelnen Systeme diesbezüglich aufweisen. Weiter soll untersucht werden, welche der im vorhergehenden Kapitel vorgestellten graphenspezifischen Operationen unterstützt werden und wie sie in den jeweiligen Systemen anzuwenden sind.\\
+Die Untersuchung der Transaktionsmechanismen soll zeigen, inwieweit die ACID-Eigenschaften von den einzelnen Systemen umgesetzt werden und welche Mehrbenutzeranomalien gegebenenfalls zu erwarten sind und wie sich die Datenbanksysteme im Fehlerfall verhalten.\\
+Eine nähere Untersuchung der Speichermechanismen soll darüber hinaus zeigen, wie der Graph auf den Externspeicher abgebildet wird und ob diese Abbildung ein indexfreies Traversieren des Graphen ermöglicht. Eng damit verbunden sind die Caching- und Indexmechanismen, welche ebenfalls kurz betrachtet werden.\\
 Zusätzlich wird genauer auf die Verteilungsmechanismen der einzelnen Systeme eingegangen. Dieser Teil der Evaluation hat jedoch eher informativen Charakter und wird daher nur kurz behandelt.
