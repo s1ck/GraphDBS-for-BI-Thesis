@@ -1,0 +1,41 @@
+# http://www.r-bloggers.com/box-plot-with-r-tutorial/
+# http://thinkdatavis.com/2013/06/05/how-to-make-nice-boxplots-with-r/
+# http://stat.ethz.ch/R-manual/R-devel/library/graphics/html/boxplot.html
+# http://stackoverflow.com/questions/16905535/r-legend-trouble-how-to-change-the-text-size-in-legend
+
+# pre processing
+x <- read.csv('sim_products.csv') # read data
+fun <- function(x) {x/1000000} # scale from ns to ms
+x <- apply(x,MARGIN=c(1,2),FUN=fun) # apply to the data
+
+# draw boxplot without x-axis
+boxplot(x, # data
+ at=c(1,2,3,4,6,7,8,9,11,12,13,14), # positions of the boxes
+ outline=FALSE, # skip outliers
+ col=colors()[c(304,329,354,378,304,329,354,378,304,329,354,378)], # colors
+ #xlab="Testgraphen", # x-label
+ ylab="Antwortzeit [ms]", # y-label
+ cex.lab=2, # scale of the axis label
+ cex.axis=1.5, # scale of the axis values
+ xaxt='n' # skip printing values on x axis
+ )
+
+# add x-axis
+axis(1, # bottom axis
+ at=c(2.5,7.5,12.5), # positions of values
+ labels=c("p_100","p_1K","p_10K"), # values
+ cex.axis=1.5 # scale of the value fonts
+ )
+
+# add legend
+legend(x=12.25, y=35, # position
+ legend=c("Neo4j (Cypher)", "Neo4j (Gremlin)", "Titan (untyped)", "Titan (typed)"), # legend names
+ fill=colors()[c(304,329,354,378)], # colors
+ cex=1.25 # scale
+)
+
+# add title
+mtext(text="sim_products",
+ side=3, # top
+ cex=2 # text size
+)
