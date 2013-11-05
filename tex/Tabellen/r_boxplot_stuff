@@ -1,3 +1,88 @@
+###############
+# random read #
+###############
+
+pdf('random_read.pdf', width=12)
+
+x <- read.csv('random_read.csv')
+fun <- function(x) {x / 1000000}
+x <- apply(x, MARGIN=c(1,2), FUN=fun)
+
+# get means for each bar
+means <- matrix(c(
+	mean(x[,1]),
+ 	mean(x[,2]), 
+	mean(x[,3]), 
+	mean(x[,4]), 
+	mean(x[,5]), 
+	mean(x[,6]), 
+	mean(x[,7]), 
+	mean(x[,8]), 
+	mean(x[,9]), 
+	mean(x[,10]), 
+	mean(x[,11]), 
+	mean(x[,12])),
+	ncol=3,
+)
+#colnames(means) <- c("p_100", "p_1K", "p_10K")
+means <- as.table(means)
+
+
+# get standard deviations for each bar
+ stdDevs <- matrix(c(
+	sd(x[,1]),
+ 	sd(x[,2]), 
+	sd(x[,3]), 
+	sd(x[,4]), 
+	sd(x[,5]), 
+	sd(x[,6]), 
+	sd(x[,7]), 
+	sd(x[,8]), 
+	sd(x[,9]), 
+	sd(x[,10]), 
+	sd(x[,11]), 
+	sd(x[,12])
+), ncol=3)
+
+mp <- barplot(means,
+	axes=FALSE,
+	axisnames=FALSE,
+	col=colors()[c(304,329,354,378)],
+	xlab="Datensatz",
+	ylab="Antwortzeit [ms]",
+	ylim=c(0,45),
+	cex.lab=1.4, # scale of the axis label
+ 	cex.axis=1.4, # scale of the axis values 	
+ 	beside=TRUE,
+)
+
+ axis(1,
+ 	labels=c("p_100", "p_1K", "p_10K"),
+ 	at=c(3,8,13),
+ 	cex.axis=1.4
+)
+
+axis(2, 
+	at=seq(0, 45, by=5),
+	cex.axis=1.4
+)
+
+box()
+
+legend(x=1.5, y=44, # position
+ legend=c("Neo4j (Cypher)", "Neo4j (Gremlin)", "Titan (untyped)", "Titan (typed)"), # legend names
+ fill=colors()[c(304,329,354,378)], # colors
+ cex=1.4, # scale
+ horiz=TRUE
+)
+
+# add error bars
+segments(mp, means - stdDevs, mp, means + stdDevs, lwd=2)
+segments(mp - 0.1, means - stdDevs, mp + 0.1, means - stdDevs, lwd=2)
+segments(mp - 0.1, means + stdDevs, mp + 0.1, means + stdDevs, lwd=2)
+
+dev.off()
+
 # http://www.r-bloggers.com/box-plot-with-r-tutorial/
 # http://thinkdatavis.com/2013/06/05/how-to-make-nice-boxplots-with-r/
 # http://stat.ethz.ch/R-manual/R-devel/library/graphics/html/boxplot.html
