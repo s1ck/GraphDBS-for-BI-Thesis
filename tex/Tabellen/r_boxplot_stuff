@@ -2,6 +2,8 @@
 # random read #
 ###############
 
+# http://damirah.cz/r-barplot-with-error-bars/
+
 pdf('random_read.pdf', width=12)
 
 x <- read.csv('random_read.csv')
@@ -266,12 +268,6 @@ legend(x=6.5, y=2500, # position
 # close print device
 dev.off()
 
-# add title
-mtext(text="sim_products",
- side=3, # top
- cex=2 # text size
-)
-
 ###############
 # top_regions #
 ###############
@@ -281,41 +277,84 @@ mtext(text="sim_products",
 # http://stat.ethz.ch/R-manual/R-devel/library/graphics/html/boxplot.html
 # http://stackoverflow.com/questions/16905535/r-legend-trouble-how-to-change-the-text-size-in-legend
 
-# pdf output
 pdf('top_regions.pdf', width=12)
 
-# pre processing
-x <- read.csv('top_regions.csv') # read data
-fun <- function(x) {x/1000000} # scale from ns to ms
-x <- apply(x,MARGIN=c(1,2),FUN=fun) # apply to the data
+x <- read.csv('top_regions.csv')
+fun <- function(x) {x / 1000000}
+x <- apply(x, MARGIN=c(1,2), FUN=fun)
 
-# draw boxplot without x-axis
-barplot(x, # data
- at=c(1,2,3,4,6,7,8,9,11,12), # positions of the boxes
- #outline=FALSE, # skip outliers
- col=colors()[c(304,329,354,378,304,329,354,378,304,329)], # colors
- xlab="Datensatz", # x-label
- ylab="Antwortzeit [ms]", # y-label
- cex.lab=1.4, # scale of the axis label
- cex.axis=1.4, # scale of the axis values
- xaxt='n' # skip printing values on x axis
- )
+# get means for each bar
+means <- matrix(c(
+	mean(x[,1]),
+ 	mean(x[,2]), 
+	mean(x[,3]), 
+	mean(x[,4]), 
+	mean(x[,5]), 
+	mean(x[,6]), 
+	mean(x[,7]), 
+	mean(x[,8]), 
+	mean(x[,9]), 
+	mean(x[,10]), 
+	0, 
+	0),
+	ncol=3
+)
+#colnames(means) <- c("p_100", "p_1K", "p_10K")
+means <- as.table(means)
 
-# add x-axis
-axis(1, # bottom axis
- at=c(2.5,7.5,11.5), # positions of values
- labels=c("p_100","p_1K","p_10K"), # values
- cex.axis=1.4 # scale of the value fonts
- )
 
-# add legend
-legend(x=12, y=80, # position
- legend=c("Neo4j (Cypher)", "Neo4j (Gremlin)", "Titan (untyped)", "Titan (typed)"), # legend names
- fill=colors()[c(304,329,354,378)], # colors
- cex=1.2 # scale
+# get standard deviations for each bar
+ stdDevs <- matrix(c(
+	sd(x[,1]),
+ 	sd(x[,2]), 
+	sd(x[,3]), 
+	sd(x[,4]), 
+	sd(x[,5]), 
+	sd(x[,6]), 
+	sd(x[,7]), 
+	sd(x[,8]), 
+	sd(x[,9]), 
+	sd(x[,10]), 
+	0, 
+	0
+), ncol=3)
+
+mp <- barplot(means,
+	axes=FALSE,
+	axisnames=FALSE,
+	col=colors()[c(304,329,354,378)],
+	xlab="Datensatz",
+	ylab="Antwortzeit [ms]",
+	ylim=c(0,1400),
+	cex.lab=1.4, # scale of the axis label
+ 	cex.axis=1.4, # scale of the axis values 	
+ 	beside=TRUE,
 )
 
-# close print device
+ axis(1,
+ 	labels=c("p_100", "p_1K", "p_10K"),
+ 	at=c(3,8,13),
+ 	cex.axis=1.4
+)
+
+axis(2, 
+	#at=seq(0, 1400, by=10),
+	cex.axis=1.4,	
+)
+
+box()
+
+legend(x=1.5, y=1300, # position
+ legend=c("Neo4j (Cypher)", "Neo4j (Gremlin)", "Titan (untyped)", "Titan (typed)"), # legend names
+ fill=colors()[c(304,329,354,378)], # colors
+ cex=1.4, # scale
+)
+
+# add error bars
+segments(mp, means - stdDevs, mp, means + stdDevs, lwd=2)
+segments(mp - 0.1, means - stdDevs, mp + 0.1, means - stdDevs, lwd=2)
+segments(mp - 0.1, means + stdDevs, mp + 0.1, means + stdDevs, lwd=2)
+
 dev.off()
 
 ###############
@@ -339,29 +378,26 @@ boxplot(x, # data
  ylab="Antwortzeit [ms]", # y-label
  cex.lab=1.4, # scale of the axis label
  cex.axis=1.4, # scale of the axis values
- xaxt='n', # skip printing values on x axis
+ axes=FALSE, # skip printing values on x axis
  log='y'
  )
 
-# add x-axis
-axis(1, # bottom axis
+axis(1, # x-axis
  at=c(2.5,7.5,12.5), # positions of values
  labels=c("p_100","p_1K","p_10K"), # values
  cex.axis=1.4 # scale of the value fonts
  )
 
+axis(2,at=c(1,10,100,1000), cex.axis=1.4)
+
 # add legend
-legend(x=12, y=80, # position
+legend(x=11.5, y=900, # position
  legend=c("Neo4j (Cypher)", "Neo4j (Gremlin)", "Titan (untyped)", "Titan (typed)"), # legend names
  fill=colors()[c(304,329,354,378)], # colors
- cex=1.2 # scale
+ cex=1.4 # scale
 )
+
+box()
 
 # close print device
 dev.off()
-
-# add title
-mtext(text="sim_products",
- side=3, # top
- cex=2 # text size
-)
