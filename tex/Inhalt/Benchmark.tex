@@ -251,8 +251,6 @@ Es wird deutlich, dass diese Anfrage für beide GDBMS in Verbindung mit der verwe
 
 \paragraph*{\texttt{path\_shortest}} Die Anfrage berechnet den kürzesten Pfad zwischen zwei Knoten unter Berücksichtigung definierter Kantenbezeichner. Auch hier musste auf Grund begrenzter Hardware-Ressourcen auf die Ausführung der Gremlin-Anfragen in den Testgraphen \texttt{p\_1K} und \texttt{p\_10K} verzichtet werden. Abbildung \ref{fig:path_shortest} fasst die Ergebnisse in einem Boxplot zusammen.
 
-Bei der Formulierung der Cypher-Anfrage wurde auf die angebotene \texttt{shortestPath}-Funktion zurückgegriffen. Wie aus der Abbildung hervorgeht, erzielt deren Implementierung selbst bei steigendem Datenvolumen niedrige, konstante Ausführungszeiten. Die manuelle Umsetzung der Anfrage in Gremlin führt hingegen in beiden GDBMS zu deutlich höheren Ausführungszeiten und resultiert bereits im kleinsten Datensatz in Ausreißern von bis zu 150 Sekunden.
-
 \begin{figure}[h] 
 	\centering
 		\includegraphics[scale=.55]{path_shortest.pdf}
@@ -260,12 +258,22 @@ Bei der Formulierung der Cypher-Anfrage wurde auf die angebotene \texttt{shortes
 	\label{fig:path_shortest}
 \end{figure}
 
-\paragraph*{\texttt{top\_regions}} Die Anfrage berücksichtigt sowohl die Topologie des Graphen als auch eine Einschränkung der Nutzdaten. Die Ergebnismenge wird gruppiert, aggregiert, sortiert und limitiert. Für die Darstellung der Messergebnisse wurde das Säulendiagramm gewählt, welches jeweils den Durchschnittswert und die Standardabweichung der Einzelmessungen einer Messreihe darstellt (Abbildung \ref{fig:top_regions}).
 
-Neo4j erzielt in Verbindung mit Cypher die besten Ergebnisse. Bezüglich der Skalierbarkeit lässt sich feststellen, dass die Antwortzeiten in Neo4j linear mit der Datenmenge skalieren. Die Anzahl zu berücksichtigender Produkte entspricht 1\,852 (\texttt{p\_100}), 12\,831 (\texttt{p\_1K}) und 242\,354 (\texttt{p\_10K}). Am Beispiel von \texttt{p\_1K} und \texttt{p\_10K} entspricht dies einem Faktor von ca. 18. Die durchschnittliche Ausführungszeit der Anfrage in Neo4j (Cypher) steigt von 60 auf 1\,110 Millisekunden (Faktor 18) und in Neo4j (Gremlin) von 80 auf 1\,370 Millisekunden (Faktor 18).\\
-Gleiches gilt auch für Titan, hier sind die Antwortzeiten jedoch generell deutlich höher, was jedoch in diesem Fall auf das GDBMS zurückzuführen ist, da die gleiche Anfrage in Neo4j deutlich niedrigere Antwortzeiten erzielt.
+Bei der Formulierung der Cypher-Anfrage wurde auf die angebotene \texttt{shortestPath}-Funktion zurückgegriffen. Wie aus der Abbildung hervorgeht, erzielt deren Implementierung selbst bei steigendem Datenvolumen niedrige, konstante Ausführungszeiten. Die manuelle Umsetzung der Anfrage in Gremlin führt hingegen in beiden GDBMS zu deutlich höheren Ausführungszeiten und resultiert bereits im kleinsten Datensatz in Ausreißern von bis zu 150 Sekunden.
 
-%p\_100 	1852
+\paragraph*{\texttt{top\_regions}} Die Anfrage berücksichtigt sowohl die Topologie des Graphen als auch eine Einschränkung der Nutzdaten. Die Ergebnisse werden gruppiert und aggregiert sowie anschließend sortiert und limitiert. Für die Darstellung der Messergebnisse wurde das Säulendiagramm gewählt, welches jeweils den Durchschnittswert und die Standardabweichung der Einzelmessungen einer Messreihe visualisiert (Abbildung \ref{fig:top_regions}).
+
+\begin{figure}[h]
+	\centering
+		\includegraphics[scale=.55]{top_regions.pdf}
+	\caption[Benchmark: \texttt{top\_regions}]{Ergebnisse der \texttt{top\_regions}-Messung.}
+	\label{fig:top_regions}
+\end{figure}
+
+In der Messung konnten mit Neo4j und Cypher die niedrigsten Antwortzeiten erreicht werden. Bezüglich der Skalierbarkeit lässt sich feststellen, dass die Antwortzeiten in Neo4j linear mit der Datenmenge skalieren. Die Anzahl zu berücksichtigender Produkte entspricht 1\,852 (\texttt{p\_100}), 12\,831 (\texttt{p\_1K}) und 242\,354 (\texttt{p\_10K}). Am Beispiel von \texttt{p\_1K} und \texttt{p\_10K} entspricht dies einem Faktor von ca. 18. Die durchschnittliche Ausführungszeit der Anfrage in Neo4j (Cypher) steigt von 60 auf 1\,110 Millisekunden (Faktor 18) und in Neo4j (Gremlin) von 80 auf 1\,370 Millisekunden (Faktor 18).\\
+Gleiches gilt auch für Titan, hier sind die Antwortzeiten jedoch grundlegend höher, was in diesem Fall auf das GDBMS zurückzuführen ist, da eine identische Anfrage in Neo4j niedrigere Antwortzeiten erzielt. Die Anfrage berücksichtigt Attribute sowohl für die Einschränkung der Produktmenge als auch für die Gruppierung der Ergebnisse. Eine manuelle Typdefinition in Titan führte hierbei nicht zu messbaren Leistungsunterschieden.
+
+%p\_100 1852
 %p\_1K	12831 (*7)
 %p\_10K 	242354 (*18)
 %
@@ -275,14 +283,11 @@ Gleiches gilt auch für Titan, hier sind die Antwortzeiten jedoch generell deutli
 %68 -> 470 (*7)
 %68 -> 463 (*7)
 
-\begin{figure}[h] 
-	\centering
-		\includegraphics[scale=.55]{top_regions.pdf}
-	\caption[Benchmark: \texttt{top\_regions}]{Ergebnisse der \texttt{top\_regions}-Messung.}
-	\label{fig:top_regions}
-\end{figure}
 
-\paragraph*{\texttt{sim\_pattern}} Die letzte Anfrage stellt eine komplexe Mustersuche innerhalb des Graphen dar. Wie Anhang \ref{anh:queries} zu entnehmen ist, sind sowohl Cypher- als auch Gremlin-Anfrage deutlich komplexer als in den vorhergehenden Anfragen. Da sich die Ergebnismengen verschiedener Knoten stark unterscheiden können, wurde auch hier die Boxplot-Darstellung gewählt (Abbildung \ref{fig:sim_pattern}).
+
+\paragraph*{\texttt{sim\_pattern}} Die letzte Anfrage stellt eine komplexe Mustersuche innerhalb des Graphen dar. Wie Anhang \ref{anh:queries} zu entnehmen ist, sind die Anfragen in beiden Sprachen im Vergleich zu den vorhergehenden Anfragen deutlich komplexer. Da sich die Ergebnismengen verschiedener Knoten stark unterscheiden können, wurde auch hier die Boxplot-Darstellung gewählt (Abbildung \ref{fig:sim_pattern}).
+
+Es wird deutlich, dass die Antwortzeiten mit steigender Datenmenge in beiden GDBMS konstant bleiben. Die Antwortzeiten mit Cypher sind hierbei um etwa einen Faktor 1000 langsamer als die Ausführung mittels Gremlin. Bei der Messung im größten Datensatz treten in beiden Systemen Ausreißer auf, was folglich auf die Anfrageverarbeitung von Gremlin bzw. auf eine nicht-optionale Anfrage zurückzuführen ist. Generell ist dies die einzige Anfrage, bei der Titan minimal besser abschneidet als Neo4j.
 
 \begin{figure}[h] 
 	\centering
@@ -293,9 +298,16 @@ Gleiches gilt auch für Titan, hier sind die Antwortzeiten jedoch generell deutli
 
 \paragraph*{Gesamtergebnis}
 
+- Cypher nur in einer Anfrage schneller als Gremlin
+- Potenzial für Anfrageoptimierung
+- Neo4j in allen bis auf \texttt{sim\_products} schneller
+- konstante Antwortzeiten bei steigender Datenmenge in beiden Datenbanken
+
+Neben den eigentlich Messergebnissen soll auch die Anfrageformulierung bewertet werden. Insgesamt lässt sich feststellen, dass das Formulieren graphenspezifischer Anfragen in Cypher deutlich einfacher ist. Gremlin erfordert bei komplexeren Anfragen zusätzliche Datenstrukturen und das Formulieren ganzer Ausführungsskripte um vergleichbare Ergebnisse produzieren zu können.
+
 - Anfrageformulierung in Cypher ist intuitiver und einfacher als in Gremlin
 - Cypher generell langsamer
-- Potenzial für Anfrageoptimierung
+
 
 
 
