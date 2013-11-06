@@ -130,7 +130,7 @@ a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO').except(visited).store(visited).
 */
 
 * Cypher
-START g=node(2)
+START g=node:nodes('__id__','g_0')
 MATCH g<-[:BELONGS_TO]-p-[r:REVIEWED_BY]->u
 WHERE p.salesrank < 500000
 RETURN u.region AS region, count(u) AS cnt

@@ -1,3 +1,107 @@
+#################
+# import (time) #
+#################
+
+pdf('import_time.pdf', width=6, height=5)
+
+x <- read.csv('import_time.csv')
+fun <- function(x) {x / 1000}
+x <- apply(x, MARGIN=c(1,2), FUN=fun)
+
+mp.bar <- barplot(x,
+	axes=FALSE,
+	axisnames=FALSE,
+	col=colors()[c(304,354,378)],
+	xlab="Datensatz",
+	ylab="Importdauer [s]",
+	ylim=c(0,240),
+	cex.lab=1.4, # scale of the axis label
+ 	cex.axis=1.4, # scale of the axis values
+ 	beside=TRUE,
+)
+
+lines(x=mp.bar[1,], y=x[1,])
+points(x=mp.bar[1,], y=x[1,])
+lines(x=mp.bar[2,], y=x[2,])
+points(x=mp.bar[2,], y=x[2,])
+lines(x=mp.bar[3,], y=x[3,])
+points(x=mp.bar[3,], y=x[3,])
+
+box()
+
+ axis(1,
+ 	labels=c("p_100", "p_1K", "p_10K"),
+ 	at=c(2.5,6.5,10.5),
+ 	cex.axis=1.4
+)
+
+axis(2, 
+	at=seq(0, 240, by=20),
+	cex.axis=1.4
+)
+
+legend(x=1, y=230, # position
+ legend=c("Neo4j", "Titan (untyped)", "Titan (typed)"), # legend names
+ fill=colors()[c(304,354,378)], # colors
+ cex=1.4, # scale
+ #horiz=TRUE
+)
+
+dev.off()
+
+#################
+# import (space) #
+#################
+
+pdf('import_space.pdf', width=6, height=5)
+
+x <- read.csv('import_space.csv')
+fun <- function(x) {x}
+x <- apply(x, MARGIN=c(1,2), FUN=fun)
+
+mp.bar <- barplot(x,
+	axes=FALSE,
+	axisnames=FALSE,
+	col=colors()[c(304,354,378)],
+	xlab="Datensatz",
+	ylab="Speicherverbrauch [MB]",
+	ylim=c(0,1000),
+	cex.lab=1.4, # scale of the axis label
+ 	cex.axis=1.4, # scale of the axis values
+ 	beside=TRUE,
+)
+
+lines(x=mp.bar[1,], y=x[1,])
+points(x=mp.bar[1,], y=x[1,])
+lines(x=mp.bar[2,], y=x[2,])
+points(x=mp.bar[2,], y=x[2,])
+lines(x=mp.bar[3,], y=x[3,])
+points(x=mp.bar[3,], y=x[3,])
+
+box()
+
+ axis(1,
+ 	labels=c("p_100", "p_1K", "p_10K"),
+ 	at=c(2.5,6.5,10.5),
+ 	cex.axis=1.4
+)
+
+axis(2, 
+	at=seq(0, 1000, by=100),
+	cex.axis=1.4
+)
+
+legend(x=1, y=940, # position
+ legend=c("Neo4j", "Titan (untyped)", "Titan (typed)"), # legend names
+ fill=colors()[c(304,354,378)], # colors
+ cex=1.4, # scale
+ #horiz=TRUE
+)
+
+dev.off()
+
+
+
 ###############
 # random read #
 ###############
@@ -56,6 +160,7 @@ mp <- barplot(means,
 	cex.lab=1.4, # scale of the axis label
  	cex.axis=1.4, # scale of the axis values 	
  	beside=TRUE,
+ 	#log='y'
 )
 
  axis(1,
@@ -109,6 +214,7 @@ boxplot(x, # data
  col=colors()[c(304,329,354,378,304,329,354,378,304,329,354,378)], # colors
  xlab="Datensatz", # x-label
  ylab="Antwortzeit [ms]", # y-label
+ ylim=c(0,45),
  cex.lab=1.4, # scale of the axis label
  cex.axis=1.4, # scale of the axis values
  xaxt='n', # skip printing values on x axis
@@ -123,10 +229,10 @@ axis(1, # bottom axis
  )
 
 # add legend
-legend(x=12, y=35, # position
+legend(x=11.5, y=45, # position
  legend=c("Neo4j (Cypher)", "Neo4j (Gremlin)", "Titan (untyped)", "Titan (typed)"), # legend names
  fill=colors()[c(304,329,354,378)], # colors
- cex=1.2 # scale
+ cex=1.4,
 )
 
 # close print device
@@ -148,13 +254,14 @@ x <- apply(x,MARGIN=c(1,2),FUN=fun) # apply to the data
 # draw boxplot without x-axis
 boxplot(x, # data
  at=c(1,2,3,4,6,7,8,9,11,12,13,14), # positions of the boxes
- outline=FALSE, # skip outliers
+ outline=TRUE, # skip outliers
  col=colors()[c(304,329,354,378,304,329,354,378,304,329,354,378)], # colors
  xlab="Datensatz", # x-label
  ylab="Antwortzeit [ms]", # y-label
  cex.lab=1.4, # scale of the axis label
  cex.axis=1.4, # scale of the axis values
- xaxt='n' # skip printing values on x axis
+ xaxt='n', # skip printing values on x axis
+ log='y'
  )
 
 # add x-axis
@@ -165,10 +272,10 @@ axis(1, # bottom axis
  )
 
 # add legend
-legend(x=12, y=80, # position
+legend(x=6, y=10000, # position
  legend=c("Neo4j (Cypher)", "Neo4j (Gremlin)", "Titan (untyped)", "Titan (typed)"), # legend names
  fill=colors()[c(304,329,354,378)], # colors
- cex=1.2 # scale
+ cex=1.4 # scale
 )
 
 # close print device
@@ -183,25 +290,30 @@ dev.off()
 # http://thinkdatavis.com/2013/06/05/how-to-make-nice-boxplots-with-r/
 # http://stat.ethz.ch/R-manual/R-devel/library/graphics/html/boxplot.html
 # http://stackoverflow.com/questions/16905535/r-legend-trouble-how-to-change-the-text-size-in-legend
+# http://stackoverflow.com/questions/8918452/r-changing-format-of-scale-on-y-axis
 
 # pdf output
 pdf('path_all.pdf', width=8)
 
+# to avoid scientific style of y values
+options("scipen" = 20)
+
 # pre processing
 x <- read.csv('path_all.csv') # read data
-fun <- function(x) {x/1000000000} # scale from ns to ms
+fun <- function(x) {x/1000000} # scale from ns to ms
 x <- apply(x,MARGIN=c(1,2),FUN=fun) # apply to the data
 
 # draw boxplot without x-axis
 boxplot(x, # data
  at=c(1,2,3,4,6,7,8), # positions of the boxes
- outline=FALSE, # skip outliers
+ outline=TRUE, # skip outliers
  col=colors()[c(304,329,354,378,329,354,378)], # colors
  xlab="Datensatz", # x-label
- ylab="Antwortzeit [s]", # y-label
+ ylab="Antwortzeit [ms]", # y-label
  cex.lab=1.4, # scale of the axis label
  cex.axis=1.4, # scale of the axis values
- xaxt='n' # skip printing values on x axis
+ axes=FALSE, # skip printing values on x axis
+ log='y'
  )
 
 # add x-axis
@@ -211,11 +323,15 @@ axis(1, # bottom axis
  cex.axis=1.4 # scale of the value fonts
  )
 
+axis(2,at=c(1,10,100,1000,10000, 100000), cex.axis=1.4,las=1)
+
+box()
+
 # add legend
-legend(x=6, y=5.75, # position
+legend(x=2, y=900000, # position
  legend=c("Neo4j (Cypher)", "Neo4j (Gremlin)", "Titan (untyped)", "Titan (typed)"), # legend names
  fill=colors()[c(304,329,354,378)], # colors
- cex=1.2 # scale
+ cex=1.4 # scale
 )
 
 # close print device
@@ -241,13 +357,13 @@ x <- apply(x,MARGIN=c(1,2),FUN=fun) # apply to the data
 # draw boxplot without x-axis
 boxplot(x, # data
  at=c(1,2,3,4,6,8), # positions of the boxes
- outline=FALSE, # skip outliers
+ outline=TRUE, # skip outliers
  col=colors()[c(304,329,354,378,304,304)], # colors
  xlab="Datensatz", # x-label
  ylab="Antwortzeit [ms]", # y-label
  cex.lab=1.4, # scale of the axis label
  cex.axis=1.4, # scale of the axis values
- xaxt='n', # skip printing values on x axis
+ axes=FALSE, # skip printing values on x axis
  log='y'
  )
 
@@ -258,11 +374,16 @@ axis(1, # bottom axis
  cex.axis=1.4 # scale of the value fonts
  )
 
+# add y-axis
+axis(2,at=c(5,50,500,5000, 80000), cex.axis=1.4)
+
+box()
+
 # add legend
-legend(x=6.5, y=2500, # position
+legend(x=6, y=80000, # position
  legend=c("Neo4j (Cypher)", "Neo4j (Gremlin)", "Titan (untyped)", "Titan (typed)"), # legend names
  fill=colors()[c(304,329,354,378)], # colors
- cex=1.2 # scale
+ cex=1.4 # scale
 )
 
 # close print device
