@@ -520,15 +520,20 @@ axis(1, # x-axis
  cex.axis=1.2 # scale of the value fonts
  )
 
-axis(2,at=c(1,10,100,1000,10000), cex.axis=1.2)
+# add y-axis
+axis(2,
+	at=10^c(0,1,2,3,4,5),
+	labels=expression(1,10^1,10^2,10^3,10^4,10^5), 
+	cex.axis=1.2,
+	#las=1
+)
 
 # add legend
-legend(x=1, y=40000, # position
- legend=c("Neo4j 2.0 (Cypher)", "Neo4j 1.9.4 (Gremlin)", "Titan (untyped)", "Titan (typed)"), # legend names
+legend(1,40000, # position
+ legend=c("Neo4j 2.0 (Cypher)", "Neo4j 1.9.4 (Gremlin)", "Titan (untyped)", "Titan (typed)"),
  fill=colors()[c(304,329,354,378)], # colors
  cex=1.2, # scale
  ncol=2
-
 )
 
 box()
