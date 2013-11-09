@@ -294,32 +294,13 @@ Es wird deutlich, dass die Antwortzeiten mit steigender Datenmenge in beiden GDB
 
 \paragraph*{Gesamtergebnis}
 
-Beide GDBMS erzielen Antwortzeiten, die in einem für das Forschungsprojekt akzeptablen Bereich liegen, Neo4j weist in Verbindung mit Gremlin für fast alle Anfragen die besten Ergebnisse auf, der Vorsprung zu Titan ist jedoch oft nur minimal. Hervorzuheben ist die lineare Skalierbarkeit beider Systeme bei steigendem Datenvolumen, wobei sich Neo4j für größere Datenmengen besser zu eignen scheint, da die Messwerte hier generell näher zusammen liegen und die Ausreißer im Vergleich zu Titan geringer sind. Dies ist auf die Verwendung von BerkeleyDB als Speichersystem zurückzuführen, die Ergebnisse können folglich für andere Speichersysteme variieren.\\
-Das Prüfen der Erreichbarkeit ist in beiden Systemen grundsätzlich möglich, erfordert aber je nach Datenumfang entsprechende Hardware-Ressourcen. Da es sich bei den verwendeten Testgraphen um zusammenhängende Graphen handelt, kann eine Pfadsuche dazu führen, dass der komplette Graph betrachtet werden muss. Die Nutzung systemseitiger Funktionen wie z.B. \texttt{shortestPath} sollte generell einer manuellen Implementierung bevorzugt werden. Da die Suche nach dem kürzesten Pfad Grundlage für komplexere Graphalgorithmen darstellt, weist Cypher diesbezüglich gegenüber Gremlin bei der Verwendung einen wesentlichen Vorteil auf.\\
-Neben der Suche nach dem kürzesten Pfad erzielte Cypher nur bei der Ausführung von \texttt{top\_region} bessere Ergebnisse als die Verwendung von Gremlin, allgemein betrachtet ist die gremlin-basierte Ausführung jedoch deutlich performanter, die Messwerte unterscheiden sich dabei um einem Faktor von ca. 20 bis $10^3$. Diese Differenz und das im Vergleich schlechte Antwortzeitverhalten wurde bereits in den verwandten Arbeiten festgestellt und scheint noch immer aktuell zu sein. Laut Neo Technologies sind für Version 2.1 umfangreiche Optimierungen für Cypher geplant.\footnote{Dies ergab eine Skype-Konversation mit Michael Hunger, einem Mitarbeiter und Entwickler von Neo Technologies.}
+Beide GDBMS erzielen Antwortzeiten, die in einem für das Forschungsprojekt akzeptablen Bereich liegen, die besten Ergebnisse für fast alle Anfragen erreicht Neo4j in Verbindung mit Gremlin, der Vorsprung zu Titan ist dabei oft nur minimal. Hervorzuheben ist die lineare Skalierbarkeit beider Systeme bei steigendem Datenvolumen, wobei sich Neo4j für größere Datenmengen besser zu eignen scheint, da die Messwerte bei Anfragen auf dem größten Datensatz näher zusammen liegen und die Ausreißer im Vergleich zu Titan geringer sind. Dies ist auf die Verwendung von BerkeleyDB als Speichersystem zurückzuführen, die Ergebnisse können folglich für andere Speichersysteme variieren.\\
+Das Prüfen der Erreichbarkeit ist in beiden Systemen grundsätzlich möglich, erfordert aber je nach Datenumfang entsprechende Hardware-Ressourcen. Generell sollte die Nutzung systemseitiger Funktionen wie z.B. \texttt{shortestPath} einer eigenen Implementierung vorgezogen werden. Da die Suche nach dem kürzesten Pfad Grundlage für komplexere, analytische Graphalgorithmen auch innerhalb des Forschungsvorhabens ist, weist Cypher diesbezüglich gegenüber Gremlin einen wesentlichen Vorteil auf.
 
+Zusätzlich zur Suche nach dem kürzesten Pfad erzielte Cypher nur bei der Ausführung von \texttt{top\_region} bessere Ergebnisse als die Verwendung von Gremlin, allgemein betrachtet ist die gremlin-basierte Ausführung jedoch deutlich performanter, die Messwerte unterscheiden sich dabei um einem Faktor von ca. 20 bis $10^3$. Das im Vergleich schlechte Antwortzeitverhalten von Cypher gegenüber Gremlin wurde bereits in den verwandten Arbeiten festgestellt und ist noch immer aktuell. Laut Neo Technologies sind für Version 2.1 umfangreiche Optimierungen für Cypher geplant.\footnote{Dies ergab eine Skype-Konversation mit Michael Hunger, einem Mitarbeiter und Entwickler von Neo Technologies.}\\
+Titan erreicht im Vergleich ebenfalls akzeptable Werte, erzielte aber insbesondere bei topologischen Anfragen auf dem größten Datensatz schlechtere Ergebnisse als Neo4j mit teilweise deutlichen Ausreißern. Ob dies aus einer nicht-optimalen Anfrageformulierung, der Anfrageausführung in Gremlin, Titan oder BerkeleyDB resultiert, lässt sich nicht eindeutig feststellen. Eine manuelle Typisierung von Attributschlüsseln und Kantenbezeichnern führte nur in einer Anfrage zu messbaren Verbesserungen, diese waren jedoch minimal. Es wird vermutet, dass sich die manuelle Typisierung bei Verwendung eines KCV-Speichersystem eher auswirkt, da hier alle Nutzdaten und Kanteninformationen innerhalb eines Datensatzes und nicht, wie es bei der Verwendung von BerkeleyDB der Fall ist, getrennt voneinander gespeichert sind.
 
-
-
-
-
-% Neo4j
-
-- in allen Anfragen bis auf \texttt{sim\_pattern} die geringsten Antwortzeiten
-- Cypher nur in zwei Anfrage schneller als Gremlin (shortest path und top regions)
-- Potenzial für Anfrageoptimierung
-
-% Titan
-
-- manuelle Typisierung keinen messbaren oder nur minimale Verbesserung
-
-% generell
-- die Antwortzeiten liegen jedoch in einem für das Forschungsprojekt akzeptablen Bereich
-
-% Skalierbarkeit
-
-- konstante Antwortzeiten bei steigender Datenmenge in beiden Datenbanken
-- lineares Wachstum der Antwortzeiten bei steigender Ergebnismenge
+Neben der reinen Leistungsfähigkeit der GDBMS bei der Ausführung analytischer Anfragen sollte auch die Anfrageformulierung in Cypher und Gremlin bewertet werden.
 
 % Bewertung der Anfragesprachen
 
