@@ -10,6 +10,8 @@ import de.s1ckboy.thesis.benchmark.queries.SimProducts;
 
 public class Neo4jSimProductsCypher extends Neo4jCypherBenchmark implements
 	SimProducts {
+    
+
     @Override
     public void beforeRun() {
 	super.beforeRun();
@@ -31,10 +33,9 @@ public class Neo4jSimProductsCypher extends Neo4jCypherBenchmark implements
 	for (String title : IteratorUtil.asIterable(title_column)) {
 	    // validation
 	    // System.out.println(title);
-
 	}
     }
-
+    
     @Override
     public String getName() {
 	return Constants.NEO4J_SIM_PRODUCTS_CYPHER;

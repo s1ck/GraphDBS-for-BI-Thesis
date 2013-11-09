@@ -8,6 +8,8 @@ import de.s1ckboy.thesis.benchmark.queries.FoafReviews;
 
 public class Neo4jFoafReviewsCypher extends Neo4jCypherBenchmark implements
 	FoafReviews {
+    
+    private int[] resCnt = new int[1000];
 
     @Override
     public void beforeRun() {
@@ -26,12 +28,38 @@ public class Neo4jFoafReviewsCypher extends Neo4jCypherBenchmark implements
     @Override
     public void run() {
 	super.run();
+	int i = 0;
 	for (Map<String, Object> e : result) {
-	    // e.get("weight");
-	    // e.get("title");
-	    System.out.println(e.get("weight"));
-	    System.out.println(e.get("title"));
+	    e.get("weight");
+	    e.get("title");
+	    // System.out.println(e.get("weight"));
+	    // System.out.println(e.get("title"));
+	    i++;
 	}
+	resCnt[getCurrentRun()] = i;
+    }
+    
+    public void tearDown() {
+	int min = Integer.MAX_VALUE;
+	int max = Integer.MIN_VALUE;
+	int maxIdx = -1;
+	int sum = 0;
+	
+	for (int i = 0; i < 1000; i++) {
+	    sum += resCnt[i];
+	    if (resCnt[i] < min) min = resCnt[i];
+	    if (resCnt[i] > max) {
+		max = resCnt[i];
+		maxIdx = i;
+	    }
+	}
+	
+	System.out.println("min: " + min);
+	System.out.println("max: " + max);
+	System.out.println("maxIdx: " + maxIdx);
+	System.out.println("avg: " + (sum / 1000.0));
+	
+	super.tearDown();
     }
 
     @Override

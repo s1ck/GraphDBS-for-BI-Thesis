@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.configuration.Configuration;
 import org.neo4j.graphdb.DynamicRelationshipType;
+import org.neo4j.graphdb.Label;
 //import org.neo4j.graphdb.Label;
 import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.index.lucene.unsafe.batchinsert.LuceneBatchInserterIndexProvider;
@@ -113,24 +114,24 @@ public class Neo4jImporter extends AbstractImporter {
 	}
 
 	// get corresponding node label
-//	Label l = null;
-//	String typeValue = (String) properties
-//		.get(Constants.KEY_NODE_EDGE_TYPE);
-//	if (typeValue.equals(Constants.VALUE_TYPE_GROUP)) {
-//	    l = Neo4jConstants.GROUP_LABEL;
-//	} else if (typeValue.equals(Constants.VALUE_TYPE_PRODUCT)) {
-//	    l = Neo4jConstants.PRODUCT_LABEL;
-//	} else if (typeValue.equals(Constants.VALUE_TYPE_USER)) {
-//	    l = Neo4jConstants.USER_LABEL;
-//	}
+	Label l = null;
+	String typeValue = (String) properties
+		.get(Constants.KEY_NODE_EDGE_TYPE);
+	if (typeValue.equals(Constants.VALUE_TYPE_GROUP)) {
+	    l = Neo4jConstants.GROUP_LABEL;
+	} else if (typeValue.equals(Constants.VALUE_TYPE_PRODUCT)) {
+	    l = Neo4jConstants.PRODUCT_LABEL;
+	} else if (typeValue.equals(Constants.VALUE_TYPE_USER)) {
+	    l = Neo4jConstants.USER_LABEL;
+	}
 	// remove type attribute from properties
 	if (cfg.getBoolean("import.drop.type")) {
 	    properties.remove(Constants.KEY_NODE_EDGE_TYPE);
 	}
 	// and create the node
 	// only with 2.0.0-M04
-//	long nodeId = inserter.createNode(properties, l);
-	long nodeId = inserter.createNode(properties);
+	long nodeId = inserter.createNode(properties, l);
+//	long nodeId = inserter.createNode(properties);
 	nodeCache.put(node.getId(), nodeId);
 	nodeIdx.add(nodeId,
 		MapUtil.map(Constants.KEY_NODE_EDGE_ID, node.getId()));
