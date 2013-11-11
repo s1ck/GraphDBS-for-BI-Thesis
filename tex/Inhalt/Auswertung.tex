@@ -1,14 +1,33 @@
 \chapter{Fazit und Ausblick}
 
+% Zusammenfassung
+- Ziel war es ...
 
-- analytische Anfragen möglich (Cypher, Gremlin)
+
+- keine nativen APIs
+	- Performancevorteil wurde bereits in verwandten Arbeiten gezeigt
+% Ergebnis / Fazit
+- Verbinden der Ergebnisse aus funktionaler Evaluation und Benchmark
+
+- Neo4j
+	- Verwendung von Cypher
+		- bei Performance-Problemen Nutzung der nativen API
+		- Einbettung von Cypher im Quellcode -> hoher Wartungsaufwand (Holzschuher)
+		- einfaches, intuitives Formulieren graphenbasierter Anfragen
+- Titan
+
+- beide
+	- analytische Anfragen möglich (Cypher, Gremlin)
+	- Gremlin
+		- höherer Aufwand bei der Anfrageformulierung
+
+% Ausblick
 
 - Cypher als standardisierte Sprache (Holzschuher und Peinl) kann nur unterstützt werden
 - Gremlin wird nicht primär von Neo Technologies, sondern von Aurelius entwickelt
 	- Unterstützung aktueller Features ist Community-Arbeit
 
 - Rückwirkung auf Dokumentationen (OrientDB Transaktionen, Titan Kardinalität. Neo4j Anfragebeispiele)
-
 
 % Benchmark
 - Import: lesen und Schreiben von einer Platte (unrealistisch)
@@ -18,6 +37,10 @@
 - Betrachtung ohne Caches sinnvoll?
 	
 % Ausblick
+- standardisierte Anfragesprache fehlt weiterhin
+	- Gremlin Quasi-Standard
+	- keine Bestrebungen erkennbar
+
 - In-Memory-Erweiterungen für Analyse
 - Query-Optimierung für Neo4j
 - formale Untersuchung und Standardisierung von Cypher im GDBMS-Sektor
