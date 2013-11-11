@@ -42,7 +42,61 @@
 \end{table}
 \renewcommand{\arraystretch}{1}
 
+\section{Quellcodebeispiele}
+
+Abbildung \ref{fig:example} zeigt die Instanz eines Property-Graph, welche in den nachfolgenden Beispielen verwendet wird, das verwendete Schema entspricht dem Schema im Benchmark.
+
+\begin{figure}[h] 
+	\centering
+		\includegraphics[scale=.75]{example.pdf}
+	\caption[Anhang: Beispielgraph]{Datengrundlage für Quellcodebeispiele.}
+	\label{fig:example}
+\end{figure}
+
+\subsection*{Neo4j}
+\label{anh:neo4j_api}
+
+\lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={CRUD-Operationen Neo4j Core API}, label=list:sim_products_gremlin}
+\begin{lstlisting}
+try (Transaction tx = graphDB.beginTx()) {
+	Label productLabel = new Label() {@Override public String name() { 
+		return "Product"; }};
+	Label userLabel = new Label() {@Override public String name() {
+	    return "User";
+	}};
+	// create node with label "Product"
+	Node p123 = graphDB.createNode(productLabel);
+	p123.setProperty("__id__", "P123");
+	p123.setProperty("__type__", "p");
+	p123.setProperty("title", "Effective Java");
+	p123.setProperty("salesrank", 2);
+	p123.setProperty("categories", new String[] { "Programming" });
+	// create node with label "User"
+	Node u42 = graphDB.createNode(userLabel);
+	u42.setProperty("__id__", "42");
+	u42.setProperty("__type__", "u");
+	u42.setProperty("age", 28);
+	u42.setProperty("gender", false);
+	u42.setProperty("region", "Saxony");
+	// create edge from product to user
+	Relationship review1 = p123.createRelationshipTo(u42, 
+		RelTypes.REVIEWED_BY);
+	review1.setProperty("votes", 12);
+	review1.setProperty("rating", 3);
+	review1.setProperty("helpful", 5);
+	review1.setProperty("date", "2013-10-06");
+}
+\end{lstlisting}
+
+\subsection*{HypergraphDB}
+
+\subsection*{OrientDB}
+
+\subsection*{Titan}
+
 \section{Benchmark}
+
+
 
 \subsection{Extraktion}
 \label{anh:extraction}
