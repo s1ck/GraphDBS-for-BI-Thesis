@@ -208,25 +208,34 @@ x <- apply(x,MARGIN=c(1,2),FUN=fun) # apply to the data
 # draw boxplot without x-axis
 boxplot(x, # data
  at=c(1,2,3,4,6,7,8,9,11,12,13,14), # positions of the boxes
- outline=FALSE, # skip outliers
+ outline=TRUE, # skip outliers
  col=colors()[c(304,329,354,378,304,329,354,378,304,329,354,378)], # colors
  xlab="Datensatz", # x-label
  ylab="Antwortzeit [ms]", # y-label
- ylim=c(0,45),
+ ylim=c(0.1,400),
  cex.lab=1.2, # scale of the axis label
  cex.axis=1.2, # scale of the axis values
  xaxt='n', # skip printing values on x axis
- #log='y'
+ axes=FALSE,
+ log='y'
  )
 
 # add x-axis
 axis(1, # bottom axis
- at=c(2.5,7.5,12.5), # positions of values
- labels=c("p_100","p_1K","p_10K"), # values
- cex.axis=1.2 # scale of the value fonts
- )
+	 at=c(2.5,7.5,12.5), # positions of values
+	 labels=c("p_100","p_1K","p_10K"), # values
+	 cex.axis=1.2 # scale of the value fonts
+)
 
-legend(x=.75, y=44, # position
+axis(2,
+	at=10^c(-1,0,1,2),
+	labels=expression(0.1, 1,10^1,10^2), 
+	cex.axis=1.2,
+)
+
+box()
+
+legend(x=.75, y=380, # position
  legend=c("Neo4j 2.0 (Cypher)", "Neo4j 1.9.4 (Gremlin)", "Titan (auto)", "Titan (manual)"), # legend names
  fill=colors()[c(304,329,354,378)], # colors
  cex=1.2, # scale
@@ -259,7 +268,8 @@ boxplot(x, # data
  cex.lab=1.2, # scale of the axis label
  cex.axis=1.2, # scale of the axis values
  xaxt='n', # skip printing values on x axis
- log='y'
+ log='y',
+ axes=FALSE
  )
 
 # add x-axis
@@ -268,6 +278,14 @@ axis(1, # bottom axis
  labels=c("p_100","p_1K","p_10K"), # values
  cex.axis=1.2 # scale of the value fonts
  )
+
+axis(2,
+	at=10^c(0,1,2,3,4),
+	labels=expression(1, 10^1, 10^2, 10^3, 10^4), 
+	cex.axis=1.2,
+)
+
+box()
 
 # add legend
 legend(x=1.5, y=13000, # position
@@ -317,7 +335,7 @@ boxplot(x, # data
 
 # add x-axis
 axis(1, # bottom axis
- at=c(2.5,7.5), # positions of values
+ at=c(2.5,7), # positions of values
  labels=c("p_100","p_1K"), # values
  cex.axis=1.2 # scale of the value fonts
  )
