@@ -1,13 +1,65 @@
 \chapter{Fazit und Ausblick}
 
+% Blick in Bachelorarbeit
+
 % Zusammenfassung
 - Ziel war es ...
 
+% Theoretische Grundlagen
+- Nach der Diskussion verwandter Arbeiten in Kapitel x wurden zunächst die für die Arbeit relevanten graphentheoretischen Begriffe definiert.
+- graphentheoretische Grundlagen (Definitionen)
+- Anwendungszenarien / Arten von Netzwerken -> Schwerpunkt auf Informations- und Wissensnetzwerke
+- Die Betrachtung verschiedener Netzwerkarten hat verdeutlicht, dass es graphenbasierte Softwaresysteme mit verschiedenen Schwerpunkten geben muss ...
 
-- keine nativen APIs
-	- Performancevorteil wurde bereits in verwandten Arbeiten gezeigt
-% Ergebnis / Fazit
+- Top Down Prinzip!: graphenbasierte Softwaresysteme -> Graphdatenbanksystemen -> Vorauswahl -> funktionaler Vergleich -> Auswahl -> Benchmark
+
+- Kategorisierung: Graphdatenbanksysteme, Graph Processing Systems, Analyse- und Visualisierungssoftware
+	- weiter auf GDBMS eingegangen -> Definition und weitere Unterteilung
+		- Def: OLTP-artig (Mehrbenutzerfähigkeit, transaktionale Performance, Integrität, Verfügbarkeit)
+			- nativ / nicht-nativ
+			- zentral / verteilt
+			- eingebettet / Client-Server
+			- disk- / hauptspeicherzentriert
+			
+- Datenmodelle (betrachtet: PGM, PHGM, RDF)
+	- PGM: gerichteter, kantenbezeichneter, attributierter Multigraph
+		- flexibel -> für viele Anwendungsfälle einsetzbar
+		- Verantwortung bzgl. Schemaverwaltung an Anwendung übergeben
+		- semistrukturierte Daten (Schemaevolution) -> Integration heterogener Datenquellen
+	- PHGM: Erweiterung um n-äre Beziehungen .. seltenes, sehr spezielles Datenmodell
+	- RDF in Verbindung mit SPARQL:
+		- Schwerpunkte Inferenz und virtuelles Integrieren entsprechen nicht den Schwerpunkten des Forschungsvorhabens
+		- fehlende modellinhärente Differenzierung in eine Beziehung zwischen Ressourcen und einer Beschreibung einzelner Ressourcen zwischen Attribut und Beziehung erschwert das Formulieren analytischer Anfragen
+		- keine dynamischen Pfadinstanzen
+	-> PGM und (P)HGM für das Forschungsvorhaben geeignet
+	
+- Operationen:
+		
+
+% Funktionaler Vergleich
+
+% Benchmark
+- hat ergeben, dass
+
+% Fazit
 - Verbinden der Ergebnisse aus funktionaler Evaluation und Benchmark
+
+
+% Ausblick
+
+% generell
+- standardisierte Anfragesprache fehlt weiterhin
+	- Gremlin/Blueprints bildet Quasi-Standard
+		- Anpassung der GDBMS-Wrapper ist Community-driven (verzögert)
+	- keine Bestrebungen hinsichtlich Standardisierung erkennbar
+	- Cypher ist guter Kandidat für Standard
+- Eignung Graph Processing für Forschungsvorhaben
+	
+- Rückwirkung auf Dokumentationen (OrientDB Transaktionen, Titan Kardinalität. Neo4j Anfragebeispiele)
+
+
+% Ergebnis / Fazit
+
 
 - Neo4j
 	- Verwendung von Cypher
@@ -21,13 +73,7 @@
 	- Gremlin
 		- höherer Aufwand bei der Anfrageformulierung
 
-% Ausblick
 
-- Cypher als standardisierte Sprache (Holzschuher und Peinl) kann nur unterstützt werden
-- Gremlin wird nicht primär von Neo Technologies, sondern von Aurelius entwickelt
-	- Unterstützung aktueller Features ist Community-Arbeit
-
-- Rückwirkung auf Dokumentationen (OrientDB Transaktionen, Titan Kardinalität. Neo4j Anfragebeispiele)
 
 % Benchmark
 - Import: lesen und Schreiben von einer Platte (unrealistisch)
@@ -37,16 +83,19 @@
 - Betrachtung ohne Caches sinnvoll?
 	
 % Ausblick
-- standardisierte Anfragesprache fehlt weiterhin
-	- Gremlin Quasi-Standard
-	- keine Bestrebungen erkennbar
 
-- In-Memory-Erweiterungen für Analyse
-- Query-Optimierung für Neo4j
-- formale Untersuchung und Standardisierung von Cypher im GDBMS-Sektor
-- ausführlicher Benchmark (parallele Queries, reale Unternehmensdaten)
+
+- Neo4j:
+	- In-Memory-Erweiterungen für Analyse
+	- Query-Optimierung
+	- formale Untersuchung und Standardisierung von Cypher im GDBMS-Sektor
+	- ausführlicher Benchmark (parallele Queries, reale Unternehmensdaten)
 	
-- OrientDB neues Speichersystem effizienter?
-- HyperGraphDB -> Implementierung Blueprints API
-- hauptspeicher-zentrierte Implementierung
+- OrientDB
+	- neues Speichersystem evaluieren
+- HyperGraphDB
+	- Implementierung Blueprints API
+	
+- quelloffene hauptspeicher-zentrierte Implementierung
+
 
