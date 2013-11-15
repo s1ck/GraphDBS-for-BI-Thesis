@@ -132,7 +132,7 @@ Die Tabelle \ref{tab:zugriff} zeigt, inwiefern die sechs verbliebenen Systeme di
 
 \paragraph*{Speicherung}
 
-Ein wichtiges Kriterium für das Forschungsprojekt ist die dauerhafte Speicherung der Datenbasis, die in Bulk-Load-Vorgängen inkrementell aktualisiert wird. Ein vollständiges Integrieren der Datenquellen nach jedem Systemstart soll vermieden werden, weswegen die Persistenz als obligatorisch deklariert wird. Eine native Speicherung des Graphen ist dabei nicht zwingend erforderlich.\\
+Ein wichtiges Kriterium für das Forschungsprojekt ist die dauerhafte Speicherung der Datenbasis. Ein vollständiges Integrieren der Datenquellen nach jedem Systemstart soll vermieden werden, weswegen die Persistenz als obligatorisch deklariert wird. Eine native Speicherung des Graphen ist dabei nicht zwingend erforderlich.\\
 Aus einer ausschließlich hauptspeicher-zentrierten Verarbeitung des Graphen resultiert eine höhere Performance beim wahlfreien Zugriff. Dies kann insbesondere für analytische Systeme von Vorteil sein, da es bisher jedoch nur von wenigen GDBMS angeboten wird, handelt es sich um eine optionale Anforderung. Die Möglichkeit zur Definition von Indexstrukturen ist hingegen obligatorisch, da diese als Ausgangspunkt einer Traversierung den effizienten Zugriff auf Knoten- und Kantenmengen anhand ihrer Attribute ermöglichen.
 
 \renewcommand{\arraystretch}{1.25}
@@ -189,7 +189,7 @@ In der letzten Kategorie werden die fünf verbliebenen Systeme auf ihre Fähigkeit
 \end{table}
 \renewcommand{\arraystretch}{1}
 
-Aus Tabelle \ref{tab:skalierbarkeit} geht hervor, dass HyperGraphDB, Neo4j, OrientDB und Titan die in der Vorauswahl definierte, grundlegenden Anforderungen erfüllen und daher im Anschluss detailliert betrachtet werden. Mit Ausnahme von hauptspeicher-zentrierten GDBMS werden somit alle der vorgestellten Kategorien abgedeckt. Auffällig ist, dass eine Partitionierung bisher nur von wenigen Graphdatenbanksystemen unterstützt wird.
+Aus Tabelle \ref{tab:skalierbarkeit} geht hervor, dass HyperGraphDB, Neo4j, OrientDB und Titan die in der Vorauswahl definierten, grundlegenden Anforderungen erfüllen und daher im Anschluss detailliert betrachtet werden. Mit Ausnahme von hauptspeicher-zentrierten GDBMS werden somit alle der vorgestellten Kategorien abgedeckt. Auffällig ist, dass eine Partitionierung bisher nur von wenigen Graphdatenbanksystemen unterstützt wird.
 
 Der Fokus der nachfolgenden Evaluation liegt auf dem jeweiligen Datenmodell und den angebotenen Zugriffsmechanismen. Es soll gezeigt werden, wie das PGM umgesetzt wurde und welche Besonderheiten die einzelnen Systeme diesbezüglich aufweisen. Weiter soll betrachtet werden, welche der im vorhergehenden Kapitel vorgestellten graphenspezifischen Operationen unterstützt werden und wie sie in den jeweiligen Systemen anzuwenden sind.\\
 Die Untersuchung der Transaktionsmechanismen soll darlegen, wie die Einhaltung der ACID-Eigenschaften in den einzelnen Systemen gewährleistet wird, welche Mehrbenutzeranomalien gegebenenfalls zu erwarten sind und wie sich die Datenbanksysteme im Fehlerfall verhalten.\\

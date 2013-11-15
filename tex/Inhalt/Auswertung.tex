@@ -1,4 +1,4 @@
-\chapter{Fazit und Ausblick}
+\chapter{Zusammenfassung, Fazit und Ausblick}
 
 % Blick in Bachelorarbeit
 
@@ -44,66 +44,95 @@
 		- Summierung als topologisches Zusammenfassen
 		- Metriken (zur Analyse des gesamten Graphen) werden in den verglichenen Systmen nicht direkt unterstützt und müssen bei Bedarf hinzugefügt werden
 		
-- funktionaler Vergleich von GDBMS
-	- Beschreibung des Forschungsvorhabens:
-		- 
-	- Vorauswahl 22 auf 4 Systeme
-		- Betrachtung in verschiedenen Kategorien
-
 % Funktionaler Vergleich
 
+- Beschreibung des Forschungsvorhabens:
+	- Integration von Unternehmensdaten aus verschiedenen Geschäftsinformationssystemen in Graph
+	- anschließende Extraktion und Analyse von Teilgraphen
+	- Projektziele:
+		- (1) Integration
+		- (2) Analyse
+		- (3) Nutzbarkeit für Analysten
+		-> (1) und (2) wichtig bei der Betrachtung von GDBMS
+		
+- Vorauswahl
+	- grundlegende Anforderungen nach Kategorien geordnet
+	- aus 22 Systemen wurden vier für die detaillierte Analyse ausgewählt
+	- Auffälligkeiten:
+		- wenig hauptspeicher-zentrierte GDBMS
+		- Partitionierung des Graphen nur selten unterstützt
+		- anwendungsseitige Schemaverwaltung
+
+- funktionaler Vergleich
+	- Neo4j, HyperGraphDB, OrientDB, Titan
+	- der Vergleich hat ergeben, dass ich insbeondere Neo4j und Titan für den Einsatz im Forschungsvorhaben eigenen und wurden daher im nachfolgenden Benchmark evaluiert
+	
 % Benchmark
 - hat ergeben, dass
+- bei der Verwendung der Datensätze \texttt{p\_100} und \texttt{p\_1K} konnte kein auffällig schlechteres Leistungsverhalten des nicht-nativen GBDMS Titan festgestellt werden
 
 % Fazit
-- Verbinden der Ergebnisse aus funktionaler Evaluation und Benchmark
 
+Die vier Systemen wurden bereits am Ende von Kapitel \ref{cha:evaluation} verglichen,... Neo4j und Titan wurden auf Grundlage dieses Vergleichs für den Benchmark ausgewählt und werden im anschließenden Fazit bewertet
 
-% Ausblick
+\paragraph*{Fazit}
 
-% generell
-- standardisierte Anfragesprache fehlt weiterhin
+- Neo4j
+	(1) Integration:
+		- PGM, kein Schema, Speicherung semistrukturierter Daten
+		- Erweiterungen: Knotenbezeichner
+	(2) Analyse:
+		- Core API, Cypher oder Gremlin
+		- CRUD, Traversierung, Erreichbarkeit, Mustersuche, Aggregation			
+	- objektive Faktoren
+		- PGM-Erweiterung um Knotenlabel ist sinnvoll für Anfrageoptimierung und Anwendungsmodellierung
+		- Cypher leistungsfähige, deklarative Anfragesprachen für die Analyse von Graphen
+			- einfaches, intuitives Formulieren graphenbasierter Anfragen
+			- Einbettung von Cypher im Quellcode -> hoher Wartungsaufwand (Holzschuher)
+			- bei Performance-Problemen (Erreichbarkeit) -> Nutzung der nativen API
+		- wenn Gremlin Neo4j 2.0 unterstützt, stellt dies ebenfalls eine positive Erweiterung dar (community-driven)
+		- eigene Algorithmen / Operationen können mittels Core API hinzugefügt werden
+		- ACID ja, aber geringe Isolationsebene
+		- graphenorientiertes Speichersystem und effiziente Caching-Mechanismen
+		- bei Bedarf stehen mit Neo4j HA Verteilungsmechanismen zur Verfügung	
+	- subjektive Faktoren
+		- sehr gute Dokumentation
+		- offene, erweiterbare Architektur
+		- lange Entwicklungsdauer -> fortgeschrittenes Projekt, aktive Community (Unterstützung)		
+	
+- Titan
+	(1) Integration:
+		- PGM, kein Schema, Speicherung semistrukturierter Daten
+		- Erweiterung: typisierte Attributschlüssel und Kantenbezeichner, knoten-zentrierte Indizes
+	(2) Analyse:
+		- native API, Gremlin
+
+- beide
+	- Projektziele:
+		- (1) Integration -> - Verwaltung semistrukturierter Daten eignet sich im besonderen Maße für die Integration aus verschiedenen Geschäftsinformationssystemen
+		- (2) graphenorientierte Analyse -> vielfältige Zugriffsmechanismen, Cypher und Gremlin für analytische Anfragen geeignet
+	- analytische Anfragen möglich (Cypher, Gremlin)
+	- Gremlin
+		- höherer Aufwand bei der Anfrageformulierung
+	- standardisierte Anfragesprache fehlt weiterhin
 	- Gremlin/Blueprints bildet Quasi-Standard
 		- Anpassung der GDBMS-Wrapper ist Community-driven (verzögert)
 	- keine Bestrebungen hinsichtlich Standardisierung erkennbar
 	- Cypher ist guter Kandidat für Standard
-- Eignung Graph Processing für Forschungsvorhaben
+	
 	
 - Rückwirkung auf Dokumentationen (OrientDB Transaktionen, Titan Kardinalität. Neo4j Anfragebeispiele)
 
-
-% Ergebnis / Fazit
-
-
-- Neo4j
-	- Verwendung von Cypher
-		- bei Performance-Problemen (Erreichbarkeit)... Nutzung der nativen API
-		- Einbettung von Cypher im Quellcode -> hoher Wartungsaufwand (Holzschuher)
-		- einfaches, intuitives Formulieren graphenbasierter Anfragen
-- Titan
-
-- beide
-	- analytische Anfragen möglich (Cypher, Gremlin)
-	- Gremlin
-		- höherer Aufwand bei der Anfrageformulierung
-
-
-
-% Benchmark
-- Import: lesen und Schreiben von einer Platte (unrealistisch)
-- parallele Lesezugriffe
-- warmup-Prozedur verhindert Feststellen der Leistungsfähigkeit des Speichersystems
-	-> weiterführende Benchmarks
-- Betrachtung ohne Caches sinnvoll?
-	
 % Ausblick
-
+\paragraph*{Ausblick}
 
 - Neo4j:
 	- In-Memory-Erweiterungen für Analyse
 	- Query-Optimierung
 	- formale Untersuchung und Standardisierung von Cypher im GDBMS-Sektor
 	- ausführlicher Benchmark (parallele Queries, reale Unternehmensdaten)
+	- Partitionierung
+	- Ergebnis der Cypher-Anfragen ist Tabelle und kein Graph bzw. Graphmenge -> Änderungen?
 	
 - OrientDB
 	- neues Speichersystem evaluieren
@@ -111,5 +140,11 @@
 	- Implementierung Blueprints API
 	
 - quelloffene hauptspeicher-zentrierte Implementierung
+- Eignung Graph Processing für Forschungsvorhaben
 
-
+- Benchmark
+	- Import: lesen und Schreiben von einer Platte (unrealistisch)
+	- parallele Lesezugriffe
+	- warmup-Prozedur verhindert Feststellen der Leistungsfähigkeit des Speichersystems
+	-> weiterführende Benchmarks
+	- Betrachtung ohne Caches sinnvoll?
