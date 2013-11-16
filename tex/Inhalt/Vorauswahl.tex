@@ -62,7 +62,9 @@ Die einzige obligatorische Anforderung in dieser Kategorie (Tabelle \ref{tab:ver
 
 Einige der durchzuführenden Analysen beinhalten eine Extraktion von Geschäftsprozessen in Form von Subgraphen. In diesem Zusammenhang ist es von Vorteil, wenn sich die Subgraphen systemseitig logisch getrennt in mehreren Datenbanken verwalten lassen. Diese optionale Anforderung wird jedoch nur von drei Systemen erfüllt.\\
 Die Möglichkeit zur Definition eines Schemas ist ein rein informatives Kriterium. Die Untersuchung zeigt, dass viele der Systeme auf die anwendungsseitige Umsetzung eines Schemas ausgerichtet sind und keine oder nur wenige Werkzeuge für die systemseitige Schemaverwaltung anbieten.\\
-Die Gewährleistung der ACID-Eigenschaften ist bei der Transaktionsausführung auf Unternehmensdaten erstrebenswert, deren Unterstützung wird daher als obligatorisch angesehen. Die mit der Konsistenzerhaltung verbundene Möglichkeit zur Definition von Integritätsbedingungen ist ebenfalls von Bedeutung: Modellinhärente Bedingungen werden von allen Systemen erfüllt, dazu zählt zum Beispiel die referentielle Integrität, bei der eine Kante mindestens einen Start- und einen Zielknoten besitzen muss. Die Möglichkeit zur Definition weiterer, beispielsweise attributbezogener, Integritätsbedingungen wird als optionale Anforderung gewertet.
+%Die Gewährleistung der ACID-Eigenschaften ist bei der Transaktionsausführung auf Unternehmensdaten erstrebenswert, deren Unterstützung wird daher als obligatorisch angesehen. 
+Die Gewährleistung der ACID-Eigenschaften ist insbesondere im operationalen Betrieb auf Unternehmensdaten erstrebenswert. Das Forschungsvorhaben widmet sich jedoch vorrangig der Analyse von Informationsnetzwerken, was im Wesentlichen den lesenden Zugriff auf die Datenbasis erfordert. Die Einhaltung der ACID-Eigenschaften und deren systemseitige Umsetzung in den GDBMS ist somit im Rahmen der Arbeit nicht von Interesse.\\
+Von Bedeutung ist hingegen die mit der Konsistenzerhaltung verbundene Möglichkeit zur Definition von Integritätsbedingungen: Modellinhärente Bedingungen werden von allen Systemen erfüllt, dazu zählt zum Beispiel die referentielle Integrität, bei der eine Kante mindestens einen Start- und einen Zielknoten besitzen muss. Die Möglichkeit zur Definition weiterer, beispielsweise attributbezogener, Integritätsbedingungen wird als optionale Anforderung gewertet.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -72,7 +74,7 @@ Die Gewährleistung der ACID-Eigenschaften ist bei der Transaktionsausführung auf
 	\hline
 	\multicolumn{6}{|c|}{\textbf{Datenverwaltung und Datenmodellierung}} \\
 	\hline
-   	GDBMS & Datenmodell & Mehrere\newline~Datenbanken* & Schema* & ACID & Integritäts-\newline bedingungen* \\   
+   	GDBMS & Datenmodell & Mehrere\newline~Datenbanken* & Schema* & ACID* & Integritäts-\newline bedingungen* \\   
    	\hline
    	Affinity		& Gerichteter, knotenattributierter Multigraph	& - & -	& \checkmark & \checkmark \\
    	ArangoDB		& PGM	& \checkmark & - & \checkmark & \checkmark \\
@@ -192,6 +194,6 @@ In der letzten Kategorie werden die fünf verbliebenen Systeme auf ihre Fähigkeit
 Aus Tabelle \ref{tab:skalierbarkeit} geht hervor, dass HyperGraphDB, Neo4j, OrientDB und Titan die in der Vorauswahl definierten, grundlegenden Anforderungen erfüllen und daher im Anschluss detailliert betrachtet werden. Mit Ausnahme von hauptspeicher-zentrierten GDBMS werden somit alle der vorgestellten Kategorien abgedeckt. Auffällig ist, dass eine Partitionierung bisher nur von wenigen Graphdatenbanksystemen unterstützt wird.
 
 Der Fokus der nachfolgenden Evaluation liegt auf dem jeweiligen Datenmodell und den angebotenen Zugriffsmechanismen. Es soll gezeigt werden, wie das PGM umgesetzt wurde und welche Besonderheiten die einzelnen Systeme diesbezüglich aufweisen. Weiter soll betrachtet werden, welche der im vorhergehenden Kapitel vorgestellten graphenspezifischen Operationen unterstützt werden und wie sie in den jeweiligen Systemen anzuwenden sind.\\
-Die Untersuchung der Transaktionsmechanismen soll darlegen, wie die Einhaltung der ACID-Eigenschaften in den einzelnen Systemen gewährleistet wird, welche Mehrbenutzeranomalien gegebenenfalls zu erwarten sind und wie sich die Datenbanksysteme im Fehlerfall verhalten.\\
+%Die Untersuchung der Transaktionsmechanismen soll darlegen, wie die Einhaltung der ACID-Eigenschaften in den einzelnen Systemen gewährleistet wird, welche Mehrbenutzeranomalien gegebenenfalls zu erwarten sind und wie sich die Datenbanksysteme im Fehlerfall verhalten.\\
 Eine nähere Betrachtung der Speichermechanismen soll weiterführend zeigen, wie der Graph auf den Externspeicher abgebildet wird und ob diese Abbildung ein indexfreies Traversieren des Graphen ermöglicht. Eng damit verbunden sind die Caching- und Indexmechanismen, welche ebenfalls kurz betrachtet werden.\\
 Zusätzlich wird genauer auf die Verteilungsmechanismen der einzelnen Systeme eingegangen. Dieser Teil der Evaluation hat jedoch eher informativen Charakter und wird daher nur kurz behandelt.

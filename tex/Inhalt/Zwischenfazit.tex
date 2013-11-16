@@ -221,40 +221,7 @@ Da OrientDB die Blueprints API implementiert, lässt sich Gremlin für graphenspez
 Titan ist eine native Implementierung der Blueprints API und bietet Gremlin als primäre Anfragesprache an. Diese kann sowohl für die Manipulation der Datenbasis als auch für Traversierung und Mustersuche genutzt werden. Die Sprache wurde speziell für das PGM entwickelt und eignet sich in besonderem Maße für die intuitive Beschreibung abstrakter Wege. Durch die Integration in Groovy bzw. Java kann Programmlogik in Form von Seiteneffekten während der Traversierung ausgeführt werden, somit lassen sich zum Beispiel das Berechnen von Aggregaten oder eine Abbruchbedingung für Pfadsuchen realisieren. Analog zu OrientDB können die im TinkerPop-Projekt angebotenen Graphalgorithmen in Titan verwendet werden.\\
 Die Definition eines Mustergraphen ist in Gremlin ebenfalls möglich, sie gestaltet sich im Vergleich zu Cypher jedoch aufwendiger, da eine Fragmentierung des Musters nur durch mehrere Anweisungen und das Zwischenspeichern von Ergebnismengen möglich ist. Alternativ kann das Konzept des Backtracking eingesetzt werden, dies führt jedoch zu komplexen, möglicherweise unübersichtlichen Anfragen. Auch hier lässt sich eine beliebige Anzahl von Konstanten und Variablen innerhalb des Musters festlegen und Instanzen gefundener Teilgraphen können als Ergebnis zurückgegeben werden.
 
-\paragraph*{Transaktionsverwaltung}
-
-Bei der Speicherung von Unternehmensdaten besteht ein hoher Anspruch an die Einhaltung der Datenkonsistenz und die Toleranz gegenüber Systemfehlern. Aus diesem Grund wurde die Einhaltung der ACID-Anforderungen analysiert, Tabelle \ref{tab:zusammenfassung_transaktion} fasst die Ergebnisse zusammen.
-
-\renewcommand{\arraystretch}{1.25}
-\begin{table}[h]
-	\centering
-	\begin{footnotesize}
-   	\begin{tabular}{|m{3cm}|>{\centering}m{2.9cm}|>{\centering}m{2.9cm}|>{\centering}m{2.9cm}|>{\centering\arraybackslash}m{2.9cm}|}
-	\hline	
-   	 \textbf{GDBMS} & \textbf{Neo4j} & \textbf{HyperGraphDB (BerkeleyDB)} & \textbf{OrientDB} & \textbf{Titan (BerkeleyDB)} \\   
-   	\hline
-%	\multicolumn{5}{|c|}{\textbf{Transaktionen}} \\   	
-%	\hline
-	\textbf{ACID-Eigenschaften} & ACID & ACI(D) & ACI(D) & ACID \\
-   	\textbf{Isolationsebene} & \texttt{READ COMMITTED} & \texttt{SERIALIZABLE} & \texttt{SERIALIZABLE} (embedded) & \texttt{REPEATABLE READ} \\
-   	\textbf{Synchronisation\newline~(GDBMS)} & RX-Sperrverfahren & MVCC & MVCC & RX-Sperrverfahren \\
-   	\textbf{Synchronisation\newline~(Storage)} & - & RX-Sperrverfahren & - & RX-Sperrverfahren \\
-   	\textbf{Schachtelung} & \checkmark (kein isoliertes Rücksetzen) & \checkmark (isoliertes Rücksetzen) & - & \checkmark (keine Isolation) \\
-   	\hline
-	\end{tabular} 
-	\end{footnotesize}
-	\setlength{\belowcaptionskip}{0.25cm}	
-	\caption[Zusammenfassung: Transaktionsverwaltung]{Gegenüberstellung von ACID-Eigenschaften und Transaktionsmechanismen der betrachteten GDBMS.}
-	\label{tab:zusammenfassung_transaktion}
-\end{table}
-\renewcommand{\arraystretch}{1}
-
-Es zeigt sich, dass Neo4j die ACID-Eigenschaften erfüllt, jedoch die im Vergleich geringste Isolationsebene aufweist. Sollen im parallelen Betrieb entsprechende Mehrbenutzeranomalien vermieden werden, so liegt dies analog zu Schemaverwaltung und Konsistenzerhaltung in der Verantwortung der Anwendung. Da jedoch das Forschungsvorhaben auf den analytischen und somit vorrangig lesenden Betrieb ausgerichtet ist, kann die geringe Isolationsebene toleriert werden.\\
-HyperGraphDB nutzt BerkeleyDB für die Einhaltung der ACID-Eigenschaften. Für eine bessere Performanz wird dabei auf eine garantierte Dauerhaftigkeit von Änderungen verzichtet, diese lässt sich jedoch manuell aktivieren. Für den isolierten Zugriff auf den Cache implementiert das GDBMS ein MVCC-Verfahren, welches die höchste Isolationsebene garantiert. HyperGraphDB bietet als einziges der betrachteten Systeme das isolierte Rücksetzen geschachtelter Transaktionen an und eignet sich somit speziell für langlaufende Änderungstransaktionen, die auf mehrere untergeordnete Transaktionen aufgeteilt werden.\\
-Ein Systemausfall kann auch in OrientDB zum Verlust der Änderungen erfolgreich beendeter Transaktionen führen. Um diesem Szenario zu begegnen, besteht die Möglichkeit, Wiederherstellungsinformationen unter Inkaufnahme eines Geschwindigkeitsverlustes auf den Externspeicher zu forcieren. OrientDB garantiert im eingebetteten Betrieb die höchste Isolationsebene, dies gilt jedoch nicht für den entfernten Zugriff.\\
-Die ACID-Eigenschaften von Titan variieren je nach eingesetztem Speichersystem, die Verwendung von BerkeleyDB erfolgt mit Standardeinstellungen, was folglich die Dauerhaftigkeit von Transaktionen garantiert. Das GDBMS selbst stellt die Einhaltung definierter Integritätsbedingungen, wie zum Beispiel \texttt{UNIQUE}-Bedingungen, durch das Setzen von Sperren sicher.
-
-Die Verwendung eines pessimistischen Synchronisationsverfahrens führt dazu, dass sich entsprechende Systeme vorrangig für kurze Änderungstransaktionen eignen, da parallel ausgeführte Transaktionen blockiert werden können. Im Forschungsvorhaben sollen hauptsächlich Lesetransaktionen für die lokale Analyse des Graphen durchgeführt werden, Änderungen hingegen erfolgen in periodischen Bulk-Load-Prozessen. Die Verwendung eines RX-Sperrverfahrens stellt somit im Vergleich kein Defizit dar. Zu beachten ist, dass alle GDBMS die Atomarität von Änderungen durch deren Zwischenspeicherung im Hauptspeicher sicherstellen, was bei langen Lese- oder Änderungstransaktionen zu Problemen führen kann.
+%\input{Inhalt/Zwischenfazit_Transactions}
 
 \paragraph*{Persistenz-, Cache- und Indexverwaltung}
 
