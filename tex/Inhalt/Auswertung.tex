@@ -78,12 +78,43 @@ Die vier Systemen wurden bereits am Ende von Kapitel \ref{cha:evaluation} vergli
 \paragraph*{Fazit}
 
 - Neo4j
+-------
 	(1) Integration:
-		- PGM, kein Schema, Speicherung semistrukturierter Daten
-		- Erweiterungen: Knotenbezeichner
+		- PGM, kein Schema, Speicherung semistrukturierter Daten, keine Beeinflussung bestehender Daten
+		- Erweiterungen: 
+			- Knotenbezeichner -> Schritt in Richtung Entkopplung von der Anwendung + Möglichkeiten zur Anfrageoptimierung
+
 	(2) Analyse:
-		- Core API, Cypher oder Gremlin
-		- CRUD, Traversierung, Erreichbarkeit, Mustersuche, Aggregation			
+		- größter Funktionsumfang für die Verarbeitung des hinterlegten Graphen
+		- Core API, Traversal Framework, Cypher und Gremlin
+		- CRUD, Traversierung, Erreichbarkeit, Mustersuche, Aggregation	
+		- eigene Algorithmen inkl. Filterkriterien -> z.B. shortestPath sehr gute Performance auch bei steigendem Datenvolumen (verwendbar in Core API und Cypher)
+		- Cypher: 
+			- steile Lernkurve
+			- deutlicher Leistungsunterschied im Vergleich zu Gremlin innerhalb von Neo4j
+			- Definition von Graphen innerhalb der Anfrage sehr intuitiv
+			- für Nicht-Programmierer geeignet
+			- Aggregation, Gruppierung, Projektion (+ Funktionen)
+			- ermöglicht systemseitige Anfrageoptimierung
+			- eventuell Grundlage für die Definition einer standardisierten Anfragesprache für GDBMS
+	
+	(3) Speichersystem / Cacheverwaltung
+		- einziges natives System (Store-Konzept ermöglicht Trennung von Topologie und Nutzdaten)
+		- indexfreie Adjazenz auch physisch umsetzbar
+		- im Vergleich erzielte Neo4j in allen Datensätzen die niedrigsten Antwortzeiten
+		- sehr gute Caching- und Persistenzarchitektur
+		- skaliert linear bei topologischen Anfragen
+		- Probleme beim Prüfen der Erreichbarkeit, Limitierung durch Hardware
+
+	(4) Erweiterbarkeit:
+		- Quelloffenheit ermöglicht generell das Erweitern der GDBMS
+		- Implementierung eigener Algorithmen mittels Core API
+		- Hinzufügen von Indexstrukturen
+		
+	(5) Verteilung / Skalierbarkeit
+		- Replikation ermöglicht Skalierbarkeit von Lesezugriffen (vorteilhaft für analytische Anwendung)
+		- keine Partitionierung: Datenmenge momentan durch Hardwareressourcen einzelner Rechner limitiert
+	
 	- objektive Faktoren
 		- PGM-Erweiterung um Knotenlabel ist sinnvoll für Anfrageoptimierung und Anwendungsmodellierung
 		- Cypher leistungsfähige, deklarative Anfragesprachen für die Analyse von Graphen
@@ -91,21 +122,50 @@ Die vier Systemen wurden bereits am Ende von Kapitel \ref{cha:evaluation} vergli
 			- Einbettung von Cypher im Quellcode -> hoher Wartungsaufwand (Holzschuher)
 			- bei Performance-Problemen (Erreichbarkeit) -> Nutzung der nativen API
 		- wenn Gremlin Neo4j 2.0 unterstützt, stellt dies ebenfalls eine positive Erweiterung dar (community-driven)
-		- eigene Algorithmen / Operationen können mittels Core API hinzugefügt werden
-		- ACID ja, aber geringe Isolationsebene
+		- eigene Algorithmen / Operationen können mittels Core API hinzugefügt werden		-
 		- graphenorientiertes Speichersystem und effiziente Caching-Mechanismen
 		- bei Bedarf stehen mit Neo4j HA Verteilungsmechanismen zur Verfügung	
 	- subjektive Faktoren
-		- sehr gute Dokumentation
+		- umfangreiche, detaillierte, aktuelle Dokumentation
+		- große Nutzer- und Entwickler-Community -> viele Projekte, Rückwirkungen in das Projekt, sehr aktiv
 		- offene, erweiterbare Architektur
 		- lange Entwicklungsdauer -> fortgeschrittenes Projekt, aktive Community (Unterstützung)		
 	
 - Titan
-	(1) Integration:
-		- PGM, kein Schema, Speicherung semistrukturierter Daten
-		- Erweiterung: typisierte Attributschlüssel und Kantenbezeichner, knoten-zentrierte Indizes
+-------
+	(1) Datenmodell:
+		- PGM, kein Schema, Speicherung semistrukturierter Daten, keine Beeinflussung bestehender Daten
+		- Erweiterungen: 
+			- typisierte Attributschlüssel und Kantenbezeichner (Integritätsbedingungen, Festlegung von Datentypen -> effizientere Speicherung + bessere Performance -> konnte im Benchmark nicht festgestellt werden)
+			- knoten-zentrierte Indizes (Vorteil in umfangreichen Informationsnetzwerken mit eine Vielzahl von Beziehungsarten und Kantenattributen)
+			- mehrfache Verwendung von Attributschlüsseln
+	
 	(2) Analyse:
-		- native API, Gremlin
+		- Blueprints API, Gremlin
+		- Gremlin
+			- eignet sich sehr gut für das Formulieren abstrakter Wege
+			- Mustersuche ist möglich, die Anfrage ist je nach Art des Musters deutlich komplexer als eine äquivalente Cypher-Anfrage
+			- (noch) bessere Performance als Cypher
+			- Implementierung beliebiger Seiteneffekte durch Java bzw. Groovy
+			- imperativ: Performance ist stark von Anfrageformulierung abhängig
+			
+	(3) Speicherung
+		- Entkopplung von Datenbankschicht und Speichersystem ist ein innovativer Ansatz und ermöglicht die Implementierung eigener, spezialisierter Speichersysteme bzw. die Bindung an solche
+		- keine Trennung von Topologie und Nutzdaten, jedoch direkter Attributzugriff möglich -> Benchmark hat gezeigt, dass der direkte Zugriff auf Attribute dennoch sehr effizient erfolgt und kurze Antwortzeiten erreicht werden
+		- physische indexfreie Adjazenz vom Speichersystem abhängig, BerkeleyDB -> logarithmisch
+		- Verwendung von BerkeleyDB als Speichersystem führte bei steigender Datenmenge zu teilweise deutlichen Erhöhung der Antwortzeiten
+		- skaliert linear bei topologischen Anfragen
+		
+	(4) Erweiterbarkeit
+		- Implementierung eigener Algorithmen mittels Blueprints API
+		
+	(5) Verteilung / Skalierbarkeit
+		- durch Verwendung von entsprechenden Speichersystemen kann sowohl Replikation als auch Partitionierung realsiert werden
+		- Partitionierung in Cassandra per Hashfunktion, keine Erhaltung logischer Adjazenz garantiert
+		
+	- objektiv
+		- gut strukturiert, aktuelle Dokumentation, fehlende Dokumentation der internen Abbildung des Graphen
+		- Rückwirkung: die im Zusammenhang mit dem Datenmodell beschrieben Analogie zur Kardinalität in Bezug auf UNIQUE-Bedingungen an Kanten wurde in die offizielle Dokumentation übernommen
 
 - beide
 	- Projektziele:
@@ -133,6 +193,7 @@ Die vier Systemen wurden bereits am Ende von Kapitel \ref{cha:evaluation} vergli
 	- ausführlicher Benchmark (parallele Queries, reale Unternehmensdaten)
 	- Partitionierung
 	- Ergebnis der Cypher-Anfragen ist Tabelle und kein Graph bzw. Graphmenge -> Änderungen?
+	- Clustering im Speichersystem -> Abbildung einer logischen auf eine physische Adjazenz
 	
 - OrientDB
 	- neues Speichersystem evaluieren
@@ -141,6 +202,7 @@ Die vier Systemen wurden bereits am Ende von Kapitel \ref{cha:evaluation} vergli
 	
 - quelloffene hauptspeicher-zentrierte Implementierung
 - Eignung Graph Processing für Forschungsvorhaben
+- Visualisierung für Analyseplattform
 
 - Benchmark
 	- Import: lesen und Schreiben von einer Platte (unrealistisch)
