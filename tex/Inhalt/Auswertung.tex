@@ -1,137 +1,65 @@
 \chapter{Zusammenfassung, Fazit und Ausblick}
 
-% Blick in Bachelorarbeit
-
 % Zusammenfassung
 Ziel der Arbeit war es, verschiedene Graphdatenbanksysteme anhand definierter Anforderungen zu vergleichen, einige der Systeme auszuwählen und in einer funktionalen und technischen Evaluation ihre Eignung für aktuelle Forschungsvorhaben in der Abteilung Datenbanken der Universität Leipzig zu untersuchen.
 
 % Theoretische Grundlagen
-Nach einer Diskussion verwandter Arbeiten wurde zunächst der theoretische Unterbau der Thematik behandelt. Neben den graphentheoretischen Grundlagen wurden verschiedene Netzwerkarten und die damit verbundenen Einsatzgebiete betrachtet. Die Gegenüberstellung hat verdeutlicht, dass es graphenbasierte Softwaresysteme mit verschiedenen Schwerpunkten geben muss. Die Herangehensweise an die Analyse der Systeme folgte einer schrittweisen Eingrenzung: Zunächst wurden die drei Kategorien Graphdatenbanksysteme, Graph Processing Systems und Software zur Visualisierung und Analyse definiert. Der Fokus wurde dabei auf Graphdatenbanksysteme gelegt, da sich diese durch eine Optimierung für lokale, traversierende Anfragen in Verbindung mit klassischen Datenbankfunktionalitäten für das Forschungsprojekt eignen.\\
-Der Erläuterung verschiedener GDBMS-Kategorien folgte die Definition graphenorientierter Datenmodelle, diese sind das Property-Graph-Modell, das (Property-)Hypergraph-Modell und das Resource Description Framework. Aus der Untersuchung ging hervor, dass das  PGM und das PHGM auf Grund der flexiblen Verwaltung semistrukturierter Daten und der modellinhärenten Differenzierung in Beziehungen und Nutzdaten für die weitere Betrachtung relevant sind. Das RDF-Modell hingegen legt im Kontext des Semantic Web den Schwerpunkt auf Inferenz und virtuelle Datenintegration.\\
+Nach einer Diskussion verwandter Arbeiten wurde zunächst der theoretische Unterbau der Thematik behandelt. Neben den graphentheoretischen Grundlagen wurden verschiedene Netzwerkarten und die damit verbundenen Einsatzgebiete betrachtet. Die Gegenüberstellung hat verdeutlicht, dass es graphenbasierte Softwaresysteme mit verschiedenen Schwerpunkten geben muss. Die Herangehensweise an die Analyse der Systeme folgte einer schrittweisen Eingrenzung: Zunächst wurden die drei Kategorien Graphdatenbanksysteme, Graph Processing Systems und Software zur Visualisierung und Analyse definiert. Der Fokus wurde dabei auf Graphdatenbanksysteme gelegt, da diese sich durch die Ausrichtung auf lokale, traversierende Anfragen in Verbindung mit klassischen Datenbankfunktionalitäten für das Forschungsprojekt eignen.\\
+Der Kategorisierung verschiedener Ausprägungen von GDBMS folgte die Definition graphenorientierter Datenmodelle, diese sind das Property-Graph-Modell, das Property-Hypergraph-Modell und das Resource Description Framework. Aus der Untersuchung ging hervor, dass das  PGM und das PHGM aufgrund der flexiblen Verwaltung semistrukturierter Daten und der modellinhärenten Differenzierung in Beziehungen und Nutzdaten für die weitere Betrachtung relevant sind. Das RDF-Modell hingegen legt im Kontext des Semantic Web den Schwerpunkt auf Inferenz und virtuelle Datenintegration.\\
 Die Vorbetrachtung endete mit den Definitionen verschiedener graphenspezifischer Operationen, wobei in grundlegende und komplexe Operationen unterschieden wurde. Zu den grundlegenden Operationen gehört beispielsweise die Traversierung zur Definition abstrakter Wege innerhalb des Graphen, sie dient gleichzeitig als Grundlage für komplexe Operationen wie das Prüfen der Erreichbarkeit. Neben den topologie-basierten Operationen wurde auch die Aggregation von Nutzdaten als eine für die Analyse von Unternehmensdaten relevante Operation einbezogen.
 	
 % Funktionaler Vergleich
 Als Zielstellungen des Forschungsvorhabens wurden die Integration von Unternehmensdaten aus Geschäftsinformationssystemen in einen Graphen, die darauf aufbauende graphenorientierte Analyse und die Entwicklung einer Analyseplattform definiert. Dabei sind zum aktuellen Zeitpunkt insbesondere die ersten zwei Ziele bei der Betrachtung von GDBMS relevant.\\
-Auf Grund der Vielzahl verschiedener Implementierungen wurden im Rahmen der funktionalen Evaluation aus den Projektzielen zunächst kategorisierte Anforderungen abgeleitet und die Systeme auf dieser Grundlage verglichen. Durch die Differenzierung in obligatorische und optionale Anforderungen konnten aus den 22 GDBMS vier Systeme für die sich anschließende detaillierte Betrachtung ausgewählt werden: Neo4j, HyperGraphDB, OrientDB und Titan.\\
+Aufgrund der Vielzahl verschiedener Implementierungen wurden im Rahmen der funktionalen Evaluation aus den Projektzielen zunächst kategorisierte Anforderungen abgeleitet und die Systeme auf dieser Grundlage verglichen. Durch die Differenzierung in obligatorische und optionale Anforderungen konnten aus den 22 GDBMS vier Systeme für die sich anschließende detaillierte Betrachtung ausgewählt werden: Neo4j, HyperGraphDB, OrientDB und Titan.\\
 Schwerpunkte innerhalb der Evaluation waren das verwendete Datenmodell, Zugriffs- und Indexmechanismen, Persistenz- und Cacheverwaltung sowie Verteilung und Skalierbarkeit. Der unabhängigen Betrachtung der vier Systeme folgte der Vergleich auf Grundlage der gestellten Schwerpunkte. Dieser hat ergeben, dass vor allem Neo4j und Titan aufgrund ihres hohen Funktionsumfangs an graphenspezifischen Operationen und auch durch ihre effizienten Speicher- und Verteilungsmechanismen für den Einsatz innerhalb des Forschungsprojektes in Frage kommen.\\
 Beide Systeme wurden in einem abschließenden Benchmark hinsichtlich ihrer Leistungsfähigkeit bei der Ausführung analytischer Anfragen verglichen und dabei gleichzeitig die Anfrageformulierung in den jeweiligen Anfragesprachen bewertet. Aus den Ergebnissen der funktionalen und technischen Evaluation lässt sich das folgende Fazit formulieren.
 
 \paragraph*{Fazit}
 
-Beide GDBMS implementieren das PGM und verzichten auf die systemseitige Unterstützung eines strikten Schemas. Durch die flexible Verwaltung semistrukturierter Daten eignen sich beide Systeme für die Integration heterogener Daten und unterstützen eine strukturelle Evolution ohne Beeinflussung bestehender Daten. Neo4j erweitert das Standardmodell um Knotenbezeichner, diese ermöglichen aus Anwendungssicht in Kombination mit Kantenbezeichnern die Definition eines minimalen Schemas und lockern damit die enge Kopplung von Datenbank und Anwendung. Aus Datenbanksicht ermöglicht die Erweiterung zusätzliche Optionen für die Anfrageoptimierung.\\
+% Datenmodell
+Beide GDBMS implementieren das PGM und verzichten auf die systemseitige Unterstützung eines strikten Schemas. Durch die flexible Verwaltung semistrukturierter Daten eignen sich beide Systeme für die Integration heterogener Daten und unterstützen eine strukturelle Evolution ohne Beeinflussung bestehender Informationen.\\
+Neo4j erweitert das Standardmodell um Knotenbezeichner, diese ermöglichen aus Anwendungssicht in Kombination mit Kantenbezeichnern die Definition eines minimalen Schemas und lockern damit die enge Kopplung von Datenbank und Anwendung. Aus Datenbanksicht ermöglicht die Erweiterung zusätzliche Optionen für die Anfrageoptimierung.\\
 Titan bietet mehrere Erweiterungen des PGM an. Die Möglichkeit zur Typisierung von Attributschlüsseln und Kantenbezeichnern verspricht eine effizientere Verarbeitung des Graphen, eine deutliche Auswirkung der manuellen Typisierung konnte im Benchmark jedoch nicht festgestellt werden. Die Einschränkung der Kardinalität der an einer Beziehung beteiligten Entitäten ermöglicht es der Anwendung, topologische Integritätsbedingungen auf dem Graphen festzulegen. Knoten-zentrierte Indizes können insbesondere in umfangreichen Informationsnetzwerken mit vielen Beziehungsarten und Kantenattributen vorteilhaft sein, dies wurde im Benchmark jedoch nicht untersucht.
 
-Für die Analyse des Graphen bietet Neo4j im Vergleich den größeren Funktionsumfang an. Algorithmen bzw. Anfragen können sowohl unter Verwendung der nativen Core API und des Traversal Frameworks als auch mit den Anfragesprachen Cypher und Gremlin formuliert werden. Insbesondere Cypher ist ein geeignetes Analyse-Werkzeug: Die intuitive Verwendung und die Möglichkeit zur Mustersuche, Aggregation und Projektion werden durch integrierte Funktionen, wie zum Beispiel die Pfadsuche, ergänzt. Die Benchmarks ergeben, wie auch in den verwandten Arbeiten, ein deutliches Leistungsdefizit zwischen der Verwendung von Cypher und Gremlin innerhalb von Neo4j und auch im Vergleich zu Titan. Dies lässt auf eine weiterhin unzureichende Anfrageoptimierung schließen, dabei gilt es jedoch zu beachten, dass Neo Technology den Schwerpunkt zunächst auf die Entwicklung einer geeigneten Syntax gelegt hat. Die Sprache eignet sich hierdurch auch als Werkzeug für Nicht-Programmierer bzw. Analysten. Ein Nachteil bei der Verwendung von Gremlin in Neo4j ist, dass die Sprache nicht von Neo Technology entwickelt wird. Somit ist nicht garantiert, dass nach Release einer Neo4j-Version alle Neuerungen, wie zum Beispiel die Unterstützung von Knotenbezeichnern, in Gremlin zur Verfügung stehen.\\
-Titan bietet mit der Blueprints API und Gremlin ebenfalls die Möglichkeit zur Definition beliebiger Algorithmen und Anfragen. Gremlin eignet sich sehr gut für das Formulieren abstrakter Wege. Eine Mustersuche ist, wie gezeigt wurde, ebenfalls möglich, die Anfrage ist je nach Art des Musters deutlich komplexer als eine äquivalente Cypher-Anfrage. Durch die Integration in Groovy bzw. Java lassen sich beliebige Funktionen als Seiteneffekt implementieren und somit während der Traversierung Berechnungen ausführen. Durch den imperativen Charakter der Sprache ist die Performance jedoch im Wesentlichen von der Anfrageformulierung abhängig. Diese kann unter Umständen sehr komplex und vorrangig für Anwendungsentwickler und weniger für Analysten geeignet sein. 
+% Zugriffsmechanismen
+Die Zugriffsmechanismen von Neo4j und Titan eignen sich für die Analyse von Informationsnetzwerken. Generell betrachtet sind die in den Benchmarks erreichten Antwortzeiten in Verbindung mit den verwendeten Datenmengen für das Forschungsprojekt akzeptabel. Hervorzuheben ist, dass in beiden Systemen für fast alle Anfragen ein annähernd lineares Antwortzeitverhalten in Abhängigkeit vom Datenvolumen festgestellt wurde. Die Performanz beim Prüfen der Erreichbarkeit beansprucht in beiden Systemen entsprechende Hardwareressoucen, die zugehörigen Anfragen weisen jedoch einen eher globalen Charakter auf, da je nach Struktur des Graphen ein Großteil der Datenbasis berücksichtigt werden muss.\\
+Für die Analyse des Graphen bietet Neo4j im Vergleich den größeren Funktionsumfang an. Algorithmen bzw. Anfragen können sowohl unter Verwendung der nativen Core API und des Traversal Frameworks als auch mit den Anfragesprachen Cypher und Gremlin formuliert werden. Insbesondere Cypher ist ein geeignetes Analyse-Werkzeug: Die intuitive Verwendung und die Möglichkeit zur Mustersuche, Aggregation und Projektion werden durch integrierte Funktionen, wie zum Beispiel die Pfadsuche, ergänzt. Aus den Ergebnissen der Benchmarks geht hervor, dass zum aktuellen Zeitpunkt noch immer ein deutliches Leistungsdefizit zwischen der Verwendung von Cypher und Gremlin innerhalb von Neo4j und auch im Vergleich zu Titan vorliegt. Dies lässt auf eine weiterhin unzureichende Anfrageoptimierung schließen, dabei gilt es jedoch zu beachten, dass Neo Technology den Schwerpunkt zunächst auf die Entwicklung einer geeigneten Syntax gelegt hat. Die Sprache eignet sich hierdurch auch als Werkzeug für Nicht-Programmierer bzw. Analysten. Ein Nachteil bei der Verwendung von Gremlin in Neo4j ist, dass die Sprache nicht von Neo Technology entwickelt wird. Somit ist nicht garantiert, dass nach Release einer Neo4j-Version alle Neuerungen, wie zum Beispiel die Unterstützung von Knotenbezeichnern, in Gremlin zur Verfügung stehen.\\
+Titan bietet unter Verwendung der Blueprints API und Gremlin ebenfalls die Möglichkeit zur Definition beliebiger Algorithmen und Anfragen. Gremlin eignet sich sehr gut für das Formulieren abstrakter Wege. Eine Mustersuche ist ebenfalls möglich, die Anfrage ist jedoch in Abhängigkeit vom Muster deutlich komplexer als eine äquivalente Cypher-Anfrage. Durch die Integration in Groovy bzw. Java lassen sich beliebige Funktionen als Seiteneffekt implementieren und somit während der Traversierung Berechnungen ausführen. Durch den imperativen Charakter der Sprache ist die Performanz jedoch im Wesentlichen von der Anfrageformulierung abhängig. Diese kann unter Umständen sehr komplex und hierdurch mehr für Anwendungsentwickler und weniger für Analysten geeignet sein.
 
-- Neo4j
--------
-	
-	(3) Speichersystem / Cacheverwaltung
-		- einziges natives System (Store-Konzept ermöglicht Trennung von Topologie und Nutzdaten)
-		- indexfreie Adjazenz auch physisch umsetzbar
-		- im Vergleich erzielte Neo4j in allen Datensätzen die niedrigsten Antwortzeiten
-		- sehr gute Caching- und Persistenzarchitektur
-		- skaliert linear bei topologischen Anfragen
-		- Probleme beim Prüfen der Erreichbarkeit, Limitierung durch Hardware
+% Speicherung
+Im Zusammenhang mit der physischen Repräsentation des Graphen verfolgen Neo4j und Titan grundsätzlich verschiedene Ansätze. Während Neo4j auf die Implementierung einer graphenorientierten Persistenzschicht setzt, nutzt Titan bestehende Datenbanksysteme und bildet den Graphen auf diese ab.\\
+In Neo4j ist die indexfreie Adjazenz, also das Abfragen der Nachbarschaft eines Knotens in alleiniger Abhängigkeit von der Größe der jeweiligen Nachbarschaft, auf physischer Ebene möglich. Das Store-Konzept trennt dabei Topologie und Nutzdaten und bietet einen effizienten Zugriff auf beide. Die Ergebnisse des Benchmarks zeigen, dass Neo4j über eine performante Caching- und Persistenzarchitektur verfügt, welche auch bei steigendem Datenvolumen niedrige und vor allem konstante Antwortzeiten ermöglicht.\\
+Der in Titan verfolgte Ansatz einer Entkopplung von Datenbank- und Speicherschicht ist innovativ und ermöglicht die Nutzung bestehender oder die Implementierung eigener problemspezifischer Speichersysteme. Die Leistungsfähigkeit von Titan ist somit im Wesentlichen vom verwendeten Speichersystem abhängig. Aus den Ergebnissen des Benchmarks geht hervor, dass sich eine nicht-native Speicherung in BerkeleyDB für die Analyse der verwendeten Testgraphen eignet, der Ansatz weist jedoch bei steigendem Datenvolumen ein erkennbar schlechteres Antwortzeitverhalten auf.
 
-	(4) Erweiterbarkeit:
-		- Quelloffenheit ermöglicht generell das Erweitern der GDBMS
-		- Implementierung eigener Algorithmen mittels Core API
-		- Hinzufügen von Indexstrukturen
-		
-	(5) Verteilung / Skalierbarkeit
-		- Replikation ermöglicht Skalierbarkeit von Lesezugriffen (vorteilhaft für analytische Anwendung)
-		- keine Partitionierung: Datenmenge momentan durch Hardwareressourcen einzelner Rechner limitiert
-	
-	- objektive Faktoren
-		- PGM-Erweiterung um Knotenlabel ist sinnvoll für Anfrageoptimierung und Anwendungsmodellierung
-		- Cypher leistungsfähige, deklarative Anfragesprachen für die Analyse von Graphen
-			- einfaches, intuitives Formulieren graphenbasierter Anfragen
-			- Einbettung von Cypher im Quellcode -> hoher Wartungsaufwand (Holzschuher)
-			- bei Performance-Problemen (Erreichbarkeit) -> Nutzung der nativen API
-		- wenn Gremlin Neo4j 2.0 unterstützt, stellt dies ebenfalls eine positive Erweiterung dar (community-driven)
-		- eigene Algorithmen / Operationen können mittels Core API hinzugefügt werden		-
-		- graphenorientiertes Speichersystem und effiziente Caching-Mechanismen
-		- bei Bedarf stehen mit Neo4j HA Verteilungsmechanismen zur Verfügung	
-	- subjektive Faktoren
-		- umfangreiche, detaillierte, aktuelle Dokumentation
-		- große Nutzer- und Entwickler-Community -> viele Projekte, Rückwirkungen in das Projekt, sehr aktiv
-		- offene, erweiterbare Architektur
-		- lange Entwicklungsdauer -> fortgeschrittenes Projekt, aktive Community (Unterstützung)		
-	
-- Titan
---------
-	
-	
-			
-	(3) Speicherung
-		- Entkopplung von Datenbankschicht und Speichersystem ist ein innovativer Ansatz und ermöglicht die Implementierung eigener, spezialisierter Speichersysteme bzw. die Bindung an solche
-		- keine Trennung von Topologie und Nutzdaten, jedoch direkter Attributzugriff möglich -> Benchmark hat gezeigt, dass der direkte Zugriff auf Attribute dennoch sehr effizient erfolgt und kurze Antwortzeiten erreicht werden
-		- physische indexfreie Adjazenz vom Speichersystem abhängig, BerkeleyDB -> logarithmisch
-		- Verwendung von BerkeleyDB als Speichersystem führte bei steigender Datenmenge zu teilweise deutlichen Erhöhung der Antwortzeiten
-		- skaliert linear bei topologischen Anfragen
-		
-	(4) Erweiterbarkeit
-		- Implementierung eigener Algorithmen mittels Blueprints API
-		
-	(5) Verteilung / Skalierbarkeit
-		- durch Verwendung von entsprechenden Speichersystemen kann sowohl Replikation als auch Partitionierung realsiert werden
-		- Partitionierung in Cassandra per Hashfunktion, keine Erhaltung logischer Adjazenz garantiert
-		
-	- objektiv
-		- gut strukturiert, aktuelle Dokumentation, fehlende Dokumentation der internen Abbildung des Graphen
-		- Rückwirkung: die im Zusammenhang mit dem Datenmodell beschrieben Analogie zur Kardinalität in Bezug auf UNIQUE-Bedingungen an Kanten wurde in die offizielle Dokumentation übernommen
+% Verteilung / Skalierbarkeit
+Das redundante Speichern der Datenbasis und die daraus resultierende horizontale Skalierbarkeit von Lesezugriffen ist in Neo4j möglich, dies gilt jedoch nur für die kostenpflichtige Enterprise-Edition. Eine Partitionierung des Graphen ist zum aktuellen Zeitpunkt systemseitig nicht möglich und muss bei Bedarf selbst implementiert werden.\\
+In Titan zeigt sich auch im Hinblick auf Datenverteilung die Flexibilität des gewählten Ansatzes: In Kombination mit BerkeleyDB sind weder das Replizieren noch das Partitionieren des Graphen möglich, wohingegen der Einsatz von Apache Cassandra beides erlaubt. Eine Berücksichtigung der logischen Adjazenz findet bei der Partitionierung des Graphen aus Sicht von Titan nicht statt.\\
+In Anbetracht des aktuellen Projektstatus eignen sich beide GDBMS hinsichtlich der gebotenen Verteilungsmechanismen. Durch die mögliche Nutzung quelloffener, kostenfreier, verteilter Speicherlösungen ist Titan diesbezüglich auf lange Sicht besser positioniert.
 
-- beide
-	- Projektziele:
-		- (1) Integration -> - Verwaltung semistrukturierter Daten eignet sich im besonderen Maße für die Integration aus verschiedenen Geschäftsinformationssystemen
-		- (2) graphenorientierte Analyse -> vielfältige Zugriffsmechanismen, Cypher und Gremlin für analytische Anfragen geeignet
-	- analytische Anfragen möglich (Cypher, Gremlin)
-	- Gremlin
-		- höherer Aufwand bei der Anfrageformulierung
-	- standardisierte Anfragesprache fehlt weiterhin
-	- Gremlin/Blueprints bildet Quasi-Standard
-		- Anpassung der GDBMS-Wrapper ist Community-driven (verzögert)
-	- keine Bestrebungen hinsichtlich Standardisierung erkennbar
-	- Cypher ist guter Kandidat für Standard
-	
-	
-- Rückwirkung auf Dokumentationen (OrientDB Transaktionen, Titan Kardinalität. Neo4j Anfragebeispiele)
+% Erweiterbarkeit
+Eine der für das Forschungsvorhaben wichtigsten Anforderungen ist die Erweiterbarkeit und Anpassbarkeit der Systeme. Durch die Quelloffenheit und Lizenzierungsmodelle von Titan und Neo4j ist dies grundsätzlich uneingeschränkt möglich. Eigene Graphalgorithmen oder Operatoren für Cypher bzw. Gremlin können hinzugefügt werden, für das Anbinden spezieller Indexstrukturen bieten beide Systeme entsprechende Plugin APIs an. Der Austausch des Speichersystems ist in Titan deutlich einfacher, da hierfür definierte Schnittstelle zu implementieren sind und Datenbank- und Speicherschicht im Gegensatz zu Neo4j deutlicher voneinander klarer sind.
 
-Nach Abschluss der Evaluation steht fest, dass sich sowohl Neo4j als auch Titan als grundlegendes Graphdatenbanksystem innerhalb des Forschungsprojektes eignet. Die Präferenz liegt bei Neo4j, da es im Vergleich mit der Unterstützung von Cypher und Gremlin den größeren Funktionsumfang aufweist und im Benchmark bei der Mehrheit der Anfragen das bessere Leistungsverhalten zeigt.
+% Dokumentation / objektive Faktoren
+Eine subjektive Beurteilung der Systeme zeigt, dass Neo4j durch die deutlich längere Entwicklungsdauer und die konsequente Ausrichtung auf Quelloffenheit und Transparenz im Vergleich zu Titan über eine deutlich größere Entwickler- und Nutzergemeinde verfügt und eine damit verbundene stärkere Außenwirkung besitzt. Es existieren zahlreiche, oft herstellerunabhängige, Informationen in Form von Blogs, Veröffentlichungen und Büchern.\\
+Beide Systeme besitzen eine sehr gute aktuelle Dokumentation, wobei die Dokumention von Neo4j umfangreicher ist und auch Beschreibungen der Systeminterna beinhaltet. Generell fällt der positive Kontakt mit den Herstellern auf: Fragen auf Mailing-Listen, via Skype oder Mail wurden umgehend beantwortet, teilweise flossen auch Ausführungen innerhalb der Arbeit in die Dokumentationen zurück, dies gilt zum Beispiel für die Analogie zur Kardinalität in Titan, welche nach entsprechender Diskussion auf der Mailing-Liste in die Dokumentation übernommen wurde. Die im Benchmark verwendeten Anfragen werden außerdem als Anwendungsbeispiel innerhalb der Cypher-Dokumentation verfügbar gemacht.
+
+Nach Auswertung der Ergebnisse aus funktionaler und technischer Evaluation steht fest, dass sich sowohl Neo4j als auch Titan als grundlegendes Graphdatenbanksystem innerhalb des Forschungsprojektes eignen. Die Präferenz liegt bei Neo4j, da es im Vergleich mit der Unterstützung von Cypher und Gremlin den größeren Funktionsumfang aufweist und im Benchmark bei der Mehrheit der Anfragen das bessere Leistungsverhalten zeigt. 
 
 % Ausblick
 \paragraph*{Ausblick}
 
-- Neo4j:
-	- In-Memory-Erweiterungen für Analyse
-	- Query-Optimierung
-	- formale Untersuchung und Standardisierung von Cypher im GDBMS-Sektor
-	- ausführlicher Benchmark (parallele Queries, reale Unternehmensdaten)
-	- Partitionierung
-	- Ergebnis der Cypher-Anfragen ist Tabelle und kein Graph bzw. Graphmenge -> Änderungen?
-	- Clustering im Speichersystem -> Abbildung einer logischen auf eine physische Adjazenz
-	- Cypher eventuell Grundlage für die Definition einer standardisierten Anfragesprache für GDBMS
-	
-	
-- Auffälligkeiten (Vorauswahl):
-		- wenig hauptspeicher-zentrierte GDBMS
-		- Partitionierung des Graphen nur selten unterstützt
-		- anwendungsseitige Schemaverwaltung
-		
-- OrientDB
-	- neues Speichersystem evaluieren
-- HyperGraphDB
-	- Implementierung Blueprints API
-	
-- quelloffene hauptspeicher-zentrierte Implementierung
-- Eignung Graph Processing für Forschungsvorhaben
-- Visualisierung für Analyseplattform
+Eine insbesondere für die effiziente Analyse umfangreicher Datenbestände nutzbringende Erweiterung ist die Implementierung hauptspeicher-zentrierter Speicherlösungen. Für Neo4j ist aktuell keine entsprechende Lösung verfügbar, Titan bietet in Version 0.4.0 eine experimentelle Unterstützung von Hazelcast in Form eines verteilten, hauptspeicher-zentrierten Speichersystems an. Eine Evaluation bestehender Lösungen oder die Entwicklung einer eigenen Lösung ist in diesem Zusammenhang vorstellbar.
 
-- Benchmark
-	- Import: lesen und Schreiben von einer Platte (unrealistisch)
-	- parallele Lesezugriffe
-	- warmup-Prozedur verhindert Feststellen der Leistungsfähigkeit des Speichersystems
-	-> weiterführende Benchmarks
-	- Betrachtung ohne Caches sinnvoll?
+Umfangreiche Datenmengen und stetiges Datenwachstum erfordern in entsprechenden Anwendungen zwangsläufig eine Partitionierung des Graphen und die damit verbundene physische Verteilung der Teilgraphen. Die automatische, gleichmäßige Verteilung auf mehrere Rechner unter Berücksichtigung einer möglichst minimalem Anzahl Kanten zwischen den Rechnern wird bisher von keinem GDBMS unterstützt. Insbesondere für dynamische Graphen, welche permanenten Änderungen unterliegen sind statische Partitionierungsverfahren nicht effizient anwendbar. Vorstellbar wären hier zum Beispiel adaptive Verfahren, welche das Anfrageverhalten untersuchen und den Graphen entsprechend verteilen.
+
+Im Rahmen der Arbeit wurde der Schwerpunkt auf die Verwendung von Graphdatenbanksystemen gelegt. Es wurde deutlich, dass diese insbesondere bei globalen Anfragen Leistungsdefizite aufweisen. In diesem Zusammenhang wäre es interessant, wie sich entsprechende Anfragen mit Graph Processing Systems, wie zum Beispiel Apache Giraph oder Phoebus, umsetzen lassen und wie sich die Systeme generell für einen interaktiven Betrieb im Rahmen einer Analyseplattform eignen.
+
+Es wurde festgestellt, dass zum aktuellen Zeitpunkt keine standardisierte Anfragesprache für GDBMS existiert. Gremlin kann im Rahmen des TinkerPop-Projektes als Quasi-Standard angesehen werden und wird bereits von mehreren Systemen unterstützt. Eine deklarative Anfragesprache wie zum Beispiel Cypher ist hingegen nur in Neo4j verfügbar. Hier wäre eine Formalisierung, Weiterentwicklung und Standardisierung der Sprache erstrebenswert. 
+
+Eine mögliche Erweiterung des Speichersystems von Neo4j ist die Berücksichtigung einer logischen Adjazenz bei der physischen Abbildung des Graphen. Momentan können logisch benachbarte Knoten innerhalb eines Stores beliebig verteilt sein. In Cypher wäre darüber hinaus die Unterstützung von Graphen als Anfrageergebnis denkbar. Aktuell werden Ergebnismengen in Form von Tabellen dargestellt, das Erzeugen neuer Graphen hingegen würde die Schachtelung von Anfragen und eine intuitive Weiterverarbeitung ermöglichen. Ein ebenfalls interessantes Forschungsgebiet ist die Anfrageoptimierung. Wie gezeigt wurde, weist Cypher diesbezüglich Potenzial auf und gibt somit Raum für eigene Lösungsansätze.
+
+Die betrachteten Systeme unterliegen einer stetigen Weiterentwicklung. So wäre es zum Beispiel interessant, welche Verbesserungen das neue Speichersystemen von OrientDB aufweist. HyperGraphDB stellt ein sehr interessantes Datenmodell dar, erfährt aber subjektiv betrachtet im Vergleich zu den anderen GDBMS nur wenig Beachtung. Eine Implementierung und Erweiterung der Blueprints API hinsichtlich Hypergraphen könnte das GDBMS möglicherweise für verschiedene Projekte im Bereich der Wissensverwaltung interessant machen.
+
+Eine Erweiterung, welche auch für das hier betrachtete Forschungsvorhaben eine Rolle spielt, ist die Visualisierung von Graphen. In diesem Zusammenhang bieten die GDBMS bisher nur rudimentäre Werkzeuge an. Interessant ist es zu untersuchen, wie insbesondere Ergebnisse analytischer Anfragen für Nutzer verständlich und nutzbringend dargestellt werden können. Dabei ist insbesondere die Verwendung aktueller Web-Technologien denkbar um die Anwendungen auch für mobile Nutzer zugreifbar zu machen.
+
+Ein im Benchmark nicht betrachteter Aspekt ist die Performance der Systeme in einer verteilten Konfiguration, hier wäre eine weiterführende Untersuchung hinsichtlich paralleler Leseanfragen möglich. Ein generelles Defizit, welches nicht nur im Rahmen der vorliegenden Arbeit festgestellt wurde, ist das Fehlen eines standardisierten Benchmarks für GDBMS, wie er zum Beispiel in Form der TPC-Benchmarks für relationale Datenbanksysteme existiert. Mit dem Linked Data Benchmark Council\footnote{\url{http://www.ldbc.eu/}} besteht seit Ende 2012 ein Projekt, in dem sich Partner aus Forschung und Industrie zusammengeschlossen haben, um gemeinsam einen standardisierten Benchmark für graphenbasierte Softwaresysteme zu entwickeln. Mit dem Ziel, das Thema am Lehrstuhl Datenbanken der Universität Leipzig zu etablieren, wäre ein Mitwirken innerhalb dieses Projektes zu überlegen.
