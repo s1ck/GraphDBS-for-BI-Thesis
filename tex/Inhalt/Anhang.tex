@@ -240,5 +240,29 @@ common_products._().as("product").transform({
 }).as("friends").table().cap().next();
 \end{lstlisting}
 
+\section{Zusätzliche Quellen}
 
+\subsection*{Email-Kommunikation Neo Technology}
+\label{anh:mail_neo}
 
+\begin{quote}
+Hi Martin,
+
+It's great to speak with you, thanks for reaching out. Cypher is indeed a great convenience. As you point out, it's not yet always fast: certain operations aren't yet well optimized. There is a good reason for this. Cypher was born right around two years ago: 11 years after the first line of Neo4j code was written, and about a year before Titan was released, for anyone who's counting :-) We have spent a lot of time working on getting the language and functionality right, and not as much time on performance. With the 2.0 release, which we expect to GA in December, we will have a greatly improved Cypher language, as well as an enhanced "labeled property graph" model that will now give Neo4j some important "hooks" through which it can better understand the data in the graph.
+
+Our \#1 priority upon releasing 2.0 will be Cypher performance. In fact it will be a variety of performance items, all geared towards improving performance for large graphs (some operations affect small ones as well). The "hooks" that labels provide in 2.0 will allow us to use statistics for the first time inside of the Cypher optimizer. Some of the foundation we have laid in 2.0 includes a new internal API that plugs more closely and directly into the kernel than Gremlin and will ultimately allow Cypher to run faster. 
+
+Generally what we tell people to do is to start with Cypher (because it's easier and more readable) and that if they need a query to run faster, to drop down into the native Java API. In the same way that RDBMS vendors embarked upon a lifelong journey of optimizer improvements the moment they adopted SQL, we've now done the same, and I expect it won't be too long before standards discussions occur and the entire industry is held to a higher bar. For this reason and a variety of others expressed in the post below, we generally don't recommend using Gremlin, though of course it's a personal choice:
+
+http://www.fromdev.com/2013/09/Gremlin-Example-Query-Snippets-Graph-DB.html
+
+Good luck with your project. I certainly hope you will choose Neo4j!
+
+My perspective on Titan for what it's worth--which I encourage you to question-- is that it is fairly new (I know of only one or two production deployments), it is backed by a group of around 7 consultants whose ambition is largely about consulting (vs. building a company and product organization to build a world-class product), and that the technology starts with the shortcut of building atop databases that fundamentally aren't built do relate data. (Joins are an anti-pattern in Cassandra, and I've seen many people in the last few months try and fail to get Titan to perform with typical graph queries.) By contrast, Neo4j has 50K+ downloads per month (500K+ total), over 100 commercial/paying customers (30 of which are Global 2000), \$25M in funding by reputable investors (such as Fidelity), a team of 55 people (which is growing), and is built atop a proven \& stable technology built from the ground up to store connected data. Total usage also accounts for approx 85\% of all graph database usage.
+
+</end of marketing pitch>
+
+Feel free to send along any additional questions! 
+
+Philip
+\end{quote}
