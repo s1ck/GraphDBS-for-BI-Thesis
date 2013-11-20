@@ -56,7 +56,7 @@ Abbildung \ref{fig:example} zeigt die Instanz eines Property-Graph, welche in de
 \subsection*{Neo4j}
 \label{anh:neo4j_api}
 
-\lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={CRUD-Operationen Neo4j Core API}, label=list:sim_products_gremlin}
+\lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={CRUD-Operationen Neo4j Core API}, label=list:neo4j_api_example}
 \begin{lstlisting}
 try (Transaction tx = graphDB.beginTx()) {
 	Label productLabel = new Label() {@Override public String name() { 
@@ -65,27 +65,48 @@ try (Transaction tx = graphDB.beginTx()) {
 	    return "User";
 	}};
 	// create node with label "Product"
-	Node p123 = graphDB.createNode(productLabel);
+	Node p123 = graphDB.createNode(productLabel); // no __type__ attribut needed
 	p123.setProperty("__id__", "P123");
-	p123.setProperty("__type__", "p");
 	p123.setProperty("title", "Effective Java");
 	p123.setProperty("salesrank", 2);
 	p123.setProperty("categories", new String[] { "Programming" });
 	// create node with label "User"
 	Node u42 = graphDB.createNode(userLabel);
-	u42.setProperty("__id__", "42");
-	u42.setProperty("__type__", "u");
+	u42.setProperty("__id__", "U42");
 	u42.setProperty("age", 28);
 	u42.setProperty("gender", false);
 	u42.setProperty("region", "Saxony");
 	// create edge from product to user
 	Relationship review1 = p123.createRelationshipTo(u42, 
-		RelTypes.REVIEWED_BY);
+		RelTypes.REVIEWED_BY); // edge label has been defined before
 	review1.setProperty("votes", 12);
 	review1.setProperty("rating", 3);
 	review1.setProperty("helpful", 5);
 	review1.setProperty("date", "2013-10-06");
+	// ...
+	tx.success() // commit the changes
 }
+\end{lstlisting}
+
+\lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={Neo4j Traversal Framework}, label=list:neo4j_traversal_example}
+\begin{lstlisting}
+// get all nodes reachable from user id 23 with edge restrictions
+try (Transaction tx = graphDB.beginTx()) {
+	TraversalDescription td = Traversal.description()
+		.breadthFirst()
+		// consider edge labels and directions ...
+		.relationships(RelTypes.FRIEND_OF, Direction.INCOMING)
+		.relationships(RelTypes.REVIEWED_BY, Direction.BOTH)
+		.relationships(RelTypes.SIMILAR_TO, Direction.OUTGOING)
+		.evaluator(Evaluators.excludeStartPosition());
+	for (Path p : td.traverse(u23)) {
+		System.out.println(p);
+	}
+}
+// prints paths ...
+// (5)<--[FRIEND_OF,4]--(4) // 4 => U42
+// (5)<--[REVIEWED_BY,7]--(3) // 3 => P456
+// (5)<--[FRIEND_OF,4]--(4)<--[REVIEWED_BY,6]--(2) // 2 => P123
 \end{lstlisting}
 
 \subsection*{HypergraphDB}

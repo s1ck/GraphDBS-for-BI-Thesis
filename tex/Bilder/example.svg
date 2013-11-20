@@ -166,7 +166,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="232.23411"
+     inkscape:cx="235.09125"
      inkscape:cy="250.11841"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -309,12 +309,7 @@
          x="31.031509"
          y="535.57648"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-         id="tspan3041">salesrank  : Integer</tspan><tspan
-         sodipodi:role="line"
-         x="31.031509"
-         y="553.07648"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Monospace;-inkscape-font-specification:Monospace"
-         id="tspan3043">categories : String[]</tspan></text>
+         id="tspan3043">salesrank  : 3</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
