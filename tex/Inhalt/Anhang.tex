@@ -53,10 +53,12 @@ Abbildung \ref{fig:example} zeigt die Instanz eines Property-Graph, welche in de
 	\label{fig:example}
 \end{figure}
 
+\newpage
+
 \subsection*{Neo4j}
 \label{anh:neo4j_api}
 
-\lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={CRUD-Operationen Neo4j Core API}, label=list:neo4j_api_example}
+\lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={Neo4j: CRUD-Operationen}, label=list:neo4j_api_example}
 \begin{lstlisting}
 try (Transaction tx = graphDB.beginTx()) {
 	Label productLabel = new Label() {@Override public String name() { 
@@ -88,9 +90,9 @@ try (Transaction tx = graphDB.beginTx()) {
 }
 \end{lstlisting}
 
-\lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={Neo4j Traversal Framework}, label=list:neo4j_traversal_example}
+\lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={Neo4j: Traversal Framework}, label=list:neo4j_traversal_example}
 \begin{lstlisting}
-// get all nodes reachable from user id 23 with edge restrictions
+// get all paths starting at user u23
 try (Transaction tx = graphDB.beginTx()) {
 	TraversalDescription td = Traversal.description()
 		.breadthFirst()
@@ -110,6 +112,76 @@ try (Transaction tx = graphDB.beginTx()) {
 \end{lstlisting}
 
 \subsection*{HypergraphDB}
+
+\lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={HyperGraphDB: CRUD-Operationen}, label=list:hgdb_api_example}
+\begin{lstlisting}
+// create plain old java objects
+Group books = new Group(1L, "Books");
+Product p123 = new Product("P123", "Java 7", 2, new String[] { "Programming" });
+Product p456 = new Product("P456", "Effective Java", 3, null);
+User u42 = new User("u42", 28, false, "Saxony");
+User u23 = new User("u23", 26, true, "Saxony");
+Review rev1 = new Review("2013-10-16", 3, 12, 5);
+Review rev2 = new Review("2013-10-14", 4, 15, 10);
+
+// create atom handles for those objects
+HGHandle booksHandle = hg.add(books);
+HGHandle p123Handle = hg.add(p123);
+HGHandle p456Handle = hg.add(p456);
+HGHandle u42Handle = hg.add(u42);
+HGHandle u23Handle = hg.add(u23);
+
+// link them based using the handles
+hg.add(new HGRel("belongs_to", p123Handle, booksHandle));
+hg.add(new HGRel("belongs_to", p456Handle, booksHandle));
+hg.add(new HGRel("similar_to", p123Handle, p456Handle));
+hg.add(new HGRel("similar_to", p456Handle, p123Handle));
+hg.add(new HGRel("friend_of", u42Handle, u23Handle));
+hg.add(new HGRel("friend_of", u23Handle, u42Handle));
+// using HGValueLink to store
+hg.add(new HGValueLink(rev1, p123Handle, u42Handle));
+hg.add(new HGValueLink(rev2, p456Handle, u23Handle));
+\end{lstlisting}
+
+\lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={HyperGraphDB: Mengenorientierte API}, label=list:hgdb_query_example}
+\begin{lstlisting}
+// get all products with a salesrank greater than or equal to 3
+List<Product> = hg.getAll(graph,
+	hg.and(hg.type(Product.class), hg.gte("salesrank", 3)); 
+for (Product p : products) {
+	System.out.println(p);
+}
+// prints products ...
+// Product [asin=P456, title=Effective Java, salesrank=3, categories=null]
+\end{lstlisting}
+
+\lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={HyperGraphDB: Traversal Framework}, label=list:hgdb_traversal_example}
+\begin{lstlisting}
+// get product handle
+HGHandle p1Handle = graph.getHandle(p123);
+
+// define an adjacency list generator
+DefaultALGenerator alGen = new DefaultALGenerator(graph, hg.and(
+	// link predicate: traverse reviews which were helpful for at least 5 people
+	hg.type(Review.class), hg.gte("helpful", 5)),
+	// sibling predicate: just look at users who are at least 25 years old
+	hg.and(hg.type(User.class), hg.gte("age", 25)));
+
+// initialize the traversal framework
+HGTraversal traversal = new HGBreadthFirstTraversal(p1Handle, alGen);
+
+// start the traversal
+while (traversal.hasNext()) {
+	Pair<HGHandle, HGHandle> next = traversal.next();
+	HGLink link = (HGLink) graph.get(next.getFirst());
+	Object atom = graph.get(next.getSecond());
+	System.out.println("at atom " + atom + " using link " + link);
+}
+
+// prints ...
+// at atom User [userId=u42, age=28, gender=false, region=Saxony] 
+// using link Review [date=2013-10-16, rating=3, votes=12, helpful=5]
+\end{lstlisting}
 
 \subsection*{OrientDB}
 
