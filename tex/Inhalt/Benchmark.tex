@@ -200,12 +200,14 @@ Im nachfolgenden Abschnitt werden die Ergebnisse der einzelnen Messungen vorgest
 	\caption[Benchmark: \texttt{import}]{Ergebnisse der \texttt{import}-Messung. Titan (auto) bezeichnet die automatische Typisierung von Attributschlüsseln und Kantenbezeichner, während Titan(manual) die manuelle Typisierung repräsentiert.}
 \end{figure}
 
-\paragraph*{\texttt{random\_read}} Diese Anfrage greift unter Verwendung der systemseitigen Identitäten auf Knoteninstanzen zu und liest deren Attribute vollständig aus, Abbildung \ref{fig:random_read} zeigt hierfür die durchschnittliche Antwortzeit beider GDBMS inklusive der Standardabweichung innerhalb der Messreihe. Auffällig ist der deutliche Zeitunterschied zwischen der Verwendung von Cypher und Gremlin: Cypher ist um einen Faktor von ca. 20 bis 30 langsamer als eine gleichwertige Gremlin-Anfrage, was mit den Beobachtungen in \cite{Gehrels:2013} und \cite{Holzschuher:2013:PGQ:2457317.2457351} konform geht. Weiter lässt sich für Cypher-Anfragen eine deutlich höhere Standardabweichung der Messergebnisse feststellen. Anzumerken ist, dass Neo4j in Verbindung mit Gremlin generell leicht kürzere Antwortzeiten erreicht als Titan, dabei muss berücksichtigt werden, dass die in Titan indexierte Datenmenge nicht nur Knoten, sondern auch Kanten und Attribute umfasst.
+\paragraph*{\texttt{random\_read}} Diese Anfrage greift unter Verwendung der systemseitigen Identitäten auf Knoteninstanzen zu und liest deren Attribute vollständig aus, Abbildung \ref{fig:random_read} zeigt hierfür die logarithmisch skalierte durchschnittliche Antwortzeit beider GDBMS. % inklusive der Standardabweichung innerhalb der Messreihe. 
+Auffällig ist der deutliche Zeitunterschied zwischen der Verwendung von Cypher und Gremlin: Cypher ist um einen Faktor von ca. 20 bis 30 langsamer als eine gleichwertige Gremlin-Anfrage, was mit den Beobachtungen in \cite{Gehrels:2013} und \cite{Holzschuher:2013:PGQ:2457317.2457351} konform geht.  %Weiter lässt sich für Cypher-Anfragen eine deutlich höhere Standardabweichung der Messergebnisse feststellen. 
+Anzumerken ist, dass Neo4j in Verbindung mit Gremlin generell leicht kürzere Antwortzeiten erreicht als Titan, dabei muss berücksichtigt werden, dass die in Titan indexierte Datenmenge nicht nur Knoten, sondern auch Kanten und Attribute umfasst.
 
 \begin{figure}[h] 
 	\centering
 		\includegraphics[scale=.55]{random_read.pdf}
-	\caption[Benchmark: \texttt{random\_read}]{Durchschnittliche Antwortzeit und Standardabweichung der \texttt{random\_read}-Messung.}
+	\caption[Benchmark: \texttt{random\_read}]{Durchschnittliche Antwortzeit der \texttt{random\_read}-Messung.}
 	\label{fig:random_read}
 \end{figure}
 
