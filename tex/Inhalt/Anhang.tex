@@ -194,7 +194,7 @@ while (traversal.hasNext()) {
 	System.out.println("at atom " + atom + " using link " + link);
 }
 // prints ...
-// at atom User [userId=u42, age=28, gender=false, region=Saxony] 
+// at atom User [__id__=u42, age=28, gender=false, region=Saxony] 
 // using link Review [date=2013-10-16, rating=3, votes=12, helpful=5]
 \end{lstlisting}
 
@@ -259,7 +259,7 @@ p123_u42.setProperty("date", c.getTime());
 graph.commit();
 
 // read the neighbourhood of p123 using all outgoing edges
-for (Edge e : p123.getEdges(Direction.OUT, new String[] {})) {
+for (Edge e : p123.getEdges(Direction.OUT, null)) {
 	System.out.println(e.getLabel() + " points to "
 		+ e.getVertex(Direction.IN).getProperty("__id__"));
 }
@@ -282,6 +282,36 @@ for (Vertex v : (Iterable<Vertex>) graph.command(
 \end{lstlisting}
 
 \subsection*{Titan}
+
+\lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={Titan: CRUD-Operationen}, label=list:titan_api_example}
+\begin{lstlisting}
+// create TitanKey for __id__
+graphDB.makeType().name("__id__")
+	// unique on vertex
+	.unique(Direction.BOTH)	
+	// create an index for that attribute
+	.indexed(Vertex.class)
+	.dataType(String.class)
+	.makePropertyKey();
+	
+// create TitanKey for title
+graphDB.makeType().name("title")
+	.dataType(String.class)
+	.unique(Direction.OUT)
+	.makePropertyKey();
+// ...
+
+// create TitanLabel for BELONGS_TO
+graphDB.makeType().name("BELONGS_TO")
+	// is unique in outgoing direction
+	.unique(Direction.OUT)
+	.makeEdgeLabel();
+// ...
+
+
+
+
+\end{lstlisting}
 
 \section{Benchmark}
 

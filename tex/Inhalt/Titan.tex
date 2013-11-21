@@ -30,7 +30,7 @@ Es wird deutlich, dass Titan sehr flexibel bezüglich der Definition, Änderung un
 
 \subsection{Zugriffsmechanismen und Indexverwaltung}
 
-Titan implementiert ebenfalls die Blueprints API und stellt hinsichtlich CRUD-Operationen den gleichen Funktionsumfang wie OrientDB zur Verfügung. Auch Titan erweitert die API um Funktionen zum Erzeugen von Typen, diese sind Instanzen von \texttt{TitanKey} bzw. \texttt{TitanLabel} und lassen sich unter Anwendung der beschriebenen Einschränkungen definieren. %, ein Beispiel hierfür findet sich in Anhang \ref{anh:titan_blueprints_api}. 
+Titan implementiert ebenfalls die Blueprints API und stellt hinsichtlich CRUD-Operationen den gleichen Funktionsumfang wie OrientDB zur Verfügung. Auch Titan erweitert die API um Funktionen zum Erzeugen von Typen, diese sind Instanzen von \texttt{TitanKey} bzw. \texttt{TitanLabel} und lassen sich unter Anwendung der beschriebenen Einschränkungen definieren. ein Beispiel hierfür findet sich in Anhang \ref{list:titan_api_example}. 
 Aufgrund der Implementierung der Blueprints API können alle im Rahmen des TinkerPop-Projektes angebotenen Werkzeuge in Titan verwendet werden. Neben der bereits im Zusammenhang mit OrientDB beschrieben Algorithmensammlung Furnace ist dies u.a. Gremlin.
 
 \paragraph*{CRUD-Operationen via Gremlin}
@@ -99,7 +99,7 @@ Neben der Einschränkung der Kantenbezeichner kann in Gremlin auch auf Grundlage 
 
 \texttt{bob.bothE('WORKS\_WITH').filter\{it.since > 2011\}.bothV.filter\{it.age > 25\}}
 
-Ausgehend vom Startknoten werden zunächst unter Verwendung von \texttt{bothE} aus- und eingehende Kanten mit dem Bezeichner \texttt{WORKS\_WITH} traversiert. Aus der Menge der inzidenten Kanten werden mittels \texttt{filter\{it.since > 2011\}} jene Instanzen ausgewählt, die das Prädikat erfüllen. Die Variable \texttt{it} referenziert dabei ein Element in der Ergebnismenge des vorhergehenden Schrittes. Anschließend liest \texttt{bothV} Start- und Zielknoten der Kante aus und filtert jene, die älter als 25 sind. Knoten- und Kanteninstanzen werden in Gremlin standardmäßig mehrfach besucht. Bei genauer Betrachtung des Beispiels wird deutlich, dass ein Berücksichtigen von Start- und Zielknoten auch \texttt{Bob} in die Ergebnismenge der Traversierung einschließt. Dies lässt sich mit der Funktion \texttt{except} vermeiden:
+Ausgehend vom Startknoten werden zunächst unter Verwendung von \texttt{bothE} aus- und eingehende Kanten mit dem Bezeichner \texttt{WORKS\_WITH} traversiert. Aus der Menge der inzidenten Kanten werden mittels \texttt{filter\{it.since > 2011\}} jene Instanzen ausgewählt, die das Prädikat erfüllen. Die Variable \texttt{it} referenziert dabei ein Element in der Ergebnismenge des vorhergehenden Schrittes, sie wird durch Gremlin festgelegt und verwaltet. Anschließend liest \texttt{bothV} Start- und Zielknoten der Kante aus und filtert jene, die älter als 25 sind. Knoten- und Kanteninstanzen werden in Gremlin standardmäßig mehrfach besucht. Bei genauer Betrachtung des Beispiels wird deutlich, dass ein Berücksichtigen von Start- und Zielknoten auch \texttt{Bob} in die Ergebnismenge der Traversierung einschließt. Dies lässt sich mit der Funktion \texttt{except} vermeiden:
 
 \texttt{bob.bothE('WORKS\_WITH').filter\{it.since > 2011\}.bothV.except([bob])}\newline
 \texttt{.filter\{it.age > 25\}}
