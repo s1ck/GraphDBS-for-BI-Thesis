@@ -42,9 +42,9 @@
 \end{table}
 \renewcommand{\arraystretch}{1}
 
-\section{Quellcodebeispiele}
+\section{Quelltextbeispiele}
 
-Abbildung \ref{fig:example} zeigt die Instanz eines Property-Graph, welche in den nachfolgenden Beispielen verwendet wird, das verwendete Schema entspricht dem Schema im Benchmark.
+Abbildung \ref{fig:example} zeigt einen Property-Graphen, auf den sich die nachfolgenden Quelltextbeispiele beziehen. Die Attribute und Bezeichner der Knoten und Kanten entsprechen denen im Benchmark.
 
 \begin{figure}[h] 
 	\centering
@@ -61,6 +61,7 @@ Abbildung \ref{fig:example} zeigt die Instanz eines Property-Graph, welche in de
 \lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={Neo4j: CRUD-Operationen}, label=list:neo4j_api_example}
 \begin{lstlisting}
 try (Transaction tx = graphDB.beginTx()) {
+	// create labels
 	Label productLabel = new Label() {@Override public String name() { 
 		return "Product"; }};
 	Label userLabel = new Label() {@Override public String name() {
@@ -68,13 +69,13 @@ try (Transaction tx = graphDB.beginTx()) {
 	}};
 	// create node with label "Product"
 	Node p123 = graphDB.createNode(productLabel); // no __type__ attribut needed
-	p123.setProperty("__id__", "P123");
+	p123.setProperty("__id__", "p123");
 	p123.setProperty("title", "Effective Java");
 	p123.setProperty("salesrank", 2);
 	p123.setProperty("categories", new String[] { "Programming" });
 	// create node with label "User"
 	Node u42 = graphDB.createNode(userLabel);
-	u42.setProperty("__id__", "U42");
+	u42.setProperty("__id__", "u42");
 	u42.setProperty("age", 28);
 	u42.setProperty("gender", false);
 	u42.setProperty("region", "Saxony");
@@ -87,28 +88,40 @@ try (Transaction tx = graphDB.beginTx()) {
 	review1.setProperty("date", "2013-10-06");
 	// ...
 	tx.success() // commit the changes
+	
+	// read the neighbourhood of p123 using all outgoing edges
+	for (Relationship e : p123.getRelationships(Direction.OUTGOING)) {
+		System.out.println(e.getType().name() + " points to "
+			+ e.getEndNode().getProperty("__id__"));
+	}
+	// prints ...
+	// SIMILAR_TO points to p456
+	// BELONGS_TO points to g0
+	// REVIEWED_BY points to u42
 }
 \end{lstlisting}
 
 \lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={Neo4j: Traversal Framework}, label=list:neo4j_traversal_example}
 \begin{lstlisting}
-// get all paths starting at user u23
-try (Transaction tx = graphDB.beginTx()) {
-	TraversalDescription td = Traversal.description()
-		.breadthFirst()
-		// consider edge labels and directions ...
-		.relationships(RelTypes.FRIEND_OF, Direction.INCOMING)
-		.relationships(RelTypes.REVIEWED_BY, Direction.BOTH)
-		.relationships(RelTypes.SIMILAR_TO, Direction.OUTGOING)
-		.evaluator(Evaluators.excludeStartPosition());
-	for (Path p : td.traverse(u23)) {
-		System.out.println(p);
-	}
+// abstract path description
+TraversalDescription td = Traversal.description()
+	// traverse the graph in breadth first order
+	.breadthFirst()
+	// consider edge labels and directions ...
+	.relationships(RelTypes.FRIEND_OF, Direction.INCOMING)
+	.relationships(RelTypes.REVIEWED_BY, Direction.BOTH)
+	.relationships(RelTypes.SIMILAR_TO, Direction.OUTGOING)
+	// no zero length paths
+	.evaluator(Evaluators.excludeStartPosition());
+	
+// start traversal at user u23
+for (Path p : td.traverse(u23)) {
+	System.out.println(p);
 }
 // prints paths ...
-// (5)<--[FRIEND_OF,4]--(4) // 4 => U42
-// (5)<--[REVIEWED_BY,7]--(3) // 3 => P456
-// (5)<--[FRIEND_OF,4]--(4)<--[REVIEWED_BY,6]--(2) // 2 => P123
+// (5)<--[FRIEND_OF,4]--(4) // 4 => u42
+// (5)<--[REVIEWED_BY,7]--(3) // 3 => p456
+// (5)<--[FRIEND_OF,4]--(4)<--[REVIEWED_BY,6]--(2) // 2 => p123
 \end{lstlisting}
 
 \subsection*{HypergraphDB}
@@ -117,8 +130,8 @@ try (Transaction tx = graphDB.beginTx()) {
 \begin{lstlisting}
 // create plain old java objects
 Group books = new Group(1L, "Books");
-Product p123 = new Product("P123", "Java 7", 2, new String[] { "Programming" });
-Product p456 = new Product("P456", "Effective Java", 3, null);
+Product p123 = new Product("p123", "Java 7", 2, new String[] { "Programming" });
+Product p456 = new Product("p456", "Effective Java", 3, null);
 User u42 = new User("u42", 28, false, "Saxony");
 User u23 = new User("u23", 26, true, "Saxony");
 Review rev1 = new Review("2013-10-16", 3, 12, 5);
@@ -131,14 +144,14 @@ HGHandle p456Handle = hg.add(p456);
 HGHandle u42Handle = hg.add(u42);
 HGHandle u23Handle = hg.add(u23);
 
-// link them based using the handles
+// link atoms using their handles
 hg.add(new HGRel("belongs_to", p123Handle, booksHandle));
 hg.add(new HGRel("belongs_to", p456Handle, booksHandle));
 hg.add(new HGRel("similar_to", p123Handle, p456Handle));
 hg.add(new HGRel("similar_to", p456Handle, p123Handle));
 hg.add(new HGRel("friend_of", u42Handle, u23Handle));
 hg.add(new HGRel("friend_of", u23Handle, u42Handle));
-// using HGValueLink to store
+// use HGValueLink to store a value at the edge
 hg.add(new HGValueLink(rev1, p123Handle, u42Handle));
 hg.add(new HGValueLink(rev2, p456Handle, u23Handle));
 \end{lstlisting}
@@ -146,19 +159,22 @@ hg.add(new HGValueLink(rev2, p456Handle, u23Handle));
 \lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={HyperGraphDB: Mengenorientierte API}, label=list:hgdb_query_example}
 \begin{lstlisting}
 // get all products with a salesrank greater than or equal to 3
+// load the whole result into a list (instead of using an iterator)
 List<Product> = hg.getAll(graph,
-	hg.and(hg.type(Product.class), hg.gte("salesrank", 3)); 
+	hg.and(hg.type(Product.class), hg.gte("salesrank", 3));
+	
+// go through the result
 for (Product p : products) {
 	System.out.println(p);
 }
 // prints products ...
-// Product [asin=P456, title=Effective Java, salesrank=3, categories=null]
+// Product [__id__=p456, title=Effective Java, salesrank=3, categories=null]
 \end{lstlisting}
 
 \lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={HyperGraphDB: Traversal Framework}, label=list:hgdb_traversal_example}
 \begin{lstlisting}
 // get product handle
-HGHandle p1Handle = graph.getHandle(p123);
+HGHandle p123Handle = graph.getHandle(p123);
 
 // define an adjacency list generator
 DefaultALGenerator alGen = new DefaultALGenerator(graph, hg.and(
@@ -168,7 +184,7 @@ DefaultALGenerator alGen = new DefaultALGenerator(graph, hg.and(
 	hg.and(hg.type(User.class), hg.gte("age", 25)));
 
 // initialize the traversal framework
-HGTraversal traversal = new HGBreadthFirstTraversal(p1Handle, alGen);
+HGTraversal traversal = new HGBreadthFirstTraversal(p123Handle, alGen);
 
 // start the traversal
 while (traversal.hasNext()) {
@@ -177,7 +193,6 @@ while (traversal.hasNext()) {
 	Object atom = graph.get(next.getSecond());
 	System.out.println("at atom " + atom + " using link " + link);
 }
-
 // prints ...
 // at atom User [userId=u42, age=28, gender=false, region=Saxony] 
 // using link Review [date=2013-10-16, rating=3, votes=12, helpful=5]
@@ -185,11 +200,90 @@ while (traversal.hasNext()) {
 
 \subsection*{OrientDB}
 
+\lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={OrientDB: CRUD-Operationen}, label=list:orientdb_api_example}
+\begin{lstlisting}
+// create class for product
+OClass product = graph.createVertexType("Product");
+// define product attributes and constraints
+product.createProperty("__id__", OType.STRING).setMandatory(true).setNotNull(true);
+product.createProperty("title", OType.STRING).setMandatory(true);
+product.createProperty("salesrank", OType.INTEGER);
+product.createProperty("categories", OType.EMBEDDEDLIST, OType.STRING);
+// create unique index on __id__ for class product
+graph.createKeyIndex("__id__", Vertex.class, new Parameter("type", "UNIQUE"), 
+	new Parameter("class", "Product"));
+
+// create class for user
+OClass user = graph.createVertexType("User");
+user.createProperty("__id__", OType.STRING).setMandatory(true)
+	.setNotNull(true);
+user.createProperty("age", OType.INTEGER).setMin("0").setMax("90");
+user.createProperty("gender", OType.BOOLEAN);
+user.createProperty("region", OType.STRING);
+// create unique index on __id__ for class user
+graph.createKeyIndex("__id__", Vertex.class, new Parameter("type", "UNIQUE"),
+	new Parameter("class", "Product"));
+// ...
+
+// create class for ReviewedBy edge
+OClass reviewedBy = graph.createEdgeType("ReviewedBy");
+// create edge attributes and constraints
+reviewedBy.createProperty("votes", OType.INTEGER).setMin("0");
+reviewedBy.createProperty("rating", OType.INTEGER).setMin("0");
+reviewedBy.createProperty("helpful", OType.INTEGER).setMin("0");
+reviewedBy.createProperty("date", OType.DATE);
+// ...
+
+// create a product instance (define mandatory attributes in constructor)
+Vertex p123 = graph.addVertex("class:Product", "__id__", "P123",
+		    "title", "Java 7");
+p123.setProperty("salesrank", 2);
+p123.setProperty("categories", new String[] { "Programming" });
+
+// create a user instance
+Vertex u42 = graph.addVertex("class:User", "__id__", "u42");
+u23.setProperty("age", 28);
+u23.setProperty("gender", false);
+u23.setProperty("region", "Saxony");
+
+// create ReviewedBy instance
+Edge p123_u42 = graph.addEdge("class:ReviewedBy", p123, u42, null);
+p123_u42.setProperty("votes", 12);
+p123_u42.setProperty("rating", 3);
+p123_u42.setProperty("helpful", 5);
+c.set(2013, 10, 16);
+p123_u42.setProperty("date", c.getTime());
+// ...
+
+// make changes persistent
+graph.commit();
+
+// read the neighbourhood of p123 using all outgoing edges
+for (Edge e : p123.getEdges(Direction.OUT, new String[] {})) {
+	System.out.println(e.getLabel() + " points to "
+		+ e.getVertex(Direction.IN).getProperty("__id__"));
+}
+// prints ...
+// SimilarTo points to p456
+// BelongsTo points to g0
+// ReviewedBy points to u42
+
+// perform an SQL-query
+for (Vertex v : (Iterable<Vertex>) graph.command(
+	new OCommandSQL("SELECT FROM V WHERE __id__ IS NOT null")).execute()) {
+	System.out.println(v.getId() + " (" + v.getProperty("__id__") + ")");
+}
+// prints ...
+// #11:0 (p456)
+// #11:1 (p123)
+// #12:0 (g0)
+// #13:0 (u23)
+// #13:1 (u42)
+\end{lstlisting}
+
 \subsection*{Titan}
 
 \section{Benchmark}
-
-
 
 \subsection{Extraktion}
 \label{anh:extraction}
@@ -289,7 +383,7 @@ a.both('FRIEND_OF', 'REVIEWED_BY', 'SIMILAR_TO')
 
 \lstset{language=Java, caption={Operation \texttt{top\_region} in Cypher}, label=list:top_region_cypher}
 \begin{lstlisting}
-START g=node:nodes('__id__':'g_0')
+START g=node:nodes('__id__':'g0')
 MATCH g<-[:BELONGS_TO]-p-[r:REVIEWED_BY]->u
 WHERE p.salesrank < 500000
 RETURN u.region AS region, count(u) AS cnt
@@ -299,7 +393,7 @@ LIMIT 10;
 
 \lstset{language=Java, caption={Operation \texttt{top\_region} in Gremlin}, label=list:top_region_gremlin}
 \begin{lstlisting}
-group = g.V('__id__', 'g_0').next();
+group = g.V('__id__', 'g0').next();
 group.in('BELONGS_TO').filter{it.salesrank < 500000}
 	.out('REVIEWED_BY').groupCount{it.region}.cap()
 	.orderMap(T.decr)[0..9];
@@ -338,7 +432,6 @@ common_products._().as("product").transform({
 \subsection*{Email-Kommunikation Neo Technology}
 \label{anh:mail_neo}
 
-\begin{quote}
 Hi Martin,
 
 It's great to speak with you, thanks for reaching out. Cypher is indeed a great convenience. As you point out, it's not yet always fast: certain operations aren't yet well optimized. There is a good reason for this. Cypher was born right around two years ago: 11 years after the first line of Neo4j code was written, and about a year before Titan was released, for anyone who's counting :-) We have spent a lot of time working on getting the language and functionality right, and not as much time on performance. With the 2.0 release, which we expect to GA in December, we will have a greatly improved Cypher language, as well as an enhanced "labeled property graph" model that will now give Neo4j some important "hooks" through which it can better understand the data in the graph.
@@ -358,4 +451,3 @@ My perspective on Titan for what it's worth--which I encourage you to question--
 Feel free to send along any additional questions! 
 
 Philip
-\end{quote}
