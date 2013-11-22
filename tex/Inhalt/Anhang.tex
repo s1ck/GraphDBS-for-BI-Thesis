@@ -44,7 +44,7 @@
 
 \section{Quelltextbeispiele}
 
-Abbildung \ref{fig:example} zeigt einen Property-Graphen, auf den sich die nachfolgenden Quelltextbeispiele beziehen. Die Attribute und Bezeichner der Knoten und Kanten entsprechen denen im Benchmark.
+Abbildung \ref{fig:example} zeigt einen Property-Graphen, auf den sich die nachfolgenden Quelltextbeispiele beziehen. Die Attribute und Bezeichner der Knoten und Kanten entsprechen denen im Benchmark. Die Beispiele zeigen die Syntax für das Erzeugen von Knoten- und Kanteninstanzen, das Auslesen der Nachbarschaft eines Knotens sowie - wenn vorhanden - die Verwendung von Traversal Frameworks und mengenorientierten APIs.
 
 \begin{figure}[h] 
 	\centering
@@ -67,19 +67,23 @@ try (Transaction tx = graphDB.beginTx()) {
 	Label userLabel = new Label() {@Override public String name() {
 	    return "User";
 	}};
-	// create node with label "Product"
+	// ...
+	
+	// create a product node instance
 	Node p123 = graphDB.createNode(productLabel); // no __type__ attribut needed
 	p123.setProperty("__id__", "p123");
 	p123.setProperty("title", "Effective Java");
 	p123.setProperty("salesrank", 2);
 	p123.setProperty("categories", new String[] { "Programming" });
-	// create node with label "User"
+	// create a user node instance
 	Node u42 = graphDB.createNode(userLabel);
 	u42.setProperty("__id__", "u42");
 	u42.setProperty("age", 28);
 	u42.setProperty("gender", false);
 	u42.setProperty("region", "Saxony");
-	// create edge from product to user
+	// ...
+	
+	// create REVIEWED_BY edge instance
 	Relationship review1 = p123.createRelationshipTo(u42, 
 		RelTypes.REVIEWED_BY); // edge label has been defined before
 	review1.setProperty("votes", 12);
@@ -87,7 +91,9 @@ try (Transaction tx = graphDB.beginTx()) {
 	review1.setProperty("helpful", 5);
 	review1.setProperty("date", "2013-10-06");
 	// ...
-	tx.success() // commit the changes
+	
+	// make changes persistent
+	tx.success();
 	
 	// read the neighbourhood of p123 using all outgoing edges
 	for (Relationship e : p123.getRelationships(Direction.OUTGOING)) {
@@ -107,7 +113,7 @@ try (Transaction tx = graphDB.beginTx()) {
 TraversalDescription td = Traversal.description()
 	// traverse the graph in breadth first order
 	.breadthFirst()
-	// consider edge labels and directions ...
+	// consider the following edge labels and directions
 	.relationships(RelTypes.FRIEND_OF, Direction.INCOMING)
 	.relationships(RelTypes.REVIEWED_BY, Direction.BOTH)
 	.relationships(RelTypes.SIMILAR_TO, Direction.OUTGOING)
@@ -128,7 +134,7 @@ for (Path p : td.traverse(u23)) {
 
 \lstset{language=Java, basicstyle=\ttfamily\footnotesize, caption={HyperGraphDB: CRUD-Operationen}, label=list:hgdb_api_example}
 \begin{lstlisting}
-// create plain old java objects
+// create JavaBean instances
 Group books = new Group(1L, "Books");
 Product p123 = new Product("p123", "Java 7", 2, new String[] { "Programming" });
 Product p456 = new Product("p456", "Effective Java", 3, null);
@@ -137,7 +143,7 @@ User u23 = new User("u23", 26, true, "Saxony");
 Review rev1 = new Review("2013-10-16", 3, 12, 5);
 Review rev2 = new Review("2013-10-14", 4, 15, 10);
 
-// create atom handles for those objects
+// create atom handles for the nodes
 HGHandle booksHandle = hg.add(books);
 HGHandle p123Handle = hg.add(p123);
 HGHandle p456Handle = hg.add(p456);
@@ -234,19 +240,19 @@ reviewedBy.createProperty("helpful", OType.INTEGER).setMin("0");
 reviewedBy.createProperty("date", OType.DATE);
 // ...
 
-// create a product instance (define mandatory attributes in constructor)
+// create product node instance (define mandatory attributes in constructor)
 Vertex p123 = graph.addVertex("class:Product", "__id__", "P123",
 		    "title", "Java 7");
 p123.setProperty("salesrank", 2);
 p123.setProperty("categories", new String[] { "Programming" });
-
-// create a user instance
+// create user node instance
 Vertex u42 = graph.addVertex("class:User", "__id__", "u42");
-u23.setProperty("age", 28);
-u23.setProperty("gender", false);
-u23.setProperty("region", "Saxony");
+u42.setProperty("age", 28);
+u42.setProperty("gender", false);
+u42.setProperty("region", "Saxony");
+// ...
 
-// create ReviewedBy instance
+// create ReviewedBy edge instance
 Edge p123_u42 = graph.addEdge("class:ReviewedBy", p123, u42, null);
 p123_u42.setProperty("votes", 12);
 p123_u42.setProperty("rating", 3);
@@ -259,7 +265,7 @@ p123_u42.setProperty("date", c.getTime());
 graph.commit();
 
 // read the neighbourhood of p123 using all outgoing edges
-for (Edge e : p123.getEdges(Direction.OUT, null)) {
+for (Edge e : p123.getEdges(Direction.OUT, new String[] {})) {
 	System.out.println(e.getLabel() + " points to "
 		+ e.getVertex(Direction.IN).getProperty("__id__"));
 }
@@ -308,9 +314,45 @@ graphDB.makeType().name("BELONGS_TO")
 	.makeEdgeLabel();
 // ...
 
+// create product node instance
+Vertex p123 = graphDB.addVertex(null);
+p123.setProperty("__id__", "p123");
+// store the type because there are no labels / classes
+p123.setProperty("__type__", "p");
+p123.setProperty("title", "Java 7");
+List<String> list = new ArrayList<String>();
+list.add("Programming");
+p123.setProperty("categories", list);
+// create user node instance
+Vertex u42 = graphDB.addVertex(null);
+u42.setProperty("__id__", "u42");
+u42.setProperty("__type__", "u");
+u42.setProperty("age", 28);
+u42.setProperty("gender", false);
+u42.setProperty("region", "Saxony");
+// ...
 
+// create REVIEWED_BY edge instance
+Edge rev1 = p123.addEdge("REVIEWED_BY", u42);
+rev1.setProperty("votes", 12);
+rev1.setProperty("rating", 3);
+rev1.setProperty("helpful", 5);
+rev1.setProperty("date", "2013-10-16");
+// ...
 
+// make changes persistent
+graphDB.commit();
 
+// read the neighbourhood of p123 using all outgoing edges
+// using Blueprints API, so its identical to OrientDB
+for (Edge e : p123.getEdges(Direction.OUT, new String[] {})) {
+	System.out.println(e.getLabel() + " points to "
+		+ e.getVertex(Direction.IN).getProperty("__id__"));
+}
+// prints ...
+// REVIEWED_BY points to u42
+// BELONGS_TO points to g0
+// SIMILAR_TO points to p456
 \end{lstlisting}
 
 \section{Benchmark}
