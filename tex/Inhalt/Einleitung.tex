@@ -1,34 +1,18 @@
 \chapter{Einleitung}
 \label{cha:Einleitung}
 
+Das folgende Kapitel soll dem Leser nahebringen, warum eine Auseinandersetzung mit Graphdatenbanksystemen im Kontext der Analyse von Informationsnetzwerken erforderlich ist. Im zweiten Abschnitt werden Ziel und Aufbau der Arbeit kurz präsentiert.
+
 \section{Motivation}
 \label{sec:motivation}
 
-\begin{itemize}
-	\item Einfache Graphendefinition (vielleicht auch ein kurzer Abriss zur Geschichte der Graphentheorie? Eulers Brückenproblem)
-	\item Bezug auf Anwendungen in denen die Beziehungen zwischen Objekten mindestens genauso wichtig sind wie die Objekte selbst
-	\item kein GDBMS ist optimal für alle Anwendungen \cite{Shao:2012:MML:2213836.2213907}, da die Algorithmen von verschiedenen Datenstrukturen profitieren
-	\item Anwendungsbeispiele für Graphen / Graphdatenbanken
-	\item Warum Graphdatenbanken
-	\item Graph als generische Datenstruktur für die Modellierung beliebiger Sachverhalte
-	\begin{itemize}
-		\item Wissens- und Informationsnetzwerke (Zitiernetzwerke, Semantic Web, \textbf{Unternehmensdaten}, ...) -> Geschäftsdaten
-		\item Soziale Netzwerke (Facebook, LinkedIn, ...)
-		\item Technologische Netzwerke (Kommunikation, Verkehr, ...)
-		\item Biologische Netzwerke (Biologie, Chemie, ...)
-		\item Beispiele in \cite{Shao:2012:MML:2213836.2213907}
-	\end{itemize}
-	\item Fokus auf Unternehmensdaten. 
-	\begin{itemize}
-		\item Bisher: Datawarehouse + relationale DBMS
-		\item Jetzt: Nutzen von Graphdatenbanksystemen zur erweiterten Analyse vernetzter Unternehmensdaten (Bezug auf BIIIG Paper / aktuelle Promotion)
-		
-	\end{itemize}
-\end{itemize}
+Es existieren viele verschiedene Arten von Netzwerken: Personen sind über Freundschaftsbeziehungen in einem sozialen Netzwerk verbunden, Websites über Hyperlinks im World Wide Web verknüpft, Städte über das Autobahnnetz erreichbar. Die mathematisch abstrakte Grundlage ist ein Graph und auf dieser Ebene sind Personen, Websites und Städte die Knoten, die Verbindungen zwischen ihnen die Kanten. Eine Gemeinsamkeit der genannten Beispiele ist, dass die Beziehungsinformationen zwischen den Knoten genauso wichtig und mitunter sogar wichtiger sind als die Knoten selbst.
 
-\begin{quote}
-Compared with other database options, the  unique property of graph databases is the information encoded in the graph topology\cite{Ciglan:2012}.
-\end{quote}
+Die Analyse von Netzwerken spielt in den verschiedensten Disziplinen eine wichtige Rolle. Im Bereich der sozialen Netzwerke, können auf der Grundlage übereinstimmender Kontakte neue Beziehungen vorgeschlagen werden. Im Internet ist es wichtig, dass ein Datenpaket den kürzesten Pfad zwischen Quelle und Senke wählt. Gleiches gilt für das Transportwesen, bei dem energie- und kosteneffiziente Routen für jedes Transportmittel geplant werden müssen. Die Graphentheorie bietet hierfür eine Vielzahl von Algorithmen, mit Hilfe derer die jeweils relevanten Informationen aus den vorhandenen Daten gewonnen werden können.
+
+Neben den genannten klassischen Beispielen können auch Unternehmensdaten als Informationsnetzwerk klassifiziert und folglich auch mit graphentheoretischen Methoden analysiert werden. Unternehmen nutzen eine Vielzahl verschiedener Geschäftsinformationssysteme zur Bewältigung ihrer Aufgaben. Man unterscheidet beispielsweise Systeme für Enterprise Resource Planing, Project Management oder Customer Relationship Management, welche sich in technologischer, struktureller und semantischer Sicht unterscheiden können. Auf Grundlage der vorhandenen Informationen versuchen Unternehmen mit Methoden der Business Intelligence neues, gewinnbringendes Wissen abzuleiten. Ein in diesem Zusammenhang genutztes Konzept ist das Data Warehouse, es handelt sich um eine spezielle Datenbank, welche für Analysezwecke optimiert ist und in welcher Daten aus mehreren, i.A. heterogenen, Systemen integriert werden. Die Integration setzt ein einheitliches, festes Schema voraus, was bedeutet, dass die für die Analyse relevanten Beziehungen zwischen den einzelnen Elementen vorab festgelegt werden müssen und somit jeder relevante Zusammenhang bekannt sein und im Schema abgebildet werden muss. Dieser Sachverhalt schränkt jedoch die analytischen Möglichkeiten ein, da nur Zusammenhänge analysiert werden können, die im Schema definiert wurden. Unbekannte, eventuell nicht intuitiv erkennbare Zusammenhänge können in der Analyse nicht berücksichtigt werden.
+
+Eines der Projekte am Lehrstuhl Datenbanken befasst sich mit der Entwicklung und Untersuchung von Methoden zur graphenbasierten Business Intelligence. Eine graphenbasierte Repräsentation von Unternehmensdaten weist die beschriebene Einschränkung eines vordefinierten Schemas nicht auf, vielmehr erlaubt sie die flexible Evaluation der Beziehungen zwischen einzelnen Objekten innerhalb der Unternehmensdaten. Als technologische Grundlage für das Projekt wird die Verwendung eines Graphdatenbanksystems angestrebt. Es handelt sich dabei um einen speziellen Datenbanktypus, in dem Datenstrukturen für Schema und/oder Daten direkt als Graph modelliert sind und der Zugriff auf die hinterlegten Informationen durch graphenorientierte Operationen erfolgt. Beziehungen werden als eigenständige Objekte verwaltet und können als solche analysiert werden. Die Systeme werden für die effiziente Verwaltung stark vernetzter Daten konzipiert und versprechen gegenüber herkömmlichen, wie zum Beispiel relationalen Datenbanksystemen, wesentliche Vorteile bezüglich Performanz bei der Analyse topologischer Zusammenhänge. Das Projekt erfordert somit die Untersuchung bestehender Graphdatenbanksysteme um einschätzen zu können, inwieweit diese sich für die Integration heterogener Systeme eignen und welche Operationen für die BI-orientierte Analyse zur Verfügung gestellt werden. Letztere erfordert neben der topologischen Analyse auch datenbezogene Auswertungen, wie zum Beispiel die Aggregation. Hierbei ist es interessant zu untersuchen, inwieweit sich Graphdatenbanksysteme für diese Anfrageart eignen.
 
 \section{Ziel der Arbeit}
 \label{sec:ziel}
