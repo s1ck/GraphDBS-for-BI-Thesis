@@ -65,7 +65,7 @@ Die Möglichkeit zur Definition eines Schemas ist ein rein informatives Kriterium
 % Die Gewährleistung der ACID-Eigenschaften ist bei der Transaktionsausführung auf Unternehmensdaten erstrebenswert, deren Unterstützung wird daher als obligatorisch angesehen.
 Die Gewährleistung der ACID-Eigenschaften ist insbesondere im operationalen Betrieb erstrebenswert. Das Forschungsvorhaben widmet sich jedoch vorrangig der Analyse von Informationsnetzwerken, was im Wesentlichen den lesenden Zugriff auf die Datenbasis erfordert. Im Rahmen der Arbeit wird die Einhaltung der ACID-Eigenschaften nicht gefordert, deren systemseitige Umsetzung in den GDBMS ist somit nicht relevant.
 
-Von Bedeutung ist hingegen die mit der Konsistenzerhaltung verbundene Möglichkeit zur Definition von Integritätsbedingungen: Modellinhärente Bedingungen werden von allen Systemen erfüllt, dazu zählt zum Beispiel die referentielle Integrität, bei der eine Kante mindestens einen Start- und einen Zielknoten besitzen muss. Die Möglichkeit zur Definition weiterer, beispielsweise attributbezogener, Integritätsbedingungen wird als optionale Anforderung gewertet.
+Von Bedeutung ist hingegen die mit der Konsistenzerhaltung verbundene Möglichkeit zur Definition von Integritätsbedingungen: Modellinhärente Bedingungen werden von allen Systemen erfüllt, dazu zählt zum Beispiel die referentielle Integrität, bei der eine Kante mindestens einen Start- und einen Zielknoten besitzen muss. Die Möglichkeit zur Definition weiterer, beispielsweise attributbezogener, Integritätsbedingungen, wird als optionale Anforderung gewertet.
 
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[h]
@@ -98,7 +98,7 @@ Von Bedeutung ist hingegen die mit der Konsistenzerhaltung verbundene Möglichkei
 
 \paragraph*{Zugriffsmechanismen}
 
-Bei der Diskussion der Anforderungen wurde hinsichtlich der Zugriffsmechanismen festgelegt, dass ein geeignetes GDBMS die Einbettung in eine bestehende Anwendung unterstützen und hierfür eine entsprechende API zur Verfügung stellen muss, dies ermöglicht es, das System um eigene Graphalgorithmen bzw. graphenspezifische Operationen zu erweitern. Das Fehlen einer entfernten API wird nicht als Defizit gewertet, da sich diese unter Verwendung der eingebetteten API implementieren lässt.\\
+Bei der Diskussion der Anforderungen wurde hinsichtlich der Zugriffsmechanismen festgelegt, dass ein geeignetes GDBMS die Einbettung in eine bestehende Anwendung unterstützen und hierfür eine entsprechende API zur Verfügung stellen muss, was es ermöglicht, das System um eigene Graphalgorithmen bzw. graphenspezifische Operationen zu erweitern. Das Fehlen einer entfernten API wird nicht als Defizit gewertet, da sich diese unter Verwendung der eingebetteten API implementieren lässt.\\
 Quelloffenheit resultiert nicht zwingend in einer einfachen Erweiterbarkeit der Systeme. Einige Anbieter beschreiben innerhalb ihrer Dokumentationen spezielle Plugin APIs, welche zum Beispiel das Hinzufügen eigener Indexstrukturen, Speichersysteme oder Operatoren erlauben. Generell lässt sich jedoch jedes quelloffene System erweitern, weswegen Plugin APIs als optional deklariert werden.
 
 Bezüglich vorhandener graphenspezifischer Operationen wurde festgelegt, dass grundlegende Operationen wie CRUD und Traversierung Mindestvoraussetzungen darstellen. CRUD-Operationen ermöglichen die Manipulation und das Auslesen der Datenbasis, während die Traversierung den Ausgangspunkt für komplexere Graphalgorithmen darstellt.\\
