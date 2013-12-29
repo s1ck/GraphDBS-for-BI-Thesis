@@ -50,7 +50,7 @@ Kanten werden unter Angabe ihrer Zielmenge und eventueller Nutzdaten erzeugt und
 
 \paragraph*{Mengenorientierte Operationen via Java API}
 
-Neben dem Auslesen von Atomen unter Angabe ihres Handles bietet HyperGraphDB die Möglichkeit, deklarative, mengenorientierte Anfragen an die Datenbasis zu stellen. Die hierfür vorhandene API basiert auf der Definition von Prädikaten zur Einschränkung der Ergebnismenge. Prädikate lassen sich konjunktiv bzw. disjunktiv verknüpfen sowie beliebig schachteln und negieren. Sie beziehen sich entweder auf den Wert eines Atoms oder auf die Topologie des Graphen. Die folgende Anfrage definiert zum Beispiel die Menge aller Mitarbeiter, deren Attribut \texttt{age} kleiner oder gleich dem Wert 25 ist:
+Neben dem Auslesen von Atomen unter Angabe ihres Handles bietet HyperGraphDB die Möglichkeit, deklarative, mengenorientierte Anfragen an die Datenbasis zu stellen. Die hierfür vorhandene API basiert auf der Definition von Prädikaten zur Einschränkung der Ergebnismenge. Prädikate lassen sich konjunktiv bzw. disjunktiv verknüpfen sowie beliebig schachteln und negieren. Sie beziehen sich entweder auf den Wert eines Atoms oder auf die Topologie des Graphen. Die folgende Anfrage definiert zum Beispiel die Menge aller Mitarbeiter, deren Attribut \texttt{age} gr\"o\ss{}er oder gleich dem Wert 25 ist:
 
 \texttt{hg.and(hg.type(Employee.class), hg.gte(\string"age\string", 25))}.
 
